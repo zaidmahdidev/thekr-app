@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "cicd-481114",
+  "private_key_id": "079c43ba5a5285f443c9b7d75bac6d575ea998fa",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDWUWLuSuwz3fC0\nnekZ5bD8Gk70p0MMs0MlunhBjU4HwSw0rXsSLvF649hIntDQEycnAGkiuAApy8ah\nRMRbmDT6EUBRL6TRTYwLFHrFbhLENmplaE90hWLCetKQwz9xqRijpZkIN1yiCcJx\nYOQ4qFGVzkehcSdeIMj0RbhjZE0YNLL0H/Vmi48eBGY9Tmt1Z6ei4a29gZZQKLd7\nDil6fCk1sQtVl2Agur0d3/BAjXcB1+5oPmYcSGhbAbAGagZG/wlRMZAvycCpLdIG\nZDZGG9AeksprDOuKffap4G8HPHKhHbjOxHgBMyLRwqULZ0wsTT/D6xChyIdzD/bV\ngTGz9SxdAgMBAAECggEADaGFBYtp3P2lcNNnT0Ca4lnpAin+O3lOUMC8o8yxNRCN\n93a+MGCgdrS1nZ7OQKGrOJGP3keuKPpfMoQdagby/aGpwdAiLza7rLu7eEGhO24L\nk9IP1aUjLCPkLxVf/GJpIQVoB4v/3gV5Yr0rHshj0f+Z8jRwcM3sgg7KJLYtKhgY\nJwCs8VVDiyjTY4Tq+CM9AFnUdeEqrzu7ZDuc2URQ2IP7pvyrS15vJgfrj5w160MU\nXUR8JOAQ/bZpOLGvIJbiq874gBKBoHZF52KLS1BWKRsyYlisbHG2Fhk94f8YN0h0\nMacopI3gfoYgcMbfexmEbN8KXV7iOyBxhA+tQuff8QKBgQDx65rFUvtNQ/UrdSm4\nPzuLSo4LG7qiQS6tk+JMSy3MCeBzz+n6eNFQvGAC5G7H1fN8FbHAReqHrbkk56sG\nXyimuArPNRoIE9UJm5sVEBCEPiHDKmEz1A9C0X/h5EVGgBx6JhSXCk+hhkzuI6o/\nCirmotMtMgNNDs9TQ/P8bMdATQKBgQDiyofc3yWlPnfpTojuyEj/rF7TH3VjWgSE\nlb95VCVgc7K7qvAAZJHbhDYVVxkES+/FKuYbSjtO6wNckz5zPqI9489as9eFq8Ez\nDrW95MwVueFvz9RX8QQBKkV/mE2uGBbJvuneXzA2JGgg0v24+pT7F4Ow3Y2EVi1o\nId5xStskUQKBgQClIQrt8exzGxX4aermRtMgCu3WC0Fji1aPSMhJB2/lPECnDJ5L\nR7iogUyP7NjpMtMWOcCw24hwwFYGKNQGb2HSGwHV2gtAxDjAbCR5RhPgEID/NKhQ\ntkkMdO/zgtr+emf1wJSBXJpqSL+uNU355bjO4QmAagjyyk8eKN4bySxgaQKBgCUp\nkNfFjRKlyNpnLxMJqMSUhzlLN14fWwwqyaRlAHbsnoYX/Zni4O+6m24lxoiotNJ3\nNBuWr19ALV3XFu2lfsprcQfo3lEeEtt99pP2UObifalnweDjMofKWHcPCvOTKPDI\nIuR4bpsAnjt6t26/SPhYIxExTMY5pNkia6Pe40fxAoGAXv+3ts2iwSVML8nFpJ4t\nilwkCBZ5jjf5P4Zl++2znIe0QGB3I7IXG5N3objIV4I88LJj0+rA2sh91YiI9xBQ\npikrkhA47YweBZQcs91rNqNK914CmeCMTI40AIoPAMclNMZDL3oqjHKESZM2VBUK\nTPpn8bZihYhGnGRqhaC7rIQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "fastlane-play@cicd-481114.iam.gserviceaccount.com",
+  "client_id": "111087290766989913416",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/fastlane-play%40cicd-481114.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
