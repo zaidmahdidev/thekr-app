@@ -20,12 +20,11 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+      #      - name: Analyze
+      #        run: flutter analyze
 
-#      - name: Analyze
-#        run: flutter analyze
-
-#      - name: Run tests
-#        run: flutter test
+      #      - name: Run tests
+      #        run: flutter test
 
       - name: Decode keystore
         run: |
@@ -44,15 +43,11 @@ jobs:
       - name: Build Android App Bundle (AAB)
         run: flutter build appbundle --release
 
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+      - name: Decode Play Store JSON
+        run: |
+          echo "${{ secrets.PLAY_STORE_JSON }}" | base64 --decode > android/fastlane/cicd-481114-079c43ba5a52.json
 
       - name: Deploy to Google Play
-        env:
-          PLAY_STORE_JSON: ${{ secrets.PLAY_STORE_JSON }}
         run: |
           cd android
           fastlane deploy
