@@ -97,8 +97,27 @@ jobs:
           ls -la build/app/outputs/bundle/release/ || echo "Directory not found"
           echo "Contents from android directory perspective:"
           ls -la ../build/app/outputs/bundle/release/ || echo "Directory not found from android/"
+          echo "All AAB files in the project:"
+          find . -name "*.aab" -type f 2>/dev/null || echo "No AAB files found"
+
+      - name: Copy AAB to expected location (if needed)
+        run: |
+          # Find the actual AAB file location
+          AAB_FILE=$(find . -name "app-release.aab" -type f | head -1)
+          if [ -n "$AAB_FILE" ]; then
+            echo "Found AAB file at: $AAB_FILE"
+            # Create the expected directory structure
+            mkdir -p build/app/outputs/bundle/release/
+            # Copy the file to the expected location
+            cp "$AAB_FILE" build/app/outputs/bundle/release/app-release.aab
+            echo "Copied AAB file to expected location"
+            ls -la build/app/outputs/bundle/release/
+          else
+            echo "No AAB file found anywhere in the project"
+            exit 1
+          fi
 
       - name: Deploy to Google Play
         run: |
           cd android
-          fastlane deploy
+          bundle exec fastlane deploy

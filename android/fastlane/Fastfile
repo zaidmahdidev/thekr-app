@@ -18,13 +18,16 @@ default_platform(:android)
 platform :android do
   desc "Deploy a new version to the Google Play Internal Track"
   lane :deploy do
-    # Verify the AAB file exists (built by Flutter in CI)
-    aab_path = "../build/app/outputs/bundle/release/app-release.aab"
-    UI.message("Checking for AAB file at: #{aab_path}")
-    unless File.exist?(aab_path)
-      UI.user_error!("AAB file not found at #{aab_path}")
+    # Find the AAB file dynamically
+    aab_files = Dir.glob("../**/app-release.aab")
+    
+    if aab_files.empty?
+      UI.user_error!("No AAB file found in the project")
     end
-    UI.success("AAB file found: #{File.size(aab_path)} bytes")
+    
+    aab_path = aab_files.first
+    UI.message("Found AAB file at: #{aab_path}")
+    UI.success("AAB file size: #{File.size(aab_path)} bytes")
 
     upload_to_play_store(
       track: "alpha",
