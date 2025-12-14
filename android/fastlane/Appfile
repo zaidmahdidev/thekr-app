@@ -1,2 +1,2 @@
 json_key_file("android/fastlane/cicd-481114-079c43ba5a52.json")
-package_name("com.example.thekr_app")
+package_name("com.zaid.thekr_app")
