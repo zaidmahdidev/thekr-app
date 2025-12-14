@@ -19,11 +19,25 @@ platform :android do
   desc "Deploy a new version to the Google Play Internal Track"
   lane :deploy do
     gradle(task: "clean bundleRelease")
+    
+    # Verify the AAB file exists
+    aab_path = "../build/app/outputs/bundle/release/app-release.aab"
+    UI.message("Checking for AAB file at: #{aab_path}")
+    unless File.exist?(aab_path)
+      UI.user_error!("AAB file not found at #{aab_path}")
+    end
+    UI.success("AAB file found: #{File.size(aab_path)} bytes")
 
     upload_to_play_store(
-      track: "internal",
+      track: "alpha",
       aab: "../build/app/outputs/bundle/release/app-release.aab",
-      json_key: "fastlane/play-store-service-account.json"
+      json_key: "fastlane/play-store-service-account.json",
+      package_name: "com.zaid.thekr_app",
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
     )
   end
 end
