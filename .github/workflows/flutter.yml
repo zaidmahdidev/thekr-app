@@ -43,9 +43,36 @@ jobs:
       - name: Build Android App Bundle (AAB)
         run: flutter build appbundle --release
 
+      - name: Verify AAB file exists
+        run: |
+          if [ ! -f "build/app/outputs/bundle/release/app-release.aab" ]; then
+            echo "AAB file not found!"
+            exit 1
+          fi
+          ls -la build/app/outputs/bundle/release/
+
       - name: Decode Play Store JSON
         run: |
-          echo "${{ secrets.PLAY_STORE_JSON }}" > android/fastlane/cicd-481114-079c43ba5a52.json
+          echo "${{ secrets.PLAY_STORE_JSON }}" | base64 --decode > android/fastlane/play-store-service-account.json
+
+      - name: Verify service account JSON
+        run: |
+          if [ ! -f "android/fastlane/play-store-service-account.json" ]; then
+            echo "Service account JSON not found!"
+            exit 1
+          fi
+
+      - name: Setup Ruby for Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          bundler-cache: true
+          working-directory: android
+
+      - name: Install Fastlane
+        run: |
+          cd android
+          gem install fastlane
 
       - name: Deploy to Google Play
         run: |
