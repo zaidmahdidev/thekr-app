@@ -37,19 +37,29 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=upload-keystore.jks" >> android/key.properties
 
-      - name: Build Android APK (signed)
-        run: flutter build apk --release
+      - name: Clean previous builds
+        run: flutter clean
+
+      - name: Get dependencies again after clean
+        run: flutter pub get
 
       - name: Build Android App Bundle (AAB)
-        run: flutter build appbundle --release
+        run: flutter build appbundle --release --verbose
 
-      - name: Verify AAB file exists
+      - name: Verify AAB file exists and show build structure
         run: |
+          echo "Searching for AAB files:"
+          find . -name "*.aab" -type f
+          echo "Build directory structure:"
+          ls -la build/ || echo "No build directory"
+          ls -la build/app/ || echo "No build/app directory"
+          ls -la build/app/outputs/ || echo "No build/app/outputs directory"
+          ls -la build/app/outputs/bundle/ || echo "No build/app/outputs/bundle directory"
+          ls -la build/app/outputs/bundle/release/ || echo "No build/app/outputs/bundle/release directory"
           if [ ! -f "build/app/outputs/bundle/release/app-release.aab" ]; then
-            echo "AAB file not found!"
+            echo "AAB file not found at expected location!"
             exit 1
           fi
-          ls -la build/app/outputs/bundle/release/
 
       - name: Create Play Store JSON
         run: |
@@ -78,6 +88,15 @@ jobs:
           cd android
           rm -f Gemfile.lock
           bundle install
+
+      - name: Debug file structure before deploy
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Contents of build/app/outputs/bundle/release/:"
+          ls -la build/app/outputs/bundle/release/ || echo "Directory not found"
+          echo "Contents from android directory perspective:"
+          ls -la ../build/app/outputs/bundle/release/ || echo "Directory not found from android/"
 
       - name: Deploy to Google Play
         run: |

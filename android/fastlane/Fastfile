@@ -18,9 +18,7 @@ default_platform(:android)
 platform :android do
   desc "Deploy a new version to the Google Play Internal Track"
   lane :deploy do
-    gradle(task: "clean bundleRelease")
-    
-    # Verify the AAB file exists
+    # Verify the AAB file exists (built by Flutter in CI)
     aab_path = "../build/app/outputs/bundle/release/app-release.aab"
     UI.message("Checking for AAB file at: #{aab_path}")
     unless File.exist?(aab_path)
@@ -30,7 +28,7 @@ platform :android do
 
     upload_to_play_store(
       track: "alpha",
-      aab: "../build/app/outputs/bundle/release/app-release.aab",
+      aab: aab_path,
       json_key: "fastlane/play-store-service-account.json",
       package_name: "com.zaid.thekr_app",
       skip_upload_apk: true,
