@@ -51,9 +51,9 @@ jobs:
           fi
           ls -la build/app/outputs/bundle/release/
 
-      - name: Decode Play Store JSON
+      - name: Create Play Store JSON
         run: |
-          echo "${{ secrets.PLAY_STORE_JSON }}" | base64 --decode > android/fastlane/play-store-service-account.json
+          echo '${{ secrets.PLAY_STORE_JSON }}' > android/fastlane/play-store-service-account.json
 
       - name: Verify service account JSON
         run: |
@@ -61,6 +61,10 @@ jobs:
             echo "Service account JSON not found!"
             exit 1
           fi
+          echo "Service account JSON file size:"
+          wc -c android/fastlane/play-store-service-account.json
+          echo "First few characters of JSON:"
+          head -c 100 android/fastlane/play-store-service-account.json
 
       - name: Setup Ruby for Fastlane
         uses: ruby/setup-ruby@v1
