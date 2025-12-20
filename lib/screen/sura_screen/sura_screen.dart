@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:thekr_app/shard/components/tools.dart';
 
 import '../../network/local/cache_helper.dart';
 import '../../shard/constant/theme.dart';
-import '../../widget.dart';
 import '../quran_screen/quran_screen.dart';
 
 
