@@ -456,8 +456,7 @@ class CustomContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseAnimationListView(index: 0,
-        child: InkWell(
+    return  InkWell(
           onTap: () {
             fun!();
           },
@@ -504,7 +503,7 @@ class CustomContainer extends StatelessWidget {
                   else  const SizedBox()
                 ],
               )),
-        ));
+      );
   }
 }
 
@@ -518,8 +517,7 @@ class CustomAzkarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  BaseAnimationListView(index: 0,
-        child: Stack(
+    return   Stack(
           children: [
             Container(
                 width: double.infinity,
@@ -571,7 +569,7 @@ class CustomAzkarWidget extends StatelessWidget {
                   child: Icon(Icons.copy, color: Colors.white),
                 )),
           ],
-        ));
+        );
   }
 }
 
