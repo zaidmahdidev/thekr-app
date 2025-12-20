@@ -486,18 +486,20 @@ class CustomContainer extends StatelessWidget {
                           style: const TextStyle(color: Colors.white),
                         ))
                   else const SizedBox(),
-                  Column(
-                    children: [
-                      Text('$title',
-                        style: MyTheme.textStyle22
-                            .copyWith(color: Colors.orange), ),
-                      if (subTitle != null)
-                        const SizedBox(height: 7,)
-                      else  const SizedBox(),
-                      if (subTitle != null)
-                        Text('$subTitle' ,style: const TextStyle(color: Colors.white),)
-                      else  const SizedBox()
-                    ],
+                  Flexible(
+                    child: Column(
+                      children: [
+                        Text('$title',
+                          style: MyTheme.textStyle22
+                              .copyWith(color: Colors.orange), ),
+                        if (subTitle != null)
+                          const SizedBox(height: 7,)
+                        else  const SizedBox(),
+                        if (subTitle != null)
+                          Text('$subTitle' ,style: const TextStyle(color: Colors.white),)
+                        else  const SizedBox()
+                      ],
+                    ),
                   ),
                   if (trailing != null)  Text('$trailing' , style: MyTheme.textStyle15.copyWith(color: Colors.white ))
                   else  const SizedBox()
