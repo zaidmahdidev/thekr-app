@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 
-import '../components/tools.dart';
 
 validInput(String val, int min, int max, String type) {
   if (type == "username") {

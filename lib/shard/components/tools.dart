@@ -224,6 +224,7 @@ Widget defaultFormField({
   maxLength: maxlenght,
   validator: (value) {
     validate(value);
+    return null;
   },
   decoration: InputDecoration(
     labelText: label,
