@@ -283,7 +283,7 @@ class _CustomAzkarWidgetWithCounterState
                       ),
                     ],
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 10),
                   Text(
                     widget.details,
                     style: const TextStyle(
@@ -293,7 +293,7 @@ class _CustomAzkarWidgetWithCounterState
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 10),
                   if (widget.bless != null && widget.bless!.isNotEmpty) ...[
                     ReadMoreText(
                       widget.bless!,

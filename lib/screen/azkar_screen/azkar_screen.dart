@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:thekr_app/model/asmaAllah_model/azkar_model.dart';
+import 'package:thekr_app/model/azkar_model.dart';
 import '../../shard/components/tools.dart';
 import '../azkar_details_screen/azkar_details_screen.dart';
 
