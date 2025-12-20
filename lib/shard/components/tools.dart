@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:readmore/readmore.dart';
-
-
+import 'package:share_plus/share_plus.dart';
 
 class CustomDialog extends StatelessWidget {
   final String title;
@@ -24,40 +23,38 @@ class CustomDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseAnimationListView(index: 0,
-        verticalOffset: 200,
-        horizontalOffset: 0,
-        child: CupertinoAlertDialog(
-          title: Text(
-            title,
-            style: const TextStyle(
-              color: Colors.red,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+    return BaseAnimationListView(
+      index: 0,
+      verticalOffset: 200,
+      horizontalOffset: 0,
+      child: CupertinoAlertDialog(
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.red,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-          content: Text(
-            message,
-            style: const TextStyle(fontSize: 15),
+        ),
+        content: Text(message, style: const TextStyle(fontSize: 15)),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: onYes,
+            isDestructiveAction: true,
+            child: const Text('نعم'),
           ),
-          actions: [
-            CupertinoDialogAction(
-              onPressed: onYes,
-              isDestructiveAction: true,
-              child: const Text('نعم'),
-            ),
-            CupertinoDialogAction(
-              onPressed: onCancel,
-              isDefaultAction: true,
-              child: const Text('لا'),
-            ),
-          ],
-          insetAnimationCurve: Curves.easeInOut,
-          insetAnimationDuration: const Duration(milliseconds: 300),
-        ));
+          CupertinoDialogAction(
+            onPressed: onCancel,
+            isDefaultAction: true,
+            child: const Text('لا'),
+          ),
+        ],
+        insetAnimationCurve: Curves.easeInOut,
+        insetAnimationDuration: const Duration(milliseconds: 300),
+      ),
+    );
   }
 }
-
 
 class BaseAnimationListView extends StatelessWidget {
   BaseAnimationListView({
@@ -83,19 +80,11 @@ class BaseAnimationListView extends StatelessWidget {
       child: SlideAnimation(
         horizontalOffset: horizontalOffset,
         verticalOffset: verticalOffset,
-        child: FadeInAnimation(
-          child: child,
-        ),
+        child: FadeInAnimation(child: child),
       ),
     );
   }
 }
-
-
-
-
-
-
 
 class CustomTextFormAuth extends StatelessWidget {
   final String hinttext;
@@ -110,22 +99,20 @@ class CustomTextFormAuth extends StatelessWidget {
   final IconData? suffix;
   final Function? suffixPressed;
 
-  const CustomTextFormAuth(
-      {Key? key,
-        this.obscureText,
-        this.onTapIcon,
-        required this.hinttext,
-        required this.labeltext,
-        this.iconData,
-        required this.mycontroller,
-        required this.isNumber,
-        required this.prefixIcon,
-        required this.valid ,
-        this.suffix,
-        this.suffixPressed,
-
-      })
-      : super(key: key);
+  const CustomTextFormAuth({
+    Key? key,
+    this.obscureText,
+    this.onTapIcon,
+    required this.hinttext,
+    required this.labeltext,
+    this.iconData,
+    required this.mycontroller,
+    required this.isNumber,
+    required this.prefixIcon,
+    required this.valid,
+    this.suffix,
+    this.suffixPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -133,35 +120,33 @@ class CustomTextFormAuth extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 20),
       child: TextFormField(
         keyboardType: isNumber
-            ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+            ? const TextInputType.numberWithOptions(decimal: true)
+            : TextInputType.text,
         controller: mycontroller,
         obscureText: obscureText == null || obscureText == false ? false : true,
         validator: valid,
         decoration: InputDecoration(
-            hintText: hinttext,
-            hintStyle: const TextStyle(fontSize: 14),
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            contentPadding:
-            const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
-            label: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 9),
-                child: Text(labeltext)),
-            prefixIcon: Icon(prefixIcon),
-            suffixIcon: suffix != null
-                ? IconButton(
-              onPressed: suffixPressed!(),
-              icon: Icon(
-                suffix,
-              ),
-            )
-                : null,
-            border:
-            OutlineInputBorder(borderRadius: BorderRadius.circular(30))),
+          hintText: hinttext,
+          hintStyle: const TextStyle(fontSize: 14),
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 5,
+            horizontal: 30,
+          ),
+          label: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 9),
+            child: Text(labeltext),
+          ),
+          prefixIcon: Icon(prefixIcon),
+          suffixIcon: suffix != null
+              ? IconButton(onPressed: suffixPressed!(), icon: Icon(suffix))
+              : null,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+        ),
       ),
     );
   }
 }
-
 
 // enum
 enum ToastStates { SUCCESS, ERROR, WARNING }
@@ -184,8 +169,6 @@ Color chooseToastColor(ToastStates state) {
   return color;
 }
 
-
-
 Widget defaultButton({
   double width = double.infinity,
   Color background = MyTheme.primaryColor,
@@ -193,30 +176,27 @@ Widget defaultButton({
   double radius = 3.0,
   required Function fun,
   required String text,
-}) =>
-    Container(
-      width: width,
-      height: 50.0,
-      child: MaterialButton(
-        onPressed: () {
-          fun();
-        },
-        child: Text(
-          isUpperCase ? text.toUpperCase() : text,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
+}) => Container(
+  width: width,
+  height: 50.0,
+  child: MaterialButton(
+    onPressed: () {
+      fun();
+    },
+    child: Text(
+      isUpperCase ? text.toUpperCase() : text,
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
       ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          radius,
-        ),
-        color: background,
-      ),
-    );
+    ),
+  ),
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(radius),
+    color: background,
+  ),
+);
 
 Widget defaultFormField({
   required TextEditingController controller,
@@ -233,36 +213,29 @@ Widget defaultFormField({
   bool isClickable = true,
   String? suffixtext,
   int? maxlenght,
-}) =>
-    TextFormField(
-      controller: controller,
-      keyboardType: type,
-      obscureText: isPassword,
-      enabled: isClickable,
-      // onFieldSubmitted: onSubmit,
-      // onChanged: onChange,
-      onTap: onTap,
-      maxLength: maxlenght,
-      validator: (value) {
-        validate(value);
-      },
-      decoration: InputDecoration(
-        labelText: label,
-        suffixText: suffixtext,
-        prefixIcon: Icon(
-          prefix,
-        ),
-        suffixIcon: suffix != null
-            ? IconButton(
-                onPressed: suffixPressed,
-                icon: Icon(
-                  suffix,
-                ),
-              )
-            : null,
-        border: OutlineInputBorder(),
-      ),
-    );
+}) => TextFormField(
+  controller: controller,
+  keyboardType: type,
+  obscureText: isPassword,
+  enabled: isClickable,
+  // onFieldSubmitted: onSubmit,
+  // onChanged: onChange,
+  onTap: onTap,
+  maxLength: maxlenght,
+  validator: (value) {
+    validate(value);
+    return null;
+  },
+  decoration: InputDecoration(
+    labelText: label,
+    suffixText: suffixtext,
+    prefixIcon: Icon(prefix),
+    suffixIcon: suffix != null
+        ? IconButton(onPressed: suffixPressed, icon: Icon(suffix))
+        : null,
+    border: OutlineInputBorder(),
+  ),
+);
 
 // Widget defaultFormField({
 //   required TextEditingController controller,
@@ -308,26 +281,25 @@ Widget ff({
   String? hint,
   IconData? pref,
   Function? onch,
-}) =>
-    TextFormField(
-      validator: (value) {
-        if (value!.isEmpty) {
-          return ' kdjfkjljf ';
-        }
-        return null;
-      },
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        isDense: true,
-        suffixText: "+967",
-        prefixIcon: Icon(pref),
-        label: Text('kj'),
-        hintText: hint,
-      ),
-      maxLength: 9,
-      keyboardType: type,
-      onChanged: onch!(),
-    );
+}) => TextFormField(
+  validator: (value) {
+    if (value!.isEmpty) {
+      return ' kdjfkjljf ';
+    }
+    return null;
+  },
+  decoration: InputDecoration(
+    border: OutlineInputBorder(),
+    isDense: true,
+    suffixText: "+967",
+    prefixIcon: Icon(pref),
+    label: Text('kj'),
+    hintText: hint,
+  ),
+  maxLength: 9,
+  keyboardType: type,
+  onChanged: onch!(),
+);
 
 //////////////////////////// //
 
@@ -335,79 +307,61 @@ Widget appbar({
   required String title,
   required String image,
   Function()? add,
-}) =>
-    Padding(
-      padding: const EdgeInsets.fromLTRB(10, 10, 15, 3),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+}) => Padding(
+  padding: const EdgeInsets.fromLTRB(10, 10, 15, 3),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      CircleAvatar(
+        child: Image.asset(image, width: 85),
+        backgroundColor: Colors.transparent,
+      ),
+      Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+      Row(
         children: [
           CircleAvatar(
-            child: Image.asset(
-              image,
-              width: 85,
+            backgroundColor: Colors.grey.withOpacity(0.1),
+            child: FittedBox(
+              child: IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.add, color: Colors.black, size: 26),
+              ),
             ),
-            backgroundColor: Colors.transparent,
           ),
-          Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: Colors.grey.withOpacity(0.1),
-                child: FittedBox(
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.add,
-                      color: Colors.black,
-                      size: 26,
-                    ),
-                  ),
+          const SizedBox(width: 8),
+          CircleAvatar(
+            backgroundColor: Colors.grey.withOpacity(0.1),
+            child: FittedBox(
+              child: IconButton(
+                onPressed: add!(),
+                icon: const Icon(
+                  Icons.brightness_4,
+                  color: Colors.black,
+                  size: 26,
                 ),
               ),
-              const SizedBox(width: 8),
-              CircleAvatar(
-                backgroundColor: Colors.grey.withOpacity(0.1),
-                child: FittedBox(
-                  child: IconButton(
-                    onPressed: add!(),
-                    icon: const Icon(
-                      Icons.brightness_4,
-                      color: Colors.black,
-                      size: 26,
-                    ),
-                  ),
-                ),
-              ),
-              Badge(
-                child: IconButton (
-                  onPressed: (){},
-                   icon: Icon( Icons.shopping_cart_outlined)),
-                label: Text('7'),
-              ),
-            ],
+            ),
+          ),
+          Badge(
+            child: IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.shopping_cart_outlined),
+            ),
+            label: Text('7'),
           ),
         ],
       ),
-    );
+    ],
+  ),
+);
 
-
-
-
-Widget section(
-{
-  Function()? fun,
-   String? title
-}
-    )=>   Padding(
+Widget section({Function()? fun, String? title}) => Padding(
   padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
   child: Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Row(
-        children:  [
+        children: [
           CircleAvatar(
             // backgroundColor: LightColors.yellow,
             radius: 13,
@@ -420,11 +374,9 @@ Widget section(
             ),
           ),
           SizedBox(width: 3),
-          Text( title??"",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+          Text(
+            title ?? "",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -444,150 +396,245 @@ Widget section(
   ),
 );
 
-
-
 class CustomContainer extends StatelessWidget {
-   CustomContainer({Key? key , required this.title , this.subTitle , this.leading , this.trailing , this.fun}) : super(key: key);
-  String title;
-  String ?subTitle;
-  String ?leading;
-  String ?trailing;
-  Function ?fun;
+  const CustomContainer({
+    Key? key,
+    required this.title,
+    this.subTitle,
+    this.leading,
+    this.trailing,
+    this.fun,
+  }) : super(key: key);
+
+  final String title;
+  final String? subTitle;
+  final String? leading;
+  final String? trailing;
+  final Function? fun;
 
   @override
   Widget build(BuildContext context) {
-    return BaseAnimationListView(index: 0,
-        child: InkWell(
-          onTap: () {
-            fun!();
-          },
-          child: Container(
-              margin: const EdgeInsets.all(5),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      MyTheme.primaryColor,
-                      MyTheme.primaryColor,
-                      MyTheme.primaryColor,
-                    ]),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return InkWell(
+      onTap: () {
+        fun!();
+      },
+      child: Container(
+        margin: const EdgeInsets.all(5),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              MyTheme.primaryColor,
+              MyTheme.primaryColor,
+              MyTheme.primaryColor,
+            ],
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            if (leading != null)
+              CircleAvatar(
+                backgroundColor: Colors.transparent,
+                backgroundImage: const AssetImage('assets/images/around.png'),
+                child: Text(
+                  '$leading',
+                  style: const TextStyle(color: Colors.white),
+                ),
+              )
+            else
+              const SizedBox(),
+            Flexible(
+              child: Column(
                 children: [
-                  if (leading != null)
-                    CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: const AssetImage('assets/images/around.png'),
-                        child: Text(
-                          '$leading',
-                          style: const TextStyle(color: Colors.white),
-                        ))
-                  else const SizedBox(),
-                  Column(
-                    children: [
-                      Text('$title',
-                        style: MyTheme.textStyle22
-                            .copyWith(color: Colors.orange), ),
-                      if (subTitle != null)
-                        const SizedBox(height: 7,)
-                      else  const SizedBox(),
-                      if (subTitle != null)
-                        Text('$subTitle' ,style: const TextStyle(color: Colors.white),)
-                      else  const SizedBox()
-                    ],
+                  Text(
+                    '$title',
+                    style: MyTheme.textStyle22.copyWith(color: Colors.orange),
                   ),
-                  if (trailing != null)  Text('$trailing' , style: MyTheme.textStyle15.copyWith(color: Colors.white ))
-                  else  const SizedBox()
+                  if (subTitle != null)
+                    const SizedBox(height: 7)
+                  else
+                    const SizedBox(),
+                  if (subTitle != null)
+                    Text(
+                      '$subTitle',
+                      style: const TextStyle(color: Colors.white),
+                    )
+                  else
+                    const SizedBox(),
                 ],
-              )),
-        ));
+              ),
+            ),
+            if (trailing != null)
+              Text(
+                '$trailing',
+                style: MyTheme.textStyle15.copyWith(color: Colors.white),
+              )
+            else
+              const SizedBox(),
+          ],
+        ),
+      ),
+    );
   }
 }
-
-
 
 class CustomAzkarWidget extends StatelessWidget {
-   CustomAzkarWidget({Key? key , required this.details , this.repet ,this.bless }) : super(key: key);
-   String details;
-   String ?bless;
-   String ?repet;
+  const CustomAzkarWidget({
+    Key? key,
+    required this.details,
+    this.repet,
+    this.bless,
+  }) : super(key: key);
+
+  final String details;
+  final String? bless;
+  final String? repet;
 
   @override
   Widget build(BuildContext context) {
-    return  BaseAnimationListView(index: 0,
-        child: Stack(
-          children: [
-            Container(
-                width: double.infinity,
-                margin: const EdgeInsets.all(10),
-                padding: const EdgeInsets.only(top: 25 , left: 20 , right: 20 , bottom: 10),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          MyTheme.primaryColor,
-                          MyTheme.primaryColor,
-                          MyTheme.primaryColor,
-                        ])),
-                child:Column(
-                  children: [
-                    Text(details , style: const TextStyle(color: Colors.white , fontSize: 15 , height: 2 , fontWeight: FontWeight.bold),textAlign: TextAlign.center ),
-                    const SizedBox(height: 10,),
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [MyTheme.primaryColor, MyTheme.primaryColor],
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              InkWell(
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  HapticFeedback.vibrate();
+                  Clipboard.setData(ClipboardData(text: details));
+                  showToast(
+                    text: 'تم النسخ',
+                    textColor: MyTheme.primaryColor,
+                    bgColoe: Colors.white,
+                  );
+                },
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Icon(Icons.copy, color: Colors.white, size: 18),
+                ),
+              ),
+              InkWell(
+                onTap: () async {
+                  HapticFeedback.lightImpact();
+                  HapticFeedback.vibrate();
+                  try {
+                    String shareText = details;
+                    if (bless != null && bless!.isNotEmpty) {
+                      shareText += '\n\n$bless';
+                    }
 
+                    shareText += '\n\n﴿احمدوا الله دومًا﴾';
+                    shareText += '\n\nحمل تطبيق ذكر:';
+                    shareText +=
+                        '\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app';
 
-                    ReadMoreText(
-                        bless!,
-                        trimLines: 2,
-                        textAlign: TextAlign.justify,
-                        trimMode: TrimMode.Line,
-                        trimCollapsedText: 'قراءة المزيد',
-                        trimExpandedText: ' قراءة اقل',
-                        lessStyle: const TextStyle(color:Colors.orange),
-                        moreStyle: const TextStyle(color: Colors.orange),
-                        style: const TextStyle(color: Colors.grey)
-                    ),
-                    const SizedBox(height: 10,),
-                    if(repet != null)
-                      Text("التكرار : $repet" , style: const TextStyle(color: Colors.orange),)
-                    else const SizedBox()
-                  ],
-                )
-
+                    // استخدام Share.share للمشاركة
+                    await Share.share(shareText, subject: 'حديث من تطبيق ذكر');
+                  } catch (e) {
+                    Clipboard.setData(ClipboardData(text: details));
+                    showToast(
+                      text: 'تم نسخ الحديث',
+                      textColor: MyTheme.primaryColor,
+                      bgColoe: Colors.white,
+                    );
+                  }
+                },
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Icon(Icons.share, color: Colors.white, size: 20),
+                ),
+              ),
+            ],
+          ),
+          Text(
+            details,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              height: 1.8,
+              fontWeight: FontWeight.w900,
             ),
-            Positioned(
-                top: 20,
-                left: 20,
-                child: InkWell(
-                  onTap: () {
-                    Clipboard.setData(ClipboardData(text: '$details' ));
-                    showToast(text: 'تم النسخ' , textColor: MyTheme.primaryColor , bgColoe: Colors.white);
-                  },
-                  child: Icon(Icons.copy, color: Colors.white),
-                )),
+            textAlign: TextAlign.center,
+          ),
+          if (bless != null && bless!.isNotEmpty) ...[
+            ReadMoreText(
+              bless!,
+              trimLines: 2,
+              textAlign: TextAlign.justify,
+              trimMode: TrimMode.Line,
+              trimCollapsedText: 'قراءة المزيد',
+              trimExpandedText: ' قراءة اقل',
+              lessStyle: const TextStyle(color: Colors.orange),
+              moreStyle: const TextStyle(color: Colors.orange),
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+                height: 1.6,
+              ),
+            ),
+            const SizedBox(height: 15),
           ],
-        ));
+          if (repet != null && repet!.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: MyTheme.secondaryColor.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: MyTheme.secondaryColor.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Text(
+                "التكرار: $repet",
+                style: const TextStyle(
+                  color: MyTheme.secondaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }
-
-
 
 void showToast({
   required String text,
-  Color ?textColor = Colors.white,
-  Color ?bgColoe = MyTheme.primaryColor,
-}) =>
-    Fluttertoast.showToast(
-      msg: text,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 3,
-      backgroundColor: bgColoe,
-      textColor: textColor,
-      fontSize: 16.0,
-    );
+  Color? textColor = Colors.white,
+  Color? bgColoe = MyTheme.primaryColor,
+}) => Fluttertoast.showToast(
+  msg: text,
+  toastLength: Toast.LENGTH_SHORT,
+  gravity: ToastGravity.BOTTOM,
+  timeInSecForIosWeb: 3,
+  backgroundColor: bgColoe,
+  textColor: textColor,
+  fontSize: 16.0,
+);

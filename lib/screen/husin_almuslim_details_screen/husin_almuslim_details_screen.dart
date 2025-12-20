@@ -5,31 +5,43 @@ import 'package:share_plus/share_plus.dart';
 import '../../shard/components/tools.dart';
 import '../../shard/constant/theme.dart';
 
-class AzkarListScreen extends StatefulWidget {
-  final List<Map<String, String>> azkarList;
-  final String type;
+class HusinAlMuslimDetailsScreen extends StatefulWidget {
+  final String title;
+  final Map<String, dynamic> dhikrData;
 
-  const AzkarListScreen({Key? key, required this.azkarList, required this.type})
-    : super(key: key);
+  const HusinAlMuslimDetailsScreen({
+    Key? key,
+    required this.title,
+    required this.dhikrData,
+  }) : super(key: key);
 
   @override
-  State<AzkarListScreen> createState() => _AzkarListScreenState();
+  State<HusinAlMuslimDetailsScreen> createState() =>
+      _HusinAlMuslimDetailsScreenState();
 }
 
-class _AzkarListScreenState extends State<AzkarListScreen> {
-  late List<Map<String, dynamic>> azkarWithCounters;
+class _HusinAlMuslimDetailsScreenState
+    extends State<HusinAlMuslimDetailsScreen> {
+  late List<Map<String, dynamic>> dhikrWithCounters;
   bool allCompleted = false;
 
   @override
   void initState() {
     super.initState();
-    azkarWithCounters = widget.azkarList.map((azkar) {
+    List<String> textList = List<String>.from(widget.dhikrData['text'] ?? []);
+    List<String> footnoteList = List<String>.from(
+      widget.dhikrData['footnote'] ?? [],
+    );
+
+    dhikrWithCounters = textList.asMap().entries.map((entry) {
+      int index = entry.key;
+      String text = entry.value;
+
       return {
-        'zekr': azkar['zekr']!,
-        'repeat': azkar['repeat']!,
-        'bless': azkar['bless']!,
-        'currentCount': int.parse(azkar['repeat']!),
-        'originalCount': int.parse(azkar['repeat']!),
+        'text': text,
+        'footnote': index < footnoteList.length ? footnoteList[index] : '',
+        'currentCount': 1,
+        'originalCount': 1,
         'isCompleted': false,
       };
     }).toList();
@@ -37,17 +49,17 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
 
   void _decrementCounter(int index) {
     setState(() {
-      if (azkarWithCounters[index]['currentCount'] > 0) {
+      if (dhikrWithCounters[index]['currentCount'] > 0) {
         HapticFeedback.lightImpact();
-        azkarWithCounters[index]['currentCount']--;
+        dhikrWithCounters[index]['currentCount']--;
 
-        if (azkarWithCounters[index]['currentCount'] == 0) {
+        if (dhikrWithCounters[index]['currentCount'] == 0) {
           HapticFeedback.mediumImpact();
 
           Future.delayed(const Duration(milliseconds: 800), () {
             if (mounted) {
               setState(() {
-                azkarWithCounters[index]['isCompleted'] = true;
+                dhikrWithCounters[index]['isCompleted'] = true;
               });
               _checkAllCompleted();
             }
@@ -58,7 +70,7 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
   }
 
   void _checkAllCompleted() {
-    bool allDone = azkarWithCounters.every((azkar) => azkar['isCompleted']);
+    bool allDone = dhikrWithCounters.every((dhikr) => dhikr['isCompleted']);
     if (allDone && !allCompleted) {
       setState(() {
         allCompleted = true;
@@ -70,8 +82,11 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.type), centerTitle: true),
-      body: azkarWithCounters.where((azkar) => !azkar['isCompleted']).isEmpty
+      appBar: AppBar(
+        title: Text(widget.title, style: const TextStyle(fontSize: 18)),
+        centerTitle: true,
+      ),
+      body: dhikrWithCounters.where((dhikr) => !dhikr['isCompleted']).isEmpty
           ? const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -90,24 +105,24 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
               ),
             )
           : ListView.builder(
-              itemCount: azkarWithCounters.length,
+              itemCount: dhikrWithCounters.length,
               itemBuilder: (context, index) {
-                var azkar = azkarWithCounters[index];
+                var dhikr = dhikrWithCounters[index];
 
                 return AnimatedContainer(
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeInOut,
-                  height: azkar['isCompleted'] ? 0 : null,
+                  height: dhikr['isCompleted'] ? 0 : null,
                   child: AnimatedOpacity(
                     duration: const Duration(milliseconds: 400),
-                    opacity: azkar['isCompleted'] ? 0.0 : 1.0,
-                    child: azkar['isCompleted']
+                    opacity: dhikr['isCompleted'] ? 0.0 : 1.0,
+                    child: dhikr['isCompleted']
                         ? const SizedBox.shrink()
-                        : CustomAzkarWidgetWithCounter(
-                            details: azkar['zekr'],
-                            bless: azkar['bless'],
-                            currentCount: azkar['currentCount'],
-                            originalCount: azkar['originalCount'],
+                        : CustomHusinAlMuslimWidget(
+                            text: dhikr['text'],
+                            footnote: dhikr['footnote'],
+                            currentCount: dhikr['currentCount'],
+                            originalCount: dhikr['originalCount'],
                             onTap: () => _decrementCounter(index),
                           ),
                   ),
@@ -118,30 +133,28 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
   }
 }
 
-
-class CustomAzkarWidgetWithCounter extends StatefulWidget {
-  final String details;
-  final String? bless;
+class CustomHusinAlMuslimWidget extends StatefulWidget {
+  final String text;
+  final String footnote;
   final int currentCount;
   final int originalCount;
   final VoidCallback onTap;
 
-  const CustomAzkarWidgetWithCounter({
+  const CustomHusinAlMuslimWidget({
     Key? key,
-    required this.details,
-    this.bless,
+    required this.text,
+    required this.footnote,
     required this.currentCount,
     required this.originalCount,
     required this.onTap,
   }) : super(key: key);
 
   @override
-  State<CustomAzkarWidgetWithCounter> createState() =>
-      _CustomAzkarWidgetWithCounterState();
+  State<CustomHusinAlMuslimWidget> createState() =>
+      _CustomHusinAlMuslimWidgetState();
 }
 
-class _CustomAzkarWidgetWithCounterState
-    extends State<CustomAzkarWidgetWithCounter>
+class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
@@ -181,8 +194,6 @@ class _CustomAzkarWidgetWithCounterState
 
   @override
   Widget build(BuildContext context) {
-    final progress =
-        (widget.originalCount - widget.currentCount) / widget.originalCount;
 
     return AnimatedBuilder(
       animation: _scaleAnimation,
@@ -209,9 +220,7 @@ class _CustomAzkarWidgetWithCounterState
                         onTap: () {
                           HapticFeedback.lightImpact();
                           HapticFeedback.vibrate();
-                          Clipboard.setData(
-                            ClipboardData(text: widget.details),
-                          );
+                          Clipboard.setData(ClipboardData(text: widget.text));
                           showToast(
                             text: 'تم النسخ',
                             textColor: MyTheme.primaryColor,
@@ -237,10 +246,9 @@ class _CustomAzkarWidgetWithCounterState
                           HapticFeedback.lightImpact();
                           HapticFeedback.vibrate();
                           try {
-                            String shareText = widget.details;
-                            if (widget.bless != null &&
-                                widget.bless!.isNotEmpty) {
-                              shareText += '\n\n${widget.bless}';
+                            String shareText = widget.text;
+                            if (widget.footnote.isNotEmpty) {
+                              shareText += '\n\n${widget.footnote}';
                             }
 
                             shareText += '\n\n﴿احمدوا الله دومًا﴾';
@@ -253,9 +261,7 @@ class _CustomAzkarWidgetWithCounterState
                               subject: 'ذكر من تطبيق ذكر',
                             );
                           } catch (e) {
-                            Clipboard.setData(
-                              ClipboardData(text: widget.details),
-                            );
+                            Clipboard.setData(ClipboardData(text: widget.text));
                             showToast(
                               text: 'تم نسخ الذكر',
                               textColor: MyTheme.primaryColor,
@@ -270,14 +276,10 @@ class _CustomAzkarWidgetWithCounterState
                             color: Colors.white.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            child: const Icon(
-                              Icons.share,
-                              color: Colors.white,
-                              size: 20,
-                              key: ValueKey('share'),
-                            ),
+                          child: const Icon(
+                            Icons.share,
+                            color: Colors.white,
+                            size: 20,
                           ),
                         ),
                       ),
@@ -285,18 +287,19 @@ class _CustomAzkarWidgetWithCounterState
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    widget.details,
+                    widget.text,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
+                      height: 1.8,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 10),
-                  if (widget.bless != null && widget.bless!.isNotEmpty) ...[
+                  if (widget.footnote.isNotEmpty) ...[
                     ReadMoreText(
-                      widget.bless!,
+                      widget.footnote,
                       trimLines: 2,
                       textAlign: TextAlign.justify,
                       trimMode: TrimMode.Line,
@@ -304,99 +307,17 @@ class _CustomAzkarWidgetWithCounterState
                       trimExpandedText: ' قراءة اقل',
                       lessStyle: const TextStyle(color: Colors.orange),
                       moreStyle: const TextStyle(color: Colors.orange),
-                      style: const TextStyle(color: Colors.grey),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                        height: 1.6,
+                      ),
                     ),
                     const SizedBox(height: 15),
                   ],
-                  const SizedBox(height: 10),
-                  Center(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: widget.currentCount == 0
-                          ? Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.green.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: Colors.green.withValues(alpha: 0.3),
-                                ),
-                              ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.check_circle,
-                                    color: Colors.green,
-                                    size: 16,
-                                  ),
-                                  SizedBox(width: 6),
-                                  Text(
-                                    'تم بحمد الله',
-                                    key: ValueKey('completed_text'),
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: MyTheme.secondaryColor.withValues(
-                                  alpha: 0.2,
-                                ),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: MyTheme.secondaryColor.withValues(
-                                    alpha: 0.3,
-                                  ),
-                                ),
-                              ),
-                              child: Text(
-                                'التكرار : ${widget.currentCount}',
-                                key: ValueKey('count_${widget.currentCount}'),
-                                style: const TextStyle(
-                                  color: MyTheme.secondaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    height: 5,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.white.withValues(alpha: 0.2),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: LinearProgressIndicator(
-                        value: progress,
-                        backgroundColor: Colors.transparent,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          widget.currentCount == 0
-                              ? MyTheme.primaryColor.withValues(alpha: 0.3)
-                              : MyTheme.secondaryColor.withValues(alpha: .8),
-                        ),
-                      ),
-                    ),
-                  ),
+                  
+                
+                
                 ],
               ),
             ),

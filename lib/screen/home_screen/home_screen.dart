@@ -1,4 +1,3 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:thekr_app/screen/hadith-_awawi/hadith_nawawi.dart';
@@ -10,7 +9,6 @@ import '../asmaAllah_screen/asmaAllah_screen.dart';
 import '../azkar_screen/azkar_screen.dart';
 import '../husinAlMuslim_screen/husinAlMuslim_screen.dart';
 import '../qiblah_screen/qiblah_screen.dart';
-import '../quran_screen/quran_screen.dart';
 import '../sura_screen/sura_screen.dart';
 
 
