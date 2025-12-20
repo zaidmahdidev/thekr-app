@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
 import '../../shard/components/tools.dart';
-import '../../widget.dart';
 import '../azkar_details_screen/azkar_details_screen.dart';
 
 class AzkarScreen extends StatelessWidget {

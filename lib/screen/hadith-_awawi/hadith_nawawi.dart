@@ -1,11 +1,6 @@
-
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../shard/components/tools.dart';
-import '../../shard/constant/theme.dart';
-import '../../widget.dart';
-import '../azkar_details_screen/azkar_details_screen.dart';
+
 
 class HadithNawawiScreen extends StatelessWidget {
 

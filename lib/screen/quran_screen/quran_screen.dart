@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import '../../network/local/cache_helper.dart';
 import '../../shard/components/tools.dart';
-import '../../widget.dart';
 import '../sura_screen/sura_screen.dart';
 
 class QuranScreenn extends StatefulWidget {

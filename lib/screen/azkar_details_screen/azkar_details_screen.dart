@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../shard/components/tools.dart';
-import '../../widget.dart';
 
 class AzkarListScreen extends StatelessWidget {
   final List<Map<String, String>> azkarList;
