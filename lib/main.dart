@@ -4,11 +4,14 @@ import 'package:thekr_app/shard/constant/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'network/local/cache_helper.dart';
+import 'services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await CacheHelper.init();
+  await NotificationService.initialize();
+  await NotificationService.requestPermissions();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
