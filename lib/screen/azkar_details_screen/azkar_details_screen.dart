@@ -44,7 +44,7 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
         if (azkarWithCounters[index]['currentCount'] == 0) {
           HapticFeedback.mediumImpact();
 
-          Future.delayed(const Duration(milliseconds: 800), () {
+          Future.delayed(const Duration(milliseconds: 300), () {
             if (mounted) {
               setState(() {
                 azkarWithCounters[index]['isCompleted'] = true;
@@ -95,7 +95,8 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
                 var azkar = azkarWithCounters[index];
 
                 return AnimatedContainer(
-                  duration: const Duration(milliseconds: 500),
+                  key: ValueKey(azkar['zekr']),
+                  duration: const Duration(milliseconds: 400),
                   curve: Curves.easeInOut,
                   height: azkar['isCompleted'] ? 0 : null,
                   child: AnimatedOpacity(
@@ -117,7 +118,6 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
     );
   }
 }
-
 
 class CustomAzkarWidgetWithCounter extends StatefulWidget {
   final String details;
