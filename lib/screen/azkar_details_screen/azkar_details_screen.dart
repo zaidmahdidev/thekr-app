@@ -67,10 +67,42 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
     }
   }
 
+  double _calculateTotalProgress() {
+    int totalRepeat = 0;
+    int currentCompleted = 0;
+
+    for (var azkar in azkarWithCounters) {
+      totalRepeat += azkar['originalCount'] as int;
+      currentCompleted +=
+          (azkar['originalCount'] as int) - (azkar['currentCount'] as int);
+    }
+
+    return totalRepeat > 0 ? currentCompleted / totalRepeat : 0.0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.type), centerTitle: true),
+      appBar: AppBar(
+        title: Text(widget.type),
+        centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(6),
+          child: TweenAnimationBuilder<double>(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeOutCubic,
+            tween: Tween<double>(begin: 0, end: _calculateTotalProgress()),
+            builder: (context, value, child) {
+              return LinearProgressIndicator(
+                value: value,
+                backgroundColor: Colors.white.withOpacity(0.1),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
+                minHeight: 6,
+              );
+            },
+          ),
+        ),
+      ),
       body: azkarWithCounters.where((azkar) => !azkar['isCompleted']).isEmpty
           ? const Center(
               child: Column(
@@ -90,6 +122,7 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
               ),
             )
           : ListView.builder(
+              padding: const EdgeInsets.only(top: 10),
               itemCount: azkarWithCounters.length,
               itemBuilder: (context, index) {
                 var azkar = azkarWithCounters[index];
@@ -386,14 +419,23 @@ class _CustomAzkarWidgetWithCounterState
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
-                      child: LinearProgressIndicator(
-                        value: progress,
-                        backgroundColor: Colors.transparent,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          widget.currentCount == 0
-                              ? MyTheme.primaryColor.withValues(alpha: 0.3)
-                              : MyTheme.secondaryColor.withValues(alpha: .8),
-                        ),
+                      child: TweenAnimationBuilder<double>(
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeOutCubic,
+                        tween: Tween<double>(begin: 0, end: progress),
+                        builder: (context, value, child) {
+                          return LinearProgressIndicator(
+                            value: value,
+                            backgroundColor: Colors.transparent,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              widget.currentCount == 0
+                                  ? MyTheme.primaryColor.withValues(alpha: 0.3)
+                                  : MyTheme.secondaryColor.withValues(
+                                      alpha: .8,
+                                    ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
