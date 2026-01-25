@@ -12,6 +12,7 @@ void main() async {
   await CacheHelper.init();
   await NotificationService.initialize();
   await NotificationService.requestPermissions();
+  await NotificationService.refreshScheduledNotifications();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

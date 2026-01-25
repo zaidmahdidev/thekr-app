@@ -12,8 +12,8 @@ class NotificationSettingsScreen extends StatefulWidget {
 
 class _NotificationSettingsScreenState
     extends State<NotificationSettingsScreen> {
-  bool _morningEnabled = false;
-  bool _eveningEnabled = false;
+  bool _morningEnabled = true;
+  bool _eveningEnabled = true;
   TimeOfDay _morningTime = const TimeOfDay(hour: 7, minute: 0);
   TimeOfDay _eveningTime = const TimeOfDay(hour: 19, minute: 0);
   bool _isLoading = true;
