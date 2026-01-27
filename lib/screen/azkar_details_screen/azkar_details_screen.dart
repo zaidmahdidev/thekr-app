@@ -1,6 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:readmore/readmore.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../shard/components/tools.dart';
 import '../../shard/constant/theme.dart';
@@ -95,7 +99,7 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
             builder: (context, value, child) {
               return LinearProgressIndicator(
                 value: value,
-                backgroundColor: Colors.white.withOpacity(0.1),
+                backgroundColor: Colors.white.withValues(alpha: 0.1),
                 valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
                 minHeight: 6,
               );
@@ -178,6 +182,7 @@ class _CustomAzkarWidgetWithCounterState
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
+  final ScreenshotController _screenshotController = ScreenshotController();
 
   @override
   void initState() {
@@ -210,6 +215,143 @@ class _CustomAzkarWidgetWithCounterState
     }
 
     widget.onTap();
+  }
+
+  Future<void> _shareAsImage() async {
+    try {
+      final uint8list = await _screenshotController.captureFromWidget(
+        Container(
+          padding: const EdgeInsets.all(30),
+          width: 400,
+          decoration: BoxDecoration(
+            color: MyTheme.primaryColor,
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(
+              colors: [
+                MyTheme.primaryColor,
+                MyTheme.primaryColor.withValues(alpha: 0.8),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset('assets/images/thekr.png', width: 90, height: 90),
+              const SizedBox(height: 20),
+              Text(
+                widget.details,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.tajawal(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  height: 1.8,
+                ),
+              ),
+              if (widget.bless != null && widget.bless!.isNotEmpty) ...[
+                const SizedBox(height: 15),
+                Text(
+                  widget.bless!,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.tajawal(
+                    color: Colors.white70,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+              const SizedBox(height: 30),
+              const Divider(color: Colors.white24),
+              const SizedBox(height: 10),
+              Text(
+                '(احمدوا الله دومًا)',
+                style: GoogleFonts.tajawal(color: Colors.orange, fontSize: 18),
+              ),
+              Text(
+                'تطبيق ذكر - صدقة جارية',
+                style: GoogleFonts.tajawal(color: Colors.white54, fontSize: 12),
+              ),
+            ],
+          ),
+        ),
+      );
+
+      final directory = await getTemporaryDirectory();
+      final imagePath = await File('${directory.path}/zikr_share.png').create();
+      await imagePath.writeAsBytes(uint8list);
+
+      await Share.shareXFiles(
+        [XFile(imagePath.path)],
+        text:
+            'رابط تحميل التطبيق \n https://play.google.com/store/apps/details?id=com.zaid.thekr_app&pcampaignid=web_share',
+      );
+      // ], text: 'ذكر من تطبيق ذكر');
+    } catch (e) {
+      showToast(text: 'حدث خطأ أثناء المشاركة');
+    }
+  }
+
+  void _showShareOptions() {
+    showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'اختر طريقة المشاركة',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                ListTile(
+                  leading: const Icon(
+                    Icons.text_fields,
+                    color: MyTheme.primaryColor,
+                  ),
+                  title: const Text('مشاركة كنص'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _shareAsText();
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.image, color: MyTheme.primaryColor),
+                  title: const Text('مشاركة كبطاقة'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _shareAsImage();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _shareAsText() {
+    String shareText = widget.details;
+    if (widget.bless != null && widget.bless!.isNotEmpty) {
+      shareText += '\n\n${widget.bless}';
+    }
+    shareText += '\n\n﴿احمدوا الله دومًا﴾';
+    shareText += '\n\nحمل تطبيق ذكر:';
+    shareText +=
+        '\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app';
+
+    Share.share(shareText, subject: 'ذكر من تطبيق ذكر');
   }
 
   @override
@@ -266,36 +408,7 @@ class _CustomAzkarWidgetWithCounterState
                         ),
                       ),
                       InkWell(
-                        onTap: () async {
-                          HapticFeedback.lightImpact();
-                          HapticFeedback.vibrate();
-                          try {
-                            String shareText = widget.details;
-                            if (widget.bless != null &&
-                                widget.bless!.isNotEmpty) {
-                              shareText += '\n\n${widget.bless}';
-                            }
-
-                            shareText += '\n\n﴿احمدوا الله دومًا﴾';
-                            shareText += '\n\nحمل تطبيق ذكر:';
-                            shareText +=
-                                '\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app';
-
-                            await Share.share(
-                              shareText,
-                              subject: 'ذكر من تطبيق ذكر',
-                            );
-                          } catch (e) {
-                            Clipboard.setData(
-                              ClipboardData(text: widget.details),
-                            );
-                            showToast(
-                              text: 'تم نسخ الذكر',
-                              textColor: MyTheme.primaryColor,
-                              bgColoe: Colors.white,
-                            );
-                          }
-                        },
+                        onTap: _showShareOptions,
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
                           padding: const EdgeInsets.all(8),
@@ -323,6 +436,7 @@ class _CustomAzkarWidgetWithCounterState
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
+                      height: 1.8,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -337,7 +451,9 @@ class _CustomAzkarWidgetWithCounterState
                       trimExpandedText: ' قراءة اقل',
                       lessStyle: const TextStyle(color: Colors.orange),
                       moreStyle: const TextStyle(color: Colors.orange),
-                      style: const TextStyle(color: Colors.grey),
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 234, 234, 234),
+                      ),
                     ),
                     const SizedBox(height: 15),
                   ],

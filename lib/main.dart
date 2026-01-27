@@ -1,10 +1,11 @@
-import 'package:flutter/services.dart';
-import 'package:thekr_app/screen/splash_screen/splash_screen.dart';
-import 'package:thekr_app/shard/constant/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'network/local/cache_helper.dart';
 import 'services/notification_service.dart';
+import 'package:thekr_app/screen/splash_screen/splash_screen.dart';
+import 'package:thekr_app/shard/constant/theme.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +45,12 @@ class MyApp extends StatelessWidget {
           iconTheme: IconThemeData(color: Colors.white),
           titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        fontFamily: 'quran',
+        fontFamily: GoogleFonts.tajawal().fontFamily,
+        textTheme: GoogleFonts.tajawalTextTheme().copyWith(
+          bodyMedium: const TextStyle(height: 1.6),
+          bodyLarge: const TextStyle(height: 1.6),
+          titleMedium: const TextStyle(height: 1.6),
+        ),
       ),
       title: 'Dhikr',
       locale: const Locale('ar'),

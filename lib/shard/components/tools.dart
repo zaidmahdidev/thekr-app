@@ -452,7 +452,13 @@ class CustomContainer extends StatelessWidget {
                 children: [
                   Text(
                     '$title',
-                    style: MyTheme.textStyle22.copyWith(color: Colors.orange),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.orange,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      height: 1.3,
+                    ),
                   ),
                   if (subTitle != null)
                     const SizedBox(height: 7)
