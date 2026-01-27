@@ -42,6 +42,18 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
     });
   }
 
+  String getSurahNameByPage(int page) {
+    int surahIndex = 0;
+    for (int i = 0; i < pageNumberr.length; i++) {
+      if (pageNumberr[i] <= page) {
+        surahIndex = i;
+      } else {
+        break;
+      }
+    }
+    return nameOfQuranAyah[surahIndex]['name'];
+  }
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -66,20 +78,20 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
           onTap: () {
             toggleTextVisibility();
           },
-          child: PageView.builder(
-            controller: slidController,
-            itemCount: 604,
-            onPageChanged: (index) {
-              mark = index + 1;
-              CacheHelper.saveData(key: 'pageNumber', value: mark);
-            },
-            itemBuilder: (context, index) {
-              int i = index + 1;
-              return Stack(
-                fit: StackFit.expand,
-                alignment: Alignment.center, // توسيط العناصر داخل Stack
-                children: [
-                  ColorFiltered(
+          child: Stack(
+            children: [
+              PageView.builder(
+                controller: slidController,
+                itemCount: 604,
+                onPageChanged: (index) {
+                  setState(() {
+                    mark = index + 1;
+                  });
+                  CacheHelper.saveData(key: 'pageNumber', value: mark);
+                },
+                itemBuilder: (context, index) {
+                  int i = index + 1;
+                  return ColorFiltered(
                     colorFilter: isDarkMode
                         ? const ColorFilter.matrix([
                             -1,
@@ -113,172 +125,169 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                       ),
                       fit: BoxFit.fill,
                     ),
-                  ),
-                  if (isTextVisible)
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        color: MyTheme.primaryColor.withOpacity(0.9),
-                        child: Center(
-                          child: Text(
-                            '${i}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                  );
+                },
+              ),
+              if (isTextVisible)
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    color: MyTheme.primaryColor.withOpacity(0.9),
+                    child: Center(
+                      child: Text(
+                        'سورة ${getSurahNameByPage(mark)} - صفحة $mark',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  if (isTextVisible)
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(1),
-                        color: MyTheme.primaryColor.withOpacity(0.9),
-                        child: Column(
+                  ),
+                ),
+              if (isTextVisible)
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(1),
+                    color: MyTheme.primaryColor.withOpacity(0.9),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
                           children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextButton.icon(
-                                    onPressed: () {
-                                      AwesomeDialog(
-                                        context: context,
-                                        dialogType: DialogType.question,
-                                        animType: AnimType.bottomSlide,
-                                        title: 'حفظ علامة',
-                                        desc:
-                                            'هل تريد حفظ الصفحة رقم $mark كعلامة؟',
-                                        btnCancelText: 'تراجع',
-                                        btnOkText: 'حفظ',
-                                        btnCancelOnPress: () {},
-                                        btnOkOnPress: () {
-                                          CacheHelper.saveData(
-                                            key: 'mark',
-                                            value: mark,
-                                          );
-                                          showToast(
-                                            text: 'تم الحفظ بنجاح',
-                                            bgColoe: MyTheme.primaryColor,
-                                            textColor: Colors.white,
-                                          );
-                                        },
-                                      ).show();
-                                    },
-                                    icon: const Icon(
-                                      Icons.bookmark_add,
-                                      color: Colors.white,
-                                      size: 24,
-                                    ),
-                                    label: const Text(
-                                      'حفظ علامة',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: TextButton.icon(
-                                    onPressed: () {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => SurahScreen(
-                                            currentPage:
-                                                CacheHelper.getData(
-                                                  key: 'mark',
-                                                ) ??
-                                                1,
-                                          ),
-                                        ),
+                            Expanded(
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  AwesomeDialog(
+                                    context: context,
+                                    dialogType: DialogType.question,
+                                    animType: AnimType.bottomSlide,
+                                    title: 'حفظ علامة',
+                                    desc:
+                                        'هل تريد حفظ الصفحة رقم $mark كعلامة؟',
+                                    btnCancelText: 'تراجع',
+                                    btnOkText: 'حفظ',
+                                    btnCancelOnPress: () {},
+                                    btnOkOnPress: () {
+                                      CacheHelper.saveData(
+                                        key: 'mark',
+                                        value: mark,
+                                      );
+                                      showToast(
+                                        text: 'تم الحفظ بنجاح',
+                                        bgColoe: MyTheme.primaryColor,
+                                        textColor: Colors.white,
                                       );
                                     },
-                                    icon: const Icon(
-                                      Icons.bookmark_outlined,
-                                      color: Colors.white,
-                                      size: 24,
-                                    ),
-                                    label: const Text(
-                                      'انتقال للعلامة',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                  ).show();
+                                },
+                                icon: const Icon(
+                                  Icons.bookmark_add,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                                label: const Text(
+                                  'حفظ علامة',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                            const Divider(color: Colors.white30, height: 1),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextButton.icon(
-                                    onPressed: () {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => QuranScreenn(),
-                                        ),
-                                      );
-                                    },
-                                    icon: const Icon(
-                                      Icons.list_alt_rounded,
-                                      color: Colors.white,
-                                      size: 24,
-                                    ),
-                                    label: const Text(
-                                      'الفهرس',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SurahScreen(
+                                        currentPage:
+                                            CacheHelper.getData(key: 'mark') ??
+                                            1,
                                       ),
                                     ),
+                                  );
+                                },
+                                icon: const Icon(
+                                  Icons.bookmark_outlined,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                                label: const Text(
+                                  'انتقال للعلامة',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Expanded(
-                                  child: TextButton.icon(
-                                    onPressed: toggleDarkMode,
-                                    icon: Icon(
-                                      isDarkMode
-                                          ? Icons.brightness_7
-                                          : Icons.brightness_4,
-                                      color: Colors.white,
-                                      size: 24,
-                                    ),
-                                    label: Text(
-                                      isDarkMode
-                                          ? 'الوضع الفاتح'
-                                          : 'الوضع الليلي',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ],
                         ),
-                      ),
+                        const Divider(color: Colors.white30, height: 1),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => QuranScreenn(),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(
+                                  Icons.list_alt_rounded,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                                label: const Text(
+                                  'الفهرس',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: TextButton.icon(
+                                onPressed: toggleDarkMode,
+                                icon: Icon(
+                                  isDarkMode
+                                      ? Icons.brightness_7
+                                      : Icons.brightness_4,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                                label: Text(
+                                  isDarkMode ? 'الوضع الفاتح' : 'الوضع الليلي',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                ],
-              );
-            },
+                  ),
+                ),
+            ],
           ),
         ),
       ),
