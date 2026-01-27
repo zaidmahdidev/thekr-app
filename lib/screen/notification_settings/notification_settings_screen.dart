@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../services/notification_service.dart';
 import '../../shard/constant/theme.dart';
 
@@ -329,6 +330,64 @@ class _NotificationSettingsScreenState
                                 color: Colors.blue.shade700,
                                 fontSize: 14,
                               ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const Spacer(),
+
+                  // Share App Section
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    color: MyTheme.primaryColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'assets/images/thekr.png',
+                            width: 60,
+                            height: 60,
+                          ),
+                          const SizedBox(width: 15),
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'شارك التطبيق',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  'ساهم في نشر الخير وشارك التطبيق مع أحبائك',
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              Share.share(
+                                'حمل تطبيق "ذكر" - صدقة جارية\nتطبيق شامل للمصحف الشريف والأذكار والتسبيح\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app',
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.share_rounded,
+                              color: Colors.white,
+                              size: 30,
                             ),
                           ),
                         ],
