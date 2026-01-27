@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:thekr_app/shard/components/tools.dart';
 
@@ -16,6 +17,7 @@ class SurahScreen extends StatefulWidget {
 class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
   var slidController = PageController();
   bool isTextVisible = false;
+  bool isDarkMode = false;
   int mark = 1;
 
   @override
@@ -24,6 +26,14 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     slidController = PageController(initialPage: widget.currentPage - 1);
     mark = widget.currentPage;
+    isDarkMode = CacheHelper.getData(key: 'isDarkMode') ?? false;
+  }
+
+  void toggleDarkMode() {
+    setState(() {
+      isDarkMode = !isDarkMode;
+    });
+    CacheHelper.saveData(key: 'isDarkMode', value: isDarkMode);
   }
 
   void toggleTextVisibility() {
@@ -51,7 +61,7 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0xfffffbec),
+        backgroundColor: isDarkMode ? Colors.black : const Color(0xfffffbec),
         body: GestureDetector(
           onTap: () {
             toggleTextVisibility();
@@ -69,11 +79,40 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                 fit: StackFit.expand,
                 alignment: Alignment.center, // توسيط العناصر داخل Stack
                 children: [
-                  Image(
-                    image: AssetImage(
-                      'assets/quran-images/page${i.toString().padLeft(3, '0')}.png',
+                  ColorFiltered(
+                    colorFilter: isDarkMode
+                        ? const ColorFilter.matrix([
+                            -1,
+                            0,
+                            0,
+                            0,
+                            255,
+                            0,
+                            -1,
+                            0,
+                            0,
+                            255,
+                            0,
+                            0,
+                            -1,
+                            0,
+                            255,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                          ])
+                        : const ColorFilter.mode(
+                            Colors.transparent,
+                            BlendMode.multiply,
+                          ),
+                    child: Image(
+                      image: AssetImage(
+                        'assets/quran-images/page${i.toString().padLeft(3, '0')}.png',
+                      ),
+                      fit: BoxFit.fill,
                     ),
-                    fit: BoxFit.fill,
                   ),
                   if (isTextVisible)
                     Positioned(
@@ -106,37 +145,49 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                         child: Column(
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Flexible(
+                                Expanded(
                                   child: TextButton.icon(
                                     onPressed: () {
-                                      CacheHelper.saveData(
-                                        key: 'mark',
-                                        value: mark,
-                                      );
-                                      showToast(
-                                        text: 'تم حفظ علامة',
-                                        textColor: MyTheme.primaryColor,
-                                        bgColoe: Colors.white,
-                                      );
+                                      AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.question,
+                                        animType: AnimType.bottomSlide,
+                                        title: 'حفظ علامة',
+                                        desc:
+                                            'هل تريد حفظ الصفحة رقم $mark كعلامة؟',
+                                        btnCancelText: 'تراجع',
+                                        btnOkText: 'حفظ',
+                                        btnCancelOnPress: () {},
+                                        btnOkOnPress: () {
+                                          CacheHelper.saveData(
+                                            key: 'mark',
+                                            value: mark,
+                                          );
+                                          showToast(
+                                            text: 'تم الحفظ بنجاح',
+                                            bgColoe: MyTheme.primaryColor,
+                                            textColor: Colors.white,
+                                          );
+                                        },
+                                      ).show();
                                     },
                                     icon: const Icon(
-                                      Icons.bookmark_sharp,
+                                      Icons.bookmark_add,
                                       color: Colors.white,
+                                      size: 24,
                                     ),
                                     label: const Text(
                                       'حفظ علامة',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ),
                                 ),
-                                Flexible(
+                                Expanded(
                                   child: TextButton.icon(
                                     onPressed: () {
                                       Navigator.pushReplacement(
@@ -153,54 +204,73 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                                       );
                                     },
                                     icon: const Icon(
-                                      Icons.bookmark_sharp,
+                                      Icons.bookmark_outlined,
                                       color: Colors.white,
+                                      size: 24,
                                     ),
                                     label: const Text(
-                                      'الانتقال الى العلامة',
+                                      'انتقال للعلامة',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                            const Divider(
-                              color: Colors.white,
-                              endIndent: 10,
-                              indent: 10,
-                            ),
-                            TextButton.icon(
-                              onPressed: () {
-                                // showBottomSheet(
-                                //     context: context, builder: (context) =>
-                                //     BottomSheet(
-                                //       builder: (context) {
-                                //         return  QuranScreenn();
-                                //       }, onClosing: () {  },
-                                //     )
-                                // );
-
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => QuranScreenn(),
+                            const Divider(color: Colors.white30, height: 1),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextButton.icon(
+                                    onPressed: () {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => QuranScreenn(),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.list_alt_rounded,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
+                                    label: const Text(
+                                      'الفهرس',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
-                                );
-                              },
-                              icon: const Icon(Icons.menu, color: Colors.white),
-                              label: const Text(
-                                'الفهرس',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
-                              ),
+                                Expanded(
+                                  child: TextButton.icon(
+                                    onPressed: toggleDarkMode,
+                                    icon: Icon(
+                                      isDarkMode
+                                          ? Icons.brightness_7
+                                          : Icons.brightness_4,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
+                                    label: Text(
+                                      isDarkMode
+                                          ? 'الوضع الفاتح'
+                                          : 'الوضع الليلي',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
