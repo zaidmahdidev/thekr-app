@@ -224,15 +224,11 @@ class _CustomAzkarWidgetWithCounterState
           padding: const EdgeInsets.all(30),
           width: 400,
           decoration: BoxDecoration(
-            color: MyTheme.primaryColor,
+            color: const Color(0xfffffbec), // Light Cream Background
             borderRadius: BorderRadius.circular(20),
-            gradient: LinearGradient(
-              colors: [
-                MyTheme.primaryColor,
-                MyTheme.primaryColor.withValues(alpha: 0.8),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+            border: Border.all(
+              color: MyTheme.primaryColor.withOpacity(0.1),
+              width: 2,
             ),
           ),
           child: Column(
@@ -244,7 +240,7 @@ class _CustomAzkarWidgetWithCounterState
                 widget.details,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.tajawal(
-                  color: Colors.white,
+                  color: MyTheme.primaryColor,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   height: 1.8,
@@ -256,21 +252,28 @@ class _CustomAzkarWidgetWithCounterState
                   widget.bless!,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.tajawal(
-                    color: Colors.white70,
+                    color: Colors.grey[800],
                     fontSize: 16,
                   ),
                 ),
               ],
               const SizedBox(height: 30),
-              const Divider(color: Colors.white24),
+              Divider(color: MyTheme.primaryColor.withOpacity(0.2)),
               const SizedBox(height: 10),
               Text(
                 '(احمدوا الله دومًا)',
-                style: GoogleFonts.tajawal(color: Colors.orange, fontSize: 18),
+                style: GoogleFonts.tajawal(
+                  color: MyTheme.secondaryColor,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 'تطبيق ذكر - صدقة جارية',
-                style: GoogleFonts.tajawal(color: Colors.white54, fontSize: 12),
+                style: GoogleFonts.tajawal(
+                  color: MyTheme.primaryColor.withOpacity(0.5),
+                  fontSize: 12,
+                ),
               ),
             ],
           ),

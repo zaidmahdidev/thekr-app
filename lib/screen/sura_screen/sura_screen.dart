@@ -1,5 +1,11 @@
+import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:thekr_app/shard/components/tools.dart';
 
 import '../../network/local/cache_helper.dart';
@@ -19,6 +25,7 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
   bool isTextVisible = false;
   bool isDarkMode = false;
   int mark = 1;
+  final ScreenshotController _screenshotController = ScreenshotController();
 
   @override
   void initState() {
@@ -56,6 +63,81 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
 
   String getSurahNameByPage(int page) {
     return nameOfQuranAyah[getSurahIndexByPage(page)]['name'];
+  }
+
+  Future<void> _sharePage() async {
+    try {
+      // Get current page asset path
+      String assetPath =
+          'assets/quran-images/page${mark.toString().padLeft(3, '0')}.png';
+
+      final uint8list = await _screenshotController.captureFromWidget(
+        Container(
+          padding: const EdgeInsets.all(15),
+          width: 400,
+          decoration: BoxDecoration(
+            color: const Color(0xfffffbec), // Light Cream Background
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: MyTheme.primaryColor.withValues(alpha: 0.2),
+              width: 2,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Decorative header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Image.asset('assets/images/thekr.png', width: 50, height: 50),
+                  Text(
+                    'سورة ${getSurahNameByPage(mark)}',
+                    style: GoogleFonts.tajawal(
+                      color: MyTheme.primaryColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 40),
+                ],
+              ),
+              const Divider(color: MyTheme.primaryColor, thickness: 1),
+              const SizedBox(height: 10),
+              // The Quran Page
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(assetPath, fit: BoxFit.contain),
+              ),
+              const SizedBox(height: 15),
+              // Footer
+              Text(
+                'صفحة رقم $mark',
+                style: GoogleFonts.tajawal(
+                  color: Colors.grey[700],
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+      final directory = await getTemporaryDirectory();
+      final file = await File(
+        '${directory.path}/quran_page_$mark.png',
+      ).create();
+      await file.writeAsBytes(uint8list);
+
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text:
+            'رابط تحميل التطبيق \n https://play.google.com/store/apps/details?id=com.zaid.thekr_app',
+      );
+    } catch (e) {
+      showToast(text: 'حدث خطأ أثناء المشاركة');
+    }
   }
 
   @override
@@ -140,15 +222,30 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     color: MyTheme.primaryColor.withOpacity(0.9),
-                    child: Center(
-                      child: Text(
-                        'سورة ${getSurahNameByPage(mark)} - صفحة $mark',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const SizedBox(width: 40), // Spacer for balance
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              'سورة ${getSurahNameByPage(mark)} - صفحة $mark',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        IconButton(
+                          onPressed: _sharePage,
+                          icon: const Icon(
+                            Icons.share_rounded,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

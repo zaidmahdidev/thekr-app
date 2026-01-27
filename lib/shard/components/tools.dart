@@ -448,12 +448,28 @@ class CustomContainer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             if (leading != null)
-              CircleAvatar(
-                backgroundColor: Colors.transparent,
-                backgroundImage: const AssetImage('assets/images/around.png'),
-                child: Text(
-                  '$leading',
-                  style: const TextStyle(color: Colors.white),
+              Container(
+                width: 50,
+                height: 50,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/around.png'),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 2,
+                  ), // Slight adjustment for optical centering
+                  child: Text(
+                    '$leading',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               )
             else
