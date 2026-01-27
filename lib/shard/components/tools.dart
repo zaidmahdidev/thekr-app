@@ -404,6 +404,7 @@ class CustomContainer extends StatelessWidget {
     this.leading,
     this.trailing,
     this.fun,
+    this.isHighlighted = false,
   }) : super(key: key);
 
   final String title;
@@ -411,6 +412,7 @@ class CustomContainer extends StatelessWidget {
   final String? leading;
   final String? trailing;
   final Function? fun;
+  final bool isHighlighted;
 
   @override
   Widget build(BuildContext context) {
@@ -423,14 +425,23 @@ class CustomContainer extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          gradient: const LinearGradient(
+          border: isHighlighted
+              ? Border.all(color: Colors.white, width: 2)
+              : null,
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              MyTheme.primaryColor,
-              MyTheme.primaryColor,
-              MyTheme.primaryColor,
-            ],
+            colors: isHighlighted
+                ? [
+                    Colors.orange.shade800,
+                    MyTheme.primaryColor,
+                    MyTheme.primaryColor,
+                  ]
+                : [
+                    MyTheme.primaryColor,
+                    MyTheme.primaryColor,
+                    MyTheme.primaryColor,
+                  ],
           ),
         ),
         child: Row(

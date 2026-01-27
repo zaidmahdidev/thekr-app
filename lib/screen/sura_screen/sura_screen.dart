@@ -42,7 +42,7 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
     });
   }
 
-  String getSurahNameByPage(int page) {
+  int getSurahIndexByPage(int page) {
     int surahIndex = 0;
     for (int i = 0; i < pageNumberr.length; i++) {
       if (pageNumberr[i] <= page) {
@@ -51,7 +51,11 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
         break;
       }
     }
-    return nameOfQuranAyah[surahIndex]['name'];
+    return surahIndex;
+  }
+
+  String getSurahNameByPage(int page) {
+    return nameOfQuranAyah[getSurahIndexByPage(page)]['name'];
   }
 
   @override
@@ -242,7 +246,10 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => QuranScreenn(),
+                                      builder: (context) => QuranScreenn(
+                                        highlightedSurahIndex:
+                                            getSurahIndexByPage(mark),
+                                      ),
                                     ),
                                   );
                                 },
