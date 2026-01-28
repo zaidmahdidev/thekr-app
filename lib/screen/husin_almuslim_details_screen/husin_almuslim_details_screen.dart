@@ -1,6 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:readmore/readmore.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../shard/components/tools.dart';
 import '../../shard/constant/theme.dart';
@@ -158,6 +162,7 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
+  final ScreenshotController _screenshotController = ScreenshotController();
 
   @override
   void initState() {
@@ -192,9 +197,215 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
     widget.onTap();
   }
 
+  Future<void> _shareAsImage() async {
+    try {
+      // Precache logo to ensure it's ready for capture
+      await precacheImage(const AssetImage('assets/images/thekr.png'), context);
+
+      final uint8list = await _screenshotController.captureFromWidget(
+        Material(
+          color: Colors.transparent,
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(30),
+                width: 400,
+                decoration: BoxDecoration(
+                  color: const Color(0xfffffbec), // Light Cream Background
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: MyTheme.primaryColor.withOpacity(0.1),
+                    width: 2,
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 90,
+                      height: 90,
+                      child: Image.asset(
+                        'assets/images/thekr.png',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      widget.text,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.tajawal(
+                        color: MyTheme.primaryColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        height: 1.8,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Divider(color: MyTheme.primaryColor.withOpacity(0.2)),
+                    const SizedBox(height: 5),
+                    Text(
+                      '(احمدوا الله دومًا)',
+                      style: GoogleFonts.tajawal(
+                        color: MyTheme.secondaryColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'تطبيق ذكر - صدقة جارية',
+                      style: GoogleFonts.tajawal(
+                        color: MyTheme.primaryColor.withOpacity(0.5),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        context: context,
+        delay: const Duration(milliseconds: 500),
+        pixelRatio: 2.0,
+      );
+
+      final directory = await getTemporaryDirectory();
+      final imagePath = await File(
+        '${directory.path}/husn_al_muslim_share.png',
+      ).create();
+      await imagePath.writeAsBytes(uint8list);
+
+      await Share.shareXFiles(
+        [XFile(imagePath.path)],
+        text:
+            'رابط تحميل التطبيق \n https://play.google.com/store/apps/details?id=com.zaid.thekr_app',
+      );
+    } catch (e) {
+      showToast(text: 'حدث خطأ أثناء المشاركة');
+    }
+  }
+
+  void _showShareOptions() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => SafeArea(
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25),
+              topRight: Radius.circular(25),
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 25),
+              Text(
+                'خيارات المشاركة',
+                style: GoogleFonts.tajawal(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: MyTheme.primaryColor,
+                ),
+              ),
+              const SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _shareOptionItem(
+                    icon: Icons.text_fields,
+                    label: 'نص فقط',
+                    onTap: () {
+                      Navigator.pop(context);
+                      _shareAsText();
+                    },
+                  ),
+                  _shareOptionItem(
+                    icon: Icons.image_outlined,
+                    label: 'صورة مميزة',
+                    onTap: () {
+                      Navigator.pop(context);
+                      _shareAsImage();
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _shareAsText() async {
+    try {
+      String shareText = widget.text;
+      if (widget.footnote.isNotEmpty) {
+        shareText += '\n\n${widget.footnote}';
+      }
+
+      shareText += '\n\n﴿احمدوا الله دومًا﴾';
+      shareText += '\n\nحمل تطبيق ذكر:';
+      shareText +=
+          '\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app';
+
+      await Share.share(shareText, subject: 'ذكر من تطبيق ذكر');
+    } catch (e) {
+      Clipboard.setData(ClipboardData(text: widget.text));
+      showToast(
+        text: 'تم نسخ الذكر',
+        textColor: MyTheme.primaryColor,
+        bgColoe: Colors.white,
+      );
+    }
+  }
+
+  Widget _shareOptionItem({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: MyTheme.primaryColor.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: MyTheme.primaryColor, size: 30),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            label,
+            style: GoogleFonts.tajawal(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[800],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
@@ -242,33 +453,7 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
                         ),
                       ),
                       InkWell(
-                        onTap: () async {
-                          HapticFeedback.lightImpact();
-                          HapticFeedback.vibrate();
-                          try {
-                            String shareText = widget.text;
-                            if (widget.footnote.isNotEmpty) {
-                              shareText += '\n\n${widget.footnote}';
-                            }
-
-                            shareText += '\n\n﴿احمدوا الله دومًا﴾';
-                            shareText += '\n\nحمل تطبيق ذكر:';
-                            shareText +=
-                                '\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app';
-
-                            await Share.share(
-                              shareText,
-                              subject: 'ذكر من تطبيق ذكر',
-                            );
-                          } catch (e) {
-                            Clipboard.setData(ClipboardData(text: widget.text));
-                            showToast(
-                              text: 'تم نسخ الذكر',
-                              textColor: MyTheme.primaryColor,
-                              bgColoe: Colors.white,
-                            );
-                          }
-                        },
+                        onTap: _showShareOptions,
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
                           padding: const EdgeInsets.all(8),
@@ -315,9 +500,6 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
                     ),
                     const SizedBox(height: 15),
                   ],
-                  
-                
-                
                 ],
               ),
             ),

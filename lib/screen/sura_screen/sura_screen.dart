@@ -71,57 +71,78 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
       String assetPath =
           'assets/quran-images/page${mark.toString().padLeft(3, '0')}.png';
 
+      // Precache logo to ensure it's ready for capture
+      await precacheImage(const AssetImage('assets/images/thekr.png'), context);
+
       final uint8list = await _screenshotController.captureFromWidget(
-        Container(
-          padding: const EdgeInsets.all(15),
-          width: 400,
-          decoration: BoxDecoration(
-            color: const Color(0xfffffbec), // Light Cream Background
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: MyTheme.primaryColor.withValues(alpha: 0.2),
-              width: 2,
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Decorative header
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset('assets/images/thekr.png', width: 50, height: 50),
-                  Text(
-                    'سورة ${getSurahNameByPage(mark)}',
-                    style: GoogleFonts.tajawal(
-                      color: MyTheme.primaryColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+        Material(
+          color: Colors.transparent,
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                width: 400,
+                decoration: BoxDecoration(
+                  color: const Color(0xfffffbec), // Light Cream Background
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: MyTheme.primaryColor.withValues(alpha: 0.2),
+                    width: 2,
                   ),
-                  const SizedBox(width: 40),
-                ],
-              ),
-              const Divider(color: MyTheme.primaryColor, thickness: 1),
-              const SizedBox(height: 10),
-              // The Quran Page
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(assetPath, fit: BoxFit.contain),
-              ),
-              const SizedBox(height: 15),
-              // Footer
-              Text(
-                'صفحة رقم $mark',
-                style: GoogleFonts.tajawal(
-                  color: Colors.grey[700],
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Decorative header
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: Image.asset(
+                            'assets/images/thekr.png',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Text(
+                          'سورة ${getSurahNameByPage(mark)}',
+                          style: GoogleFonts.tajawal(
+                            color: MyTheme.primaryColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 40),
+                      ],
+                    ),
+                    const Divider(color: MyTheme.primaryColor, thickness: 1),
+                    const SizedBox(height: 10),
+                    // The Quran Page
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(assetPath, fit: BoxFit.contain),
+                    ),
+                    const SizedBox(height: 15),
+                    // Footer
+                    Text(
+                      'صفحة رقم $mark',
+                      style: GoogleFonts.tajawal(
+                        color: Colors.grey[700],
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
+        context: context,
+        delay: const Duration(milliseconds: 500),
+        pixelRatio: 2.0,
       );
 
       final directory = await getTemporaryDirectory();

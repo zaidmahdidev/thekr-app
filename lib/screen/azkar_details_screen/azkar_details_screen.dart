@@ -219,65 +219,75 @@ class _CustomAzkarWidgetWithCounterState
 
   Future<void> _shareAsImage() async {
     try {
+      // Precache logo to ensure it's ready for capture
+      await precacheImage(const AssetImage('assets/images/thekr.png'), context);
+
       final uint8list = await _screenshotController.captureFromWidget(
-        Container(
-          padding: const EdgeInsets.all(30),
-          width: 400,
-          decoration: BoxDecoration(
-            color: const Color(0xfffffbec), // Light Cream Background
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: MyTheme.primaryColor.withOpacity(0.1),
-              width: 2,
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset('assets/images/thekr.png', width: 90, height: 90),
-              const SizedBox(height: 20),
-              Text(
-                widget.details,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.tajawal(
-                  color: MyTheme.primaryColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  height: 1.8,
-                ),
-              ),
-              if (widget.bless != null && widget.bless!.isNotEmpty) ...[
-                const SizedBox(height: 15),
-                Text(
-                  widget.bless!,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.tajawal(
-                    color: Colors.grey[800],
-                    fontSize: 16,
+        Material(
+          color: Colors.transparent,
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(30),
+                width: 400,
+                decoration: BoxDecoration(
+                  color: const Color(0xfffffbec), // Light Cream Background
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: MyTheme.primaryColor.withValues(alpha: 0.1),
+                    width: 2,
                   ),
                 ),
-              ],
-              const SizedBox(height: 30),
-              Divider(color: MyTheme.primaryColor.withOpacity(0.2)),
-              const SizedBox(height: 10),
-              Text(
-                '(احمدوا الله دومًا)',
-                style: GoogleFonts.tajawal(
-                  color: MyTheme.secondaryColor,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 90,
+                      height: 90,
+                      child: Image.asset(
+                        'assets/images/thekr.png',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      widget.details,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.tajawal(
+                        color: MyTheme.primaryColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        height: 1.8,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Divider(color: MyTheme.primaryColor.withValues(alpha: 0.2)),
+                    const SizedBox(height: 5),
+                    Text(
+                      '(احمدوا الله دومًا)',
+                      style: GoogleFonts.tajawal(
+                        color: MyTheme.secondaryColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'تطبيق ذكر - صدقة جارية',
+                      style: GoogleFonts.tajawal(
+                        color: MyTheme.primaryColor.withValues(alpha: 0.5),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Text(
-                'تطبيق ذكر - صدقة جارية',
-                style: GoogleFonts.tajawal(
-                  color: MyTheme.primaryColor.withOpacity(0.5),
-                  fontSize: 12,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
+        context: context,
+        delay: const Duration(milliseconds: 500),
+        pixelRatio: 2.0,
       );
 
       final directory = await getTemporaryDirectory();
@@ -298,63 +308,119 @@ class _CustomAzkarWidgetWithCounterState
   void _showShareOptions() {
     showModalBottomSheet(
       context: context,
-      useSafeArea: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'اختر طريقة المشاركة',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
-                ListTile(
-                  leading: const Icon(
-                    Icons.text_fields,
-                    color: MyTheme.primaryColor,
-                  ),
-                  title: const Text('مشاركة كنص'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _shareAsText();
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.image, color: MyTheme.primaryColor),
-                  title: const Text('مشاركة كبطاقة'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _shareAsImage();
-                  },
-                ),
-              ],
+      backgroundColor: Colors.transparent,
+      builder: (context) => SafeArea(
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25),
+              topRight: Radius.circular(25),
             ),
           ),
-        );
-      },
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 25),
+              Text(
+                'خيارات المشاركة',
+                style: GoogleFonts.tajawal(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: MyTheme.primaryColor,
+                ),
+              ),
+              const SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _shareOptionItem(
+                    icon: Icons.text_fields,
+                    label: 'نص فقط',
+                    onTap: () {
+                      Navigator.pop(context);
+                      _shareAsText();
+                    },
+                  ),
+                  _shareOptionItem(
+                    icon: Icons.image_outlined,
+                    label: 'صورة مميزة',
+                    onTap: () {
+                      Navigator.pop(context);
+                      _shareAsImage();
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  void _shareAsText() {
-    String shareText = widget.details;
-    if (widget.bless != null && widget.bless!.isNotEmpty) {
-      shareText += '\n\n${widget.bless}';
-    }
-    shareText += '\n\n﴿احمدوا الله دومًا﴾';
-    shareText += '\n\nحمل تطبيق ذكر:';
-    shareText +=
-        '\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app';
+  Widget _shareOptionItem({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: MyTheme.primaryColor.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: MyTheme.primaryColor, size: 30),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            label,
+            style: GoogleFonts.tajawal(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[800],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-    Share.share(shareText, subject: 'ذكر من تطبيق ذكر');
+  void _shareAsText() async {
+    try {
+      String shareText = widget.details;
+      if (widget.bless != null && widget.bless!.isNotEmpty) {
+        shareText += '\n\n${widget.bless}';
+      }
+
+      shareText += '\n\n﴿احمدوا الله دومًا﴾';
+      shareText += '\n\nحمل تطبيق ذكر:';
+      shareText +=
+          '\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app';
+
+      await Share.share(shareText, subject: 'ذكر من تطبيق ذكر');
+    } catch (e) {
+      Clipboard.setData(ClipboardData(text: widget.details));
+      showToast(
+        text: 'تم نسخ الذكر',
+        textColor: MyTheme.primaryColor,
+        bgColoe: Colors.white,
+      );
+    }
   }
 
   @override
