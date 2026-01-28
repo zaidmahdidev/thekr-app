@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(
-        useMaterial3: false,
+        useMaterial3: true,
         primaryColor: MyTheme.primaryColor,
         primarySwatch: primary,
         appBarTheme: AppBarTheme(
