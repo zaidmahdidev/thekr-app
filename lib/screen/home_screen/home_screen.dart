@@ -35,25 +35,25 @@ class _HomeScreenState extends State<HomeScreen> {
         // Start flexible update (optional)
         final result = await InAppUpdate.startFlexibleUpdate();
 
-        // Show snackbar ONLY when download is complete successfully
+        // Show snackbar for 3 seconds then install automatically
         if (result == AppUpdateResult.success && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text(
-                'تم تحميل التحديث بنجاح، يرجى الضغط للتثبيت',
-                style: TextStyle(fontFamily: 'Tajawal'),
-              ),
-              backgroundColor: MyTheme.secondaryColor,
-              duration: const Duration(seconds: 10),
-              action: SnackBarAction(
-                label: 'تثبيت',
-                textColor: Colors.white,
-                onPressed: () async {
-                  await InAppUpdate.completeFlexibleUpdate();
-                },
-              ),
-            ),
-          );
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+                SnackBar(
+                  content: const Text(
+                    'تم تحميل التحديث بنجاح، جاري التثبيت...',
+                    style: TextStyle(fontFamily: 'Tajawal'),
+                  ),
+                  backgroundColor: MyTheme.secondaryColor,
+                  duration: const Duration(seconds: 3),
+                ),
+              )
+              .closed
+              .then((reason) {
+                if (mounted) {
+                  InAppUpdate.completeFlexibleUpdate();
+                }
+              });
         }
       }
     } catch (e) {
