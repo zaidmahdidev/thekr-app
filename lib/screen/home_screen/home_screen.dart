@@ -33,10 +33,10 @@ class _HomeScreenState extends State<HomeScreen> {
       final info = await InAppUpdate.checkForUpdate();
       if (info.updateAvailability == UpdateAvailability.updateAvailable) {
         // Start flexible update (optional)
-        await InAppUpdate.startFlexibleUpdate();
+        final result = await InAppUpdate.startFlexibleUpdate();
 
-        // Show snackbar when download is complete
-        if (mounted) {
+        // Show snackbar ONLY when download is complete successfully
+        if (result == AppUpdateResult.success && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: const Text(
