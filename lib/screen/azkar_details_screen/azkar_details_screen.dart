@@ -91,19 +91,27 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
         title: Text(widget.type),
         centerTitle: true,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(6),
-          child: TweenAnimationBuilder<double>(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOutCubic,
-            tween: Tween<double>(begin: 0, end: _calculateTotalProgress()),
-            builder: (context, value, child) {
-              return LinearProgressIndicator(
-                value: value,
-                backgroundColor: Colors.white.withValues(alpha: 0.1),
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
-                minHeight: 6,
-              );
-            },
+          preferredSize: const Size.fromHeight(16),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: TweenAnimationBuilder<double>(
+                duration: const Duration(milliseconds: 600),
+                curve: Curves.easeOutCubic,
+                tween: Tween<double>(begin: 0, end: _calculateTotalProgress()),
+                builder: (context, value, child) {
+                  return LinearProgressIndicator(
+                    value: value,
+                    backgroundColor: Colors.white.withValues(alpha: 0.2),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      Colors.orange,
+                    ),
+                    minHeight: 8,
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),
