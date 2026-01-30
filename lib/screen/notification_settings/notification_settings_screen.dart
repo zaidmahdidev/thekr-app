@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import '../../services/notification_service.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:thekr_app/services/notification_service.dart';
 import '../../shard/constant/theme.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
@@ -160,243 +161,270 @@ class _NotificationSettingsScreenState
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
+        elevation: 0,
+        title: Text(
           'إعدادات الإشعارات',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: GoogleFonts.tajawal(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
         ),
         backgroundColor: MyTheme.primaryColor,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
+          ? const Center(
+              child: CircularProgressIndicator(color: MyTheme.primaryColor),
+            )
+          : SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
               child: Column(
                 children: [
                   // Morning Azkar Section
-                  Card(
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.wb_sunny,
-                                color: Colors.orange,
-                                size: 28,
-                              ),
-                              const SizedBox(width: 12),
-                              const Expanded(
-                                child: Text(
-                                  'أذكار الصباح',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              Switch(
-                                value: _morningEnabled,
-                                onChanged: _updateMorningNotification,
-                                activeThumbColor: MyTheme.primaryColor,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          InkWell(
-                            onTap: _selectMorningTime,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 12,
-                                horizontal: 16,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.access_time,
-                                    color: Colors.grey,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    'الوقت: ${_formatTime(_morningTime)}',
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                  const Spacer(),
-                                  const Icon(Icons.edit, color: Colors.grey),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  _buildSettingCard(
+                    title: 'أذكار الصباح',
+                    icon: Icons.wb_sunny_rounded,
+                    iconColor: Colors.orange,
+                    isEnabled: _morningEnabled,
+                    onToggle: _updateMorningNotification,
+                    time: _morningTime,
+                    onTimeTap: _selectMorningTime,
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
 
                   // Evening Azkar Section
-                  Card(
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+                  _buildSettingCard(
+                    title: 'أذكار المساء',
+                    icon: Icons.nightlight_round_rounded,
+                    iconColor: const Color(0xff2c3e50),
+                    isEnabled: _eveningEnabled,
+                    onToggle: _updateEveningNotification,
+                    time: _eveningTime,
+                    onTimeTap: _selectEveningTime,
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  // Info Section
+                  Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: MyTheme.primaryColor.withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(
+                        color: MyTheme.primaryColor.withValues(alpha: 0.1),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.info_outline_rounded,
+                          color: MyTheme.primaryColor,
+                          size: 22,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'سيتم تذكيرك يومياً بذكر الله في الأوقات التي تختارها.',
+                            style: GoogleFonts.tajawal(
+                              color: MyTheme.primaryColor,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Share App Section (Themed like Home)
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: MyTheme.primaryColor,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: MyTheme.primaryColor.withValues(alpha: 0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.15),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Image.asset(
+                            'assets/images/thekr.png',
+                            width: 45,
+                            height: 45,
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Icon(
-                                Icons.nightlight_round,
-                                color: Colors.indigo,
-                                size: 28,
-                              ),
-                              const SizedBox(width: 12),
-                              const Expanded(
-                                child: Text(
-                                  'أذكار المساء',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              Text(
+                                'شارك التطبيق',
+                                style: GoogleFonts.tajawal(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Switch(
-                                value: _eveningEnabled,
-                                onChanged: _updateEveningNotification,
-                                activeThumbColor: MyTheme.primaryColor,
+                              Text(
+                                'ساهم في نشر الخير بين أحبائك',
+                                style: GoogleFonts.tajawal(
+                                  color: Colors.white70,
+                                  fontSize: 13,
+                                ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
-                          InkWell(
-                            onTap: _selectEveningTime,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 12,
-                                horizontal: 16,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.access_time,
-                                    color: Colors.grey,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    'الوقت: ${_formatTime(_eveningTime)}',
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                  const Spacer(),
-                                  const Icon(Icons.edit, color: Colors.grey),
-                                ],
-                              ),
-                            ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Share.share(
+                              'حمل تطبيق "ذكر" - صدقة جارية\nتطبيق شامل للمصحف الشريف والأذكار والتسبيح\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app',
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.share_rounded,
+                            color: Colors.white,
+                            size: 28,
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Info Card
-                  Card(
-                    elevation: 2,
-                    color: Colors.blue.shade50,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.info_outline,
-                            color: Colors.blue.shade700,
-                            size: 24,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              'سيتم تذكيرك يومياً في الأوقات المحددة',
-                              style: TextStyle(
-                                color: Colors.blue.shade700,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const Spacer(),
-
-                  // Share App Section
-                  Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    color: MyTheme.primaryColor,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            'assets/images/thekr.png',
-                            width: 60,
-                            height: 60,
-                          ),
-                          const SizedBox(width: 15),
-                          const Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'شارك التطبيق',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  'ساهم في نشر الخير وشارك التطبيق مع أحبائك',
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Share.share(
-                                'حمل تطبيق "ذكر" - صدقة جارية\nتطبيق شامل للمصحف الشريف والأذكار والتسبيح\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app',
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.share_rounded,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
+    );
+  }
+
+  Widget _buildSettingCard({
+    required String title,
+    required IconData icon,
+    required Color iconColor,
+    required bool isEnabled,
+    required Function(bool) onToggle,
+    required TimeOfDay time,
+    required VoidCallback onTimeTap,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isEnabled
+              ? MyTheme.primaryColor.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.1),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          ListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 8,
+            ),
+            leading: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: iconColor.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: iconColor, size: 24),
+            ),
+            title: Text(
+              title,
+              style: GoogleFonts.tajawal(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: MyTheme.primaryColor,
+              ),
+            ),
+            trailing: Switch.adaptive(
+              value: isEnabled,
+              onChanged: onToggle,
+              activeColor: MyTheme.primaryColor,
+              activeTrackColor: MyTheme.primaryColor.withValues(alpha: 0.3),
+            ),
+          ),
+          if (isEnabled) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: InkWell(
+                onTap: onTimeTap,
+                borderRadius: BorderRadius.circular(15),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xfff8f9fa),
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                      color: Colors.black.withValues(alpha: 0.05),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.access_time_filled_rounded,
+                        color: MyTheme.primaryColor,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'ضبط الوقت: ',
+                        style: GoogleFonts.tajawal(
+                          fontSize: 15,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                      Text(
+                        _formatTime(time),
+                        style: GoogleFonts.tajawal(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: MyTheme.primaryColor,
+                        ),
+                      ),
+                      const Spacer(),
+                      const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color: Colors.grey,
+                        size: 14,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
