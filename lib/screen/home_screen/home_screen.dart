@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:thekr_app/screen/hadith-_awawi/hadith_nawawi.dart';
 import 'package:thekr_app/screen/notification_settings/notification_settings_screen.dart';
 import 'package:thekr_app/shard/theme/myColors.dart';
@@ -13,14 +14,58 @@ import '../husinAlMuslim_screen/husinAlMuslim_screen.dart';
 import '../qiblah_screen/qiblah_screen.dart';
 import '../sura_screen/sura_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _checkForUpdate();
+  }
+
+  Future<void> _checkForUpdate() async {
+    try {
+      final info = await InAppUpdate.checkForUpdate();
+      if (info.updateAvailability == UpdateAvailability.updateAvailable) {
+        // Start flexible update (optional)
+        final result = await InAppUpdate.startFlexibleUpdate();
+
+        // Show snackbar for 3 seconds then install automatically
+        if (result == AppUpdateResult.success && mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+                SnackBar(
+                  content: const Text(
+                    'تم تحميل التحديث بنجاح، جاري التثبيت...',
+                    style: TextStyle(fontFamily: 'Tajawal'),
+                  ),
+                  backgroundColor: MyTheme.secondaryColor,
+                  duration: const Duration(seconds: 3),
+                ),
+              )
+              .closed
+              .then((reason) {
+                if (mounted) {
+                  InAppUpdate.completeFlexibleUpdate();
+                }
+              });
+        }
+      }
+    } catch (e) {
+      debugPrint("Update error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
           return;
         }
@@ -112,12 +157,6 @@ class HomeScreen extends StatelessWidget {
                                     ),
                                   ),
                                 );
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //       builder: (context) =>
-                                //           QuranScreenn(),
-                                //     ));
                               },
                             ),
                             CategoryWidget(
@@ -257,7 +296,7 @@ class CategoryWidget extends StatelessWidget {
                 title,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 15,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
               ),

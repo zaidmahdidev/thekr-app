@@ -9,23 +9,21 @@ class AzkarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('أذكار المسلم'),
-      ),
+      appBar: AppBar(centerTitle: true, title: const Text('أذكار المسلم')),
       body: ListView.builder(
         itemCount: azkarList.length,
         itemBuilder: (context, index) {
           String key = azkarList.keys.elementAt(index);
 
           return CustomContainer(
+            leading: '${index + 1}',
             title: key,
             fun: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      AzkarListScreen(azkarList: azkarList[key] , type: key),
+                      AzkarListScreen(azkarList: azkarList[key], type: key),
                 ),
               );
             },

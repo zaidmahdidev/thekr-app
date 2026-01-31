@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:readmore/readmore.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
 class CustomDialog extends StatelessWidget {
@@ -320,7 +323,7 @@ Widget appbar({
       Row(
         children: [
           CircleAvatar(
-            backgroundColor: Colors.grey.withOpacity(0.1),
+            backgroundColor: Colors.grey.withValues(alpha: 0.1),
             child: FittedBox(
               child: IconButton(
                 onPressed: () {},
@@ -330,7 +333,7 @@ Widget appbar({
           ),
           const SizedBox(width: 8),
           CircleAvatar(
-            backgroundColor: Colors.grey.withOpacity(0.1),
+            backgroundColor: Colors.grey.withValues(alpha: 0.1),
             child: FittedBox(
               child: IconButton(
                 onPressed: add!(),
@@ -404,6 +407,7 @@ class CustomContainer extends StatelessWidget {
     this.leading,
     this.trailing,
     this.fun,
+    this.isHighlighted = false,
   }) : super(key: key);
 
   final String title;
@@ -411,6 +415,7 @@ class CustomContainer extends StatelessWidget {
   final String? leading;
   final String? trailing;
   final Function? fun;
+  final bool isHighlighted;
 
   @override
   Widget build(BuildContext context) {
@@ -423,26 +428,51 @@ class CustomContainer extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          gradient: const LinearGradient(
+          border: isHighlighted
+              ? Border.all(color: Colors.white, width: 2)
+              : null,
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              MyTheme.primaryColor,
-              MyTheme.primaryColor,
-              MyTheme.primaryColor,
-            ],
+            colors: isHighlighted
+                ? [
+                    Colors.orange.shade800,
+                    MyTheme.primaryColor,
+                    MyTheme.primaryColor,
+                  ]
+                : [
+                    MyTheme.primaryColor,
+                    MyTheme.primaryColor,
+                    MyTheme.primaryColor,
+                  ],
           ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             if (leading != null)
-              CircleAvatar(
-                backgroundColor: Colors.transparent,
-                backgroundImage: const AssetImage('assets/images/around.png'),
-                child: Text(
-                  '$leading',
-                  style: const TextStyle(color: Colors.white),
+              Container(
+                width: 50,
+                height: 50,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/around.png'),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 2,
+                  ), // Slight adjustment for optical centering
+                  child: Text(
+                    '$leading',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               )
             else
@@ -452,7 +482,13 @@ class CustomContainer extends StatelessWidget {
                 children: [
                   Text(
                     '$title',
-                    style: MyTheme.textStyle22.copyWith(color: Colors.orange),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.orange,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      height: 1.3,
+                    ),
                   ),
                   if (subTitle != null)
                     const SizedBox(height: 7)
@@ -482,7 +518,7 @@ class CustomContainer extends StatelessWidget {
   }
 }
 
-class CustomAzkarWidget extends StatelessWidget {
+class CustomAzkarWidget extends StatefulWidget {
   const CustomAzkarWidget({
     Key? key,
     required this.details,
@@ -493,6 +529,218 @@ class CustomAzkarWidget extends StatelessWidget {
   final String details;
   final String? bless;
   final String? repet;
+
+  @override
+  State<CustomAzkarWidget> createState() => _CustomAzkarWidgetState();
+}
+
+class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
+  final ScreenshotController _screenshotController = ScreenshotController();
+
+  Future<void> _shareAsImage() async {
+    try {
+      // Precache logo to ensure it's ready for capture
+      await precacheImage(const AssetImage('assets/images/thekr.png'), context);
+
+      final uint8list = await _screenshotController.captureFromWidget(
+        Material(
+          color: Colors.transparent,
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(30),
+                width: 400,
+                decoration: BoxDecoration(
+                  color: const Color(0xfffffbec), // Light Cream Background
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: MyTheme.primaryColor.withValues(alpha: 0.1),
+                    width: 2,
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 90,
+                      height: 90,
+                      child: Image.asset(
+                        'assets/images/thekr.png',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      widget.details,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: MyTheme.primaryColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        height: 1.8,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Divider(color: MyTheme.primaryColor.withValues(alpha: 0.2)),
+                    const SizedBox(height: 5),
+                    const Text(
+                      '(احمدوا الله دومًا)',
+                      style: TextStyle(
+                        color: MyTheme.secondaryColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'تطبيق ذكر - صدقة جارية',
+                      style: TextStyle(
+                        color: MyTheme.primaryColor.withValues(alpha: 0.5),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        context: context,
+        delay: const Duration(milliseconds: 500),
+        pixelRatio: 2.0,
+      );
+
+      final directory = await getTemporaryDirectory();
+      final imagePath = await File('${directory.path}/zikr_share.png').create();
+      await imagePath.writeAsBytes(uint8list);
+
+      await Share.shareXFiles(
+        [XFile(imagePath.path)],
+        text:
+            'رابط تحميل التطبيق \n https://play.google.com/store/apps/details?id=com.zaid.thekr_app',
+      );
+    } catch (e) {
+      showToast(text: 'حدث خطأ أثناء المشاركة');
+    }
+  }
+
+  void _showShareOptions() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => SafeArea(
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25),
+              topRight: Radius.circular(25),
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 25),
+              Text(
+                'خيارات المشاركة',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: MyTheme.primaryColor,
+                ),
+              ),
+              const SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _shareOptionItem(
+                    icon: Icons.text_fields,
+                    label: 'نص فقط',
+                    onTap: () {
+                      Navigator.pop(context);
+                      _shareAsText();
+                    },
+                  ),
+                  _shareOptionItem(
+                    icon: Icons.image_outlined,
+                    label: 'صورة مميزة',
+                    onTap: () {
+                      Navigator.pop(context);
+                      _shareAsImage();
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _shareAsText() async {
+    try {
+      String shareText = widget.details;
+      if (widget.bless != null && widget.bless!.isNotEmpty) {
+        shareText += '\n\n${widget.bless}';
+      }
+
+      shareText += '\n\n﴿احمدوا الله دومًا﴾';
+      shareText += '\n\nحمل تطبيق ذكر:';
+      shareText +=
+          '\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app';
+
+      await Share.share(shareText, subject: 'ذكر من تطبيق ذكر');
+    } catch (e) {
+      Clipboard.setData(ClipboardData(text: widget.details));
+      showToast(
+        text: 'تم نسخ الحديث',
+        textColor: MyTheme.primaryColor,
+        bgColoe: Colors.white,
+      );
+    }
+  }
+
+  Widget _shareOptionItem({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: MyTheme.primaryColor.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: MyTheme.primaryColor, size: 30),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[800],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -517,7 +765,7 @@ class CustomAzkarWidget extends StatelessWidget {
                 onTap: () {
                   HapticFeedback.lightImpact();
                   HapticFeedback.vibrate();
-                  Clipboard.setData(ClipboardData(text: details));
+                  Clipboard.setData(ClipboardData(text: widget.details));
                   showToast(
                     text: 'تم النسخ',
                     textColor: MyTheme.primaryColor,
@@ -535,31 +783,7 @@ class CustomAzkarWidget extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: () async {
-                  HapticFeedback.lightImpact();
-                  HapticFeedback.vibrate();
-                  try {
-                    String shareText = details;
-                    if (bless != null && bless!.isNotEmpty) {
-                      shareText += '\n\n$bless';
-                    }
-
-                    shareText += '\n\n﴿احمدوا الله دومًا﴾';
-                    shareText += '\n\nحمل تطبيق ذكر:';
-                    shareText +=
-                        '\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app';
-
-                    // استخدام Share.share للمشاركة
-                    await Share.share(shareText, subject: 'حديث من تطبيق ذكر');
-                  } catch (e) {
-                    Clipboard.setData(ClipboardData(text: details));
-                    showToast(
-                      text: 'تم نسخ الحديث',
-                      textColor: MyTheme.primaryColor,
-                      bgColoe: Colors.white,
-                    );
-                  }
-                },
+                onTap: _showShareOptions,
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
                   padding: const EdgeInsets.all(8),
@@ -573,7 +797,7 @@ class CustomAzkarWidget extends StatelessWidget {
             ],
           ),
           Text(
-            details,
+            widget.details,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
@@ -582,9 +806,9 @@ class CustomAzkarWidget extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          if (bless != null && bless!.isNotEmpty) ...[
+          if (widget.bless != null && widget.bless!.isNotEmpty) ...[
             ReadMoreText(
-              bless!,
+              widget.bless!,
               trimLines: 2,
               textAlign: TextAlign.justify,
               trimMode: TrimMode.Line,
@@ -600,7 +824,7 @@ class CustomAzkarWidget extends StatelessWidget {
             ),
             const SizedBox(height: 15),
           ],
-          if (repet != null && repet!.isNotEmpty)
+          if (widget.repet != null && widget.repet!.isNotEmpty)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
@@ -611,7 +835,7 @@ class CustomAzkarWidget extends StatelessWidget {
                 ),
               ),
               child: Text(
-                "التكرار: $repet",
+                "التكرار: ${widget.repet}",
                 style: const TextStyle(
                   color: MyTheme.secondaryColor,
                   fontWeight: FontWeight.bold,

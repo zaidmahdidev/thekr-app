@@ -144,6 +144,23 @@ class NotificationService {
   static Future<void> cancelAllNotifications() async {
     await _notifications.cancelAll();
   }
+
+  static Future<void> refreshScheduledNotifications() async {
+    final morningEnabled =
+        await NotificationSettingsService.isMorningNotificationEnabled();
+    final eveningEnabled =
+        await NotificationSettingsService.isEveningNotificationEnabled();
+
+    if (morningEnabled) {
+      final morningTime = await NotificationSettingsService.getMorningTime();
+      await scheduleMorningAzkar(morningTime);
+    }
+
+    if (eveningEnabled) {
+      final eveningTime = await NotificationSettingsService.getEveningTime();
+      await scheduleEveningAzkar(eveningTime);
+    }
+  }
 }
 
 class NotificationSettingsService {
@@ -174,12 +191,12 @@ class NotificationSettingsService {
 
   static Future<bool> isMorningNotificationEnabled() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_morningEnabledKey) ?? false;
+    return prefs.getBool(_morningEnabledKey) ?? true;
   }
 
   static Future<bool> isEveningNotificationEnabled() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_eveningEnabledKey) ?? false;
+    return prefs.getBool(_eveningEnabledKey) ?? true;
   }
 
   static Future<TimeOfDay> getMorningTime() async {

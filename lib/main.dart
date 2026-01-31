@@ -1,10 +1,11 @@
-import 'package:flutter/services.dart';
-import 'package:thekr_app/screen/splash_screen/splash_screen.dart';
-import 'package:thekr_app/shard/constant/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'network/local/cache_helper.dart';
 import 'services/notification_service.dart';
+import 'package:thekr_app/screen/splash_screen/splash_screen.dart';
+import 'package:thekr_app/shard/components/tools.dart';
+import 'package:thekr_app/shard/constant/theme.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,6 +13,7 @@ void main() async {
   await CacheHelper.init();
   await NotificationService.initialize();
   await NotificationService.requestPermissions();
+  await NotificationService.refreshScheduledNotifications();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -28,10 +30,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(
-        useMaterial3: false,
+        useMaterial3: true,
         primaryColor: MyTheme.primaryColor,
         primarySwatch: primary,
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
           toolbarHeight: 80,
           backgroundColor: MyTheme.primaryColor,
           shape: RoundedRectangleBorder(
@@ -41,9 +43,18 @@ class MyApp extends StatelessWidget {
             ),
           ),
           iconTheme: IconThemeData(color: Colors.white),
-          titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          titleTextStyle: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Tajawal',
+          ),
         ),
-        fontFamily: 'quran',
+        fontFamily: 'Tajawal',
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(height: 1.6),
+          bodyLarge: TextStyle(height: 1.6),
+          titleMedium: TextStyle(height: 1.6),
+        ),
       ),
       title: 'Dhikr',
       locale: const Locale('ar'),
