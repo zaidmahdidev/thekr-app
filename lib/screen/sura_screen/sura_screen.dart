@@ -33,6 +33,14 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
     slidController = PageController(initialPage: widget.currentPage - 1);
     mark = widget.currentPage;
     isDarkMode = CacheHelper.getData(key: 'isDarkMode') ?? false;
+
+    // Allow rotation on this screen
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
   }
 
   void toggleDarkMode() {
@@ -164,6 +172,13 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     CacheHelper.saveData(key: 'pageNumber', value: mark);
+
+    // Reset orientation to portrait when leaving
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     super.dispose();
   }
 
@@ -225,11 +240,27 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                             Colors.transparent,
                             BlendMode.multiply,
                           ),
-                    child: Image(
-                      image: AssetImage(
-                        'assets/quran-images/page${i.toString().padLeft(3, '0')}.png',
-                      ),
-                      fit: BoxFit.fill,
+                    child: OrientationBuilder(
+                      builder: (context, orientation) {
+                        bool isPortrait = orientation == Orientation.portrait;
+
+                        return isPortrait
+                            ? Image(
+                                image: AssetImage(
+                                  'assets/quran-images/page${i.toString().padLeft(3, '0')}.png',
+                                ),
+                                fit: BoxFit.fill,
+                              )
+                            : SingleChildScrollView(
+                                physics: const BouncingScrollPhysics(),
+                                child: Image(
+                                  image: AssetImage(
+                                    'assets/quran-images/page${i.toString().padLeft(3, '0')}.png',
+                                  ),
+                                  fit: BoxFit.fitWidth,
+                                ),
+                              );
+                      },
                     ),
                   );
                 },
