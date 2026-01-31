@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -108,7 +107,7 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                         ),
                         Text(
                           'سورة ${getSurahNameByPage(mark)}',
-                          style: GoogleFonts.tajawal(
+                          style: const TextStyle(
                             color: MyTheme.primaryColor,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -128,7 +127,7 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                     // Footer
                     Text(
                       'صفحة رقم $mark',
-                      style: GoogleFonts.tajawal(
+                      style: TextStyle(
                         color: Colors.grey[700],
                         fontSize: 14,
                         fontWeight: FontWeight.bold,

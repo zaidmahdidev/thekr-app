@@ -320,14 +320,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.7.3"
-  google_fonts:
-    dependency: "direct main"
-    description:
-      name: google_fonts
-      sha256: "517b20870220c48752eafa0ba1a797a092fb22df0d89535fd9991e86ee2cdd9c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.3.2"
   graphs:
     dependency: transitive
     description:
@@ -364,10 +356,10 @@ packages:
     dependency: transitive
     description:
       name: image
-      sha256: "4e973fcf4caae1a4be2fa0a13157aa38a8f9cb049db6529aa00b4d71abc4d928"
+      sha256: "492bd52f6c4fbb6ee41f781ff27765ce5f627910e1e0cbecfa3d9add5562604c"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.4"
+    version: "4.7.2"
   in_app_update:
     dependency: "direct main"
     description:
@@ -380,10 +372,10 @@ packages:
     dependency: transitive
     description:
       name: json_annotation
-      sha256: "1ce844379ca14835a50d2f019a3099f419082cfdd231cd86a142af94dd5c6bb1"
+      sha256: "805fa86df56383000f640384b282ce0cb8431f1a7a2396de92fb66186d8c57df"
       url: "https://pub.dev"
     source: hosted
-    version: "4.9.0"
+    version: "4.10.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -572,18 +564,18 @@ packages:
     dependency: transitive
     description:
       name: rive
-      sha256: fc0abf65d03d1c9afaeb35be9e71c7cf04d2d1f76e94e69d2af1b3ba413cddf9
+      sha256: d3901d82850e17395a149d05c8b446a16eca42b328bac6ca9bd9ed760016f20c
       url: "https://pub.dev"
     source: hosted
-    version: "0.14.0-dev.14"
+    version: "0.14.1"
   rive_native:
     dependency: transitive
     description:
       name: rive_native
-      sha256: e9c7d36f19eb6d32f563825d4e9d5032b19a36d3ca3341641431035bca022d19
+      sha256: "955e7820b7cd508f4885aa6f25d6240791c932756291c400326ab8b1f3c57c7d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.17"
+    version: "0.1.1"
   screenshot:
     dependency: "direct main"
     description:
@@ -801,10 +793,10 @@ packages:
     dependency: transitive
     description:
       name: vector_graphics_compiler
-      sha256: d354a7ec6931e6047785f4db12a1f61ec3d43b207fc0790f863818543f8ff0dc
+      sha256: "201e876b5d52753626af64b6359cd13ac6011b80728731428fd34bc840f71c9b"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.19"
+    version: "1.1.20"
   vector_math:
     dependency: transitive
     description:

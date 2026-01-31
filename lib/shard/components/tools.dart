@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:readmore/readmore.dart';
 import 'dart:io';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -575,7 +574,7 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
                     Text(
                       widget.details,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.tajawal(
+                      style: const TextStyle(
                         color: MyTheme.primaryColor,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -585,9 +584,9 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
                     const SizedBox(height: 10),
                     Divider(color: MyTheme.primaryColor.withValues(alpha: 0.2)),
                     const SizedBox(height: 5),
-                    Text(
+                    const Text(
                       '(احمدوا الله دومًا)',
-                      style: GoogleFonts.tajawal(
+                      style: TextStyle(
                         color: MyTheme.secondaryColor,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -595,7 +594,7 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
                     ),
                     Text(
                       'تطبيق ذكر - صدقة جارية',
-                      style: GoogleFonts.tajawal(
+                      style: TextStyle(
                         color: MyTheme.primaryColor.withValues(alpha: 0.5),
                         fontSize: 12,
                       ),
@@ -653,7 +652,7 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
               const SizedBox(height: 25),
               Text(
                 'خيارات المشاركة',
-                style: GoogleFonts.tajawal(
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: MyTheme.primaryColor,
@@ -732,7 +731,7 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
           const SizedBox(height: 10),
           Text(
             label,
-            style: GoogleFonts.tajawal(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
               color: Colors.grey[800],

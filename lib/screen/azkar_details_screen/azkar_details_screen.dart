@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:screenshot/screenshot.dart';
@@ -262,7 +261,7 @@ class _CustomAzkarWidgetWithCounterState
                     Text(
                       widget.details,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.tajawal(
+                      style: const TextStyle(
                         color: MyTheme.primaryColor,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -274,7 +273,7 @@ class _CustomAzkarWidgetWithCounterState
                     const SizedBox(height: 5),
                     Text(
                       '(احمدوا الله دومًا)',
-                      style: GoogleFonts.tajawal(
+                      style: const TextStyle(
                         color: MyTheme.secondaryColor,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -282,7 +281,7 @@ class _CustomAzkarWidgetWithCounterState
                     ),
                     Text(
                       'تطبيق ذكر - صدقة جارية',
-                      style: GoogleFonts.tajawal(
+                      style: TextStyle(
                         color: MyTheme.primaryColor.withValues(alpha: 0.5),
                         fontSize: 12,
                       ),
@@ -341,7 +340,7 @@ class _CustomAzkarWidgetWithCounterState
               const SizedBox(height: 25),
               Text(
                 'خيارات المشاركة',
-                style: GoogleFonts.tajawal(
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: MyTheme.primaryColor,
@@ -397,10 +396,10 @@ class _CustomAzkarWidgetWithCounterState
           const SizedBox(height: 10),
           Text(
             label,
-            style: GoogleFonts.tajawal(
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: Colors.grey[800],
+              color: Color(0xFF424242),
             ),
           ),
         ],

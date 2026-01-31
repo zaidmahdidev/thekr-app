@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:thekr_app/services/notification_service.dart';
 import '../../shard/constant/theme.dart';
 
@@ -162,9 +161,9 @@ class _NotificationSettingsScreenState
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
-        title: Text(
+        title: const Text(
           'إعدادات الإشعارات',
-          style: GoogleFonts.tajawal(
+          style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -228,7 +227,7 @@ class _NotificationSettingsScreenState
                         Expanded(
                           child: Text(
                             'سيتم تذكيرك يومياً بذكر الله في الأوقات التي تختارها.',
-                            style: GoogleFonts.tajawal(
+                            style: const TextStyle(
                               color: MyTheme.primaryColor,
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
@@ -276,7 +275,7 @@ class _NotificationSettingsScreenState
                             children: [
                               Text(
                                 'شارك التطبيق',
-                                style: GoogleFonts.tajawal(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -284,7 +283,7 @@ class _NotificationSettingsScreenState
                               ),
                               Text(
                                 'ساهم في نشر الخير بين أحبائك',
-                                style: GoogleFonts.tajawal(
+                                style: const TextStyle(
                                   color: Colors.white70,
                                   fontSize: 13,
                                 ),
@@ -356,7 +355,7 @@ class _NotificationSettingsScreenState
             ),
             title: Text(
               title,
-              style: GoogleFonts.tajawal(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: MyTheme.primaryColor,
@@ -398,14 +397,11 @@ class _NotificationSettingsScreenState
                       const SizedBox(width: 12),
                       Text(
                         'ضبط الوقت: ',
-                        style: GoogleFonts.tajawal(
-                          fontSize: 15,
-                          color: Colors.grey[700],
-                        ),
+                        style: TextStyle(fontSize: 15, color: Colors.grey[700]),
                       ),
                       Text(
                         _formatTime(time),
-                        style: GoogleFonts.tajawal(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: MyTheme.primaryColor,
