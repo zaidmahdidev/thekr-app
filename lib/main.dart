@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'network/local/cache_helper.dart';
 import 'services/notification_service.dart';
-import 'package:thekr_app/screen/splash_screen/splash_screen.dart';
+import 'package:thekr_app/screen/home_screen/home_screen.dart';
 import 'package:thekr_app/shard/components/tools.dart';
 import 'package:thekr_app/shard/constant/theme.dart';
 import 'package:flutter/services.dart';
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
       title: 'Dhikr',
       locale: const Locale('ar'),
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      home: const HomeScreen(),
     );
   }
 }
