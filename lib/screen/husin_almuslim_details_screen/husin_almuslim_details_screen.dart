@@ -475,7 +475,7 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.bold,
                       height: 1.8,
                     ),
                     textAlign: TextAlign.center,

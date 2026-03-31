@@ -802,7 +802,7 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
               color: Colors.white,
               fontSize: 16,
               height: 1.8,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
           ),
@@ -864,9 +864,7 @@ void showToast({
       backgroundColor: bgColoe,
       duration: const Duration(seconds: 3),
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     ),
   );
 }

@@ -71,16 +71,18 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
   }
 
   double _calculateTotalProgress() {
-    int totalRepeat = 0;
-    int currentCompleted = 0;
+    if (azkarWithCounters.isEmpty) return 0.0;
 
+    double totalProgress = 0.0;
     for (var azkar in azkarWithCounters) {
-      totalRepeat += azkar['originalCount'] as int;
-      currentCompleted +=
-          (azkar['originalCount'] as int) - (azkar['currentCount'] as int);
+      int original = azkar['originalCount'] as int;
+      int current = azkar['currentCount'] as int;
+      if (original > 0) {
+        totalProgress += (original - current) / original;
+      }
     }
 
-    return totalRepeat > 0 ? currentCompleted / totalRepeat : 0.0;
+    return totalProgress / azkarWithCounters.length;
   }
 
   @override
@@ -511,7 +513,7 @@ class _CustomAzkarWidgetWithCounterState
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.bold,
                       height: 1.8,
                     ),
                     textAlign: TextAlign.center,
