@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -272,7 +271,7 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                   right: 0,
                   child: Container(
                     padding: const EdgeInsets.all(10),
-                    color: MyTheme.primaryColor.withOpacity(0.9),
+                    color: MyTheme.primaryColor.withValues(alpha: 0.9),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -307,7 +306,7 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                   right: 0,
                   child: Container(
                     padding: const EdgeInsets.all(1),
-                    color: MyTheme.primaryColor.withOpacity(0.9),
+                    color: MyTheme.primaryColor.withValues(alpha: 0.9),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -316,28 +315,47 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                             Expanded(
                               child: TextButton.icon(
                                 onPressed: () {
-                                  AwesomeDialog(
+                                  showDialog(
                                     context: context,
-                                    dialogType: DialogType.question,
-                                    animType: AnimType.bottomSlide,
-                                    title: 'حفظ علامة',
-                                    desc:
+                                    builder: (context) => AlertDialog(
+                                      backgroundColor: MyTheme.primaryColor,
+                                      title: const Text(
+                                        'حفظ علامة',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      content: Text(
                                         'هل تريد حفظ الصفحة رقم $mark كعلامة؟',
-                                    btnCancelText: 'تراجع',
-                                    btnOkText: 'حفظ',
-                                    btnCancelOnPress: () {},
-                                    btnOkOnPress: () {
-                                      CacheHelper.saveData(
-                                        key: 'mark',
-                                        value: mark,
-                                      );
-                                      showToast(
-                                        text: 'تم الحفظ بنجاح',
-                                        bgColoe: MyTheme.primaryColor,
-                                        textColor: Colors.white,
-                                      );
-                                    },
-                                  ).show();
+                                        style: const TextStyle(color: Colors.white),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context),
+                                          child: const Text(
+                                            'تراجع',
+                                            style: TextStyle(color: Colors.orange),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            CacheHelper.saveData(
+                                              key: 'mark',
+                                              value: mark,
+                                            );
+                                            Navigator.pop(context);
+                                            showToast(
+                                              text: 'تم الحفظ بنجاح',
+                                              bgColoe: MyTheme.primaryColor,
+                                              textColor: Colors.white,
+                                            );
+                                          },
+                                          child: const Text(
+                                            'حفظ',
+                                            style: TextStyle(color: Colors.orange),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
                                 },
                                 icon: const Icon(
                                   Icons.bookmark_add,

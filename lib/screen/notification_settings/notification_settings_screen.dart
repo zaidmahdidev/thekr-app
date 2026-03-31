@@ -364,7 +364,7 @@ class _NotificationSettingsScreenState
             trailing: Switch.adaptive(
               value: isEnabled,
               onChanged: onToggle,
-              activeColor: MyTheme.primaryColor,
+              activeThumbColor: MyTheme.primaryColor,
               activeTrackColor: MyTheme.primaryColor.withValues(alpha: 0.3),
             ),
           ),

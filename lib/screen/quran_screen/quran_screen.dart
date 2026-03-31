@@ -7,7 +7,6 @@ class QuranScreenn extends StatefulWidget {
   QuranScreenn({Key? key, this.highlightedSurahIndex}) : super(key: key);
 
   final int? highlightedSurahIndex;
-  String searchText = '';
 
   @override
   State<QuranScreenn> createState() => _QuranScreennState();
@@ -15,6 +14,7 @@ class QuranScreenn extends StatefulWidget {
 
 class _QuranScreennState extends State<QuranScreenn> {
   final ScrollController _scrollController = ScrollController();
+  String searchText = '';
 
   @override
   void initState() {
@@ -89,7 +89,7 @@ class _QuranScreennState extends State<QuranScreenn> {
                   style: const TextStyle(color: Colors.white),
                   onChanged: (value) {
                     setState(() {
-                      widget.searchText = value;
+                      searchText = value;
                     });
                   },
                   decoration: InputDecoration(
@@ -97,7 +97,7 @@ class _QuranScreennState extends State<QuranScreenn> {
                     hintStyle: const TextStyle(color: Colors.white70),
                     prefixIcon: const Icon(Icons.search, color: Colors.white70),
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.15),
+                    fillColor: Colors.white.withValues(alpha: 0.15),
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
@@ -119,8 +119,8 @@ class _QuranScreennState extends State<QuranScreenn> {
                 final pagenumberr = pageNumberr[index];
                 final count = countOfVerses[index];
 
-                if (widget.searchText.isNotEmpty &&
-                    !name.contains(widget.searchText)) {
+                if (searchText.isNotEmpty &&
+                    !name.contains(searchText)) {
                   return const SizedBox();
                 }
 

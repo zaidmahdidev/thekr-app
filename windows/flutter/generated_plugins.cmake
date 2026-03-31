@@ -5,7 +5,6 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   flutter_timezone
   geolocator_windows
-  rive_native
   share_plus
   url_launcher_windows
 )

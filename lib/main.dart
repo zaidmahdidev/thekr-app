@@ -7,6 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:thekr_app/shard/AppLocalizations.dart';
 
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -75,6 +78,8 @@ class MyApp extends StatelessWidget {
         return supportedLocales.first;
       },
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
+      scaffoldMessengerKey: scaffoldMessengerKey,
       home: const HomeScreen(),
     );
   }

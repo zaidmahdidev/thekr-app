@@ -1,4 +1,3 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:thekr_app/model/asmaAllah_model.dart';
 import 'package:thekr_app/shard/components/tools.dart';
@@ -25,23 +24,49 @@ class AsmaAllahScreen extends StatelessWidget {
               title: name,
               leading: '${index + 1}',
               fun: () {
-                AwesomeDialog(
+                showDialog(
                   context: context,
-                  dialogBackgroundColor: MyTheme.primaryColor,
-                  dialogType: DialogType.noHeader,
-                  desc: meaning,
-                  descTextStyle: const TextStyle(
-                    color: Colors.white,
-                    height: 1.5,
-                    fontSize: 17,
+                  builder: (context) => Dialog(
+                    backgroundColor: MyTheme.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            name,
+                            style: const TextStyle(
+                              color: Colors.orange,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          Text(
+                            meaning,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              height: 1.5,
+                              fontSize: 17,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text(
+                              'إغلاق',
+                              style: TextStyle(color: Colors.orange),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  title: name,
-                  titleTextStyle: const TextStyle(
-                    color: Colors.orange,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ).show();
+                );
               },
             );
           },
