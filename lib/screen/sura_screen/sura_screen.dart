@@ -325,14 +325,19 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                                       ),
                                       content: Text(
                                         'هل تريد حفظ الصفحة رقم $mark كعلامة؟',
-                                        style: const TextStyle(color: Colors.white),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
                                       ),
                                       actions: [
                                         TextButton(
-                                          onPressed: () => Navigator.pop(context),
+                                          onPressed: () =>
+                                              Navigator.pop(context),
                                           child: const Text(
                                             'تراجع',
-                                            style: TextStyle(color: Colors.orange),
+                                            style: TextStyle(
+                                              color: Colors.orange,
+                                            ),
                                           ),
                                         ),
                                         TextButton(
@@ -350,7 +355,9 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                                           },
                                           child: const Text(
                                             'حفظ',
-                                            style: TextStyle(color: Colors.orange),
+                                            style: TextStyle(
+                                              color: Colors.orange,
+                                            ),
                                           ),
                                         ),
                                       ],

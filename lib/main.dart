@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quran_library/quran.dart';
 import 'network/local/cache_helper.dart';
 import 'services/notification_service.dart';
 import 'package:thekr_app/screen/home_screen/home_screen.dart';
@@ -7,13 +8,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:thekr_app/shard/AppLocalizations.dart';
 
-final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await CacheHelper.init();
+  await QuranLibrary.init();
+  QuranLibrary.initWordAudio();
   await NotificationService.initialize();
   await NotificationService.requestPermissions();
   await NotificationService.refreshScheduledNotifications();
@@ -33,7 +37,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        useMaterial3: true,
+        useMaterial3: false,
         primaryColor: MyTheme.primaryColor,
         primarySwatch: primary,
         appBarTheme: const AppBarTheme(

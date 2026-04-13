@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:thekr_app/screen/hadith-_awawi/hadith_nawawi.dart';
 import 'package:thekr_app/screen/notification_settings/notification_settings_screen.dart';
+import 'package:thekr_app/screen/quran_view/quran_view.dart';
 import 'package:thekr_app/shard/theme/myColors.dart';
 
 import '../../network/local/cache_helper.dart';
@@ -26,102 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _checkForUpdate();
-
-    // Show what's new dialog once for 1.1.0
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showWhatsNewDialog();
-    });
-  }
-
-  void _showWhatsNewDialog() {
-    const String versionKey = 'whats_new_1.1.0';
-    bool shown = CacheHelper.getData(key: versionKey) ?? false;
-
-    if (!shown) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: Row(
-            children: [
-              const Icon(Icons.star, color: Colors.orange),
-              const SizedBox(width: 10),
-              const Text(
-                'ما الجديد في إصدار 1.1.0',
-                style: TextStyle(
-                  fontFamily: 'Tajawal',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildFeatureItem(
-                '📸',
-                'ميزة مشاركة صفحات القرآن والأذكار كبطاقات تصميمية.',
-              ),
-              _buildFeatureItem(
-                '📖',
-                'فهرس جديد مع تحديد تلقائي لمكان قراءتك الحالية.',
-              ),
-              _buildFeatureItem(
-                '🔄',
-                'دعم القراءة بالوضع الأفقي مع تكبير الخط لكبار السن.',
-              ),
-              _buildFeatureItem(
-                '🚀',
-                'تحسين حجم التطبيق وسرعة الأداء بشكل ملحوظ.',
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                CacheHelper.saveData(key: versionKey, value: true);
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'فهمت!',
-                style: TextStyle(
-                  fontFamily: 'Tajawal',
-                  fontWeight: FontWeight.bold,
-                  color: MyTheme.primaryColor,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
-  Widget _buildFeatureItem(String icon, String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(icon, style: const TextStyle(fontSize: 18)),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontFamily: 'Tajawal',
-                fontSize: 14,
-                height: 1.5,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   Future<void> _checkForUpdate() async {
@@ -244,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => SurahScreen(
+                                    builder: (context) => QuranView(
                                       currentPage:
                                           CacheHelper.getData(
                                             key: 'pageNumber',
