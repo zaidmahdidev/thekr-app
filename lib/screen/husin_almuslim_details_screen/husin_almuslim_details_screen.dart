@@ -214,7 +214,7 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
                   color: const Color(0xfffffbec), // Light Cream Background
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: MyTheme.primaryColor.withOpacity(0.1),
+                    color: MyTheme.primaryColor.withValues(alpha: 0.1),
                     width: 2,
                   ),
                 ),
@@ -241,7 +241,7 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Divider(color: MyTheme.primaryColor.withOpacity(0.2)),
+                    Divider(color: MyTheme.primaryColor.withValues(alpha: 0.2)),
                     const SizedBox(height: 5),
                     Text(
                       '(احمدوا الله دومًا)',
@@ -254,7 +254,7 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
                     Text(
                       'تطبيق ذكر - صدقة جارية',
                       style: TextStyle(
-                        color: MyTheme.primaryColor.withOpacity(0.5),
+                        color: MyTheme.primaryColor.withValues(alpha: 0.5),
                         fontSize: 12,
                       ),
                     ),
@@ -384,7 +384,7 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
           Container(
             padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-              color: MyTheme.primaryColor.withOpacity(0.1),
+              color: MyTheme.primaryColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: MyTheme.primaryColor, size: 30),
@@ -475,7 +475,7 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.bold,
                       height: 1.8,
                     ),
                     textAlign: TextAlign.center,

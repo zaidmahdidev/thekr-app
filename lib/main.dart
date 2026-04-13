@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'network/local/cache_helper.dart';
 import 'services/notification_service.dart';
-import 'package:thekr_app/screen/splash_screen/splash_screen.dart';
-import 'package:thekr_app/shard/components/tools.dart';
+import 'package:thekr_app/screen/home_screen/home_screen.dart';
 import 'package:thekr_app/shard/constant/theme.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:thekr_app/shard/AppLocalizations.dart';
+
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +31,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MaterialApp(
       theme: ThemeData(
         useMaterial3: true,
         primaryColor: MyTheme.primaryColor,
@@ -56,10 +59,28 @@ class MyApp extends StatelessWidget {
           titleMedium: TextStyle(height: 1.6),
         ),
       ),
-      title: 'Dhikr',
+      title: 'ذِكر',
       locale: const Locale('ar'),
+      supportedLocales: const [Locale('ar'), Locale('en')],
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      localeResolutionCallback: (deviceLocale, supportedLocales) {
+        for (var locale in supportedLocales) {
+          if (deviceLocale != null &&
+              deviceLocale.languageCode == locale.languageCode) {
+            return deviceLocale;
+          }
+        }
+        return supportedLocales.first;
+      },
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      navigatorKey: navigatorKey,
+      scaffoldMessengerKey: scaffoldMessengerKey,
+      home: const HomeScreen(),
     );
   }
 }

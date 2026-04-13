@@ -3,7 +3,7 @@ import 'package:thekr_app/shard/constant/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:thekr_app/main.dart';
 import 'package:readmore/readmore.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -802,7 +802,7 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
               color: Colors.white,
               fontSize: 16,
               height: 1.8,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
           ),
@@ -853,12 +853,18 @@ void showToast({
   required String text,
   Color? textColor = Colors.white,
   Color? bgColoe = MyTheme.primaryColor,
-}) => Fluttertoast.showToast(
-  msg: text,
-  toastLength: Toast.LENGTH_SHORT,
-  gravity: ToastGravity.BOTTOM,
-  timeInSecForIosWeb: 3,
-  backgroundColor: bgColoe,
-  textColor: textColor,
-  fontSize: 16.0,
-);
+}) {
+  scaffoldMessengerKey.currentState?.showSnackBar(
+    SnackBar(
+      content: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(color: textColor, fontSize: 16.0),
+      ),
+      backgroundColor: bgColoe,
+      duration: const Duration(seconds: 3),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    ),
+  );
+}
