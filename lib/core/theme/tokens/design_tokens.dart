@@ -22,6 +22,19 @@ class AppColors {
     required this.textSecondary,
   });
 
+  static const MaterialColor primarySwatch = MaterialColor(0xFF0E635B, <int, Color>{
+    50: Color(0xFFE2ECEB),
+    100: Color(0xFFB7D0CE),
+    200: Color(0xFF87B1AD),
+    300: Color(0xFF56928C),
+    400: Color(0xFF327A74),
+    500: Color(0xFF0E635B),
+    600: Color(0xFF0C5B53),
+    700: Color(0xFF0A5149),
+    800: Color(0xFF084740),
+    900: Color(0xFF04352F),
+  });
+
   static const light = AppColors(
     primary: Color(0xFF0E645C),
     secondary: Color(0xFFFF9900),
