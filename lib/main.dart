@@ -6,6 +6,7 @@ import 'package:thekr_app/shard/constant/theme.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:thekr_app/shard/AppLocalizations.dart';
+import 'package:quran_library/quran_library.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -17,6 +18,8 @@ void main() async {
   await NotificationService.initialize();
   await NotificationService.requestPermissions();
   await NotificationService.refreshScheduledNotifications();
+
+  await QuranLibrary.init();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -33,7 +36,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        useMaterial3: true,
+        useMaterial3: false,
         primaryColor: MyTheme.primaryColor,
         primarySwatch: primary,
         appBarTheme: const AppBarTheme(
