@@ -9,14 +9,15 @@ class AppTheme {
       brightness: Brightness.light,
       primaryColor: AppColors.light.primary,
       primarySwatch: AppColors.primarySwatch,
-      colorScheme: ColorScheme.fromSwatch(
-        primarySwatch: AppColors.primarySwatch,
-      ).copyWith(
-        primary: AppColors.light.primary,
-        secondary: AppColors.light.secondary,
-        surface: AppColors.light.surface,
-        error: AppColors.light.error,
-      ),
+      colorScheme:
+          ColorScheme.fromSwatch(
+            primarySwatch: AppColors.primarySwatch,
+          ).copyWith(
+            primary: AppColors.light.primary,
+            secondary: AppColors.light.secondary,
+            surface: AppColors.light.surface,
+            error: AppColors.light.error,
+          ),
       scaffoldBackgroundColor: AppColors.light.background,
       useMaterial3: false,
       fontFamily: 'Tajawal',
@@ -55,15 +56,16 @@ class AppTheme {
       brightness: Brightness.dark,
       primaryColor: AppColors.dark.primary,
       primarySwatch: AppColors.primarySwatch,
-      colorScheme: ColorScheme.fromSwatch(
-        primarySwatch: AppColors.primarySwatch,
-        brightness: Brightness.dark,
-      ).copyWith(
-        primary: AppColors.dark.primary,
-        secondary: AppColors.dark.secondary,
-        surface: AppColors.dark.surface,
-        error: AppColors.dark.error,
-      ),
+      colorScheme:
+          ColorScheme.fromSwatch(
+            primarySwatch: AppColors.primarySwatch,
+            brightness: Brightness.dark,
+          ).copyWith(
+            primary: AppColors.dark.primary,
+            secondary: AppColors.dark.secondary,
+            surface: AppColors.dark.surface,
+            error: AppColors.dark.error,
+          ),
       scaffoldBackgroundColor: AppColors.dark.background,
       useMaterial3: false,
       fontFamily: 'Tajawal',

@@ -18,15 +18,15 @@ part 'app_router.gr.dart';
 class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: HomeRoute.page, initial: true),
-        AutoRoute(page: AzkarRoute.page),
-        AutoRoute(page: AzkarListRoute.page),
-        AutoRoute(page: HusinAlMuslimRoute.page),
-        AutoRoute(page: HusinAlMuslimDetailsRoute.page),
-        AutoRoute(page: AsmaAllahRoute.page),
-        AutoRoute(page: HadithNawawiRoute.page),
-        AutoRoute(page: QiblahRoute.page),
-        AutoRoute(page: SurahRoute.page),
-        AutoRoute(page: NotificationSettingsRoute.page),
-      ];
+    AutoRoute(page: HomeRoute.page, initial: true),
+    AutoRoute(page: AzkarRoute.page),
+    AutoRoute(page: AzkarListRoute.page),
+    AutoRoute(page: HusinAlMuslimRoute.page),
+    AutoRoute(page: HusinAlMuslimDetailsRoute.page),
+    AutoRoute(page: AsmaAllahRoute.page),
+    AutoRoute(page: HadithNawawiRoute.page),
+    AutoRoute(page: QiblahRoute.page),
+    AutoRoute(page: SurahRoute.page),
+    AutoRoute(page: NotificationSettingsRoute.page),
+  ];
 }

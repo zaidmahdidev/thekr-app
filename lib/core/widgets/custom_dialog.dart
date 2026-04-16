@@ -32,10 +32,7 @@ class CustomDialog extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        content: Text(
-          message,
-          style: AppTypography.bodyMedium,
-        ),
+        content: Text(message, style: AppTypography.bodyMedium),
         actions: [
           CupertinoDialogAction(
             onPressed: onYes,

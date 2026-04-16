@@ -59,10 +59,7 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
                     SizedBox(
                       width: context.getWidth(22),
                       height: context.getWidth(22),
-                      child: Image.asset(
-                        AppAssets.logo,
-                        fit: BoxFit.contain,
-                      ),
+                      child: Image.asset(AppAssets.logo, fit: BoxFit.contain),
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -145,9 +142,7 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
               const SizedBox(height: 25),
               Text(
                 'خيارات المشاركة',
-                style: AppTypography.h3.copyWith(
-                  color: context.colors.primary,
-                ),
+                style: AppTypography.h3.copyWith(color: context.colors.primary),
               ),
               const SizedBox(height: 25),
               Row(

@@ -100,7 +100,9 @@ class CustomContainer extends StatelessWidget {
                   if (subTitle != null)
                     Text(
                       '$subTitle',
-                      style: AppTypography.bodySmall.copyWith(color: Colors.white),
+                      style: AppTypography.bodySmall.copyWith(
+                        color: Colors.white,
+                      ),
                     )
                   else
                     const SizedBox(),

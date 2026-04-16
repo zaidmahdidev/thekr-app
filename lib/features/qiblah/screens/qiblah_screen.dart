@@ -11,9 +11,6 @@ import 'package:thekr_app/core/extensions/size_extension.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/theme/tokens/typography.dart';
 
-
-
-
 @RoutePage()
 class QiblahScreen extends StatefulWidget {
   const QiblahScreen({Key? key}) : super(key: key);
@@ -28,17 +25,12 @@ class _QiblahScreenState extends State<QiblahScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('اتجاه القبلة'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('اتجاه القبلة'), centerTitle: true),
       body: FutureBuilder(
         future: _deviceSupport,
         builder: (_, AsyncSnapshot<bool?> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
             return Center(
@@ -64,16 +56,13 @@ class _QiblahScreenState extends State<QiblahScreen> {
   }
 }
 
-
-
-
 ///////////////////////////////////////////
 class LocationErrorWidget extends StatelessWidget {
   final String? error;
   final Function? callback;
 
   const LocationErrorWidget({Key? key, this.error, this.callback})
-      : super(key: key);
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -81,18 +70,14 @@ class LocationErrorWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Icon(
-            Icons.location_off,
-            size: 150,
-            color: context.colors.error,
-          ),
+          Icon(Icons.location_off, size: 150, color: context.colors.error),
           const SizedBox(height: 32),
           Text(
             error!,
-              style: AppTypography.bodyMedium.copyWith(
-                color: context.colors.error,
-                fontWeight: FontWeight.bold,
-              ),
+            style: AppTypography.bodyMedium.copyWith(
+              color: context.colors.error,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 32),
           ElevatedButton(
@@ -100,18 +85,12 @@ class LocationErrorWidget extends StatelessWidget {
             onPressed: () {
               if (callback != null) callback!();
             },
-          )
+          ),
         ],
       ),
     );
   }
 }
-
-
-
-
-
-
 
 ///////////////////////////////////
 class QiblahCompass extends StatefulWidget {
@@ -120,7 +99,8 @@ class QiblahCompass extends StatefulWidget {
 }
 
 class _QiblahCompassState extends State<QiblahCompass> {
-  final _locationStreamController = StreamController<LocationStatus>.broadcast();
+  final _locationStreamController =
+      StreamController<LocationStatus>.broadcast();
 
   get stream => _locationStreamController.stream;
 
@@ -159,9 +139,7 @@ class _QiblahCompassState extends State<QiblahCompass> {
         stream: stream,
         builder: (context, AsyncSnapshot<LocationStatus> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.data!.enabled == true) {
             switch (snapshot.data!.status) {
@@ -192,7 +170,6 @@ class _QiblahCompassState extends State<QiblahCompass> {
       ),
     );
   }
-
 }
 
 class QiblahCompassWidget extends StatelessWidget {
@@ -209,9 +186,8 @@ class QiblahCompassWidget extends StatelessWidget {
     return StreamBuilder(
       stream: FlutterQiblah.qiblahStream,
       builder: (_, AsyncSnapshot<QiblahDirection> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting)
-        {
-          return const Center(child: CircularProgressIndicator(),);
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
         }
 
         final qiblahDirection = snapshot.data!;
@@ -234,7 +210,7 @@ class QiblahCompassWidget extends StatelessWidget {
                 "${qiblahDirection.offset.toStringAsFixed(3)}°",
                 style: AppTypography.bodyMedium,
               ),
-            )
+            ),
           ],
         );
       },

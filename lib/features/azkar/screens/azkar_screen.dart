@@ -21,10 +21,9 @@ class AzkarScreen extends StatelessWidget {
             leading: '${index + 1}',
             title: key,
             fun: () {
-              context.router.push(AzkarListRoute(
-                azkarList: azkarList[key]!,
-                type: key,
-              ));
+              context.router.push(
+                AzkarListRoute(azkarList: azkarList[key]!, type: key),
+              );
             },
           );
         },

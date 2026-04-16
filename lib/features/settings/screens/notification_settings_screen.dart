@@ -352,9 +352,7 @@ class _NotificationSettingsScreenState
             ),
             title: Text(
               title,
-              style: AppTypography.h3.copyWith(
-                color: context.colors.primary,
-              ),
+              style: AppTypography.h3.copyWith(color: context.colors.primary),
             ),
             trailing: Switch.adaptive(
               value: isEnabled,
@@ -392,7 +390,9 @@ class _NotificationSettingsScreenState
                       const SizedBox(width: 12),
                       Text(
                         'ضبط الوقت: ',
-                        style: AppTypography.bodyMedium.copyWith(color: Colors.grey[700]),
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: Colors.grey[700],
+                        ),
                       ),
                       Text(
                         _formatTime(time),

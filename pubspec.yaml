@@ -59,6 +59,10 @@ dependencies:
   quran_library: ^3.2.2+3
   flutter_screenutil: ^5.9.3
   auto_route: ^11.1.0
+  adhan: ^2.0.0+1
+  geolocator: ^14.0.2
+  intl_utils: ^2.8.14
+  flutter_riverpod: ^2.6.1
 
 dev_dependencies:
   auto_route_generator: ^10.5.0

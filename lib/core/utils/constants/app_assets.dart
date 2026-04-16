@@ -16,6 +16,9 @@ class AppAssets {
   static const String hadith = '$_imagesPath/hadithNawawi.webp';
   static const String asmaAllah = '$_imagesPath/AllahNames.png';
   static const String qiblah = '$_imagesPath/keblah.png';
+  static const String stories = '$_imagesPath/stories.png';
+  static const String misbaha = '$_imagesPath/misbaha.png';
+  static const String live = '$_imagesPath/live.png';
 
   // UI Elements
   static const String around = '$_imagesPath/around.png';

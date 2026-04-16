@@ -18,10 +18,12 @@ class HusinAlMuslimScreen extends StatelessWidget {
           String key = husinAlMuslim.keys.elementAt(index);
           return CustomContainer(
             fun: () {
-              context.router.push(HusinAlMuslimDetailsRoute(
-                title: key,
-                dhikrData: husinAlMuslim[key]!,
-              ));
+              context.router.push(
+                HusinAlMuslimDetailsRoute(
+                  title: key,
+                  dhikrData: husinAlMuslim[key]!,
+                ),
+              );
             },
             leading: '${index + 1}',
             title: key,
