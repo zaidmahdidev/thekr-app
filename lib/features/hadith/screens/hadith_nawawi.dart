@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:thekr_app/features/hadith/data/hadith_nawawi_model.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:thekr_app/features/hadith/widgets/custom_azkar_widget.dart';
 
 @RoutePage()
 class HadithNawawiScreen extends StatelessWidget {
