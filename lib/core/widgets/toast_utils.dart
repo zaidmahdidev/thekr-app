@@ -25,7 +25,7 @@ Color chooseToastColor(BuildContext context, ToastStates state) {
 void showToast({
   required String text,
   Color? textColor = Colors.white,
-  Color? bgColoe,
+  Color? backgroundColor,
 }) {
   scaffoldMessengerKey.currentState?.showSnackBar(
     SnackBar(
@@ -35,7 +35,7 @@ void showToast({
         style: TextStyle(color: textColor, fontSize: 16.0),
       ),
       backgroundColor:
-          bgColoe ?? const Color(0xFF008080), // Teal fallback if null
+          backgroundColor ?? const Color(0xFF008080), // Teal fallback if null
       duration: const Duration(seconds: 3),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

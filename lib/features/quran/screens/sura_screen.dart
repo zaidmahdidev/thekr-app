@@ -125,13 +125,13 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
                   onPressed: toggleTheme,
                   icon: Icon(
                     isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                    color: Colors.white,
+                    color: context.colors.primary,
                   ),
                   tooltip: 'تبديل المظهر',
                 ),
                 IconButton(
                   onPressed: _shareCurrentPage,
-                  icon: const Icon(Icons.share, color: Colors.white),
+                  icon: Icon(Icons.share, color: context.colors.primary),
                   tooltip: 'مشاركة الصفحة',
                 ),
               ],
