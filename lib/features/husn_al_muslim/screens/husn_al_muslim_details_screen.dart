@@ -1,12 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:readmore/readmore.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/theme/tokens/typography.dart';
-import 'package:thekr_app/core/services/share_service.dart';
-import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
-import 'package:auto_route/auto_route.dart';
+import 'package:thekr_app/features/husn_al_muslim/widgets/husn_al_muslim_item_widget.dart';
 
 @RoutePage()
 class HusinAlMuslimDetailsScreen extends StatefulWidget {
@@ -88,19 +86,27 @@ class _HusinAlMuslimDetailsScreenState
     return AppScaffold(
       title: widget.title,
       body: dhikrWithCounters.where((dhikr) => !dhikr['isCompleted']).isEmpty
-          ? const Center(
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.check_circle, color: Colors.green, size: 80),
-                  SizedBox(height: 16),
+                  Icon(
+                    Icons.check_circle,
+                    color: context.colors.primary,
+                    size: 80,
+                  ),
+                  const SizedBox(height: 16),
                   Text(
                     'تم إكمال جميع الأذكار',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: AppTypography.h2.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
                     'تقبل الله منك',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: Colors.grey,
+                    ),
                   ),
                 ],
               ),
@@ -119,7 +125,7 @@ class _HusinAlMuslimDetailsScreenState
                     opacity: dhikr['isCompleted'] ? 0.0 : 1.0,
                     child: dhikr['isCompleted']
                         ? const SizedBox.shrink()
-                        : CustomHusinAlMuslimWidget(
+                        : HusnAlMuslimItemWidget(
                             text: dhikr['text'],
                             footnote: dhikr['footnote'],
                             currentCount: dhikr['currentCount'],
@@ -130,146 +136,6 @@ class _HusinAlMuslimDetailsScreenState
                 );
               },
             ),
-    );
-  }
-}
-
-class CustomHusinAlMuslimWidget extends StatefulWidget {
-  final String text;
-  final String footnote;
-  final int currentCount;
-  final int originalCount;
-  final VoidCallback onTap;
-
-  const CustomHusinAlMuslimWidget({
-    Key? key,
-    required this.text,
-    required this.footnote,
-    required this.currentCount,
-    required this.originalCount,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  State<CustomHusinAlMuslimWidget> createState() =>
-      _CustomHusinAlMuslimWidgetState();
-}
-
-class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 150),
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void _handleTap() {
-    HapticFeedback.lightImpact();
-    HapticFeedback.vibrate();
-
-    _animationController.forward().then((_) {
-      _animationController.reverse();
-    });
-
-    if (widget.currentCount == 1) {
-      HapticFeedback.heavyImpact();
-    }
-
-    widget.onTap();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MyCard(
-      onTap: _handleTap,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  HapticFeedback.vibrate();
-                  Clipboard.setData(ClipboardData(text: widget.text));
-                  showToast(
-                    text: 'تم النسخ',
-                    textColor: context.colors.primary,
-                    backgroundColor: Colors.white,
-                  );
-                },
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Icon(Icons.copy, size: 18),
-                ),
-              ),
-              InkWell(
-                onTap: () => ShareService.showShareSheet(
-                  context,
-                  content: widget.text,
-                  subtitle: widget.footnote,
-                ),
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Icon(Icons.share, size: 20),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            widget.text,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              height: 1.8,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 10),
-          if (widget.footnote.isNotEmpty) ...[
-            ReadMoreText(
-              widget.footnote,
-              trimLines: 2,
-              textAlign: TextAlign.justify,
-              trimMode: TrimMode.Line,
-              trimCollapsedText: 'قراءة المزيد',
-              trimExpandedText: ' قراءة اقل',
-              lessStyle: TextStyle(color: context.colors.secondary),
-              moreStyle: TextStyle(color: context.colors.secondary),
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 14,
-                height: 1.6,
-              ),
-            ),
-            const SizedBox(height: 15),
-          ],
-        ],
-      ),
     );
   }
 }
