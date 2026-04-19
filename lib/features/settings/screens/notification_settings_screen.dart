@@ -6,6 +6,7 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/extensions/size_extension.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/theme/tokens/typography.dart';
+import '../../../core/widgets/widgets.dart';
 
 @RoutePage()
 class NotificationSettingsScreen extends StatefulWidget {
@@ -162,17 +163,8 @@ class _NotificationSettingsScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0,
-        title: Text(
-          'إعدادات الإشعارات',
-          style: AppTypography.h3.copyWith(color: Colors.white),
-        ),
-        backgroundColor: context.colors.primary,
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
+    return AppScaffold(
+      title: 'إعدادات الإشعارات',
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(color: context.colors.primary),

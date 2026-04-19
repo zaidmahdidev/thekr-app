@@ -10,13 +10,13 @@ class HusinAlMuslimScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(centerTitle: true, title: const Text('حُصن المسلم')),
+    return AppScaffold(
+      title: 'حُصن المسلم',
       body: ListView.builder(
         itemCount: husinAlMuslim.length,
         itemBuilder: (context, index) {
           String key = husinAlMuslim.keys.elementAt(index);
-          return CustomContainer(
+          return CustomCard(
             fun: () {
               context.router.push(
                 HusinAlMuslimDetailsRoute(

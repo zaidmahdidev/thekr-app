@@ -6,6 +6,8 @@ import 'package:readmore/readmore.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/theme/tokens/typography.dart';
+import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -86,11 +88,8 @@ class _HusinAlMuslimDetailsScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title, style: const TextStyle(fontSize: 18)),
-        centerTitle: true,
-      ),
+    return AppScaffold(
+      title: widget.title,
       body: dhikrWithCounters.where((dhikr) => !dhikr['isCompleted']).isEmpty
           ? const Center(
               child: Column(
@@ -295,9 +294,9 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
       backgroundColor: Colors.transparent,
       builder: (context) => SafeArea(
         child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(25),
               topRight: Radius.circular(25),
             ),
@@ -310,18 +309,14 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(2),
+                  color: Colors.grey[300],
                 ),
               ),
               const SizedBox(height: 25),
               Text(
                 'خيارات المشاركة',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: context.colors.primary,
-                ),
+                style: AppTypography.h3.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 25),
               Row(
@@ -388,18 +383,16 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
           Container(
             padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-              color: context.colors.primary.withValues(alpha: 0.1),
+              color: context.colors.secondary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: context.colors.primary, size: 30),
+            child: Icon(icon, size: 30),
           ),
           const SizedBox(height: 10),
           Text(
             label,
-            style: const TextStyle(
-              fontSize: 14,
+            style: AppTypography.bodySmall.copyWith(
               fontWeight: FontWeight.w500,
-              color: Color(0xFF424242),
             ),
           ),
         ],
@@ -409,106 +402,77 @@ class _CustomHusinAlMuslimWidgetState extends State<CustomHusinAlMuslimWidget>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _scaleAnimation,
-      builder: (context, child) {
-        return Transform.scale(
-          scale: _scaleAnimation.value,
-          child: InkWell(
-            onTap: _handleTap,
-            borderRadius: BorderRadius.circular(15),
-            child: Container(
-              width: double.infinity,
-              margin: const EdgeInsets.all(10),
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: context.colors.primary,
-                borderRadius: BorderRadius.circular(15),
+    return MyCard(
+      onTap: _handleTap,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              InkWell(
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  HapticFeedback.vibrate();
+                  Clipboard.setData(ClipboardData(text: widget.text));
+                  showToast(
+                    text: 'تم النسخ',
+                    textColor: context.colors.primary,
+                    bgColoe: Colors.white,
+                  );
+                },
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Icon(Icons.copy, size: 18),
+                ),
               ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-                          HapticFeedback.vibrate();
-                          Clipboard.setData(ClipboardData(text: widget.text));
-                          showToast(
-                            text: 'تم النسخ',
-                            textColor: context.colors.primary,
-                            bgColoe: Colors.white,
-                          );
-                        },
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Icon(
-                            Icons.copy,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: _showShareOptions,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Icon(
-                            Icons.share,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ],
+              InkWell(
+                onTap: _showShareOptions,
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    widget.text,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      height: 1.8,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 10),
-                  if (widget.footnote.isNotEmpty) ...[
-                    ReadMoreText(
-                      widget.footnote,
-                      trimLines: 2,
-                      textAlign: TextAlign.justify,
-                      trimMode: TrimMode.Line,
-                      trimCollapsedText: 'قراءة المزيد',
-                      trimExpandedText: ' قراءة اقل',
-                      lessStyle: TextStyle(color: context.colors.secondary),
-                      moreStyle: TextStyle(color: context.colors.secondary),
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                        height: 1.6,
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                  ],
-                ],
+                  child: const Icon(Icons.share, size: 20),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            widget.text,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              height: 1.8,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+          if (widget.footnote.isNotEmpty) ...[
+            ReadMoreText(
+              widget.footnote,
+              trimLines: 2,
+              textAlign: TextAlign.justify,
+              trimMode: TrimMode.Line,
+              trimCollapsedText: 'قراءة المزيد',
+              trimExpandedText: ' قراءة اقل',
+              lessStyle: TextStyle(color: context.colors.secondary),
+              moreStyle: TextStyle(color: context.colors.secondary),
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+                height: 1.6,
               ),
             ),
-          ),
-        );
-      },
+            const SizedBox(height: 15),
+          ],
+        ],
+      ),
     );
   }
 }

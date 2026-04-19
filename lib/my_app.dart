@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
           title: 'ذِكر',
           theme: AppTheme.light(),
           darkTheme: AppTheme.dark(),
-          themeMode: ThemeMode.dark,
+          themeMode: ThemeMode.light,
           locale: const Locale('ar'),
           supportedLocales: const [Locale('ar'), Locale('en')],
           localizationsDelegates: const [

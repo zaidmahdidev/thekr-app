@@ -113,14 +113,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.5.0"
-  awqat:
-    dependency: "direct main"
-    description:
-      name: awqat
-      sha256: e88611013bccf4833e5f8d036d1edea1629f465f1e4457395e7e2fcfbb1cc01a
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.12"
   boolean_selector:
     dependency: transitive
     description:

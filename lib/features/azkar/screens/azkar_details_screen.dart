@@ -8,6 +8,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/extensions/size_extension.dart';
+import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/theme/tokens/typography.dart';
@@ -92,10 +93,9 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.type),
-        centerTitle: true,
+    return AppScaffold(
+      appBar: BaseAppBar(
+        title: widget.type,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(16),
           child: Padding(
@@ -109,11 +109,11 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
                 builder: (context, value, child) {
                   return LinearProgressIndicator(
                     value: value,
-                    backgroundColor: Colors.white.withValues(alpha: 0.2),
+                    backgroundColor: Colors.grey.withValues(alpha: 0.2),
                     valueColor: AlwaysStoppedAnimation<Color>(
                       context.colors.secondary,
                     ),
-                    minHeight: 8,
+                    minHeight: 6,
                   );
                 },
               ),
@@ -325,9 +325,9 @@ class _CustomAzkarWidgetWithCounterState
       backgroundColor: Colors.transparent,
       builder: (context) => SafeArea(
         child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(25),
               topRight: Radius.circular(25),
             ),
@@ -347,11 +347,7 @@ class _CustomAzkarWidgetWithCounterState
               const SizedBox(height: 25),
               Text(
                 'خيارات المشاركة',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: context.colors.primary,
-                ),
+                style: AppTypography.h3.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 25),
               Row(
@@ -395,17 +391,16 @@ class _CustomAzkarWidgetWithCounterState
           Container(
             padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-              color: context.colors.primary.withValues(alpha: 0.1),
+              color: context.colors.secondary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: context.colors.primary, size: 30),
+            child: Icon(icon, size: 30),
           ),
           const SizedBox(height: 10),
           Text(
             label,
             style: AppTypography.bodySmall.copyWith(
               fontWeight: FontWeight.w500,
-              color: const Color(0xFF424242),
             ),
           ),
         ],
@@ -444,205 +439,174 @@ class _CustomAzkarWidgetWithCounterState
     return AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
-        return Transform.scale(
-          scale: _scaleAnimation.value,
-          child: InkWell(
-            onTap: _handleTap,
-            borderRadius: BorderRadius.circular(15),
-            child: Container(
-              width: double.infinity,
-              margin: const EdgeInsets.all(10),
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: context.colors.primary,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Column(
+        return MyCard(
+          onTap: _handleTap,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-                          HapticFeedback.vibrate();
-                          Clipboard.setData(
-                            ClipboardData(text: widget.details),
-                          );
-                          showToast(
-                            text: 'تم النسخ',
-                            textColor: context.colors.primary,
-                            bgColoe: Colors.white,
-                          );
-                        },
+                  InkWell(
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      HapticFeedback.vibrate();
+                      Clipboard.setData(ClipboardData(text: widget.details));
+                      showToast(
+                        text: 'تم النسخ',
+                        textColor: context.colors.primary,
+                        bgColoe: Colors.white,
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Icon(
-                            Icons.copy,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                        ),
                       ),
-                      InkWell(
-                        onTap: _showShareOptions,
+                      child: const Icon(Icons.copy, size: 18),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: _showShareOptions,
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            child: const Icon(
-                              Icons.share,
-                              color: Colors.white,
-                              size: 20,
-                              key: ValueKey('share'),
-                            ),
-                          ),
+                      ),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: const Icon(
+                          Icons.share,
+                          size: 20,
+                          key: ValueKey('share'),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    widget.details,
-                    style: AppTypography.bodyLarge.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      height: 1.8,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 10),
-                  if (widget.bless != null && widget.bless!.isNotEmpty) ...[
-                    ReadMoreText(
-                      widget.bless!,
-                      trimLines: 2,
-                      textAlign: TextAlign.justify,
-                      trimMode: TrimMode.Line,
-                      trimCollapsedText: 'قراءة المزيد',
-                      trimExpandedText: ' قراءة اقل',
-                      lessStyle: AppTypography.bodyMedium.copyWith(
-                        color: context.colors.secondary,
-                      ),
-                      moreStyle: AppTypography.bodyMedium.copyWith(
-                        color: context.colors.secondary,
-                      ),
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: const Color.fromARGB(255, 234, 234, 234),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                  ],
-                  const SizedBox(height: 10),
-                  Center(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: widget.currentCount == 0
-                          ? Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.green.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: Colors.green.withValues(alpha: 0.3),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.check_circle,
-                                    color: Colors.green,
-                                    size: 16,
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    'تم بحمد الله',
-                                    key: const ValueKey('completed_text'),
-                                    style: AppTypography.bodySmall.copyWith(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: context.colors.secondary.withValues(
-                                  alpha: 0.2,
-                                ),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: context.colors.secondary.withValues(
-                                    alpha: 0.3,
-                                  ),
-                                ),
-                              ),
-                              child: Text(
-                                'التكرار : ${widget.currentCount}',
-                                key: ValueKey('count_${widget.currentCount}'),
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: context.colors.secondary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    height: 5,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.white.withValues(alpha: 0.2),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: TweenAnimationBuilder<double>(
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeOutCubic,
-                        tween: Tween<double>(begin: 0, end: progress),
-                        builder: (context, value, child) {
-                          return LinearProgressIndicator(
-                            value: value,
-                            backgroundColor: Colors.transparent,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              widget.currentCount == 0
-                                  ? context.colors.primary.withValues(
-                                      alpha: 0.3,
-                                    )
-                                  : context.colors.secondary.withValues(
-                                      alpha: .8,
-                                    ),
-                            ),
-                          );
-                        },
                       ),
                     ),
                   ),
                 ],
               ),
-            ),
+              const SizedBox(height: 10),
+              Text(
+                widget.details,
+                style: AppTypography.bodyLarge.copyWith(
+                  fontWeight: FontWeight.bold,
+                  height: 1.8,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              if (widget.bless != null && widget.bless!.isNotEmpty) ...[
+                ReadMoreText(
+                  widget.bless!,
+                  trimLines: 2,
+                  textAlign: TextAlign.justify,
+                  trimMode: TrimMode.Line,
+                  trimCollapsedText: 'قراءة المزيد',
+                  trimExpandedText: ' قراءة اقل',
+                  lessStyle: AppTypography.bodyMedium.copyWith(
+                    color: context.colors.secondary,
+                  ),
+                  moreStyle: AppTypography.bodyMedium.copyWith(
+                    color: context.colors.secondary,
+                  ),
+                  style: AppTypography.bodyMedium.copyWith(),
+                ),
+                const SizedBox(height: 15),
+              ],
+              const SizedBox(height: 10),
+              Center(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: widget.currentCount == 0
+                      ? Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.green.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.check_circle,
+                                color: Colors.green,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                'تم بحمد الله',
+                                key: const ValueKey('completed_text'),
+                                style: AppTypography.bodySmall.copyWith(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: context.colors.secondary.withValues(
+                              alpha: 0.2,
+                            ),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: context.colors.secondary.withValues(
+                                alpha: 0.3,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            'التكرار : ${widget.currentCount}',
+                            key: ValueKey('count_${widget.currentCount}'),
+                            style: AppTypography.bodySmall.copyWith(
+                              color: context.colors.secondary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                height: 5,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.grey.withValues(alpha: 0.2),
+                  border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeOutCubic,
+                    tween: Tween<double>(begin: 0, end: progress),
+                    builder: (context, value, child) {
+                      return LinearProgressIndicator(
+                        value: value,
+                        backgroundColor: Colors.transparent,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          widget.currentCount == 0
+                              ? context.colors.primary.withValues(alpha: 0.3)
+                              : context.colors.secondary.withValues(alpha: .8),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },

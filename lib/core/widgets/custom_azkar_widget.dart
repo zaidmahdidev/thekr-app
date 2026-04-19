@@ -10,6 +10,7 @@ import 'package:thekr_app/core/extensions/size_extension.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
+import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
 
 class CustomAzkarWidget extends StatefulWidget {
@@ -229,18 +230,7 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.all(10),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [context.colors.primary, context.colors.primary],
-        ),
-      ),
+    return MyCard(
       child: Column(
         children: [
           Row(

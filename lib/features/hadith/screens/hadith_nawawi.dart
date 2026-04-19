@@ -9,12 +9,11 @@ class HadithNawawiScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('الأربعين النووية'), centerTitle: true),
+    return AppScaffold(
+      title: 'الأربعين النووية',
       body: Scrollbar(
         child: ListView.builder(
           itemCount: hadithNawawi.length,
-
           itemBuilder: (context, index) {
             final hadith = hadithNawawi[index]['hadith'];
             final description = hadithNawawi[index]['description'];

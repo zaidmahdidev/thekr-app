@@ -10,6 +10,7 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/extensions/size_extension.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/theme/tokens/typography.dart';
+import 'package:thekr_app/core/widgets/app_scaffold.dart';
 
 @RoutePage()
 class QiblahScreen extends StatefulWidget {
@@ -24,8 +25,9 @@ class _QiblahScreenState extends State<QiblahScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('اتجاه القبلة'), centerTitle: true),
+    return AppScaffold(
+      title: 'اتجاه القبلة',
+      appBar: AppBar(title: Text('اتجاه القبلة')),
       body: FutureBuilder(
         future: _deviceSupport,
         builder: (_, AsyncSnapshot<bool?> snapshot) {
