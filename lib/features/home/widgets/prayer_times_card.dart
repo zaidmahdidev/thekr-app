@@ -33,7 +33,7 @@ class PrayerTimesCard extends StatelessWidget {
     }).toList();
 
     return Container(
-      margin: EdgeInsets.all(context.insets.md),
+      margin: EdgeInsets.all(context.insets.sm),
       padding: EdgeInsets.symmetric(
         vertical: context.insets.sm,
         horizontal: context.insets.sm / 4,
