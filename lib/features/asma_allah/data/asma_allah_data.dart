@@ -1,3 +1,23 @@
+class AsmaAllah {
+  final String name;
+  final String meaning;
+  final int index;
+
+  const AsmaAllah({
+    required this.name,
+    required this.meaning,
+    required this.index,
+  });
+
+  factory AsmaAllah.fromMapEntry(MapEntry<String, dynamic> entry, int index) {
+    return AsmaAllah(
+      name: entry.key,
+      meaning: entry.value.toString(),
+      index: index,
+    );
+  }
+}
+
 final Map<String, dynamic> asmaAllah = {
   'الله': 'عَلَمٌ على الذات الإلهية، الاسم الأعظم الذي تفرد به الحق سبحانه.',
   'الرَّحْمن': 'كثير الرحمة، اسم مقصور عليه فلا يقال لغيره، يرحم بجلائل النعم.',
