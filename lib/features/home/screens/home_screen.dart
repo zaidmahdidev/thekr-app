@@ -11,11 +11,10 @@ import 'package:thekr_app/features/home/providers/prayer_provider.dart';
 import 'package:thekr_app/features/home/providers/time_provider.dart';
 import 'package:thekr_app/features/home/widgets/prayer_times_card.dart';
 import 'package:thekr_app/features/home/widgets/home_app_bar.dart';
-import 'package:thekr_app/features/home/widgets/next_prayer_header.dart';
 import 'package:thekr_app/features/home/widgets/home_features_grid.dart';
 import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
 import 'package:thekr_app/features/home/models/app_prayer_times.dart';
-import 'package:thekr_app/features/home/widgets/daily_ayah_card.dart';
+import 'package:thekr_app/features/home/widgets/inspiration_carousel.dart';
 
 @RoutePage()
 class HomeScreen extends ConsumerStatefulWidget {
@@ -95,6 +94,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
     final todayDate = intl.DateFormat('EEEE, d MMMM', 'ar').format(currentTime);
 
+    final nextPrayer = prayerTimes?.nextPrayer(currentTime);
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -110,19 +111,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               currentTime: currentTime,
               todayDate: todayDate,
               remainingTime: remainingTime,
+              nextPrayer: nextPrayer,
             ),
             SliverToBoxAdapter(
               child: PrayerTimesCard(prayerTimes: prayerTimes),
             ),
-            SliverToBoxAdapter(
-              child: NextPrayerHeader(
-                prayerTimes: prayerTimes,
-                tomorrowTimes: tomorrowTimes,
-              ),
-            ),
-            const SliverToBoxAdapter(
-              child: DailyAyahCard(),
-            ),
+            const InspirationCarousel(),
             const HomeFeaturesGrid(),
           ],
         ),

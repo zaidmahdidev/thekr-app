@@ -110,13 +110,13 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
         padding: EdgeInsets.only(right: 8.w),
         child: InkWell(
           onTap: () => context.router.back(),
-          borderRadius: BorderRadius.circular(context.corners.md),
+          borderRadius: BorderRadius.circular(context.corners.rc360),
           child: Container(
             width: 38.w,
             height: 38.w,
             decoration: BoxDecoration(
               color: context.colors.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(context.corners.md),
+              borderRadius: BorderRadius.circular(context.corners.rc360),
               border: Border.all(
                 color: context.colors.primary.withValues(alpha: 0.1),
                 width: 1,

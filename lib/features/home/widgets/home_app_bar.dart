@@ -7,115 +7,252 @@ import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:thekr_app/core/router/app_router.dart';
 
+import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
+
 class HomeAppBar extends StatelessWidget {
   final DateTime currentTime;
   final String todayDate;
   final String remainingTime;
+  final AppPrayer? nextPrayer;
 
   const HomeAppBar({
     super.key,
     required this.currentTime,
     required this.todayDate,
     required this.remainingTime,
+    this.nextPrayer,
   });
+
+  _AppBarTheme _getTheme(BuildContext context) {
+    if (nextPrayer == null) {
+      return _AppBarTheme(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            context.colors.primary,
+            context.colors.background,
+            context.colors.background,
+          ],
+          stops: const [0.0, 0.85, 1.0],
+        ),
+        icon: Icons.nightlight_round,
+      );
+    }
+
+    switch (nextPrayer!) {
+      case AppPrayer.fajr:
+        return _AppBarTheme(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              const Color(0xFF0F2027),
+              const Color(0xFF203A43),
+              const Color(0xFF2C5364),
+              context.colors.background,
+              context.colors.background,
+            ],
+            stops: const [0.0, 0.3, 0.6, 0.85, 1.0],
+          ),
+          icon: Icons.brightness_3_rounded,
+        );
+      case AppPrayer.sunrise:
+      case AppPrayer.dhuhr:
+        return _AppBarTheme(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              const Color(0xFF2193b0),
+              const Color(0xFF6dd5ed),
+              context.colors.background,
+              context.colors.background,
+            ],
+            stops: const [0.0, 0.6, 0.85, 1.0],
+          ),
+          icon: Icons.wb_sunny_rounded,
+        );
+      case AppPrayer.asr:
+        return _AppBarTheme(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              const Color(0xFFf12711),
+              const Color(0xFFf5af19),
+              context.colors.background,
+              context.colors.background,
+            ],
+            stops: const [0.0, 0.6, 0.85, 1.0],
+          ),
+          icon: Icons.wb_twilight_rounded,
+        );
+      case AppPrayer.maghrib:
+        return _AppBarTheme(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              const Color(0xFF6441A5),
+              const Color(0xFF2a0845),
+              context.colors.background,
+              context.colors.background,
+            ],
+            stops: const [0.0, 0.6, 0.85, 1.0],
+          ),
+          icon: Icons.wb_twilight_rounded,
+        );
+      case AppPrayer.isha:
+        return _AppBarTheme(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              const Color(0xFF141E30),
+              const Color(0xFF243B55),
+              context.colors.background,
+              context.colors.background,
+            ],
+            stops: const [0.0, 0.6, 0.85, 1.0],
+          ),
+          icon: Icons.nightlight_round,
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = _getTheme(context);
+
     return SliverAppBar(
-      expandedHeight: 200.h,
+      expandedHeight: 180.h,
       pinned: true,
       backgroundColor: Colors.transparent,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
       flexibleSpace: FlexibleSpaceBar(
-        centerTitle: true,
-        titlePadding: EdgeInsets.only(bottom: 16.h),
         background: Stack(
           fit: StackFit.expand,
           children: [
-            Image.asset(AppAssets.hero, fit: BoxFit.cover),
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    todayDate,
-                    style: AppTypography.h3.copyWith(letterSpacing: 1.2),
-                  ),
-                  SizedBox(height: 5.h),
-                  Text(
-                    intl.DateFormat('h:mm:ss', 'ar').format(currentTime),
-                    style: AppTypography.h1.copyWith(
-                      fontSize: 50.sp,
-                      fontWeight: FontWeight.bold,
+            AnimatedContainer(
+              duration: const Duration(seconds: 1),
+              decoration: BoxDecoration(gradient: theme.gradient),
+            ),
+            // Subtle Islamic Pattern
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Opacity(
+                opacity: 0.2,
+                child: Image.asset(
+                  AppAssets.hero,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
+              ),
+            ),
+            // Main Content
+            SafeArea(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      todayDate,
+                      style: AppTypography.h3.copyWith(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        letterSpacing: 1.2,
+                        fontSize: 14.sp,
+                      ),
                     ),
-                  ),
-                  if (remainingTime.isNotEmpty) ...[
-                    SizedBox(height: 12.h),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: context.insets.lg,
-                        vertical: context.insets.sm,
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            context.colors.secondary.withValues(alpha: 0.2),
-                            context.colors.secondary.withValues(alpha: 0.05),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(context.corners.xl),
-                        border: Border.all(
-                          color: context.colors.secondary.withValues(
-                            alpha: 0.3,
-                          ),
-                          width: 0.8,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.access_time_filled_rounded,
-                            color: context.colors.secondary,
-                            size: 16.sp,
-                          ),
-                          SizedBox(width: 8.w),
-                          Text(
-                            remainingTime,
-                            style: AppTypography.label.copyWith(
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                    SizedBox(height: 8.h),
+                    Text(
+                      intl.DateFormat('h:mm', 'ar').format(currentTime),
+                      style: AppTypography.h1.copyWith(
+                        fontSize: 64.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            offset: const Offset(0, 4),
+                            blurRadius: 10,
                           ),
                         ],
                       ),
                     ),
+                    if (remainingTime.isNotEmpty) ...[
+                      SizedBox(height: 5.h),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: context.insets.lg,
+                          vertical: context.insets.sm,
+                        ),
+                        decoration: BoxDecoration(
+                          color: context.colors.background.withValues(
+                            alpha: 0.5,
+                          ),
+                          borderRadius: BorderRadius.circular(
+                            context.corners.xl,
+                          ),
+                          border: Border.all(
+                            color: context.colors.secondary.withValues(
+                              alpha: 0.2,
+                            ),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              theme.icon,
+                              color: context.colors.secondary,
+                              size: 14.sp,
+                            ),
+                            SizedBox(width: 8.w),
+                            Text(
+                              remainingTime,
+                              style: AppTypography.label.copyWith(
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
-                  SizedBox(height: 10.h),
-                ],
+                ),
               ),
             ),
           ],
         ),
       ),
       actions: [
-        Container(
-          margin: EdgeInsets.all(context.insets.sm),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            onPressed: () =>
-                context.router.push(const NotificationSettingsRoute()),
-            icon: Image.asset(
-              AppAssets.notification,
-              width: 22.w,
-              color: Colors.white,
+        Padding(
+          padding: EdgeInsets.only(left: context.insets.sm),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              onPressed: () =>
+                  context.router.push(const NotificationSettingsRoute()),
+              icon: Image.asset(AppAssets.notification, width: 30.w),
             ),
           ),
         ),
       ],
     );
   }
+}
+
+class _AppBarTheme {
+  final Gradient gradient;
+  final IconData icon;
+
+  _AppBarTheme({required this.gradient, required this.icon});
 }

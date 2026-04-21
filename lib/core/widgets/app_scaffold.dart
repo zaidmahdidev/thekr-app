@@ -46,7 +46,7 @@ class AppScaffold extends StatelessWidget {
             top: -100,
             end: -50,
             child: _buildGradientBlob(
-              context.colors.primary.withValues(alpha: 0.08),
+              context.colors.primary.withValues(alpha: 0.09),
               300,
             ),
           ),
@@ -54,7 +54,7 @@ class AppScaffold extends StatelessWidget {
             bottom: -50,
             start: -100,
             child: _buildGradientBlob(
-              context.colors.secondary.withValues(alpha: 0.08),
+              context.colors.secondary.withValues(alpha: 0.09),
               350,
             ),
           ),
