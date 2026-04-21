@@ -99,7 +99,7 @@ class _InspirationCarouselState extends State<InspirationCarousel> {
           ),
           SizedBox(height: context.insets.sm),
           SizedBox(
-            height: 180.h,
+            height: 155.h,
             child: PageView.builder(
               controller: _pageController,
               onPageChanged: (index) => setState(() => _currentPage = index),
@@ -248,13 +248,13 @@ class _InspirationCard extends StatelessWidget {
 
   double _calculateFontSize(String text, bool isAyah) {
     if (isAyah) {
-      if (text.length > 100) return 18.sp;
-      if (text.length > 60) return 20.sp;
-      return 22.sp;
+      if (text.length > 100) return 16.sp;
+      if (text.length > 60) return 18.sp;
+      return 20.sp;
     } else {
-      if (text.length > 100) return 14.sp;
-      if (text.length > 60) return 16.sp;
-      return 18.sp;
+      if (text.length > 100) return 13.sp;
+      if (text.length > 60) return 15.sp;
+      return 17.sp;
     }
   }
 }

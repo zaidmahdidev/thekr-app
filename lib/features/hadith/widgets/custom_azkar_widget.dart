@@ -9,11 +9,8 @@ import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
 
 class CustomAzkarWidget extends StatefulWidget {
-  const CustomAzkarWidget({
-    Key? key,
-    required this.details,
-    this.bless,
-  }) : super(key: key);
+  const CustomAzkarWidget({Key? key, required this.details, this.bless})
+    : super(key: key);
 
   final String details;
   final String? bless;
@@ -46,7 +43,6 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.grey.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Icon(Icons.copy, size: 18),
@@ -62,7 +58,6 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.grey.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Icon(Icons.share, size: 20),

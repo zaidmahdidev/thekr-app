@@ -27,7 +27,6 @@ class _QiblahScreenState extends State<QiblahScreen> {
   Widget build(BuildContext context) {
     return AppScaffold(
       title: 'اتجاه القبلة',
-      appBar: AppBar(title: Text('اتجاه القبلة')),
       body: FutureBuilder(
         future: _deviceSupport,
         builder: (_, AsyncSnapshot<bool?> snapshot) {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/features/home/data/ayah_data.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:thekr_app/core/router/app_router.dart';
+import 'package:thekr_app/features/home/data/daily_content_data.dart';
 
 class DailyAyahCard extends StatelessWidget {
   const DailyAyahCard({super.key});
@@ -38,7 +38,7 @@ class DailyAyahCard extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-             context.router.push(SurahRoute(currentPage: ayah.page));
+            context.router.push(SurahRoute(currentPage: ayah.page));
           },
           borderRadius: BorderRadius.circular(context.corners.xl),
           child: Padding(
@@ -96,7 +96,9 @@ class DailyAyahCard extends StatelessWidget {
                       color: context.colors.primary.withValues(alpha: 0.2),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: context.insets.sm),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.insets.sm,
+                      ),
                       child: Text(
                         '${ayah.surah} - [${ayah.ayahNumber}]',
                         style: context.textStyles.bodySmall?.copyWith(

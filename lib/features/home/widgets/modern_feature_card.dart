@@ -19,64 +19,67 @@ class ModernFeatureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(context.corners.xl),
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.colors.surface,
-          borderRadius: BorderRadius.circular(context.corners.xl),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10.r,
-              offset: Offset(0, 4.h),
-            ),
-          ],
-          border: Border.all(
-            color: context.colors.primary.withValues(alpha: 0.05),
-            width: 1,
+    return Container(
+      decoration: BoxDecoration(
+        color: context.colors.surface,
+        borderRadius: BorderRadius.circular(context.corners.xl),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10.r,
+            offset: Offset(0, 4.h),
           ),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [context.colors.surface, context.colors.background],
-          ),
+        ],
+        border: Border.all(
+          color: context.colors.primary.withValues(alpha: 0.05),
+          width: 1,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(context.insets.sm * 1.5),
-              decoration: BoxDecoration(
-                color: (color ?? context.colors.secondary).withValues(
-                  alpha: 0.1,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [context.colors.surface, context.colors.background],
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(context.corners.xl),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.all(context.insets.sm * 1.5),
+                decoration: BoxDecoration(
+                  color: (color ?? context.colors.secondary).withValues(
+                    alpha: 0.1,
+                  ),
+                  shape: BoxShape.circle,
                 ),
-                shape: BoxShape.circle,
-              ),
-              child: Image.asset(
-                imgUrl,
-                width: 35.w,
-                height: 35.w,
-                fit: BoxFit.contain,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: context.insets.sm),
-              child: Text(
-                title,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: AppTypography.bodySmall.copyWith(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.bold,
-                  color: context.colors.textPrimary,
+                child: Image.asset(
+                  imgUrl,
+                  width: 35.w,
+                  height: 35.w,
+                  fit: BoxFit.contain,
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 8.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: context.insets.sm),
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTypography.bodySmall.copyWith(
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.bold,
+                    color: context.colors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
