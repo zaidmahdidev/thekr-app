@@ -29,12 +29,14 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
   void initState() {
     super.initState();
     azkarWithCounters = widget.azkarList.map((azkar) {
+      final repeatStr = azkar['repeat'] ?? '1';
+      final count = int.tryParse(repeatStr) ?? 1;
       return {
         'zekr': azkar['zekr']!,
-        'repeat': azkar['repeat']!,
+        'repeat': repeatStr,
         'bless': azkar['bless']!,
-        'currentCount': int.parse(azkar['repeat']!),
-        'originalCount': int.parse(azkar['repeat']!),
+        'currentCount': count,
+        'originalCount': count,
         'isCompleted': false,
       };
     }).toList();

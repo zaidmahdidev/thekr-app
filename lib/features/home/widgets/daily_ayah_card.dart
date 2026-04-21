@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:thekr_app/core/router/app_router.dart';
+import 'package:thekr_app/core/theme/tokens/typography.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/features/home/data/daily_content_data.dart';
 
 class DailyAyahCard extends StatelessWidget {
@@ -66,7 +68,7 @@ class DailyAyahCard extends StatelessWidget {
                       ),
                       child: Text(
                         'آية اليوم',
-                        style: context.textStyles.labelSmall?.copyWith(
+                        style: AppTypography.label.copyWith(
                           color: context.colors.primary,
                           fontWeight: FontWeight.bold,
                         ),
@@ -78,12 +80,10 @@ class DailyAyahCard extends StatelessWidget {
                 Text(
                   ayah.text,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
+                  style: AppTypography.h2.copyWith(
                     height: 1.6,
                     color: context.colors.textPrimary,
-                    fontFamily: 'hafs', // Attempting to use correct font
+                    fontFamily: 'hafs',
                   ),
                 ),
                 SizedBox(height: context.insets.md),
@@ -101,7 +101,7 @@ class DailyAyahCard extends StatelessWidget {
                       ),
                       child: Text(
                         '${ayah.surah} - [${ayah.ayahNumber}]',
-                        style: context.textStyles.bodySmall?.copyWith(
+                        style: AppTypography.bodySmall.copyWith(
                           color: context.colors.textSecondary,
                           fontStyle: FontStyle.italic,
                         ),

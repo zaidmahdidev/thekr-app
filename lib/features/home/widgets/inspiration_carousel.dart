@@ -72,10 +72,7 @@ class _InspirationCarouselState extends State<InspirationCarousel> {
               children: [
                 Text(
                   'إلهامات يومية',
-                  style: AppTypography.h3.copyWith(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppTypography.h3.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Row(
                   children: List.generate(
@@ -162,7 +159,7 @@ class _InspirationCard extends StatelessWidget {
                   children: [
                     Icon(
                       item.icon,
-                      color: context.colors.primary.withValues(alpha: 0.3),
+                      color: context.colors.secondary.withValues(alpha: 0.7),
                       size: 24.sp,
                     ),
                     Container(
@@ -176,10 +173,9 @@ class _InspirationCard extends StatelessWidget {
                       ),
                       child: Text(
                         item.type,
-                        style: context.textStyles.labelSmall?.copyWith(
+                        style: AppTypography.label.copyWith(
                           color: context.colors.primary,
                           fontWeight: FontWeight.bold,
-                          fontSize: 10.sp,
                           fontFamily: 'Tajawal',
                         ),
                       ),
@@ -195,7 +191,7 @@ class _InspirationCard extends StatelessWidget {
                       child: Text(
                         item.content,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: AppTypography.bodyLarge.copyWith(
                           fontSize: _calculateFontSize(item.content, isAyah),
                           fontWeight: isAyah
                               ? FontWeight.normal
@@ -223,9 +219,8 @@ class _InspirationCard extends StatelessWidget {
                       ),
                       child: Text(
                         item.subtitle,
-                        style: context.textStyles.bodySmall?.copyWith(
+                        style: AppTypography.bodySmall.copyWith(
                           color: context.colors.textSecondary,
-                          fontSize: 11.sp,
                           fontFamily: 'Tajawal',
                           fontWeight: FontWeight.w500,
                         ),

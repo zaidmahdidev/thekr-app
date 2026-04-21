@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/widgets/my_card.dart';
 
@@ -52,9 +53,6 @@ class _CustomCardState extends State<CustomCard>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return MyCard(
       isHighlighted: widget.isHighlighted,
       onTap: widget.fun,
@@ -71,7 +69,7 @@ class _CustomCardState extends State<CustomCard>
               children: [
                 Text(
                   widget.title,
-                  style: context.textStyles.titleMedium?.copyWith(
+                  style: AppTypography.h3.copyWith(
                     color: widget.isHighlighted
                         ? context.colors.primary
                         : context.colors.textPrimary,
@@ -83,7 +81,7 @@ class _CustomCardState extends State<CustomCard>
                   SizedBox(height: 4.h),
                   Text(
                     widget.subTitle!,
-                    style: context.textStyles.bodyMedium?.copyWith(
+                    style: AppTypography.bodyMedium.copyWith(
                       color: context.colors.textSecondary,
                     ),
                   ),
@@ -95,7 +93,7 @@ class _CustomCardState extends State<CustomCard>
             SizedBox(width: context.insets.sm),
             Text(
               widget.trailing!,
-              style: context.textStyles.labelLarge?.copyWith(
+              style: AppTypography.bodyMedium.copyWith(
                 color: context.colors.primary,
                 fontWeight: FontWeight.w600,
               ),
@@ -121,9 +119,8 @@ class _CustomCardState extends State<CustomCard>
         padding: const EdgeInsets.only(top: 5),
         child: Text(
           widget.leading!,
-          style: TextStyle(
+          style: AppTypography.bodyMedium.copyWith(
             color: context.colors.primary,
-            fontSize: 13.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
