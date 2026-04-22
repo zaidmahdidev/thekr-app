@@ -257,6 +257,69 @@ class NotificationSettingsRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ProphetDetailsScreen]
+class ProphetDetailsRoute extends PageRouteInfo<ProphetDetailsRouteArgs> {
+  ProphetDetailsRoute({
+    Key? key,
+    required ProphetStory prophet,
+    List<PageRouteInfo>? children,
+  }) : super(
+         ProphetDetailsRoute.name,
+         args: ProphetDetailsRouteArgs(key: key, prophet: prophet),
+         initialChildren: children,
+       );
+
+  static const String name = 'ProphetDetailsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<ProphetDetailsRouteArgs>();
+      return ProphetDetailsScreen(key: args.key, prophet: args.prophet);
+    },
+  );
+}
+
+class ProphetDetailsRouteArgs {
+  const ProphetDetailsRouteArgs({this.key, required this.prophet});
+
+  final Key? key;
+
+  final ProphetStory prophet;
+
+  @override
+  String toString() {
+    return 'ProphetDetailsRouteArgs{key: $key, prophet: $prophet}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ProphetDetailsRouteArgs) return false;
+    return key == other.key && prophet == other.prophet;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ prophet.hashCode;
+}
+
+/// generated route for
+/// [ProphetsListScreen]
+class ProphetsListRoute extends PageRouteInfo<void> {
+  const ProphetsListRoute({List<PageRouteInfo>? children})
+    : super(ProphetsListRoute.name, initialChildren: children);
+
+  static const String name = 'ProphetsListRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ProphetsListScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [QiblahScreen]
 class QiblahRoute extends PageRouteInfo<void> {
   const QiblahRoute({List<PageRouteInfo>? children})
