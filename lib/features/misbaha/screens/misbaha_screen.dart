@@ -9,6 +9,7 @@ import '../widgets/misbaha_painter.dart';
 import '../widgets/crystal_counter.dart';
 import '../widgets/zikr_selector.dart';
 import '../widgets/reset_button.dart';
+import '../widgets/bead_color_picker.dart';
 
 class MisbahaScreen extends ConsumerStatefulWidget {
   const MisbahaScreen({super.key});
@@ -79,17 +80,16 @@ class _MisbahaScreenState extends ConsumerState<MisbahaScreen>
         },
         child: Stack(
           children: [
-            // 1. Hyper-Realistic Misbaha Engine
             CustomPaint(
               size: Size(1.sw, 1.sh),
               painter: InfiniteLoopBeadPainter(
                 scrollProgress: _scrollProgress,
                 primaryColor: context.colors.primary,
                 secondaryColor: context.colors.secondary,
+                beadColors: state.beadType.colors,
               ),
             ),
 
-            // 2. Spiritual Control Dashboard
             Positioned(
               right: context.insets.lg,
               top: 0,
@@ -102,6 +102,16 @@ class _MisbahaScreenState extends ConsumerState<MisbahaScreen>
                   onZikrChanged: (zikr) =>
                       ref.read(misbahaProvider.notifier).setZikr(zikr),
                 ),
+              ),
+            ),
+
+            Positioned(
+              top: 10,
+              right: context.insets.lg,
+              child: BeadColorPicker(
+                currentType: state.beadType,
+                onSelected: (type) =>
+                    ref.read(misbahaProvider.notifier).setBeadType(type),
               ),
             ),
           ],

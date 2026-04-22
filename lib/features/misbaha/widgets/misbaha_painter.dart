@@ -6,11 +6,13 @@ class InfiniteLoopBeadPainter extends CustomPainter {
   final double scrollProgress;
   final Color primaryColor;
   final Color secondaryColor;
+  final List<Color> beadColors;
 
   InfiniteLoopBeadPainter({
     required this.scrollProgress,
     required this.primaryColor,
     required this.secondaryColor,
+    required this.beadColors,
   });
 
   @override
@@ -80,13 +82,9 @@ class InfiniteLoopBeadPainter extends CustomPainter {
 
     final rect = Rect.fromCircle(center: center, radius: radius);
     
-    // 2. Base Sphere (Wood Texture Gradient)
+    // 2. Base Sphere (Material Texture Gradient)
     final baseGradient = RadialGradient(
-      colors: [
-        const Color(0xFFC17F59).withValues(alpha: opacity), 
-        const Color(0xFF5D3622).withValues(alpha: opacity), 
-        const Color(0xFF2B1810).withValues(alpha: opacity),
-      ],
+      colors: beadColors.map((c) => c.withValues(alpha: opacity)).toList(),
       stops: const [0.0, 0.7, 1.0],
       center: const Alignment(-0.35, -0.35),
     ).createShader(rect);

@@ -11,10 +11,12 @@ class MisbahaNotifier extends StateNotifier<MisbahaState> {
 
   static const _totalCountKey = 'misbaha_total_count';
   static const _zikrCountPrefix = 'misbaha_zikr_';
+  static const _beadTypeKey = 'misbaha_bead_type';
 
   /// Loads persisted counts from CacheHelper
   void _loadData() {
     final totalCount = CacheHelper.getData(key: _totalCountKey) ?? 0;
+    final beadTypeName = CacheHelper.getData(key: _beadTypeKey) ?? BeadType.wood.name;
     
     final counts = <MisbahaZikr, int>{};
     for (final zikr in MisbahaZikr.values) {
@@ -25,6 +27,7 @@ class MisbahaNotifier extends StateNotifier<MisbahaState> {
       totalCount: totalCount,
       zikrCounts: counts,
       count: counts[state.currentZikr] ?? 0,
+      beadType: BeadType.values.firstWhere((e) => e.name == beadTypeName, orElse: () => BeadType.wood),
     );
   }
 
@@ -32,6 +35,10 @@ class MisbahaNotifier extends StateNotifier<MisbahaState> {
   void _saveZikrCount(MisbahaZikr zikr, int value) {
     CacheHelper.saveData(key: _zikrCountPrefix + zikr.name, value: value);
     CacheHelper.saveData(key: _totalCountKey, value: state.totalCount);
+  }
+
+  void _saveBeadType(BeadType type) {
+    CacheHelper.saveData(key: _beadTypeKey, value: type.name);
   }
 
   /// Increments the current count and persists it
@@ -63,6 +70,12 @@ class MisbahaNotifier extends StateNotifier<MisbahaState> {
       currentZikr: zikr,
       count: state.zikrCounts[zikr] ?? 0,
     );
+  }
+
+  /// Updates the bead type/color
+  void setBeadType(BeadType type) {
+    state = state.copyWith(beadType: type);
+    _saveBeadType(type);
   }
 }
 
