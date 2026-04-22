@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'base_app_bar.dart';
 
 class AppScaffold extends StatelessWidget {
@@ -42,6 +44,18 @@ class AppScaffold extends StatelessWidget {
       body: Stack(
         children: [
           // Subtle Mesh Gradient Blobs
+          Positioned(
+            bottom: -50.h,
+            left: -50.w,
+            child: Opacity(
+              opacity: 0.1,
+              child: Image.asset(
+                AppAssets.around,
+                width: 300.w,
+                color: context.colors.primary,
+              ),
+            ),
+          ),
           PositionedDirectional(
             top: -100,
             end: -50,
