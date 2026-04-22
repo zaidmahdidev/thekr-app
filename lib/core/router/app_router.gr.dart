@@ -225,6 +225,22 @@ class HusinAlMuslimRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [LiveStreamScreen]
+class LiveStreamRoute extends PageRouteInfo<void> {
+  const LiveStreamRoute({List<PageRouteInfo>? children})
+    : super(LiveStreamRoute.name, initialChildren: children);
+
+  static const String name = 'LiveStreamRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const LiveStreamScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [NotificationSettingsScreen]
 class NotificationSettingsRoute extends PageRouteInfo<void> {
   const NotificationSettingsRoute({List<PageRouteInfo>? children})
