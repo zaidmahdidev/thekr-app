@@ -8,6 +8,7 @@ class AppAssets {
   static const String logo = '$_imagesPath/thekr.png';
   static const String quranLogo = '$_imagesPath/quran_logo.png';
   static const String hero = '$_imagesPath/hero.png';
+  static const String bg = '$_imagesPath/bg.png';
 
   // Navigation / Main Features
   static const String quran = '$_imagesPath/quran.png';

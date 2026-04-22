@@ -109,7 +109,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: Padding(
         padding: EdgeInsets.only(right: 8.w),
         child: InkWell(
-          onTap: () => context.router.back(),
+          onTap: () => context.maybePop(),
           borderRadius: BorderRadius.circular(context.corners.rc360),
           child: Container(
             width: 38.w,

@@ -57,9 +57,21 @@ class HomeFeaturesGrid extends StatelessWidget {
             icon: AppAssets.qiblah,
             route: const QiblahRoute(),
           ),
-          const _FeatureItem(title: "قصص الأنبياء", icon: AppAssets.stories),
-          const _FeatureItem(title: "المسبحة", icon: AppAssets.misbaha),
-          const _FeatureItem(title: "بث مباشر", icon: AppAssets.live),
+          _FeatureItem(
+            title: "قصص الأنبياء",
+            icon: AppAssets.stories,
+            route: const ProphetsListRoute(),
+          ),
+          _FeatureItem(
+            title: "المسبحة",
+            icon: AppAssets.misbaha,
+            route: const MisbahaRoute(),
+          ),
+          _FeatureItem(
+            title: "بث مباشر",
+            icon: AppAssets.live,
+            route: const LiveStreamRoute(),
+          ),
         ]),
       ),
     );

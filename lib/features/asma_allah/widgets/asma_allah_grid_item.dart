@@ -28,7 +28,6 @@ class AsmaAllahGridItem extends StatelessWidget {
             textAlign: TextAlign.center,
             style: AppTypography.bodyMedium.copyWith(
               fontWeight: FontWeight.bold,
-              color: context.colors.primary,
               fontFamily: 'hafs',
               fontSize: 14.sp,
             ),

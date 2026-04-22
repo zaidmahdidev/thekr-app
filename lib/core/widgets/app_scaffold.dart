@@ -42,15 +42,16 @@ class AppScaffold extends StatelessWidget {
       appBar: appBar ?? (title != null ? BaseAppBar(title: title) : null),
       drawer: drawer,
       body: Stack(
+        fit: StackFit.expand,
         children: [
           // Subtle Mesh Gradient Blobs
           Positioned(
-            bottom: -50.h,
-            left: -50.w,
+            bottom: 0.h,
+            left: 0.w,
             child: Opacity(
               opacity: 0.1,
               child: Image.asset(
-                AppAssets.around,
+                AppAssets.bg,
                 width: 300.w,
                 color: context.colors.primary,
               ),
