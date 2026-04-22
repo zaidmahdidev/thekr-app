@@ -241,6 +241,22 @@ class LiveStreamRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [MisbahaScreen]
+class MisbahaRoute extends PageRouteInfo<void> {
+  const MisbahaRoute({List<PageRouteInfo>? children})
+    : super(MisbahaRoute.name, initialChildren: children);
+
+  static const String name = 'MisbahaRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const MisbahaScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [NotificationSettingsScreen]
 class NotificationSettingsRoute extends PageRouteInfo<void> {
   const NotificationSettingsRoute({List<PageRouteInfo>? children})
