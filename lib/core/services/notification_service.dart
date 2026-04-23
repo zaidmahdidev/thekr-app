@@ -147,23 +147,23 @@ class NotificationService {
 
   static Future<void> refreshScheduledNotifications() async {
     final morningEnabled =
-        await NotificationSettingsService.isMorningNotificationEnabled();
+        await SettingsService.isMorningNotificationEnabled();
     final eveningEnabled =
-        await NotificationSettingsService.isEveningNotificationEnabled();
+        await SettingsService.isEveningNotificationEnabled();
 
     if (morningEnabled) {
-      final morningTime = await NotificationSettingsService.getMorningTime();
+      final morningTime = await SettingsService.getMorningTime();
       await scheduleMorningAzkar(morningTime);
     }
 
     if (eveningEnabled) {
-      final eveningTime = await NotificationSettingsService.getEveningTime();
+      final eveningTime = await SettingsService.getEveningTime();
       await scheduleEveningAzkar(eveningTime);
     }
   }
 }
 
-class NotificationSettingsService {
+class SettingsService {
   static const String _morningEnabledKey = 'morning_notification_enabled';
   static const String _eveningEnabledKey = 'evening_notification_enabled';
   static const String _morningTimeKey = 'morning_notification_time';

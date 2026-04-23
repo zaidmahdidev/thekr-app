@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,8 +12,9 @@ import '../widgets/zikr_selector.dart';
 import '../widgets/reset_button.dart';
 import '../widgets/bead_color_picker.dart';
 
+@RoutePage()
 class MisbahaScreen extends ConsumerStatefulWidget {
-  const MisbahaScreen({super.key});
+  const MisbahaScreen({Key? key}) : super(key: key);
 
   @override
   ConsumerState<MisbahaScreen> createState() => _MisbahaScreenState();

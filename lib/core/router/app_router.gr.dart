@@ -257,22 +257,6 @@ class MisbahaRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [NotificationSettingsScreen]
-class NotificationSettingsRoute extends PageRouteInfo<void> {
-  const NotificationSettingsRoute({List<PageRouteInfo>? children})
-    : super(NotificationSettingsRoute.name, initialChildren: children);
-
-  static const String name = 'NotificationSettingsRoute';
-
-  static PageInfo page = PageInfo(
-    name,
-    builder: (data) {
-      return const NotificationSettingsScreen();
-    },
-  );
-}
-
-/// generated route for
 /// [ProphetDetailsScreen]
 class ProphetDetailsRoute extends PageRouteInfo<ProphetDetailsRouteArgs> {
   ProphetDetailsRoute({
@@ -347,6 +331,22 @@ class QiblahRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const QiblahScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [SettingsScreen]
+class SettingsRoute extends PageRouteInfo<void> {
+  const SettingsRoute({List<PageRouteInfo>? children})
+    : super(SettingsRoute.name, initialChildren: children);
+
+  static const String name = 'SettingsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const SettingsScreen();
     },
   );
 }
