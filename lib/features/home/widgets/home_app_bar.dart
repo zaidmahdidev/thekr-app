@@ -47,13 +47,13 @@ class HomeAppBar extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              const Color(0xFF0F2027),
               const Color(0xFF203A43),
-              const Color(0xFF2C5364),
+              // const Color(0xFF203A43),
+              // const Color(0xFF2C5364),
               context.colors.background,
               context.colors.background,
             ],
-            stops: const [0.0, 0.3, 0.6, 0.85, 1.0],
+            // stops: const [0.0, 0.3, 0.6, 0.85, 1.0],
           ),
           icon: Icons.brightness_3_rounded,
         );
@@ -65,11 +65,11 @@ class HomeAppBar extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [
               const Color(0xFF2193b0),
-              const Color(0xFF6dd5ed),
-              context.colors.background,
+              // const Color(0xFF6dd5ed),
+              // context.colors.background,
               context.colors.background,
             ],
-            stops: const [0.0, 0.6, 0.85, 1.0],
+            // stops: const [0.0, 0.6, 0.85, 1.0],
           ),
           icon: Icons.wb_sunny_rounded,
         );
@@ -79,12 +79,12 @@ class HomeAppBar extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              const Color(0xFFf12711),
-              const Color(0xFFf5af19),
-              context.colors.background,
+              const Color(0xFFf97a20),
+              // const Color(0xFFf5af19),
+              // context.colors.background,
               context.colors.background,
             ],
-            stops: const [0.0, 0.6, 0.85, 1.0],
+            // stops: const [0.0, 0.6, 0.85, 1.0],
           ),
           icon: Icons.wb_twilight_rounded,
         );
@@ -95,11 +95,11 @@ class HomeAppBar extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [
               const Color(0xFF6441A5),
-              const Color(0xFF2a0845),
-              context.colors.background,
+              // const Color(0xFF2a0845),
+              // context.colors.background,
               context.colors.background,
             ],
-            stops: const [0.0, 0.6, 0.85, 1.0],
+            // stops: const [0.0, 0.6, 0.85, 1.0],
           ),
           icon: Icons.wb_twilight_rounded,
         );
@@ -109,12 +109,12 @@ class HomeAppBar extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              const Color(0xFF141E30),
-              const Color(0xFF243B55),
-              context.colors.background,
+              const Color(0xFF0F2027),
+              // const Color(0xFF243B55),
+              // context.colors.background,
               context.colors.background,
             ],
-            stops: const [0.0, 0.6, 0.85, 1.0],
+            // stops: const [0.0, 0.6, 0.85, 1.0],
           ),
           icon: Icons.nightlight_round,
         );
@@ -239,9 +239,8 @@ class HomeAppBar extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: IconButton(
-              onPressed: () =>
-                  context.router.push(const NotificationSettingsRoute()),
-              icon: Image.asset(AppAssets.notification, width: 30.w),
+              onPressed: () => context.router.push(const SettingsRoute()),
+              icon: Image.asset(AppAssets.notification, width: 40.w),
             ),
           ),
         ),
