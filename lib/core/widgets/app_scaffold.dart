@@ -53,7 +53,7 @@ class AppScaffold extends StatelessWidget {
               child: Image.asset(
                 AppAssets.bg,
                 width: 300.w,
-                color: context.colors.primary,
+                // color: context.colors.primary,
               ),
             ),
           ),
