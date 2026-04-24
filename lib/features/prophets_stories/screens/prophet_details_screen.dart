@@ -7,6 +7,8 @@ import '../../../../core/theme/tokens/typography.dart';
 import '../../../../core/utils/constants/app_assets.dart';
 import '../models/prophet_story.dart';
 
+
+
 @RoutePage()
 class ProphetDetailsScreen extends StatelessWidget {
   final ProphetStory prophet;
@@ -21,7 +23,7 @@ class ProphetDetailsScreen extends StatelessWidget {
         slivers: [
           // Premium Header with Background
           SliverAppBar(
-            expandedHeight: 170.h,
+            expandedHeight: 130.h,
             pinned: true,
             backgroundColor: context.colors.primary,
             leading: IconButton(
@@ -30,20 +32,23 @@ class ProphetDetailsScreen extends StatelessWidget {
                 width: 38.w,
                 height: 38.w,
                 decoration: BoxDecoration(
-                  color: context.colors.primary.withValues(alpha: 0.1),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(context.corners.rc360),
-                  border: Border.all(
-                    color: context.colors.primary.withValues(alpha: 0.1),
-                    width: 1,
-                  ),
                 ),
-                child: Icon(Icons.arrow_back_ios_new_rounded, size: 16.w),
+                child: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  size: 16.w,
+                  color: Colors.white,
+                ),
               ),
             ),
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 prophet.name,
-                style: AppTypography.h3.copyWith(color: Colors.white),
+                style: AppTypography.h3.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               background: Stack(
                 fit: StackFit.expand,
@@ -58,6 +63,20 @@ class ProphetDetailsScreen extends StatelessWidget {
                           Colors.black.withValues(alpha: 0.3),
                           context.colors.primary.withValues(alpha: 0.8),
                         ],
+                      ),
+                    ),
+                  ),
+                  // Large Icon Overlay
+                  Positioned(
+                    left: 20.w,
+                    bottom: 40.h,
+                    child: Opacity(
+                      opacity: 0.15,
+                      child: Text(
+                        prophet.emoji,
+                        style: TextStyle(
+                          fontSize: 100.sp,
+                        ),
                       ),
                     ),
                   ),

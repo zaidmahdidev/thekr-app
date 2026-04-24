@@ -6,7 +6,7 @@ class ProphetStory {
   final String fullStory;
   final List<String> lessons;
   final List<String> quranVerses;
-  final String? icon;
+  final String emoji;
 
   const ProphetStory({
     required this.id,
@@ -16,7 +16,7 @@ class ProphetStory {
     required this.fullStory,
     required this.lessons,
     required this.quranVerses,
-    this.icon,
+    required this.emoji,
   });
 
   factory ProphetStory.fromJson(Map<String, dynamic> json) {
@@ -28,7 +28,7 @@ class ProphetStory {
       fullStory: json['fullStory'],
       lessons: List<String>.from(json['lessons']),
       quranVerses: List<String>.from(json['quranVerses']),
-      icon: json['icon'],
+      emoji: json['emoji'] ?? '📜',
     );
   }
 
@@ -41,7 +41,7 @@ class ProphetStory {
       'fullStory': fullStory,
       'lessons': lessons,
       'quranVerses': quranVerses,
-      'icon': icon,
+      'emoji': emoji,
     };
   }
 }
