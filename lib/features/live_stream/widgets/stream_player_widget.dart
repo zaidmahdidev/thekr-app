@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 
@@ -30,10 +31,8 @@ class _StreamPlayerWidgetState extends State<StreamPlayerWidget> {
         autoPlay: true,
         mute: false,
         isLive: true,
-        enableCaption: false,
-        forceHD: false,
-        // تعطيل التفاعل مع شريط البحث في البث المباشر لتجنب الأخطاء
         disableDragSeek: true,
+        hideControls: false,
       ),
     );
   }
@@ -65,13 +64,53 @@ class _StreamPlayerWidgetState extends State<StreamPlayerWidget> {
         color: Colors.black,
       ),
       clipBehavior: Clip.antiAlias,
-      child: YoutubePlayer(
-        controller: _controller,
-        showVideoProgressIndicator: false,
-        liveUIColor: context.colors.primary,
-        onReady: () {
-          debugPrint('YouTube Player is ready.');
-        },
+      child: Stack(
+        children: [
+          YoutubePlayer(
+            controller: _controller,
+            showVideoProgressIndicator: false,
+            liveUIColor: context.colors.primary,
+            bottomActions: [
+              const PlayPauseButton(),
+              const SizedBox(width: 8),
+              const FullScreenButton(),
+            ],
+          ),
+          // مؤشر البث المباشر
+          Positioned(
+            top: 12,
+            right: 12,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  const Text(
+                    'مباشر',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
