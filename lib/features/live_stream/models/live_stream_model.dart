@@ -17,15 +17,13 @@ class LiveStream {
     LiveStream(
       id: 'makkah',
       title: 'بث مكة المكرمة - قرآن كريم',
-      youtubeId:
-          'https://www.youtube.com/live/ZsD4toamOm4?si=HembJoJ2ir_1wt_E', // Stable Channel Embed ID
-      description: 'بث مباشر لقناة القرآن الكريم من المسجد الحرام بمكة المكرمة',
+      youtubeId: 'fZvuHkHYaXk', // Stable live stream for Makkah
+      description: 'بث مباشر من المسجد الحرام بمكة المكرمة',
     ),
     LiveStream(
       id: 'madinah',
       title: 'بث المدينة المنورة - السنة النبوية',
-      youtubeId:
-          'live_stream?channel=UCROKYPep-UuODNwyipe6JMw', // Stable Channel Embed ID
+      youtubeId: 'vGGu3ZgGWXY', // Current stable Live ID
       description:
           'بث مباشر لقناة السنة النبوية من المسجد النبوي بالمدينة المنورة',
     ),
