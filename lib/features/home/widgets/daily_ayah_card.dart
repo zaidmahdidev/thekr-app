@@ -95,15 +95,19 @@ class DailyAyahCard extends StatelessWidget {
                       height: 1,
                       color: context.colors.primary.withValues(alpha: 0.2),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: context.insets.sm,
-                      ),
-                      child: Text(
-                        '${ayah.surah} - [${ayah.ayahNumber}]',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: context.colors.textSecondary,
-                          fontStyle: FontStyle.italic,
+                    Flexible(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: context.insets.sm,
+                        ),
+                        child: Text(
+                          '${ayah.surah} - [${ayah.ayahNumber}]',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.bodySmall.copyWith(
+                            color: context.colors.textSecondary,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
                       ),
                     ),

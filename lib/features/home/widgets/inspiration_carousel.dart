@@ -213,16 +213,20 @@ class _InspirationCard extends StatelessWidget {
                       height: 1.h,
                       color: context.colors.primary.withValues(alpha: 0.1),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: context.insets.sm,
-                      ),
-                      child: Text(
-                        item.subtitle,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: context.colors.textSecondary,
-                          fontFamily: 'Tajawal',
-                          fontWeight: FontWeight.w500,
+                    Flexible(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: context.insets.sm,
+                        ),
+                        child: Text(
+                          item.subtitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.bodySmall.copyWith(
+                            color: context.colors.textSecondary,
+                            fontFamily: 'Tajawal',
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
