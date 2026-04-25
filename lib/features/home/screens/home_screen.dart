@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:hijri/hijri_calendar.dart';
 
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/widgets/custom_dialog.dart';
@@ -28,6 +29,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    HijriCalendar.setLocal('ar');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkForUpdate();
     });
@@ -93,6 +95,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       currentTime,
     );
     final todayDate = intl.DateFormat('EEEE, d MMMM', 'ar').format(currentTime);
+    
+    // Hijri Date Calculation
+    final hijriNow = HijriCalendar.fromDate(currentTime);
+    final hijriDate = '${hijriNow.hDay} ${hijriNow.getLongMonthName()} ${hijriNow.hYear} هـ';
 
     final nextPrayer = prayerTimes?.nextPrayer(currentTime);
 
@@ -110,6 +116,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             HomeAppBar(
               currentTime: currentTime,
               todayDate: todayDate,
+              hijriDate: hijriDate,
               remainingTime: remainingTime,
               nextPrayer: nextPrayer,
             ),

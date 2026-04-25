@@ -12,6 +12,7 @@ import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
 class HomeAppBar extends StatelessWidget {
   final DateTime currentTime;
   final String todayDate;
+  final String hijriDate;
   final String remainingTime;
   final AppPrayer? nextPrayer;
 
@@ -19,6 +20,7 @@ class HomeAppBar extends StatelessWidget {
     super.key,
     required this.currentTime,
     required this.todayDate,
+    required this.hijriDate,
     required this.remainingTime,
     this.nextPrayer,
   });
@@ -158,12 +160,23 @@ class HomeAppBar extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    SizedBox(height: 10.h),
+                    Text(
+                      hijriDate,
+                      style: AppTypography.h3.copyWith(
+                        // color: context.colors.secondary,
+                        color: Colors.white,
+
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15.sp,
+                      ),
+                    ),
+                    SizedBox(height: 6.h),
                     Text(
                       todayDate,
                       style: AppTypography.h3.copyWith(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        letterSpacing: 1.2,
-                        fontSize: 14.sp,
+                        color: Colors.white.withValues(alpha: 0.7),
+                        fontSize: 13.sp,
                       ),
                     ),
                     SizedBox(height: 8.h),
@@ -183,7 +196,6 @@ class HomeAppBar extends StatelessWidget {
                       ),
                     ),
                     if (remainingTime.isNotEmpty) ...[
-                      SizedBox(height: 5.h),
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: context.insets.lg,
