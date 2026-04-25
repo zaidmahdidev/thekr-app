@@ -68,26 +68,38 @@ class ProphetGridItem extends StatelessWidget {
                       ),
                     ),
                     child: Center(
-                      child: Text(
-                        prophet.emoji,
-                        style: TextStyle(
-                          fontSize: 32.sp,
+                      child: Hero(
+                        tag: 'prophet_emoji_${prophet.id}',
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Text(
+                            prophet.emoji,
+                            style: TextStyle(
+                              fontSize: 32.sp,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
                   SizedBox(height: context.insets.sm),
-                  Text(
-                    prophet.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: AppTypography.h3.copyWith(
-                      color: context.colors.textPrimary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 11.sp,
+                    Hero(
+                      tag: 'prophet_name_${prophet.id}',
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Text(
+                          prophet.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: AppTypography.h3.copyWith(
+                            color: context.colors.textPrimary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11.sp,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
                   SizedBox(height: 2.h),
                   Text(
                     prophet.title,
