@@ -71,8 +71,8 @@ class ProphetDetailsScreen extends StatelessWidget {
                   prophet.fullStory,
                   style: AppTypography.bodyLarge.copyWith(
                     color: context.colors.textPrimary,
-                    fontSize: 17.sp,
-                    height: 1.5,
+                    fontSize: 16.sp,
+                    height: 1.6,
                   ),
                 ),
                 SizedBox(height: context.insets.lg),
