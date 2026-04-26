@@ -16,6 +16,8 @@ import 'package:thekr_app/features/home/widgets/home_features_grid.dart';
 import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
 import 'package:thekr_app/features/home/models/app_prayer_times.dart';
 import 'package:thekr_app/features/home/widgets/inspiration_carousel.dart';
+import 'package:thekr_app/features/home/widgets/home_dynamic_sections.dart';
+import 'package:thekr_app/features/home/widgets/share_app_card.dart';
 
 @RoutePage()
 class HomeScreen extends ConsumerStatefulWidget {
@@ -95,10 +97,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       currentTime,
     );
     final todayDate = intl.DateFormat('EEEE, d MMMM', 'ar').format(currentTime);
-    
+
     // Hijri Date Calculation
     final hijriNow = HijriCalendar.fromDate(currentTime);
-    final hijriDate = '${hijriNow.hDay} ${hijriNow.getLongMonthName()} ${hijriNow.hYear} هـ';
+    final hijriDate =
+        '${hijriNow.hDay} ${hijriNow.getLongMonthName()} ${hijriNow.hYear} هـ';
 
     final nextPrayer = prayerTimes?.nextPrayer(currentTime);
 
@@ -125,6 +128,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             const InspirationCarousel(),
             const HomeFeaturesGrid(),
+            const HomeDynamicSections(),
+            const ShareAppCard(),
           ],
         ),
       ),
