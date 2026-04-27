@@ -5,60 +5,110 @@ import 'package:auto_route/auto_route.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../models/live_stream_model.dart';
 import '../providers/live_stream_provider.dart';
 import '../widgets/stream_player_widget.dart';
 
 @RoutePage()
-class LiveStreamScreen extends ConsumerWidget {
+class LiveStreamScreen extends ConsumerStatefulWidget {
   const LiveStreamScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LiveStreamScreen> createState() => _LiveStreamScreenState();
+}
+
+class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
+  late YoutubePlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialStream = ref.read(selectedStreamProvider);
+    _controller = YoutubePlayerController(
+      initialVideoId: initialStream.youtubeId,
+      flags: const YoutubePlayerFlags(
+        autoPlay: true,
+        mute: false,
+        isLive: true,
+        disableDragSeek: true,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final selectedStream = ref.watch(selectedStreamProvider);
 
-    return AppScaffold(
-      title: 'البث المباشر',
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Active Player
-            StreamPlayerWidget(videoId: selectedStream.youtubeId),
+    // Update video if stream changed
+    ref.listen(selectedStreamProvider, (previous, next) {
+      if (next.youtubeId != previous?.youtubeId) {
+        _controller.load(next.youtubeId);
+      }
+    });
 
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: context.insets.lg),
-              child: Text(
-                'اختر القناة',
-                style: AppTypography.h3.copyWith(color: context.colors.primary),
-              ),
-            ),
-
-            SizedBox(height: context.insets.md),
-
-            // Stream List
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.symmetric(horizontal: context.insets.md),
-              itemCount: LiveStream.defaults.length,
-              itemBuilder: (context, index) {
-                final stream = LiveStream.defaults[index];
-                final isSelected = selectedStream.id == stream.id;
-
-                return _StreamCard(
-                  stream: stream,
-                  isSelected: isSelected,
-                  onTap: () =>
-                      ref.read(selectedStreamProvider.notifier).state = stream,
-                );
-              },
-            ),
-
-            SizedBox(height: context.insets.xl),
-          ],
-        ),
+    return YoutubePlayerBuilder(
+      player: YoutubePlayer(
+        controller: _controller,
+        showVideoProgressIndicator: false,
+        liveUIColor: context.colors.primary,
+        bottomActions: [
+          const PlayPauseButton(),
+          const SizedBox(width: 8),
+          const FullScreenButton(),
+        ],
       ),
+      builder: (context, player) {
+        return AppScaffold(
+          title: 'البث المباشر',
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Active Player
+                StreamPlayerWidget(player: player),
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: context.insets.lg),
+                  child: Text(
+                    'اختر القناة',
+                    style: AppTypography.h3.copyWith(color: context.colors.primary),
+                  ),
+                ),
+
+                SizedBox(height: context.insets.md),
+
+                // Stream List
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.symmetric(horizontal: context.insets.md),
+                  itemCount: LiveStream.defaults.length,
+                  itemBuilder: (context, index) {
+                    final stream = LiveStream.defaults[index];
+                    final isSelected = selectedStream.id == stream.id;
+
+                    return _StreamCard(
+                      stream: stream,
+                      isSelected: isSelected,
+                      onTap: () =>
+                          ref.read(selectedStreamProvider.notifier).state = stream,
+                    );
+                  },
+                ),
+
+                SizedBox(height: context.insets.xl),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
