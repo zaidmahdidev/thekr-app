@@ -3,56 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 
-class StreamPlayerWidget extends StatefulWidget {
-  final String videoId;
+class StreamPlayerWidget extends StatelessWidget {
+  final Widget player;
 
-  const StreamPlayerWidget({super.key, required this.videoId});
-
-  @override
-  State<StreamPlayerWidget> createState() => _StreamPlayerWidgetState();
-}
-
-class _StreamPlayerWidgetState extends State<StreamPlayerWidget> {
-  late YoutubePlayerController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeController();
-  }
-
-  void _initializeController() {
-    String finalId = _extractId(widget.videoId);
-    debugPrint('YouTube Player Initializing with ID: $finalId');
-
-    _controller = YoutubePlayerController(
-      initialVideoId: finalId,
-      flags: const YoutubePlayerFlags(
-        autoPlay: true,
-        mute: false,
-        isLive: true,
-        disableDragSeek: true,
-        hideControls: false,
-      ),
-    );
-  }
-
-  String _extractId(String input) {
-    if (input.isEmpty) return '';
-    if (input.length == 11 && !input.contains('/')) return input;
-
-    final id = YoutubePlayer.convertUrlToId(input);
-    return id ?? input.trim();
-  }
-
-  @override
-  void didUpdateWidget(StreamPlayerWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.videoId != widget.videoId) {
-      final newId = _extractId(widget.videoId);
-      _controller.load(newId);
-    }
-  }
+  const StreamPlayerWidget({super.key, required this.player});
 
   @override
   Widget build(BuildContext context) {
@@ -66,16 +20,7 @@ class _StreamPlayerWidgetState extends State<StreamPlayerWidget> {
       clipBehavior: Clip.antiAlias,
       child: Stack(
         children: [
-          YoutubePlayer(
-            controller: _controller,
-            showVideoProgressIndicator: false,
-            liveUIColor: context.colors.primary,
-            bottomActions: [
-              const PlayPauseButton(),
-              const SizedBox(width: 8),
-              const FullScreenButton(),
-            ],
-          ),
+          player,
           // مؤشر البث المباشر
           Positioned(
             top: 12,
@@ -113,11 +58,5 @@ class _StreamPlayerWidgetState extends State<StreamPlayerWidget> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }

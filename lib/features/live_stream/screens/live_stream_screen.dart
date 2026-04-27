@@ -6,6 +6,7 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import '../models/live_stream_model.dart';
 import '../providers/live_stream_provider.dart';
 import '../widgets/stream_player_widget.dart';
@@ -24,6 +25,8 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
   @override
   void initState() {
     super.initState();
+    WakelockPlus.enable();
+
     final initialStream = ref.read(selectedStreamProvider);
     _controller = YoutubePlayerController(
       initialVideoId: initialStream.youtubeId,
@@ -38,6 +41,7 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
 
   @override
   void dispose() {
+    WakelockPlus.disable();
     _controller.dispose();
     super.dispose();
   }
