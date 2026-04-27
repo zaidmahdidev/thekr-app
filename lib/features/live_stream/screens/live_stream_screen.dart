@@ -10,6 +10,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import '../models/live_stream_model.dart';
 import '../providers/live_stream_provider.dart';
 import '../widgets/stream_player_widget.dart';
+import 'package:thekr_app/core/utils/connectivity_utils.dart';
 
 @RoutePage()
 class LiveStreamScreen extends ConsumerStatefulWidget {
@@ -21,11 +22,13 @@ class LiveStreamScreen extends ConsumerStatefulWidget {
 
 class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
   late YoutubePlayerController _controller;
+  bool _isConnected = true;
 
   @override
   void initState() {
     super.initState();
     WakelockPlus.enable();
+    _checkInitialConnection();
 
     final initialStream = ref.read(selectedStreamProvider);
     _controller = YoutubePlayerController(
@@ -37,6 +40,32 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
         disableDragSeek: true,
       ),
     );
+  }
+
+  Future<void> _checkInitialConnection() async {
+    final hasNet = await ConnectivityUtils.hasInternet();
+    setState(() {
+      _isConnected = hasNet;
+    });
+    if (!hasNet) {
+      showToast(
+        text: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من الشبكة',
+        state: ToastStates.ERROR,
+      );
+    }
+  }
+
+  Future<void> _handleStreamChange(String youtubeId) async {
+    if (await ConnectivityUtils.hasInternet()) {
+      _controller.load(youtubeId);
+      setState(() => _isConnected = true);
+    } else {
+      setState(() => _isConnected = false);
+      showToast(
+        text: 'لا يوجد اتصال بالإنترنت',
+        state: ToastStates.ERROR,
+      );
+    }
   }
 
   @override
@@ -53,7 +82,7 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
     // Update video if stream changed
     ref.listen(selectedStreamProvider, (previous, next) {
       if (next.youtubeId != previous?.youtubeId) {
-        _controller.load(next.youtubeId);
+        _handleStreamChange(next.youtubeId);
       }
     });
 
@@ -62,6 +91,7 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
         controller: _controller,
         showVideoProgressIndicator: false,
         liveUIColor: context.colors.primary,
+        onReady: () => setState(() => _isConnected = true),
         bottomActions: [
           const PlayPauseButton(),
           const SizedBox(width: 8),
@@ -75,8 +105,11 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Active Player
-                StreamPlayerWidget(player: player),
+                // Active Player or Error State
+                if (_isConnected)
+                  StreamPlayerWidget(player: player)
+                else
+                  _NoInternetPlaceholder(onRetry: _checkInitialConnection),
 
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: context.insets.lg),
@@ -113,6 +146,50 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+class _NoInternetPlaceholder extends StatelessWidget {
+  final VoidCallback onRetry;
+
+  const _NoInternetPlaceholder({required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 200.h,
+      margin: EdgeInsets.all(context.insets.lg),
+      decoration: BoxDecoration(
+        color: context.colors.surface,
+        borderRadius: BorderRadius.circular(context.corners.lg),
+        boxShadow: context.shadows.low,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.wifi_off_rounded,
+            size: 48.w,
+            color: context.colors.error.withValues(alpha: 0.5),
+          ),
+          SizedBox(height: context.insets.md),
+          Text(
+            'لا يوجد اتصال بالإنترنت',
+            style: AppTypography.h3.copyWith(color: context.colors.textPrimary),
+          ),
+          SizedBox(height: context.insets.sm),
+          TextButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh_rounded),
+            label: const Text('إعادة المحاولة'),
+            style: TextButton.styleFrom(
+              foregroundColor: context.colors.primary,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

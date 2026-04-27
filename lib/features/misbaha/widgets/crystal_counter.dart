@@ -29,20 +29,12 @@ class CrystalCounter extends StatelessWidget {
             children: [
               FittedBox(
                 fit: BoxFit.scaleDown,
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  transitionBuilder: (child, animation) => FadeTransition(
-                    opacity: animation,
-                    child: ScaleTransition(scale: animation, child: child),
-                  ),
-                  child: Text(
-                    _formatNumber(count),
-                    key: ValueKey(count),
-                    style: AppTypography.h1.copyWith(
-                      fontSize: 54.sp,
-                      color: context.colors.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
+                child: Text(
+                  _formatNumber(count),
+                  style: AppTypography.h1.copyWith(
+                    fontSize: 50.sp,
+                    color: context.colors.primary,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
