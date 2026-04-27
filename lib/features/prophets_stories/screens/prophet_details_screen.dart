@@ -9,6 +9,7 @@ import '../widgets/prophet_details_header.dart';
 import '../widgets/prophet_lesson_item.dart';
 import '../widgets/prophet_section_header.dart';
 import '../widgets/prophet_verse_card.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../../../core/services/share_service.dart';
 
 @RoutePage()
@@ -19,13 +20,7 @@ class ProphetDetailsScreen extends StatelessWidget {
 
   void _copyToClipboard(BuildContext context, String text, String message) {
     Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: context.colors.primary,
-      ),
-    );
+    showToast(text: message,backgroundColor: context.colors.background);
   }
 
   @override

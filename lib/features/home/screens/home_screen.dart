@@ -18,6 +18,7 @@ import 'package:thekr_app/features/home/models/app_prayer_times.dart';
 import 'package:thekr_app/features/home/widgets/inspiration_carousel.dart';
 import 'package:thekr_app/features/home/widgets/home_dynamic_sections.dart';
 import 'package:thekr_app/features/home/widgets/share_app_card.dart';
+import 'package:thekr_app/core/widgets/toast_utils.dart';
 
 @RoutePage()
 class HomeScreen extends ConsumerStatefulWidget {
@@ -28,6 +29,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  DateTime? _lastPressedAt;
+
   @override
   void initState() {
     super.initState();
@@ -137,14 +140,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _exitMethod(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => CustomDialog(
-        title: 'تنويه',
-        message: 'هل أنت متأكد أنك تريد الخروج؟',
-        onYes: () => SystemNavigator.pop(),
-        onCancel: () => Navigator.pop(context),
-      ),
-    );
+    final now = DateTime.now();
+    final backButtonHasNotBeenPressedOrSnackBarHasClosed =
+        _lastPressedAt == null ||
+            now.difference(_lastPressedAt!) > const Duration(seconds: 2);
+
+    if (backButtonHasNotBeenPressedOrSnackBarHasClosed) {
+      _lastPressedAt = now;
+      showToast(
+        text: 'اضغط مرة أخرى للخروج',
+        backgroundColor: context.colors.primary,
+      );
+    } else {
+      SystemNavigator.pop();
+    }
   }
 }
