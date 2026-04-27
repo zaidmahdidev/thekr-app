@@ -84,8 +84,7 @@ class _AzkarItemWidgetState extends State<AzkarItemWidget>
                   Clipboard.setData(ClipboardData(text: widget.details));
                   showToast(
                     text: 'تم النسخ',
-                    textColor: context.colors.primary,
-                    backgroundColor: Colors.white,
+                    backgroundColor: context.colors.background,
                   );
                 },
                 borderRadius: BorderRadius.circular(20),
