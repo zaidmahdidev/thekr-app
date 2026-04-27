@@ -79,9 +79,7 @@ class _StreamCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(bottom: context.insets.md),
       decoration: BoxDecoration(
-        color: isSelected
-            ? context.colors.primary.withValues(alpha: 0.05)
-            : context.colors.surface,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(context.corners.lg),
         border: Border.all(
           color: isSelected
@@ -125,13 +123,6 @@ class _StreamCard extends StatelessWidget {
                 ),
               )
             : null,
-        trailing: isSelected
-            ? Icon(Icons.check_circle_rounded, color: context.colors.primary)
-            : Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 16.sp,
-                color: context.colors.textSecondary,
-              ),
       ),
     );
   }

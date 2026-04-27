@@ -15,17 +15,17 @@ class LiveStream {
 
   static const List<LiveStream> defaults = [
     LiveStream(
-      id: 'makkah',
-      title: 'بث مكة المكرمة - قرآن كريم',
-      youtubeId: 'fZvuHkHYaXk', // Stable live stream for Makkah
-      description: 'بث مباشر من المسجد الحرام بمكة المكرمة',
-    ),
-    LiveStream(
       id: 'madinah',
       title: 'بث المدينة المنورة - السنة النبوية',
-      youtubeId: 'vGGu3ZgGWXY', // Current stable Live ID
+      youtubeId: 'vGGu3ZgGWXY',
       description:
           'بث مباشر لقناة السنة النبوية من المسجد النبوي بالمدينة المنورة',
+    ),
+    LiveStream(
+      id: 'makkah',
+      title: 'بث مكة المكرمة - قرآن كريم',
+      youtubeId: 'fZvuHkHYaXk', 
+      description: 'بث مباشر من المسجد الحرام بمكة المكرمة',
     ),
   ];
 }
