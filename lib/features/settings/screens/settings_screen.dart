@@ -16,12 +16,10 @@ class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<SettingsScreen> createState() =>
-      _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState
-    extends ConsumerState<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _morningEnabled = true;
   bool _eveningEnabled = true;
   TimeOfDay _morningTime = const TimeOfDay(hour: 7, minute: 0);
@@ -66,10 +64,16 @@ class _SettingsScreenState
 
     if (enabled) {
       await NotificationService.scheduleMorningAzkar(_morningTime);
-      _showSnackBar('تم تفعيل تذكير أذكار الصباح');
+      showToast(
+        text: 'تم تفعيل تذكير أذكار الصباح',
+        backgroundColor: context.colors.background,
+      );
     } else {
       await NotificationService.cancelMorningNotification();
-      _showSnackBar('تم إلغاء تذكير أذكار الصباح');
+      showToast(
+        text: 'تم إلغاء تذكير أذكار الصباح',
+        // backgroundColor: context.colors.background,
+      );
     }
   }
 
@@ -82,10 +86,16 @@ class _SettingsScreenState
 
     if (enabled) {
       await NotificationService.scheduleEveningAzkar(_eveningTime);
-      _showSnackBar('تم تفعيل تذكير أذكار المساء');
+      showToast(
+        text: 'تم تفعيل تذكير أذكار المساء',
+        backgroundColor: context.colors.background,
+      );
     } else {
       await NotificationService.cancelEveningNotification();
-      _showSnackBar('تم إلغاء تذكير أذكار المساء');
+      showToast(
+        text: 'تم إلغاء تذكير أذكار المساء',
+        backgroundColor: context.colors.background,
+      );
     }
   }
 
@@ -113,7 +123,11 @@ class _SettingsScreenState
 
       if (_morningEnabled) {
         await NotificationService.scheduleMorningAzkar(picked);
-        _showSnackBar('تم تحديث وقت أذكار الصباح');
+
+        showToast(
+          text: 'تم تحديث وقت أذكار الصباح',
+          backgroundColor: context.colors.background,
+        );
       }
     }
   }
@@ -142,19 +156,12 @@ class _SettingsScreenState
 
       if (_eveningEnabled) {
         await NotificationService.scheduleEveningAzkar(picked);
-        _showSnackBar('تم تحديث وقت أذكار المساء');
+        showToast(
+          text: 'تم تحديث وقت أذكار المساء',
+          backgroundColor: context.colors.background,
+        );
       }
     }
-  }
-
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message, textAlign: TextAlign.center),
-        backgroundColor: context.colors.primary,
-        duration: const Duration(seconds: 2),
-      ),
-    );
   }
 
   String _formatTime(TimeOfDay time) {
