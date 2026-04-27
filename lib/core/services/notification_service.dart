@@ -13,6 +13,8 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
 
+  static Function(String?)? onNotificationClick;
+
   static Future<void> initialize() async {
     tz.initializeTimeZones();
 
@@ -29,7 +31,26 @@ class NotificationService {
     const InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
 
-    await _notifications.initialize(initializationSettings);
+    await _notifications.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        onNotificationClick?.call(response.payload);
+      },
+    );
+  }
+
+  static Future<void> checkLaunchNotification() async {
+    final NotificationAppLaunchDetails? notificationAppLaunchDetails =
+        await _notifications.getNotificationAppLaunchDetails();
+    
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
+      final payload = notificationAppLaunchDetails?.notificationResponse?.payload;
+      if (payload != null) {
+        Future.delayed(const Duration(seconds: 1), () {
+          onNotificationClick?.call(payload);
+        });
+      }
+    }
   }
 
   static Future<bool> requestPermissions() async {
@@ -90,6 +111,7 @@ class NotificationService {
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
+      payload: 'morning', 
     );
   }
 
@@ -112,6 +134,7 @@ class NotificationService {
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
+      payload: 'evening',
     );
   }
 
