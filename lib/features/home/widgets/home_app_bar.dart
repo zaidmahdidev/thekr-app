@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' as intl;
@@ -151,6 +153,7 @@ class HomeAppBar extends StatelessWidget {
                   AppAssets.hero,
                   fit: BoxFit.cover,
                   width: double.infinity,
+                  height: double.infinity,
                 ),
               ),
             ),
@@ -245,14 +248,23 @@ class HomeAppBar extends StatelessWidget {
       actions: [
         Padding(
           padding: EdgeInsets.only(left: context.insets.sm),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              onPressed: () => context.router.push(const SettingsRoute()),
-              icon: Image.asset(AppAssets.notification, width: 40.w),
+          child: ClipOval(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: context.colors.background.withValues(alpha: 0.2),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: context.colors.secondary,
+                    width: .2,
+                  ),
+                ),
+                child: IconButton(
+                  onPressed: () => context.router.push(const SettingsRoute()),
+                  icon: Image.asset(AppAssets.notification, width: 40.w),
+                ),
+              ),
             ),
           ),
         ),

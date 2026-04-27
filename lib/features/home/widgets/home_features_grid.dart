@@ -19,7 +19,7 @@ class HomeFeaturesGrid extends StatelessWidget {
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
-          childAspectRatio: 0.85,
+          childAspectRatio: 0.75,
           crossAxisSpacing: context.insets.sm * 0.8,
           mainAxisSpacing: context.insets.sm * 0.8,
         ),
@@ -70,8 +70,8 @@ class HomeFeaturesGrid extends StatelessWidget {
           ),
           _FeatureItem(
             title: "المسبحة الالكترونية",
-            icon: Icons.blur_circular,
-            color: const Color(0xff607d8b),
+            icon: Icons.touch_app,
+            color: const Color(0xff5d2c01),
             route: const MisbahaRoute(),
           ),
           _FeatureItem(
