@@ -12,6 +12,7 @@ import 'package:thekr_app/features/settings/widgets/settings_tile.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thekr_app/core/utils/url_helper.dart';
 import 'package:thekr_app/core/services/review_service.dart';
+import 'package:thekr_app/core/router/app_router.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -159,11 +160,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         iconColor: Colors.indigo,
                         trailing: Switch.adaptive(
                           value: isDarkMode,
-
                           onChanged: (val) => ref
                               .read(settingsProvider.notifier)
-                              .toggleTheme(val),
+                              .toggleTheme(
+                                val ? ThemeMode.dark : ThemeMode.light,
+                              ),
                         ),
+                      ),
+                      SettingsTile(
+                        title: 'ترتيب الشاشة الرئيسية',
+                        subtitle: 'تحكم في مكان ظهور العناصر في الرئيسية',
+                        icon: Icons.dashboard_customize_rounded,
+                        onTap: () => context.router.push(
+                          const CustomizeHomeLayoutRoute(),
+                        ),
+                        iconColor: Colors.purple,
                       ),
                       SettingsTile(
                         title: 'أذكار الصباح',
@@ -205,8 +216,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: context.insets.xl),
-                  const SectionHeader(title: 'إعدادات القراءة'),
+                  SizedBox(height: context.insets.md),
+                  // const SectionHeader(title: 'إعدادات القراءة'),
                   SettingsSection(
                     children: [
                       Padding(

@@ -109,6 +109,22 @@ class AzkarRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [CustomizeHomeLayoutScreen]
+class CustomizeHomeLayoutRoute extends PageRouteInfo<void> {
+  const CustomizeHomeLayoutRoute({List<PageRouteInfo>? children})
+    : super(CustomizeHomeLayoutRoute.name, initialChildren: children);
+
+  static const String name = 'CustomizeHomeLayoutRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const CustomizeHomeLayoutScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [HadithNawawiScreen]
 class HadithNawawiRoute extends PageRouteInfo<void> {
   const HadithNawawiRoute({List<PageRouteInfo>? children})

@@ -19,6 +19,7 @@ import 'package:thekr_app/features/home/widgets/inspiration_carousel.dart';
 import 'package:thekr_app/features/home/widgets/home_dynamic_sections.dart';
 import 'package:thekr_app/features/home/widgets/share_app_card.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
 @RoutePage()
 class HomeScreen extends ConsumerStatefulWidget {
@@ -107,6 +108,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         '${hijriNow.hDay} ${hijriNow.getLongMonthName()} ${hijriNow.hYear} هـ';
 
     final nextPrayer = prayerTimes?.nextPrayer(currentTime);
+    final settings = ref.watch(settingsProvider);
 
     return PopScope(
       canPop: false,
@@ -126,13 +128,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               remainingTime: remainingTime,
               nextPrayer: nextPrayer,
             ),
-            SliverToBoxAdapter(
-              child: PrayerTimesCard(prayerTimes: prayerTimes),
-            ),
-            const InspirationCarousel(),
-            const HomeFeaturesGrid(),
-            const HomeDynamicSections(),
-            const ShareAppCard(),
+            ...settings.homeSections.map((section) {
+              switch (section) {
+                case HomeSection.prayerTimes:
+                  return SliverToBoxAdapter(
+                    key: const ValueKey('prayerTimes'),
+                    child: PrayerTimesCard(prayerTimes: prayerTimes),
+                  );
+                case HomeSection.inspiration:
+                  return const InspirationCarousel(
+                    key: ValueKey('inspiration'),
+                  );
+                case HomeSection.features:
+                  return const HomeFeaturesGrid(
+                    key: ValueKey('features'),
+                  );
+                case HomeSection.dynamicSections:
+                  return const HomeDynamicSections(
+                    key: ValueKey('dynamicSections'),
+                  );
+                case HomeSection.shareCard:
+                  return const ShareAppCard(
+                    key: ValueKey('shareCard'),
+                  );
+              }
+            }),
           ],
         ),
       ),

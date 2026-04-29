@@ -2,18 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
 
+enum HomeSection {
+  prayerTimes,
+  inspiration,
+  features,
+  dynamicSections,
+  shareCard;
+
+  String get title {
+    switch (this) {
+      case HomeSection.prayerTimes:
+        return 'مواقيت الصلاة';
+      case HomeSection.inspiration:
+        return 'إلهامات يومية';
+      case HomeSection.features:
+        return 'الخدمات الأساسية';
+      case HomeSection.dynamicSections:
+        return 'أقسام متنوعة (الجمعة/الصيام)';
+      case HomeSection.shareCard:
+        return 'مشاركة التطبيق';
+    }
+  }
+}
+
 /// حالة الإعدادات الشاملة
 class SettingsState {
   final ThemeMode themeMode;
   final bool notificationsEnabled;
   final String languageCode;
   final double fontSize;
+  final List<HomeSection> homeSections;
 
   SettingsState({
     required this.themeMode,
     this.notificationsEnabled = true,
     this.languageCode = 'ar',
     this.fontSize = 18.0,
+    required this.homeSections,
   });
 
   SettingsState copyWith({
@@ -21,59 +46,73 @@ class SettingsState {
     bool? notificationsEnabled,
     String? languageCode,
     double? fontSize,
+    List<HomeSection>? homeSections,
   }) {
     return SettingsState(
       themeMode: themeMode ?? this.themeMode,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
       languageCode: languageCode ?? this.languageCode,
       fontSize: fontSize ?? this.fontSize,
+      homeSections: homeSections ?? this.homeSections,
     );
   }
 }
 
 /// المزود الخاص بالإعدادات
-final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
+final settingsProvider =
+    StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
   return SettingsNotifier();
 });
 
 class SettingsNotifier extends StateNotifier<SettingsState> {
-  SettingsNotifier() : super(SettingsState(themeMode: ThemeMode.light)) {
-    _loadSettings();
+  SettingsNotifier()
+      : super(SettingsState(
+          themeMode: _getInitialTheme(),
+          fontSize: CacheHelper.getData(key: 'fontSize') ?? 18.0,
+          homeSections: _getInitialHomeSections(),
+          notificationsEnabled: CacheHelper.getData(key: 'notificationsEnabled') ?? true,
+        ));
+
+  static ThemeMode _getInitialTheme() {
+    final String? theme = CacheHelper.getData(key: 'themeMode');
+    if (theme == 'light') return ThemeMode.light;
+    if (theme == 'dark') return ThemeMode.dark;
+    return ThemeMode.system;
   }
 
-  static const String _themeKey = 'isDarkMode';
-  static const String _notificationsKey = 'notificationsEnabled';
-  static const String _fontSizeKey = 'fontSize';
-
-  void _loadSettings() {
-    final bool? isDark = CacheHelper.getData(key: _themeKey);
-    final bool? notifications = CacheHelper.getData(key: _notificationsKey);
-    final double? fontSize = CacheHelper.getData(key: _fontSizeKey);
-
-    state = state.copyWith(
-      themeMode: isDark == null 
-          ? ThemeMode.light 
-          : (isDark ? ThemeMode.dark : ThemeMode.light),
-      notificationsEnabled: notifications ?? true,
-      fontSize: fontSize ?? 18.0,
-    );
+  static List<HomeSection> _getInitialHomeSections() {
+    final List<dynamic>? saved = CacheHelper.getData(key: 'homeSections');
+    if (saved == null) {
+      return HomeSection.values;
+    }
+    return saved
+        .map((e) => HomeSection.values.firstWhere(
+              (element) => element.name == e,
+              orElse: () => HomeSection.prayerTimes,
+            ))
+        .toList();
   }
 
-  /// تبديل الثيم
-  Future<void> toggleTheme(bool isDark) async {
-    state = state.copyWith(themeMode: isDark ? ThemeMode.dark : ThemeMode.light);
-    await CacheHelper.saveData(key: _themeKey, value: isDark);
+  void toggleTheme(ThemeMode mode) {
+    state = state.copyWith(themeMode: mode);
+    CacheHelper.saveData(key: 'themeMode', value: mode.name);
   }
 
-  /// تبديل التنبيهات
-  Future<void> toggleNotifications(bool enabled) async {
+  void toggleNotifications(bool enabled) {
     state = state.copyWith(notificationsEnabled: enabled);
-    await CacheHelper.saveData(key: _notificationsKey, value: enabled);
+    CacheHelper.saveData(key: 'notificationsEnabled', value: enabled);
   }
 
-  /// تحديث حجم الخط
-  Future<void> updateFontSize(double newSize) async {
-    state = state.copyWith(fontSize: newSize);
-    await CacheHelper.saveData(key: _fontSizeKey, value: newSize);
+  void updateFontSize(double size) {
+    state = state.copyWith(fontSize: size);
+    CacheHelper.saveData(key: 'fontSize', value: size);
+  }
+
+  void reorderHomeSections(List<HomeSection> sections) {
+    state = state.copyWith(homeSections: sections);
+    CacheHelper.saveData(
+      key: 'homeSections',
+      value: sections.map((e) => e.name).toList(),
+    );
   }
 }
