@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
 import 'package:thekr_app/core/services/notification_service.dart';
+import 'package:thekr_app/core/services/review_service.dart';
 import 'package:thekr_app/features/azkar/data/azkar_model.dart';
 
 class MyApp extends ConsumerStatefulWidget {
@@ -27,6 +28,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   void initState() {
     super.initState();
     _setupNotificationHandling();
+    ReviewService.requestAutoReview();
   }
 
   void _setupNotificationHandling() {

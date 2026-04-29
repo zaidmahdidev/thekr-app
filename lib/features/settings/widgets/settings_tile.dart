@@ -53,7 +53,7 @@ class SettingsTile extends StatelessWidget {
                         .copyWith(
                           fontWeight: FontWeight.w600,
                           color: context.colors.textPrimary,
-                          fontSize: 14.sp,
+                          fontSize: 13.sp,
                         ),
                   ),
                   if (subtitle != null) ...[
