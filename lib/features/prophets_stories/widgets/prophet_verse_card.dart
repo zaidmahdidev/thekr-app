@@ -6,11 +6,13 @@ import '../../../../core/theme/tokens/typography.dart';
 class ProphetVerseCard extends StatelessWidget {
   final String verse;
   final VoidCallback onCopy;
+  final double fontSize;
 
   const ProphetVerseCard({
     super.key,
     required this.verse,
     required this.onCopy,
+    required this.fontSize,
   });
 
   @override
@@ -45,7 +47,7 @@ class ProphetVerseCard extends StatelessWidget {
             style: AppTypography.bodyLarge.copyWith(
               color: context.colors.primary,
               fontFamily: 'hafs',
-              fontSize: 18.sp,
+              fontSize: fontSize.sp,
               height: 1.5,
             ),
           ),

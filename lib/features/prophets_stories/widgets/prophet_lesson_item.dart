@@ -5,7 +5,8 @@ import '../../../../core/theme/tokens/typography.dart';
 
 class ProphetLessonItem extends StatelessWidget {
   final String lesson;
-  const ProphetLessonItem({super.key, required this.lesson});
+  final double fontSize;
+  const ProphetLessonItem({super.key, required this.lesson, required this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +30,7 @@ class ProphetLessonItem extends StatelessWidget {
               style: AppTypography.bodyMedium.copyWith(
                 color: context.colors.textPrimary,
                 height: 1.5,
+                fontSize: fontSize.sp,
               ),
             ),
           ),

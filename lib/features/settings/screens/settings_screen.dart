@@ -206,6 +206,102 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ],
                   ),
                   SizedBox(height: context.insets.xl),
+                  const SectionHeader(title: 'إعدادات القراءة'),
+                  SettingsSection(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: context.insets.lg,
+                          vertical: context.insets.md,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.format_size_rounded,
+                                  color: context.colors.primary,
+                                  size: 20.sp,
+                                ),
+                                SizedBox(width: context.insets.sm),
+                                Text(
+                                  'حجم الخط',
+                                  style: context.textStyles.bodyMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                const Spacer(),
+                                TextButton(
+                                  onPressed: () => ref
+                                      .read(settingsProvider.notifier)
+                                      .updateFontSize(18.0),
+                                  style: TextButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: context.insets.sm,
+                                    ),
+                                    minimumSize: Size.zero,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                  ),
+                                  child: Text(
+                                    'إعادة ضبط',
+                                    style: context.textStyles.bodySmall
+                                        ?.copyWith(
+                                          color: context.colors.secondary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                ),
+                                SizedBox(width: context.insets.sm),
+                                Text(
+                                  '${settings.fontSize.toInt()}',
+                                  style: context.textStyles.bodySmall?.copyWith(
+                                    color: context.colors.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Slider.adaptive(
+                              value: settings.fontSize,
+                              min: 18.0,
+                              max: 30.0,
+                              divisions: 4,
+                              activeColor: context.colors.primary,
+                              onChanged: (val) => ref
+                                  .read(settingsProvider.notifier)
+                                  .updateFontSize(val),
+                            ),
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(context.insets.md),
+                              decoration: BoxDecoration(
+                                color: context.colors.background,
+                                borderRadius: BorderRadius.circular(
+                                  context.corners.md,
+                                ),
+                                border: Border.all(
+                                  color: context.colors.primary.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                'بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: settings.fontSize.sp,
+                                  fontFamily: 'Tajawal',
+                                  color: context.colors.textPrimary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: context.insets.xl),
                   const SectionHeader(title: 'الدعم والمعلومات'),
                   SettingsSection(
                     children: [

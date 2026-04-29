@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:readmore/readmore.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
-class AzkarItemWidget extends StatefulWidget {
+class AzkarItemWidget extends ConsumerStatefulWidget {
   final String details;
   final String? bless;
   final int currentCount;
@@ -24,10 +26,10 @@ class AzkarItemWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<AzkarItemWidget> createState() => _AzkarItemWidgetState();
+  ConsumerState<AzkarItemWidget> createState() => _AzkarItemWidgetState();
 }
 
-class _AzkarItemWidgetState extends State<AzkarItemWidget>
+class _AzkarItemWidgetState extends ConsumerState<AzkarItemWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
@@ -67,6 +69,9 @@ class _AzkarItemWidgetState extends State<AzkarItemWidget>
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(settingsProvider);
+    final fontSize = settings.fontSize;
+    
     final progress =
         (widget.originalCount - widget.currentCount) / widget.originalCount;
 
@@ -126,6 +131,7 @@ class _AzkarItemWidgetState extends State<AzkarItemWidget>
             style: AppTypography.bodyLarge.copyWith(
               fontWeight: FontWeight.bold,
               height: 1.8,
+              fontSize: fontSize,
             ),
             textAlign: TextAlign.center,
           ),
@@ -140,11 +146,15 @@ class _AzkarItemWidgetState extends State<AzkarItemWidget>
               trimExpandedText: ' قراءة اقل',
               lessStyle: AppTypography.bodyMedium.copyWith(
                 color: context.colors.secondary,
+                fontSize: fontSize * 0.8,
               ),
               moreStyle: AppTypography.bodyMedium.copyWith(
                 color: context.colors.secondary,
+                fontSize: fontSize * 0.8,
               ),
-              style: AppTypography.bodyMedium.copyWith(),
+              style: AppTypography.bodyMedium.copyWith(
+                fontSize: fontSize * 0.8,
+              ),
             ),
             const SizedBox(height: 15),
           ],

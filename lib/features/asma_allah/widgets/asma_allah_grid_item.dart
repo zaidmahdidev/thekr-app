@@ -5,14 +5,16 @@ import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/features/asma_allah/data/asma_allah_data.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/services/share_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
-class AsmaAllahGridItem extends StatelessWidget {
+class AsmaAllahGridItem extends ConsumerWidget {
   final AsmaAllah item;
 
   const AsmaAllahGridItem({super.key, required this.item});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       margin: EdgeInsets.zero,
       elevation: 0,
@@ -23,7 +25,7 @@ class AsmaAllahGridItem extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(context.corners.md),
-        onTap: () => _showMeaningBottomSheet(context),
+        onTap: () => _showMeaningBottomSheet(context, ref),
         child: Center(
           child: Text(
             item.name,
@@ -39,7 +41,10 @@ class AsmaAllahGridItem extends StatelessWidget {
     );
   }
 
-  void _showMeaningBottomSheet(BuildContext context) {
+  void _showMeaningBottomSheet(BuildContext context, WidgetRef ref) {
+    final settings = ref.read(settingsProvider);
+    final fontSize = settings.fontSize;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -79,7 +84,7 @@ class AsmaAllahGridItem extends StatelessWidget {
                   style: AppTypography.h1.copyWith(
                     color: context.colors.primary,
                     fontFamily: 'hafs',
-                    fontSize: 25.sp,
+                    fontSize: (fontSize + 6).sp,
                   ),
                 ),
                 SizedBox(height: context.insets.sm),
@@ -90,7 +95,7 @@ class AsmaAllahGridItem extends StatelessWidget {
                   style: AppTypography.bodyLarge.copyWith(
                     height: 1.6,
                     color: context.colors.textPrimary,
-                    fontSize: 16.sp,
+                    fontSize: fontSize.sp,
                   ),
                 ),
                 SizedBox(height: context.insets.xl),
