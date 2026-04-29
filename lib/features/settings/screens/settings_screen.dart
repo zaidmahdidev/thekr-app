@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/services/notification_service.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/features/settings/widgets/settings_section.dart';
@@ -23,6 +24,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _isLoading = true;
   bool _morningEnabled = true;
   bool _eveningEnabled = true;
+  bool _fridayEnabled = true;
   TimeOfDay _morningTime = const TimeOfDay(hour: 7, minute: 0);
   TimeOfDay _eveningTime = const TimeOfDay(hour: 18, minute: 0);
 
@@ -35,6 +37,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _loadSettings() async {
     final morningEnabled = await SettingsService.isMorningNotificationEnabled();
     final eveningEnabled = await SettingsService.isEveningNotificationEnabled();
+    final fridayEnabled = await SettingsService.isFridayNotificationEnabled();
     final morningTime = await SettingsService.getMorningTime();
     final eveningTime = await SettingsService.getEveningTime();
 
@@ -42,6 +45,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       setState(() {
         _morningEnabled = morningEnabled;
         _eveningEnabled = eveningEnabled;
+        _fridayEnabled = fridayEnabled;
         _morningTime = morningTime;
         _eveningTime = eveningTime;
         _isLoading = false;
@@ -60,10 +64,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _morningTime,
-      builder: (context, child) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: child!,
-      ),
+      builder: (context, child) =>
+          Directionality(textDirection: TextDirection.rtl, child: child!),
     );
     if (picked != null && picked != _morningTime) {
       setState(() => _morningTime = picked);
@@ -78,10 +80,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _eveningTime,
-      builder: (context, child) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: child!,
-      ),
+      builder: (context, child) =>
+          Directionality(textDirection: TextDirection.rtl, child: child!),
     );
     if (picked != null && picked != _eveningTime) {
       setState(() => _eveningTime = picked);
@@ -116,6 +116,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  Future<void> _updateFridayNotification(bool val) async {
+    setState(() => _fridayEnabled = val);
+    await SettingsService.setFridayNotificationEnabled(val);
+    if (val) {
+      await NotificationService.scheduleFridayKahf(
+        const TimeOfDay(hour: 8, minute: 0),
+      );
+      showToast(text: 'تم تفعيل تذكير سورة الكهف');
+    } else {
+      await NotificationService.cancelFridayNotification();
+      showToast(text: 'تم إلغاء تذكير سورة الكهف');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
@@ -144,7 +158,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         iconColor: Colors.indigo,
                         trailing: Switch.adaptive(
                           value: isDarkMode,
-                          activeColor: context.colors.primary,
+
                           onChanged: (val) => ref
                               .read(settingsProvider.notifier)
                               .toggleTheme(val),
@@ -159,7 +173,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         iconColor: Colors.orange,
                         trailing: Switch.adaptive(
                           value: _morningEnabled,
-                          activeColor: context.colors.primary,
                           onChanged: _updateMorningNotification,
                         ),
                         onTap: _morningEnabled ? _selectMorningTime : null,
@@ -173,10 +186,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         iconColor: Colors.blueAccent,
                         trailing: Switch.adaptive(
                           value: _eveningEnabled,
-                          activeColor: context.colors.primary,
                           onChanged: _updateEveningNotification,
                         ),
                         onTap: _eveningEnabled ? _selectEveningTime : null,
+                      ),
+                      SettingsTile(
+                        title: 'تذكير سورة الكهف',
+                        subtitle: _fridayEnabled
+                            ? 'كل يوم جمعة صباحاً'
+                            : 'التذكير متوقف',
+                        icon: Icons.menu_book_rounded,
+                        iconColor: Colors.green,
+                        trailing: Switch.adaptive(
+                          value: _fridayEnabled,
+                          onChanged: _updateFridayNotification,
+                        ),
                       ),
                     ],
                   ),
@@ -197,7 +221,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         title: 'سياسة الخصوصية',
                         icon: Icons.privacy_tip_rounded,
                         iconColor: Colors.redAccent,
-                        onTap: () => UrlHelper.launchURL('https://zaidmahdidev.github.io/privacy-policy-thekr/'),
+                        onTap: () => UrlHelper.launchURL(
+                          'https://zaidmahdidev.github.io/privacy-policy-thekr/',
+                        ),
                       ),
                       SettingsTile(
                         title: 'شارك التطبيق',
@@ -217,9 +243,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           showAboutDialog(
                             context: context,
                             applicationName: 'تطبيق ذِكر',
-                            applicationVersion: '1.0.0',
+                            applicationVersion: '1.1.0',
                             applicationIcon: Image.asset(
-                              'assets/images/logo.png',
+                              AppAssets.logo,
                               width: 40.w,
                               errorBuilder: (_, __, ___) =>
                                   Icon(Icons.mosque, size: 30.sp),
@@ -238,10 +264,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   Center(
                     child: Text(
                       'الإصدار 1.1.0',
-                      style: (context.textStyles.bodySmall ?? const TextStyle()).copyWith(
-                        color: context.colors.textSecondary.withValues(alpha: 0.5),
-                        fontSize: 11.sp,
-                      ),
+                      style: (context.textStyles.bodySmall ?? const TextStyle())
+                          .copyWith(
+                            color: context.colors.textSecondary.withValues(
+                              alpha: 0.5,
+                            ),
+                            fontSize: 11.sp,
+                          ),
                     ),
                   ),
                 ],

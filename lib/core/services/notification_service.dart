@@ -138,6 +138,29 @@ class NotificationService {
     );
   }
 
+  static Future<void> scheduleFridayKahf(TimeOfDay time) async {
+    await _notifications.zonedSchedule(
+      3,
+      '📖 سورة الكهف',
+      'يوم الجمعة، لا تنسَ قراءة سورة الكهف، نورٌ ما بين الجمعتين',
+      _nextInstanceOfFriday(time),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'azkar_channel',
+          'تذكير الأذكار',
+          channelDescription: 'إشعارات تذكير أذكار الصباح والمساء والكهف',
+          importance: Importance.high,
+          priority: Priority.high,
+          playSound: true,
+          enableVibration: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+      payload: 'surah_kahf',
+    );
+  }
+
   static tz.TZDateTime _nextInstanceOfTime(TimeOfDay time) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduledDate = tz.TZDateTime(
@@ -156,6 +179,14 @@ class NotificationService {
     return scheduledDate;
   }
 
+  static tz.TZDateTime _nextInstanceOfFriday(TimeOfDay time) {
+    tz.TZDateTime scheduledDate = _nextInstanceOfTime(time);
+    while (scheduledDate.weekday != DateTime.friday) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    return scheduledDate;
+  }
+
   static Future<void> cancelMorningNotification() async {
     await _notifications.cancel(1);
   }
@@ -164,15 +195,18 @@ class NotificationService {
     await _notifications.cancel(2);
   }
 
+  static Future<void> cancelFridayNotification() async {
+    await _notifications.cancel(3);
+  }
+
   static Future<void> cancelAllNotifications() async {
     await _notifications.cancelAll();
   }
 
   static Future<void> refreshScheduledNotifications() async {
-    final morningEnabled =
-        await SettingsService.isMorningNotificationEnabled();
-    final eveningEnabled =
-        await SettingsService.isEveningNotificationEnabled();
+    final morningEnabled = await SettingsService.isMorningNotificationEnabled();
+    final eveningEnabled = await SettingsService.isEveningNotificationEnabled();
+    final fridayEnabled = await SettingsService.isFridayNotificationEnabled();
 
     if (morningEnabled) {
       final morningTime = await SettingsService.getMorningTime();
@@ -183,12 +217,17 @@ class NotificationService {
       final eveningTime = await SettingsService.getEveningTime();
       await scheduleEveningAzkar(eveningTime);
     }
+
+    if (fridayEnabled) {
+      await scheduleFridayKahf(const TimeOfDay(hour: 8, minute: 0));
+    }
   }
 }
 
 class SettingsService {
   static const String _morningEnabledKey = 'morning_notification_enabled';
   static const String _eveningEnabledKey = 'evening_notification_enabled';
+  static const String _fridayEnabledKey = 'friday_notification_enabled';
   static const String _morningTimeKey = 'morning_notification_time';
   static const String _eveningTimeKey = 'evening_notification_time';
 
@@ -200,6 +239,11 @@ class SettingsService {
   static Future<void> setEveningNotificationEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_eveningEnabledKey, enabled);
+  }
+
+  static Future<void> setFridayNotificationEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_fridayEnabledKey, enabled);
   }
 
   static Future<void> setMorningTime(TimeOfDay time) async {
@@ -220,6 +264,11 @@ class SettingsService {
   static Future<bool> isEveningNotificationEnabled() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_eveningEnabledKey) ?? true;
+  }
+
+  static Future<bool> isFridayNotificationEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_fridayEnabledKey) ?? true;
   }
 
   static Future<TimeOfDay> getMorningTime() async {

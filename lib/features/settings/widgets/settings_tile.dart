@@ -62,11 +62,9 @@ class SettingsTile extends StatelessWidget {
                       subtitle!,
                       style: (context.textStyles.bodySmall ?? const TextStyle())
                           .copyWith(
-                            color: onTap != null
-                                ? context.colors.secondary
-                                : context.colors.textSecondary.withValues(
-                                    alpha: 0.5,
-                                  ),
+                            color: context.colors.textSecondary.withValues(
+                              alpha: 0.5,
+                            ),
                             fontWeight: onTap != null
                                 ? FontWeight.bold
                                 : FontWeight.normal,
@@ -85,7 +83,7 @@ class SettingsTile extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    Icons.chevron_left_rounded,
+                    Icons.chevron_right_rounded,
                     size: 16.sp,
                     color: context.colors.textSecondary.withValues(alpha: 0.4),
                   ),

@@ -47,6 +47,8 @@ class _MyAppState extends ConsumerState<MyApp> {
             type: 'أذكار المساء',
           ),
         );
+      } else if (payload == 'surah_kahf') {
+        _appRouter.push(SurahRoute(currentPage: 293));
       }
     };
 
