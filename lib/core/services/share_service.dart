@@ -59,7 +59,7 @@ class ShareService {
                     label: 'نص فقط',
                     onTap: () {
                       Navigator.pop(context);
-                      _shareAsText(context, content, subtitle);
+                      shareAsText(context, content, subtitle);
                     },
                   ),
                   _shareOptionItem(
@@ -111,20 +111,23 @@ class ShareService {
     );
   }
 
-  static void _shareAsText(
+  static void shareAsText(
     BuildContext context,
     String content,
-    String? subtitle,
-  ) async {
+    String? subtitle, {
+    bool includeSignature = true,
+  }) async {
     try {
       String shareText = content;
       if (subtitle != null && subtitle.isNotEmpty) {
         shareText += '\n\n$subtitle';
       }
 
-      shareText += '\n\n﴿احمدوا الله دومًا﴾';
-      shareText += '\n\nحمّل تطبيق "ذكر" الآن:';
-      shareText += '\n${AppConstants.playStoreUrl}';
+      if (includeSignature) {
+        shareText += '\n\n﴿احمدوا الله دومًا﴾';
+        shareText += '\n\nحمّل تطبيق "ذكر" الآن:';
+        shareText += '\n${AppConstants.playStoreUrl}';
+      }
 
       await Share.share(shareText, subject: 'ذكر من ${AppConstants.appName}');
     } catch (e) {

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:thekr_app/core/services/share_service.dart';
 
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/constants/app_constants.dart';
@@ -127,7 +128,11 @@ class RuqyahList extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: () {
-                          Share.share('${item.title}\n\n${item.content}\n\n${AppConstants.appName}');
+                          ShareService.shareAsText(
+                            context,
+                            item.title,
+                            item.content,
+                          );
                         },
                         icon: Icon(Icons.share_rounded, size: 20.w),
                         color: context.colors.primary,

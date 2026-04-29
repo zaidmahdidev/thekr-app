@@ -17,7 +17,7 @@ class AppConstants {
 
   // Sharing Text
   static const String shareMessage =
-      'حمّل تطبيق "الذكر" الآن، رفيقك في الأذكار والعبادات:\n$playStoreUrl';
+      'حمّل تطبيق "ذكر" الآن، رفيقك في الأذكار والعبادات:\n$playStoreUrl';
 
   // Social Links
   static const String websiteUrl = 'https://zaidmahdidev.github.io/portfolio/'; // موقعك الشخصي إن وجد

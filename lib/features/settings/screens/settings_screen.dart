@@ -12,6 +12,7 @@ import 'package:thekr_app/features/settings/widgets/settings_tile.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thekr_app/core/utils/url_helper.dart';
 import 'package:thekr_app/core/services/review_service.dart';
+import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/router/app_router.dart';
 import 'package:thekr_app/core/utils/constants/app_constants.dart';
 
@@ -343,7 +344,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.share_rounded,
                         iconColor: Colors.purple,
                         onTap: () {
-                          Share.share(AppConstants.shareMessage);
+                          ShareService.shareAsText(
+                            context,
+                            AppConstants.appName,
+                            AppConstants.shareMessage,
+                            includeSignature: false,
+                          );
                         },
                       ),
                       SettingsTile(

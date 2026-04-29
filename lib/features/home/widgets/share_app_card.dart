@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/utils/constants/app_constants.dart';
 
@@ -88,7 +89,12 @@ class ShareAppCard extends StatelessWidget {
                   SizedBox(height: context.insets.sm),
                   ElevatedButton.icon(
                     onPressed: () {
-                      Share.share(AppConstants.shareMessage);
+                      ShareService.shareAsText(
+                        context,
+                        AppConstants.shareMessage,
+                        null,
+                        includeSignature: false,
+                      );
                     },
                     icon: const Icon(Icons.share, size: 18),
                     label: const Text('مشاركة التطبيق الآن'),
