@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
+import 'package:thekr_app/core/utils/constants/app_constants.dart';
 
 class ShareAppCard extends StatelessWidget {
   const ShareAppCard({super.key});
@@ -87,9 +88,7 @@ class ShareAppCard extends StatelessWidget {
                   SizedBox(height: context.insets.sm),
                   ElevatedButton.icon(
                     onPressed: () {
-                      Share.share(
-                        'حمل تطبيق "ذكر" - رفيقك المسلم\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app',
-                      );
+                      Share.share(AppConstants.shareMessage);
                     },
                     icon: const Icon(Icons.share, size: 18),
                     label: const Text('مشاركة التطبيق الآن'),

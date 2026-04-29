@@ -5,6 +5,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'dart:io';
 import 'package:thekr_app/core/services/cache_helper.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
@@ -72,8 +73,7 @@ class _SurahScreenState extends State<SurahScreen> with WidgetsBindingObserver {
 
         await Share.shareXFiles(
           [XFile(imagePath.path)],
-          text:
-              'رابط تحميل تطبيق ذكر: \nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app',
+          text: AppConstants.shareMessage,
         );
       }
     } catch (e) {

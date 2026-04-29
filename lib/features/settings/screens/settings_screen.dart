@@ -13,6 +13,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:thekr_app/core/utils/url_helper.dart';
 import 'package:thekr_app/core/services/review_service.dart';
 import 'package:thekr_app/core/router/app_router.dart';
+import 'package:thekr_app/core/utils/constants/app_constants.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -327,7 +328,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.chat_rounded,
                         iconColor: Colors.teal,
                         onTap: () => UrlHelper.launchWhatsApp(
-                          phone: '+967774814210',
+                          phone: AppConstants.whatsappNumber,
                           message: 'السلام عليكم، لدي استفسار بخصوص تطبيق ذكر',
                         ),
                       ),
@@ -335,18 +336,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         title: 'سياسة الخصوصية',
                         icon: Icons.privacy_tip_rounded,
                         iconColor: Colors.redAccent,
-                        onTap: () => UrlHelper.launchURL(
-                          'https://zaidmahdidev.github.io/privacy-policy-thekr/',
-                        ),
+                        onTap: () => UrlHelper.launchURL(AppConstants.privacyPolicyUrl),
                       ),
                       SettingsTile(
                         title: 'شارك التطبيق',
                         icon: Icons.share_rounded,
                         iconColor: Colors.purple,
                         onTap: () {
-                          Share.share(
-                            'حمل تطبيق "ذكر" - صدقة جارية\nتطبيق شامل للمصحف الشريف والأذكار والتسبيح\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app',
-                          );
+                          Share.share(AppConstants.shareMessage);
                         },
                       ),
                       SettingsTile(
@@ -356,8 +353,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         onTap: () {
                           showAboutDialog(
                             context: context,
-                            applicationName: 'تطبيق ذِكر',
-                            applicationVersion: '1.1.0',
+                            applicationName: AppConstants.appName,
+                            applicationVersion: AppConstants.appVersion,
                             applicationIcon: Image.asset(
                               AppAssets.logo,
                               width: 40.w,
@@ -365,9 +362,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                   Icon(Icons.mosque, size: 30.sp),
                             ),
                             children: [
-                              const Text(
-                                'تطبيق صدقة جارية يهدف لنشر الأذكار والأدعية الصحيحة.',
-                              ),
+                               Text(
+                                  'تطبيق صدقة جارية يهدف لنشر الأذكار والأدعية الصحيحة.\nتم التطوير بواسطة: ${AppConstants.developerName}',
+                                ),
                             ],
                           );
                         },
@@ -377,7 +374,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   SizedBox(height: context.insets.xl),
                   Center(
                     child: Text(
-                      'الإصدار 1.1.0',
+                      'الإصدار ${AppConstants.appVersion}',
                       style: (context.textStyles.bodySmall ?? const TextStyle())
                           .copyWith(
                             color: context.colors.textSecondary.withValues(

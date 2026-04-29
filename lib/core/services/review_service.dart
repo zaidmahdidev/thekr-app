@@ -1,6 +1,8 @@
 import 'package:in_app_review/in_app_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:thekr_app/core/utils/constants/app_constants.dart';
+
 class ReviewService {
   static final InAppReview _inAppReview = InAppReview.instance;
   static const String _lastReviewDateKey = 'last_review_date';
@@ -10,7 +12,7 @@ class ReviewService {
   static Future<void> requestManualReview() async {
     // نفتح صفحة المتجر مباشرة لأن المستخدم هو من طلب التقييم
     await _inAppReview.openStoreListing(
-      appStoreId: 'com.zaid.thekr_app',
+      appStoreId: AppConstants.packageName,
     );
   }
 

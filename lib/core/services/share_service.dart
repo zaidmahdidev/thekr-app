@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
+import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
 
 class ShareService {
@@ -122,11 +123,10 @@ class ShareService {
       }
 
       shareText += '\n\n﴿احمدوا الله دومًا﴾';
-      shareText += '\n\nحمل تطبيق ذكر:';
-      shareText +=
-          '\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app';
+      shareText += '\n\nحمّل تطبيق "ذكر" الآن:';
+      shareText += '\n${AppConstants.playStoreUrl}';
 
-      await Share.share(shareText, subject: 'ذكر من تطبيق ذكر');
+      await Share.share(shareText, subject: 'ذكر من ${AppConstants.appName}');
     } catch (e) {
       Clipboard.setData(ClipboardData(text: content));
       showToast(
@@ -204,7 +204,7 @@ class ShareService {
                     ),
                   ),
                   Text(
-                    'تطبيق ذكر - صدقة جارية',
+                    '${AppConstants.appName} - صدقة جارية',
                     style: TextStyle(
                       color: context.colors.primary.withValues(alpha: 0.5),
                       fontSize: 10.sp,
@@ -226,8 +226,7 @@ class ShareService {
 
       await Share.shareXFiles(
         [XFile(imagePath.path)],
-        text:
-            'رابط تحميل التطبيق \n https://play.google.com/store/apps/details?id=com.zaid.thekr_app',
+        text: AppConstants.shareMessage,
       );
     } catch (e) {
       showToast(text: 'حدث خطأ أثناء المشاركة');

@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
 import 'package:thekr_app/core/widgets/app_scaffold.dart';
@@ -126,7 +127,7 @@ class RuqyahList extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: () {
-                          Share.share('${item.title}\n\n${item.content}\n\nتطبيق ذكر');
+                          Share.share('${item.title}\n\n${item.content}\n\n${AppConstants.appName}');
                         },
                         icon: Icon(Icons.share_rounded, size: 20.w),
                         color: context.colors.primary,
