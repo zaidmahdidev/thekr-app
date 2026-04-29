@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/services/notification_service.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
-
-import '../widgets/setting_card.dart';
-import '../widgets/appearance_card.dart';
-import '../widgets/settings_info_card.dart';
-import '../widgets/settings_share_card.dart';
+import 'package:thekr_app/features/settings/widgets/settings_section.dart';
+import 'package:thekr_app/features/settings/widgets/settings_tile.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:thekr_app/core/utils/url_helper.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   @override
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  bool _isLoading = true;
   bool _morningEnabled = true;
   bool _eveningEnabled = true;
   TimeOfDay _morningTime = const TimeOfDay(hour: 7, minute: 0);
-  TimeOfDay _eveningTime = const TimeOfDay(hour: 19, minute: 0);
-  bool _isLoading = true;
+  TimeOfDay _eveningTime = const TimeOfDay(hour: 18, minute: 0);
 
   @override
   void initState() {
@@ -33,14 +33,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _loadSettings() async {
-    try {
-      final morningEnabled =
-          await SettingsService.isMorningNotificationEnabled();
-      final eveningEnabled =
-          await SettingsService.isEveningNotificationEnabled();
-      final morningTime = await SettingsService.getMorningTime();
-      final eveningTime = await SettingsService.getEveningTime();
+    final morningEnabled = await SettingsService.isMorningNotificationEnabled();
+    final eveningEnabled = await SettingsService.isEveningNotificationEnabled();
+    final morningTime = await SettingsService.getMorningTime();
+    final eveningTime = await SettingsService.getEveningTime();
 
+    if (mounted) {
       setState(() {
         _morningEnabled = morningEnabled;
         _eveningEnabled = eveningEnabled;
@@ -48,86 +46,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         _eveningTime = eveningTime;
         _isLoading = false;
       });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
-  Future<void> _updateMorningNotification(bool enabled) async {
-    setState(() {
-      _morningEnabled = enabled;
-    });
-
-    await SettingsService.setMorningNotificationEnabled(enabled);
-
-    if (enabled) {
-      await NotificationService.scheduleMorningAzkar(_morningTime);
-      showToast(
-        text: 'تم تفعيل تذكير أذكار الصباح',
-        backgroundColor: context.colors.background,
-      );
-    } else {
-      await NotificationService.cancelMorningNotification();
-      showToast(
-        text: 'تم إلغاء تذكير أذكار الصباح',
-        // backgroundColor: context.colors.background,
-      );
-    }
-  }
-
-  Future<void> _updateEveningNotification(bool enabled) async {
-    setState(() {
-      _eveningEnabled = enabled;
-    });
-
-    await SettingsService.setEveningNotificationEnabled(enabled);
-
-    if (enabled) {
-      await NotificationService.scheduleEveningAzkar(_eveningTime);
-      showToast(
-        text: 'تم تفعيل تذكير أذكار المساء',
-        backgroundColor: context.colors.background,
-      );
-    } else {
-      await NotificationService.cancelEveningNotification();
-      showToast(
-        text: 'تم إلغاء تذكير أذكار المساء',
-        backgroundColor: context.colors.background,
-      );
-    }
+  String _formatTime(TimeOfDay time) {
+    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final period = time.period == DayPeriod.am ? 'ص' : 'م';
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute $period';
   }
 
   Future<void> _selectMorningTime() async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _morningTime,
-      builder: (context, child) {
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-            child: child!,
-          ),
-        );
-      },
+      builder: (context, child) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: child!,
+      ),
     );
-
     if (picked != null && picked != _morningTime) {
-      setState(() {
-        _morningTime = picked;
-      });
-
+      setState(() => _morningTime = picked);
       await SettingsService.setMorningTime(picked);
-
       if (_morningEnabled) {
         await NotificationService.scheduleMorningAzkar(picked);
-
-        showToast(
-          text: 'تم تحديث وقت أذكار الصباح',
-          backgroundColor: context.colors.background,
-        );
       }
     }
   }
@@ -136,39 +78,42 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _eveningTime,
-      builder: (context, child) {
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-            child: child!,
-          ),
-        );
-      },
+      builder: (context, child) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: child!,
+      ),
     );
-
     if (picked != null && picked != _eveningTime) {
-      setState(() {
-        _eveningTime = picked;
-      });
-
+      setState(() => _eveningTime = picked);
       await SettingsService.setEveningTime(picked);
-
       if (_eveningEnabled) {
         await NotificationService.scheduleEveningAzkar(picked);
-        showToast(
-          text: 'تم تحديث وقت أذكار المساء',
-          backgroundColor: context.colors.background,
-        );
       }
     }
   }
 
-  String _formatTime(TimeOfDay time) {
-    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
-    final minute = time.minute.toString().padLeft(2, '0');
-    final period = time.period == DayPeriod.am ? 'ص' : 'م';
-    return '$hour:$minute $period';
+  Future<void> _updateMorningNotification(bool val) async {
+    setState(() => _morningEnabled = val);
+    await SettingsService.setMorningNotificationEnabled(val);
+    if (val) {
+      await NotificationService.scheduleMorningAzkar(_morningTime);
+      showToast(text: 'تم تفعيل تذكير أذكار الصباح');
+    } else {
+      await NotificationService.cancelMorningNotification();
+      showToast(text: 'تم إلغاء تذكير أذكار الصباح');
+    }
+  }
+
+  Future<void> _updateEveningNotification(bool val) async {
+    setState(() => _eveningEnabled = val);
+    await SettingsService.setEveningNotificationEnabled(val);
+    if (val) {
+      await NotificationService.scheduleEveningAzkar(_eveningTime);
+      showToast(text: 'تم تفعيل تذكير أذكار المساء');
+    } else {
+      await NotificationService.cancelEveningNotification();
+      showToast(text: 'تم إلغاء تذكير أذكار المساء');
+    }
   }
 
   @override
@@ -188,51 +133,117 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 vertical: context.insets.lg,
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Appearance Section
-                  AppearanceCard(
-                    isDarkMode: isDarkMode,
-                    onThemeChanged: (val) =>
-                        ref.read(settingsProvider.notifier).toggleTheme(val),
+                  const SectionHeader(title: 'المظهر والتنبيهات'),
+                  SettingsSection(
+                    children: [
+                      SettingsTile(
+                        title: 'الوضع الليلي',
+                        icon: Icons.dark_mode_rounded,
+                        iconColor: Colors.indigo,
+                        trailing: Switch.adaptive(
+                          value: isDarkMode,
+                          activeColor: context.colors.primary,
+                          onChanged: (val) => ref
+                              .read(settingsProvider.notifier)
+                              .toggleTheme(val),
+                        ),
+                      ),
+                      SettingsTile(
+                        title: 'أذكار الصباح',
+                        subtitle: _morningEnabled
+                            ? 'تذكير عند ${_formatTime(_morningTime)}'
+                            : 'التذكير متوقف',
+                        icon: Icons.wb_sunny_rounded,
+                        iconColor: Colors.orange,
+                        trailing: Switch.adaptive(
+                          value: _morningEnabled,
+                          activeColor: context.colors.primary,
+                          onChanged: _updateMorningNotification,
+                        ),
+                        onTap: _morningEnabled ? _selectMorningTime : null,
+                      ),
+                      SettingsTile(
+                        title: 'أذكار المساء',
+                        subtitle: _eveningEnabled
+                            ? 'تذكير عند ${_formatTime(_eveningTime)}'
+                            : 'التذكير متوقف',
+                        icon: Icons.nightlight_round_rounded,
+                        iconColor: Colors.blueAccent,
+                        trailing: Switch.adaptive(
+                          value: _eveningEnabled,
+                          activeColor: context.colors.primary,
+                          onChanged: _updateEveningNotification,
+                        ),
+                        onTap: _eveningEnabled ? _selectEveningTime : null,
+                      ),
+                    ],
                   ),
-
-                  SizedBox(height: context.insets.md),
-
-                  // Morning Azkar Section
-                  SettingCard(
-                    title: 'أذكار الصباح',
-                    icon: Icons.wb_sunny_rounded,
-                    iconColor: context.colors.secondary,
-                    isEnabled: _morningEnabled,
-                    onToggle: _updateMorningNotification,
-                    time: _morningTime,
-                    onTimeTap: _selectMorningTime,
-                    formatTime: _formatTime,
+                  SizedBox(height: context.insets.xl),
+                  const SectionHeader(title: 'الدعم والمعلومات'),
+                  SettingsSection(
+                    children: [
+                      SettingsTile(
+                        title: 'تواصل معنا',
+                        icon: Icons.chat_rounded,
+                        iconColor: Colors.teal,
+                        onTap: () => UrlHelper.launchWhatsApp(
+                          phone: '+967774814210',
+                          message: 'السلام عليكم، لدي استفسار بخصوص تطبيق ذكر',
+                        ),
+                      ),
+                      SettingsTile(
+                        title: 'سياسة الخصوصية',
+                        icon: Icons.privacy_tip_rounded,
+                        iconColor: Colors.redAccent,
+                        onTap: () => UrlHelper.launchURL('https://zaidmahdidev.github.io/privacy-policy-thekr/'),
+                      ),
+                      SettingsTile(
+                        title: 'شارك التطبيق',
+                        icon: Icons.share_rounded,
+                        iconColor: Colors.purple,
+                        onTap: () {
+                          Share.share(
+                            'حمل تطبيق "ذكر" - صدقة جارية\nتطبيق شامل للمصحف الشريف والأذكار والتسبيح\nhttps://play.google.com/store/apps/details?id=com.zaid.thekr_app',
+                          );
+                        },
+                      ),
+                      SettingsTile(
+                        title: 'عن التطبيق',
+                        icon: Icons.info_rounded,
+                        iconColor: Colors.grey,
+                        onTap: () {
+                          showAboutDialog(
+                            context: context,
+                            applicationName: 'تطبيق ذِكر',
+                            applicationVersion: '1.0.0',
+                            applicationIcon: Image.asset(
+                              'assets/images/logo.png',
+                              width: 40.w,
+                              errorBuilder: (_, __, ___) =>
+                                  Icon(Icons.mosque, size: 30.sp),
+                            ),
+                            children: [
+                              const Text(
+                                'تطبيق صدقة جارية يهدف لنشر الأذكار والأدعية الصحيحة.',
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
                   ),
-
-                  SizedBox(height: context.insets.md),
-
-                  // Evening Azkar Section
-                  SettingCard(
-                    title: 'أذكار المساء',
-                    icon: Icons.nightlight_round_rounded,
-                    iconColor: context.colors.primary,
-                    isEnabled: _eveningEnabled,
-                    onToggle: _updateEveningNotification,
-                    time: _eveningTime,
-                    onTimeTap: _selectEveningTime,
-                    formatTime: _formatTime,
+                  SizedBox(height: context.insets.xl),
+                  Center(
+                    child: Text(
+                      'الإصدار 1.1.0',
+                      style: (context.textStyles.bodySmall ?? const TextStyle()).copyWith(
+                        color: context.colors.textSecondary.withValues(alpha: 0.5),
+                        fontSize: 11.sp,
+                      ),
+                    ),
                   ),
-
-                  SizedBox(height: context.insets.lg),
-
-                  // Info Section
-                  const SettingsInfoCard(),
-
-                  SizedBox(height: context.insets.md),
-
-                  // Share App Section
-                  const SettingsShareCard(),
                 ],
               ),
             ),
