@@ -106,6 +106,7 @@ class AsmaAllahGridItem extends ConsumerWidget {
                         onPressed: () {
                           ShareService.showShareSheet(
                             context,
+                            ref,
                             content: item.name,
                             subtitle: item.meaning,
                           );

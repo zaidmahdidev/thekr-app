@@ -43,6 +43,7 @@ class ProphetDetailsScreen extends ConsumerWidget {
             ),
             onShare: () => ShareService.showShareSheet(
               context,
+              ref,
               content: prophet.name,
               subtitle: '${prophet.title}\n\n${prophet.fullStory}',
             ),

@@ -1,5 +1,5 @@
 class AppConstants {
-  static const String appName = 'ذكر - thekr';
+  static const String appName = 'ذكر';
   static const String appVersion = '1.1.0';
 
   // Package Name (تأكد من مطابقتها لما هو موجود في الـ AndroidManifest)

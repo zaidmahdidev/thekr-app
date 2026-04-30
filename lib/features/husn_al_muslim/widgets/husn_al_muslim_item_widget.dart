@@ -100,6 +100,7 @@ class _HusnAlMuslimItemWidgetState extends ConsumerState<HusnAlMuslimItemWidget>
               InkWell(
                 onTap: () => ShareService.showShareSheet(
                   context,
+                  ref,
                   content: widget.text,
                   subtitle: widget.footnote,
                 ),

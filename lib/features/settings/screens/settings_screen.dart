@@ -219,6 +219,92 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ],
                   ),
                   SizedBox(height: context.insets.md),
+                  const SectionHeader(title: 'إعدادات مشاركة الصور'),
+                  SettingsSection(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(context.insets.md),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'اختر شكل بطاقة المشاركة',
+                              style: context.textStyles.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: context.insets.md),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: ShareTemplate.values.map((template) {
+                                final isSelected =
+                                    settings.shareTemplate == template;
+                                return Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => ref
+                                        .read(settingsProvider.notifier)
+                                        .updateShareTemplate(template),
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(
+                                        horizontal: 4.w,
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 12.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? context.colors.primary
+                                                .withValues(alpha: 0.1)
+                                            : context.colors.surface,
+                                        borderRadius: BorderRadius.circular(
+                                          context.corners.md,
+                                        ),
+                                        border: Border.all(
+                                          color: isSelected
+                                              ? context.colors.primary
+                                              : context.colors.primary
+                                                  .withValues(alpha: 0.1),
+                                          width: isSelected ? 2 : 1,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            template == ShareTemplate.classic
+                                                ? Icons.auto_awesome_rounded
+                                                : template == ShareTemplate.luxury
+                                                    ? Icons.workspace_premium_rounded
+                                                    : Icons.waves_rounded,
+                                            color: isSelected
+                                                ? context.colors.primary
+                                                : context.colors.textSecondary,
+                                          ),
+                                          SizedBox(height: 8.h),
+                                          Text(
+                                            template.title.split(' ')[0],
+                                            style: context.textStyles.bodySmall
+                                                ?.copyWith(
+                                              fontWeight: isSelected
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal,
+                                              color: isSelected
+                                                  ? context.colors.primary
+                                                  : context.colors.textPrimary,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: context.insets.md),
                   // const SectionHeader(title: 'إعدادات القراءة'),
                   SettingsSection(
                     children: [
@@ -257,7 +343,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                         MaterialTapTargetSize.shrinkWrap,
                                   ),
                                   child: Text(
-                                    'إعادة ضبط',
+                                    'الافتراضي',
                                     style: context.textStyles.bodySmall
                                         ?.copyWith(
                                           color: context.colors.secondary,

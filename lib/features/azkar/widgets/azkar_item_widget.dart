@@ -103,6 +103,7 @@ class _AzkarItemWidgetState extends ConsumerState<AzkarItemWidget>
               InkWell(
                 onTap: () => ShareService.showShareSheet(
                   context,
+                  ref,
                   content: widget.details,
                   subtitle: widget.bless,
                 ),

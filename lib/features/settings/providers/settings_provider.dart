@@ -25,6 +25,23 @@ enum HomeSection {
   }
 }
 
+enum ShareTemplate {
+  classic,
+  luxury,
+  spiritual;
+
+  String get title {
+    switch (this) {
+      case ShareTemplate.classic:
+        return 'الكلاسيكي الهادئ';
+      case ShareTemplate.luxury:
+        return 'الداكن الفاخر';
+      case ShareTemplate.spiritual:
+        return 'الروحاني الحديث';
+    }
+  }
+}
+
 /// حالة الإعدادات الشاملة
 class SettingsState {
   final ThemeMode themeMode;
@@ -32,6 +49,7 @@ class SettingsState {
   final String languageCode;
   final double fontSize;
   final List<HomeSection> homeSections;
+  final ShareTemplate shareTemplate;
 
   SettingsState({
     required this.themeMode,
@@ -39,6 +57,7 @@ class SettingsState {
     this.languageCode = 'ar',
     this.fontSize = 18.0,
     required this.homeSections,
+    this.shareTemplate = ShareTemplate.classic,
   });
 
   SettingsState copyWith({
@@ -47,6 +66,7 @@ class SettingsState {
     String? languageCode,
     double? fontSize,
     List<HomeSection>? homeSections,
+    ShareTemplate? shareTemplate,
   }) {
     return SettingsState(
       themeMode: themeMode ?? this.themeMode,
@@ -54,6 +74,7 @@ class SettingsState {
       languageCode: languageCode ?? this.languageCode,
       fontSize: fontSize ?? this.fontSize,
       homeSections: homeSections ?? this.homeSections,
+      shareTemplate: shareTemplate ?? this.shareTemplate,
     );
   }
 }
@@ -71,6 +92,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           fontSize: CacheHelper.getData(key: 'fontSize') ?? 18.0,
           homeSections: _getInitialHomeSections(),
           notificationsEnabled: CacheHelper.getData(key: 'notificationsEnabled') ?? true,
+          shareTemplate: _getInitialShareTemplate(),
         ));
 
   static ThemeMode _getInitialTheme() {
@@ -91,6 +113,15 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
               orElse: () => HomeSection.prayerTimes,
             ))
         .toList();
+  }
+
+  static ShareTemplate _getInitialShareTemplate() {
+    final String? template = CacheHelper.getData(key: 'shareTemplate');
+    if (template == null) return ShareTemplate.classic;
+    return ShareTemplate.values.firstWhere(
+      (e) => e.name == template,
+      orElse: () => ShareTemplate.classic,
+    );
   }
 
   void toggleTheme(ThemeMode mode) {
@@ -114,5 +145,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       key: 'homeSections',
       value: sections.map((e) => e.name).toList(),
     );
+  }
+
+  void updateShareTemplate(ShareTemplate template) {
+    state = state.copyWith(shareTemplate: template);
+    CacheHelper.saveData(key: 'shareTemplate', value: template.name);
   }
 }
