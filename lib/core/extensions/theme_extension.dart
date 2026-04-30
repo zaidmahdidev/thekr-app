@@ -12,4 +12,5 @@ extension ThemeContextExtension on BuildContext {
   AppShadows get shadows => _themeExtension.shadows;
 
   TextTheme get textStyles => Theme.of(this).textTheme;
+  bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
 }

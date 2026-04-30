@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:quran_library/quran_library.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -25,6 +26,7 @@ class QuranScreen extends ConsumerStatefulWidget {
 class _QuranScreenState extends ConsumerState<QuranScreen>
     with WidgetsBindingObserver {
   final ScreenshotController _screenshotController = ScreenshotController();
+  final ScreenshotController _ayahScreenshotController = ScreenshotController();
 
   @override
   void initState() {
@@ -62,12 +64,8 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
 
     try {
       notifier.setCapturing(true);
-
-      // Brief delay to ensure UI reflects the capturing state
       await Future.delayed(const Duration(milliseconds: 150));
-
       final uint8list = await _screenshotController.capture(pixelRatio: 2.0);
-
       notifier.setCapturing(false);
 
       if (uint8list != null) {
@@ -76,7 +74,6 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
           '${directory.path}/quran_page_${state.currentPage}.png',
         );
         await imagePath.writeAsBytes(uint8list);
-
         await Share.shareXFiles(
           [XFile(imagePath.path)],
           text:
@@ -86,6 +83,109 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
     } catch (e) {
       notifier.setCapturing(false);
       if (mounted) showToast(text: 'حدث خطأ أثناء المشاركة');
+    }
+  }
+
+  void _onShareAyah() {
+    // Get currently selected ayah from the library controller
+    if (QuranCtrl.instance.selectedAyahsByUnequeNumber.isEmpty) return;
+
+    final selectedAyahUQ = QuranCtrl.instance.selectedAyahsByUnequeNumber.first;
+    final selectedAyah = QuranCtrl.instance.getAyahByUq(selectedAyahUQ);
+
+    if (selectedAyah.ayahUQNumber == 0) return;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: context.colors.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(context.corners.xl),
+        ),
+      ),
+      builder: (context) => Container(
+        padding: EdgeInsets.all(context.insets.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: context.colors.background,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              "مشاركة الآية",
+              style: context.textStyles.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 24),
+            ListTile(
+              leading: Icon(
+                Icons.text_fields_rounded,
+                color: context.colors.primary,
+              ),
+              title: const Text("مشاركة كنص"),
+              onTap: () {
+                Navigator.pop(context);
+                _shareAyahAsText(selectedAyah);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.image_rounded, color: context.colors.primary),
+              title: const Text("مشاركة كصورة"),
+              onTap: () {
+                Navigator.pop(context);
+                _shareAyahAsImage(selectedAyah);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _shareAyahAsText(AyahModel ayah) {
+    final surahName = ayah.arabicName ?? "غير معروف";
+    final text =
+        '﴿${ayah.text}﴾\n[سورة $surahName - آية ${ayah.ayahNumber}]\n\nتمت المشاركة من تطبيق ${AppConstants.appName}\n${AppConstants.playStoreUrl}';
+    Share.share(text);
+  }
+
+  Future<void> _shareAyahAsImage(AyahModel ayah) async {
+    final isDarkMode = ref.read(quranProvider(widget.currentPage)).isDarkMode;
+    final surahName = ayah.arabicName ?? "غير معروف";
+
+    try {
+      showToast(text: 'جاري تجهيز الصورة...');
+
+      final uint8list = await _ayahScreenshotController.captureFromWidget(
+        AyahShareTemplate(
+          ayah: ayah,
+          surahName: surahName,
+          isDark: isDarkMode,
+          primaryColor: context.colors.primary,
+          textColor: isDarkMode ? Colors.white : const Color(0xFF2C3E50),
+        ),
+        pixelRatio: 3.0,
+        delay: const Duration(milliseconds: 100),
+      );
+
+      final directory = await getTemporaryDirectory();
+      final imagePath = File(
+        '${directory.path}/ayah_${ayah.surahNumber}_${ayah.ayahNumber}.png',
+      );
+      await imagePath.writeAsBytes(uint8list);
+
+      await Share.shareXFiles([
+        XFile(imagePath.path),
+      ], text: '﴿${ayah.text}﴾\nسورة $surahName [${ayah.ayahNumber}]');
+    } catch (e) {
+      if (mounted) showToast(text: 'حدث خطأ أثناء إنشاء الصورة');
     }
   }
 
@@ -130,11 +230,9 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
               backgroundColor: context.colors.surface,
               customTopBarWidgets: [
                 IconButton(
-                  onPressed: () {
-                    ref
-                        .read(quranProvider(widget.currentPage).notifier)
-                        .toggleDarkMode();
-                  },
+                  onPressed: () => ref
+                      .read(quranProvider(widget.currentPage).notifier)
+                      .toggleDarkMode(),
                   icon: Icon(
                     isDarkMode
                         ? Icons.light_mode_rounded
@@ -153,11 +251,9 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
                 ),
               ],
             ),
-        onPageChanged: (page) {
-          ref
-              .read(quranProvider(widget.currentPage).notifier)
-              .updatePage(page + 1);
-        },
+        onPageChanged: (page) => ref
+            .read(quranProvider(widget.currentPage).notifier)
+            .updatePage(page + 1),
         backgroundColor: isDarkMode
             ? const Color(0xFF121212)
             : const Color(0xFFFFFDF5),
@@ -169,7 +265,149 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
           alpha: 0.15,
         ),
         appIconPathForPlayAudioInBackground: AppAssets.logo,
+
+        ayahMenuStyle:
+            AyahMenuStyle.defaults(
+              isDark: isDarkMode,
+              context: context,
+            ).copyWith(
+              showPlayAllButton: false,
+              customMenuItems: [
+                GestureDetector(
+                  onTap: _onShareAyah,
+                  child: Icon(Icons.share, color: context.colors.primary),
+                ),
+              ],
+            ),
       ),
     );
+  }
+}
+
+class AyahShareTemplate extends StatelessWidget {
+  final AyahModel ayah;
+  final String surahName;
+  final bool isDark;
+  final Color primaryColor;
+  final Color textColor;
+
+  const AyahShareTemplate({
+    super.key,
+    required this.ayah,
+    required this.surahName,
+    required this.isDark,
+    required this.primaryColor,
+    required this.textColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bgColor = isDark ? const Color(0xFF1A1A1A) : const Color(0xFFFFFDF5);
+
+    return Container(
+      width: 400,
+      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 30),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Surah Name Banner
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              SvgPicture.asset(
+                AssetsPath.assets.surahSvgBanner,
+                width: 300,
+                colorFilter: ColorFilter.mode(
+                  primaryColor,
+                  BlendMode.srcIn,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 0),
+                child: Text(
+                  'surah${ayah.surahNumber.toString().padLeft(3, '0')}surah-icon',
+                  style: TextStyle(
+                    fontFamily: 'surah-name-v4',
+                    package: 'quran_library',
+                    fontSize: 30,
+                    color: textColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 30),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: ayah.text,
+                  style: TextStyle(
+                    fontFamily: 'hafs',
+                    package: 'quran_library',
+                    fontSize: 26,
+                    height: 1.8,
+                    color: textColor,
+                  ),
+                ),
+                const TextSpan(text: '  '),
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: Text(
+                    _toArabicDigits(ayah.ayahNumber),
+                    style: TextStyle(
+                      fontFamily: 'ayahNumber',
+                      package: 'quran_library',
+                      fontSize: 32,
+                      color: primaryColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.rtl,
+          ),
+          const SizedBox(height: 40),
+          // App Logo and Name
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(AppAssets.logo, width: 24),
+              const SizedBox(width: 8),
+              Text(
+                AppConstants.appName,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: textColor.withValues(alpha: 0.6),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _toArabicDigits(int number) {
+    final english = number.toString();
+    final Map<String, String> arabic = {
+      '0': '٠',
+      '1': '١',
+      '2': '٢',
+      '3': '٣',
+      '4': '٤',
+      '5': '٥',
+      '6': '٦',
+      '7': '٧',
+      '8': '٨',
+      '9': '٩'
+    };
+    return "${english.split('').map((char) => arabic[char] ?? char).join()}\u202F";
   }
 }
