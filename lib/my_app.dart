@@ -50,7 +50,7 @@ class _MyAppState extends ConsumerState<MyApp> {
           ),
         );
       } else if (payload == 'surah_kahf') {
-        _appRouter.push(SurahRoute(currentPage: 293));
+        _appRouter.push(QuranRoute(currentPage: 293));
       }
     };
 

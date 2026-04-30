@@ -28,7 +28,7 @@ class HomeFeaturesGrid extends StatelessWidget {
             title: "القرآن الكريم",
             icon: Icons.menu_book_rounded,
             color: const Color(0xff27ae60),
-            route: SurahRoute(
+            route: QuranRoute(
               currentPage: CacheHelper.getData(key: 'pageNumber') ?? 1,
             ),
           ),

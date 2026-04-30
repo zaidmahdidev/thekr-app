@@ -39,7 +39,7 @@ class DailyAyahCard extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            context.router.push(SurahRoute(currentPage: ayah.page));
+            context.router.push(QuranRoute(currentPage: ayah.page));
           },
           borderRadius: BorderRadius.circular(context.corners.xl),
           child: Padding(

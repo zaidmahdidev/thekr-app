@@ -40,7 +40,7 @@ class _InspirationCarouselState extends State<InspirationCarousel> {
         content: ayah.text,
         subtitle: '${ayah.surah} - [${ayah.ayahNumber}]',
         icon: Icons.auto_stories_rounded,
-        onTap: () => context.router.push(SurahRoute(currentPage: ayah.page)),
+        onTap: () => context.router.push(QuranRoute(currentPage: ayah.page)),
       ),
       _InspirationItem(
         type: 'حديث اليوم',

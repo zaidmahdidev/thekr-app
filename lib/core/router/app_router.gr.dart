@@ -352,6 +352,53 @@ class QiblahRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [QuranScreen]
+class QuranRoute extends PageRouteInfo<QuranRouteArgs> {
+  QuranRoute({
+    Key? key,
+    required int currentPage,
+    List<PageRouteInfo>? children,
+  }) : super(
+         QuranRoute.name,
+         args: QuranRouteArgs(key: key, currentPage: currentPage),
+         initialChildren: children,
+       );
+
+  static const String name = 'QuranRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<QuranRouteArgs>();
+      return QuranScreen(key: args.key, currentPage: args.currentPage);
+    },
+  );
+}
+
+class QuranRouteArgs {
+  const QuranRouteArgs({this.key, required this.currentPage});
+
+  final Key? key;
+
+  final int currentPage;
+
+  @override
+  String toString() {
+    return 'QuranRouteArgs{key: $key, currentPage: $currentPage}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! QuranRouteArgs) return false;
+    return key == other.key && currentPage == other.currentPage;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ currentPage.hashCode;
+}
+
+/// generated route for
 /// [RuqyahScreen]
 class RuqyahRoute extends PageRouteInfo<void> {
   const RuqyahRoute({List<PageRouteInfo>? children})
@@ -381,51 +428,4 @@ class SettingsRoute extends PageRouteInfo<void> {
       return const SettingsScreen();
     },
   );
-}
-
-/// generated route for
-/// [SurahScreen]
-class SurahRoute extends PageRouteInfo<SurahRouteArgs> {
-  SurahRoute({
-    Key? key,
-    required int currentPage,
-    List<PageRouteInfo>? children,
-  }) : super(
-         SurahRoute.name,
-         args: SurahRouteArgs(key: key, currentPage: currentPage),
-         initialChildren: children,
-       );
-
-  static const String name = 'SurahRoute';
-
-  static PageInfo page = PageInfo(
-    name,
-    builder: (data) {
-      final args = data.argsAs<SurahRouteArgs>();
-      return SurahScreen(key: args.key, currentPage: args.currentPage);
-    },
-  );
-}
-
-class SurahRouteArgs {
-  const SurahRouteArgs({this.key, required this.currentPage});
-
-  final Key? key;
-
-  final int currentPage;
-
-  @override
-  String toString() {
-    return 'SurahRouteArgs{key: $key, currentPage: $currentPage}';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! SurahRouteArgs) return false;
-    return key == other.key && currentPage == other.currentPage;
-  }
-
-  @override
-  int get hashCode => key.hashCode ^ currentPage.hashCode;
 }
