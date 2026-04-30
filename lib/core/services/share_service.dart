@@ -10,6 +10,7 @@ import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:thekr_app/core/widgets/share_options_sheet.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
 class ShareService {
@@ -24,113 +25,28 @@ class ShareService {
     bool showSubtitleInImage = false,
   }) {
     final settings = ref.watch(settingsProvider);
-    showModalBottomSheet(
+    ShareOptionsSheet.show(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(25),
-              topRight: Radius.circular(25),
-            ),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 25),
-              Text(
-                'خيارات المشاركة',
-                style: context.textStyles.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 25),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _shareOptionItem(
-                    context,
-                    icon: Icons.text_fields,
-                    label: 'نص فقط',
-                    onTap: () {
-                      Navigator.pop(context);
-                      shareAsText(context, content, subtitle);
-                    },
-                  ),
-                  if (content.length <= 800)
-                    _shareOptionItem(
-                      context,
-                      icon: Icons.image_outlined,
-                      label: 'صورة مميزة',
-                      onTap: () {
-                        Navigator.pop(context);
-                        _shareAsImage(
-                          context,
-                          settings.shareTemplate,
-                          content,
-                          showSubtitleInImage ? subtitle : null,
-                        );
-                      },
-                    )
-                  else
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w),
-                      child: Text(
-                        'النص طويل جداً للمشاركة كصورة',
-                        textAlign: TextAlign.center,
-                        style: context.textStyles.bodySmall?.copyWith(
-                          color: context.colors.error,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
+      options: [
+        ShareOption(
+          icon: Icons.text_fields,
+          label: 'نص فقط',
+          onTap: () => shareAsText(context, content, subtitle),
         ),
-      ),
-    );
-  }
-
-  static Widget _shareOptionItem(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: context.colors.secondary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, size: 30),
+        if (content.length <= 800)
+          ShareOption(
+            icon: Icons.image_outlined,
+            label: 'صورة مميزة',
+            onTap: () {
+              _shareAsImage(
+                context,
+                settings.shareTemplate,
+                content,
+                showSubtitleInImage ? subtitle : null,
+              );
+            },
           ),
-          const SizedBox(height: 10),
-          Text(
-            label,
-            style: context.textStyles.bodySmall?.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
+      ],
     );
   }
 
@@ -193,7 +109,7 @@ class ShareService {
 
       await Share.shareXFiles([
         XFile(imagePath.path),
-      ], text: AppConstants.shareMessage);
+      ]);
     } catch (e) {
       showToast(text: 'حدث خطأ أثناء المشاركة');
     }
@@ -303,12 +219,12 @@ class ShareService {
 
             child: Column(
               children: [
-                Image.asset(AppAssets.logo, width: 40.w, height: 40.w),
+                Image.asset(AppAssets.logo, width: 30.w, height: 30.w),
                 Text(
                   'بواسطة تطبيق ' + AppConstants.appName,
                   style: TextStyle(
                     color: textColor.withValues(alpha: 0.6),
-                    fontSize: 8.sp,
+                    fontSize: 7.sp,
                     fontWeight: FontWeight.w500,
                     letterSpacing: 0.5,
                   ),

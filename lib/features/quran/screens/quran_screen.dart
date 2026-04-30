@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_library/quran_library.dart';
 import 'package:screenshot/screenshot.dart';
@@ -12,6 +13,7 @@ import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'dart:io';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:thekr_app/core/widgets/share_options_sheet.dart';
 import '../providers/quran_provider.dart';
 
 @RoutePage()
@@ -87,7 +89,6 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
   }
 
   void _onShareAyah() {
-    // Get currently selected ayah from the library controller
     if (QuranCtrl.instance.selectedAyahsByUnequeNumber.isEmpty) return;
 
     final selectedAyahUQ = QuranCtrl.instance.selectedAyahsByUnequeNumber.first;
@@ -95,64 +96,27 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
 
     if (selectedAyah.ayahUQNumber == 0) return;
 
-    showModalBottomSheet(
+    ShareOptionsSheet.show(
       context: context,
-      backgroundColor: context.colors.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(context.corners.xl),
+      title: "مشاركة الآية",
+      options: [
+        ShareOption(
+          icon: Icons.text_fields_rounded,
+          label: "مشاركة كنص",
+          onTap: () => _shareAyahAsText(selectedAyah),
         ),
-      ),
-      builder: (context) => Container(
-        padding: EdgeInsets.all(context.insets.lg),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: context.colors.background,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              "مشاركة الآية",
-              style: context.textStyles.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 24),
-            ListTile(
-              leading: Icon(
-                Icons.text_fields_rounded,
-                color: context.colors.primary,
-              ),
-              title: const Text("مشاركة كنص"),
-              onTap: () {
-                Navigator.pop(context);
-                _shareAyahAsText(selectedAyah);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.image_rounded, color: context.colors.primary),
-              title: const Text("مشاركة كصورة"),
-              onTap: () {
-                Navigator.pop(context);
-                _shareAyahAsImage(selectedAyah);
-              },
-            ),
-          ],
+        ShareOption(
+          icon: Icons.image_rounded,
+          label: "مشاركة كصورة",
+          onTap: () => _shareAyahAsImage(selectedAyah),
         ),
-      ),
+      ],
     );
   }
 
   void _shareAyahAsText(AyahModel ayah) {
     final surahName = ayah.arabicName ?? "غير معروف";
-    final text =
-        '﴿${ayah.text}﴾\n[سورة $surahName - آية ${ayah.ayahNumber}]\n\nتمت المشاركة من تطبيق ${AppConstants.appName}\n${AppConstants.playStoreUrl}';
+    final text = '﴿${ayah.text}﴾\n[$surahName - آية ${ayah.ayahNumber}]';
     Share.share(text);
   }
 
@@ -161,18 +125,60 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
     final surahName = ayah.arabicName ?? "غير معروف";
 
     try {
-      showToast(text: 'جاري تجهيز الصورة...');
+      final quranCtrl = QuranCtrl.instance;
+      final pageNumber = ayah.page;
+
+      // Ensure the font for this page is loaded before capturing
+      await QuranFontsService.ensurePagesLoaded(pageNumber, radius: 0);
+
+      final blocks = quranCtrl.getQpcLayoutBlocksForPageSync(pageNumber);
+
+      String glyphs = "";
+      for (final block in blocks) {
+        if (block is QpcV4AyahLineBlock) {
+          for (final seg in block.segments) {
+            if (seg.surahNumber == ayah.surahNumber &&
+                seg.ayahNumber == ayah.ayahNumber) {
+              glyphs += seg.glyphs;
+            }
+          }
+        }
+      }
+
+      final displayText = glyphs.isNotEmpty ? glyphs : ayah.text;
+      final isCustomFont = glyphs.isNotEmpty;
+      final fontFamily = glyphs.isNotEmpty
+          ? quranCtrl.getFontPath(pageNumber - 1, isDark: isDarkMode)
+          : 'hafs';
+
+      final primaryColor = context.colors.primary;
+      final textColor = isDarkMode ? Colors.white : const Color(0xFF2C3E50);
+
+      // Calculate dynamic height
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: displayText,
+          style: TextStyle(fontFamily: fontFamily, fontSize: 24, height: 2.0),
+        ),
+        textDirection: TextDirection.rtl,
+        textAlign: TextAlign.center,
+      )..layout(maxWidth: 400);
+
+      final double calculatedHeight = textPainter.height + 250;
 
       final uint8list = await _ayahScreenshotController.captureFromWidget(
         AyahShareTemplate(
           ayah: ayah,
           surahName: surahName,
           isDark: isDarkMode,
-          primaryColor: context.colors.primary,
-          textColor: isDarkMode ? Colors.white : const Color(0xFF2C3E50),
+          primaryColor: primaryColor,
+          textColor: textColor,
+          displayText: displayText,
+          fontFamily: fontFamily,
+          isCustomFont: isCustomFont,
         ),
-        pixelRatio: 3.0,
-        delay: const Duration(milliseconds: 100),
+        targetSize: Size(450, calculatedHeight),
+        delay: const Duration(milliseconds: 500),
       );
 
       final directory = await getTemporaryDirectory();
@@ -181,9 +187,7 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
       );
       await imagePath.writeAsBytes(uint8list);
 
-      await Share.shareXFiles([
-        XFile(imagePath.path),
-      ], text: '﴿${ayah.text}﴾\nسورة $surahName [${ayah.ayahNumber}]');
+      await Share.shareXFiles([XFile(imagePath.path)]);
     } catch (e) {
       if (mounted) showToast(text: 'حدث خطأ أثناء إنشاء الصورة');
     }
@@ -290,6 +294,9 @@ class AyahShareTemplate extends StatelessWidget {
   final bool isDark;
   final Color primaryColor;
   final Color textColor;
+  final String displayText;
+  final String fontFamily;
+  final bool isCustomFont;
 
   const AyahShareTemplate({
     super.key,
@@ -298,98 +305,101 @@ class AyahShareTemplate extends StatelessWidget {
     required this.isDark,
     required this.primaryColor,
     required this.textColor,
+    required this.displayText,
+    required this.fontFamily,
+    required this.isCustomFont,
   });
 
   @override
   Widget build(BuildContext context) {
     final bgColor = isDark ? const Color(0xFF1A1A1A) : const Color(0xFFFFFDF5);
 
-    return Container(
-      width: 400,
-      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Surah Name Banner
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              SvgPicture.asset(
-                AssetsPath.assets.surahSvgBanner,
-                width: 300,
-                colorFilter: ColorFilter.mode(
-                  primaryColor,
-                  BlendMode.srcIn,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 0),
-                child: Text(
-                  'surah${ayah.surahNumber.toString().padLeft(3, '0')}surah-icon',
-                  style: TextStyle(
-                    fontFamily: 'surah-name-v4',
-                    package: 'quran_library',
-                    fontSize: 30,
-                    color: textColor,
-                  ),
-                ),
-              ),
-            ],
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Material(
+        color: Colors.transparent,
+        child: Container(
+          width: 450,
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(16),
           ),
-          const SizedBox(height: 30),
-          Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: ayah.text,
-                  style: TextStyle(
-                    fontFamily: 'hafs',
-                    package: 'quran_library',
-                    fontSize: 26,
-                    height: 1.8,
-                    color: textColor,
-                  ),
-                ),
-                const TextSpan(text: '  '),
-                WidgetSpan(
-                  alignment: PlaceholderAlignment.middle,
-                  child: Text(
-                    _toArabicDigits(ayah.ayahNumber),
-                    style: TextStyle(
-                      fontFamily: 'ayahNumber',
-                      package: 'quran_library',
-                      fontSize: 32,
-                      color: primaryColor,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Surah Name Banner
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  SvgPicture.asset(
+                    AssetsPath.assets.surahSvgBanner,
+                    width: 320,
+                    colorFilter: ColorFilter.mode(
+                      primaryColor,
+                      BlendMode.srcIn,
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 0),
+                    child: Text(
+                      'surah${ayah.surahNumber.toString().padLeft(3, '0')}surah-icon',
+                      style: TextStyle(
+                        fontFamily: 'surah-name-v4',
+                        package: 'quran_library',
+                        fontSize: 32,
+                        color: textColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 15),
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: displayText,
+                      style: TextStyle(
+                        fontFamily: fontFamily,
+                        package: isCustomFont ? null : 'quran_library',
+                        fontSize: 24,
+                        height: 2.0,
+                        color: textColor,
+                      ),
+                    ),
+                    TextSpan(
+                      text:
+                          ' \u202F${_toArabicDigits(ayah.ayahNumber)}\u202F\u202F',
+                      style: TextStyle(
+                        fontFamily: 'ayahNumber',
+                        package: 'quran_library',
+                        fontSize: 28,
+                        height: 1.5,
+                        color: primaryColor,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            textAlign: TextAlign.center,
-            textDirection: TextDirection.rtl,
-          ),
-          const SizedBox(height: 40),
-          // App Logo and Name
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(AppAssets.logo, width: 24),
-              const SizedBox(width: 8),
+                textAlign: TextAlign.center,
+                textDirection: TextDirection.rtl,
+              ),
+              const SizedBox(height: 15),
+              // Footer (App Info)
+              Image.asset(AppAssets.logo, width: 35, height: 35),
+              const SizedBox(height: 4),
               Text(
-                AppConstants.appName,
+                'بواسطة تطبيق ${AppConstants.appName}',
                 style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
                   color: textColor.withValues(alpha: 0.6),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.5,
                 ),
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -406,8 +416,8 @@ class AyahShareTemplate extends StatelessWidget {
       '6': '٦',
       '7': '٧',
       '8': '٨',
-      '9': '٩'
+      '9': '٩',
     };
-    return "${english.split('').map((char) => arabic[char] ?? char).join()}\u202F";
+    return english.split('').map((char) => arabic[char] ?? char).join();
   }
 }
