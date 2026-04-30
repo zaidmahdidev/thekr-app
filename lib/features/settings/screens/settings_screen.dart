@@ -253,8 +253,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                       ),
                                       decoration: BoxDecoration(
                                         color: isSelected
-                                            ? context.colors.primary
-                                                .withValues(alpha: 0.1)
+                                            ? context.colors.primary.withValues(
+                                                alpha: 0.1,
+                                              )
                                             : context.colors.surface,
                                         borderRadius: BorderRadius.circular(
                                           context.corners.md,
@@ -263,7 +264,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                           color: isSelected
                                               ? context.colors.primary
                                               : context.colors.primary
-                                                  .withValues(alpha: 0.1),
+                                                    .withValues(alpha: 0.1),
                                           width: isSelected ? 2 : 1,
                                         ),
                                       ),
@@ -272,9 +273,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                           Icon(
                                             template == ShareTemplate.classic
                                                 ? Icons.auto_awesome_rounded
-                                                : template == ShareTemplate.luxury
-                                                    ? Icons.workspace_premium_rounded
-                                                    : Icons.waves_rounded,
+                                                : template ==
+                                                      ShareTemplate.luxury
+                                                ? Icons
+                                                      .workspace_premium_rounded
+                                                : Icons.waves_rounded,
                                             color: isSelected
                                                 ? context.colors.primary
                                                 : context.colors.textSecondary,
@@ -284,13 +287,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                             template.title.split(' ')[0],
                                             style: context.textStyles.bodySmall
                                                 ?.copyWith(
-                                              fontWeight: isSelected
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal,
-                                              color: isSelected
-                                                  ? context.colors.primary
-                                                  : context.colors.textPrimary,
-                                            ),
+                                                  fontWeight: isSelected
+                                                      ? FontWeight.bold
+                                                      : FontWeight.normal,
+                                                  color: isSelected
+                                                      ? context.colors.primary
+                                                      : context
+                                                            .colors
+                                                            .textPrimary,
+                                                ),
                                           ),
                                         ],
                                       ),
@@ -298,6 +303,35 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                   ),
                                 );
                               }).toList(),
+                            ),
+                            SizedBox(height: context.insets.lg),
+                            // Live Preview Card
+                            Center(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'معاينة الشكل المختار',
+                                    style: context.textStyles.bodySmall
+                                        ?.copyWith(
+                                          color: context.colors.textSecondary,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                  ),
+                                  SizedBox(height: context.insets.sm),
+                                  SizedBox(
+                                    width: 0.7.sw, // Scale down for preview
+                                    child: FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: ShareService.buildShareCard(
+                                        context,
+                                        settings.shareTemplate,
+                                        '﴿فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ﴾',
+                                        null,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -423,7 +457,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         title: 'سياسة الخصوصية',
                         icon: Icons.privacy_tip_rounded,
                         iconColor: Colors.redAccent,
-                        onTap: () => UrlHelper.launchURL(AppConstants.privacyPolicyUrl),
+                        onTap: () =>
+                            UrlHelper.launchURL(AppConstants.privacyPolicyUrl),
                       ),
                       SettingsTile(
                         title: 'شارك التطبيق',
@@ -454,9 +489,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                   Icon(Icons.mosque, size: 30.sp),
                             ),
                             children: [
-                               Text(
-                                  'تطبيق صدقة جارية يهدف لنشر الأذكار والأدعية الصحيحة.\nتم التطوير بواسطة: ${AppConstants.developerName}',
-                                ),
+                              Text(
+                                'تطبيق صدقة جارية يهدف لنشر الأذكار والأدعية الصحيحة.\nتم التطوير بواسطة: ${AppConstants.developerName}',
+                              ),
                             ],
                           );
                         },

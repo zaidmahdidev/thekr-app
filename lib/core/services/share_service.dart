@@ -179,7 +179,7 @@ class ShareService {
           color: Colors.transparent,
           child: Directionality(
             textDirection: TextDirection.rtl,
-            child: _buildShareCard(context, template, content, subtitle),
+            child: buildShareCard(context, template, content, subtitle),
           ),
         ),
         context: context,
@@ -199,7 +199,7 @@ class ShareService {
     }
   }
 
-  static Widget _buildShareCard(
+  static Widget buildShareCard(
     BuildContext context,
     ShareTemplate template,
     String content,
