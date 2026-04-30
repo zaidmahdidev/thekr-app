@@ -28,15 +28,9 @@ class ShareService {
     ShareOptionsSheet.show(
       context: context,
       options: [
-        ShareOption(
-          icon: Icons.text_fields,
-          label: 'نص فقط',
-          onTap: () => shareAsText(context, content, subtitle),
-        ),
+        ShareOption.text(onTap: () => shareAsText(context, content, subtitle)),
         if (content.length <= 800)
-          ShareOption(
-            icon: Icons.image_outlined,
-            label: 'صورة مميزة',
+          ShareOption.image(
             onTap: () {
               _shareAsImage(
                 context,
@@ -107,9 +101,7 @@ class ShareService {
       final imagePath = await File('${directory.path}/zikr_share.png').create();
       await imagePath.writeAsBytes(uint8list);
 
-      await Share.shareXFiles([
-        XFile(imagePath.path),
-      ]);
+      await Share.shareXFiles([XFile(imagePath.path)]);
     } catch (e) {
       showToast(text: 'حدث خطأ أثناء المشاركة');
     }

@@ -98,18 +98,9 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
 
     ShareOptionsSheet.show(
       context: context,
-      title: "مشاركة الآية",
       options: [
-        ShareOption(
-          icon: Icons.text_fields_rounded,
-          label: "مشاركة كنص",
-          onTap: () => _shareAyahAsText(selectedAyah),
-        ),
-        ShareOption(
-          icon: Icons.image_rounded,
-          label: "مشاركة كصورة",
-          onTap: () => _shareAyahAsImage(selectedAyah),
-        ),
+        ShareOption.text(onTap: () => _shareAyahAsText(selectedAyah)),
+        ShareOption.image(onTap: () => _shareAyahAsImage(selectedAyah)),
       ],
     );
   }
