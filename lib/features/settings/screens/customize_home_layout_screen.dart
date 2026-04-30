@@ -89,22 +89,57 @@ class _CustomizeHomeLayoutScreenState extends ConsumerState<CustomizeHomeLayoutS
           ],
         ),
       ),
-      body: ReorderableListView(
-        padding: EdgeInsets.all(context.insets.md),
-        onReorder: (oldIndex, newIndex) {
-          setState(() {
-            if (newIndex > oldIndex) newIndex -= 1;
-            final section = _tempSections.removeAt(oldIndex);
-            _tempSections.insert(newIndex, section);
-          });
-        },
+      body: Column(
         children: [
-          for (final section in _tempSections)
-            Padding(
-              key: ValueKey(section),
-              padding: EdgeInsets.only(bottom: context.insets.md),
-              child: _SectionPreviewCard(section: section),
+          Container(
+            margin: EdgeInsets.all(context.insets.md),
+            padding: EdgeInsets.all(context.insets.md),
+            decoration: BoxDecoration(
+              color: context.colors.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(context.corners.lg),
+              border: Border.all(
+                color: context.colors.primary.withValues(alpha: 0.2),
+              ),
             ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_outline_rounded,
+                  color: context.colors.primary,
+                ),
+                SizedBox(width: context.insets.md),
+                Expanded(
+                  child: Text(
+                    'قم بسحب العناصر وترتيبها حسب رغبتك، سيظهر هذا الترتيب في الشاشة الرئيسية.',
+                    style: context.textStyles.bodySmall?.copyWith(
+                      color: context.colors.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ReorderableListView(
+              padding: EdgeInsets.symmetric(horizontal: context.insets.md),
+              onReorder: (oldIndex, newIndex) {
+                setState(() {
+                  if (newIndex > oldIndex) newIndex -= 1;
+                  final section = _tempSections.removeAt(oldIndex);
+                  _tempSections.insert(newIndex, section);
+                });
+              },
+              children: [
+                for (final section in _tempSections)
+                  Padding(
+                    key: ValueKey(section),
+                    padding: EdgeInsets.only(bottom: context.insets.md),
+                    child: _SectionPreviewCard(section: section),
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
     );
