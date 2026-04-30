@@ -21,6 +21,7 @@ class ShareService {
     WidgetRef ref, {
     required String content,
     String? subtitle,
+    bool showSubtitleInImage = false,
   }) {
     final settings = ref.watch(settingsProvider);
     showModalBottomSheet(
@@ -74,7 +75,12 @@ class ShareService {
                       label: 'صورة مميزة',
                       onTap: () {
                         Navigator.pop(context);
-                        _shareAsImage(context, settings.shareTemplate, content);
+                        _shareAsImage(
+                          context,
+                          settings.shareTemplate,
+                          content,
+                          showSubtitleInImage ? subtitle : null,
+                        );
                       },
                     )
                   else
@@ -161,6 +167,7 @@ class ShareService {
     BuildContext context,
     ShareTemplate template,
     String content,
+    String? subtitle,
   ) async {
     try {
       // Precache logo
@@ -172,7 +179,7 @@ class ShareService {
           color: Colors.transparent,
           child: Directionality(
             textDirection: TextDirection.rtl,
-            child: _buildShareCard(context, template, content),
+            child: _buildShareCard(context, template, content, subtitle),
           ),
         ),
         context: context,
@@ -196,6 +203,7 @@ class ShareService {
     BuildContext context,
     ShareTemplate template,
     String content,
+    String? subtitle,
   ) {
     Color bgColor;
     Color textColor;
@@ -324,7 +332,18 @@ class ShareService {
                   height: 1.6,
                 ),
               ),
-
+              if (subtitle != null && subtitle.isNotEmpty) ...[
+                SizedBox(height: 12.h),
+                Text(
+                  subtitle,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: textColor.withValues(alpha: 0.8),
+                    fontSize: (fontSize * 0.7).sp,
+                    height: 1.4,
+                  ),
+                ),
+              ],
               SizedBox(height: 30.h),
             ],
           ),

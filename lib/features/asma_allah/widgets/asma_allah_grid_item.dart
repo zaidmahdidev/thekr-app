@@ -109,6 +109,7 @@ class AsmaAllahGridItem extends ConsumerWidget {
                             ref,
                             content: item.name,
                             subtitle: item.meaning,
+                            showSubtitleInImage: true,
                           );
                         },
                         icon: Icon(Icons.share_outlined, size: 20.w),
