@@ -61,7 +61,7 @@ class AppShareSheet extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(context.insets.md),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: context.colors.background,
                     borderRadius: BorderRadius.circular(context.corners.xl),
                     boxShadow: context.shadows.medium,
                   ),
