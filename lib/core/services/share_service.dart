@@ -6,7 +6,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
@@ -47,7 +46,7 @@ class ShareService {
               const SizedBox(height: 25),
               Text(
                 'خيارات المشاركة',
-                style: AppTypography.h3.copyWith(fontWeight: FontWeight.bold),
+                style: context.textStyles.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 25),
               Row(
@@ -102,7 +101,7 @@ class ShareService {
           const SizedBox(height: 10),
           Text(
             label,
-            style: AppTypography.bodySmall.copyWith(
+            style: context.textStyles.bodySmall?.copyWith(
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -178,7 +177,7 @@ class ShareService {
                   Text(
                     content,
                     textAlign: TextAlign.center,
-                    style: AppTypography.bodyMedium.copyWith(
+                    style: context.textStyles.bodyMedium?.copyWith(
                       color: context.colors.primary,
                       fontWeight: FontWeight.bold,
                       height: 1.8,
@@ -190,7 +189,7 @@ class ShareService {
                     Text(
                       subtitle,
                       textAlign: TextAlign.justify,
-                      style: AppTypography.bodySmall.copyWith(
+                      style: context.textStyles.bodySmall?.copyWith(
                         color: context.colors.primary.withValues(alpha: 0.8),
                         height: 1.6,
                       ),
@@ -201,7 +200,7 @@ class ShareService {
                   const SizedBox(height: 10),
                   Text(
                     '(احمدوا الله دومًا)',
-                    style: AppTypography.h2.copyWith(
+                    style: context.textStyles.headlineMedium?.copyWith(
                       color: context.colors.secondary,
                       fontSize: 18.sp,
                     ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FeatureCard extends StatelessWidget {
@@ -79,7 +78,7 @@ class FeatureCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTypography.bodySmall.copyWith(
+                  style: context.textStyles.bodySmall?.copyWith(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.bold,
                     color: context.colors.textPrimary,

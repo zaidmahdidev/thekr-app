@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/extensions/theme_extension.dart';
-import '../../../../core/theme/tokens/typography.dart';
 
 class ProphetSectionHeader extends StatelessWidget {
   final String title;
@@ -27,7 +26,7 @@ class ProphetSectionHeader extends StatelessWidget {
           SizedBox(width: context.insets.sm),
           Text(
             title,
-            style: AppTypography.h3.copyWith(
+            style: context.textStyles.titleLarge?.copyWith(
               color: context.colors.primary,
               fontWeight: FontWeight.bold,
               fontSize: 16.sp,
@@ -50,7 +49,7 @@ class ProphetSectionTitle extends StatelessWidget {
       padding: EdgeInsets.only(bottom: context.insets.sm),
       child: Text(
         title,
-        style: (isHero ? AppTypography.h2 : AppTypography.h3).copyWith(
+        style: (isHero ? context.textStyles.headlineMedium : context.textStyles.titleLarge)?.copyWith(
           color: context.colors.primary,
           fontWeight: FontWeight.bold,
         ),

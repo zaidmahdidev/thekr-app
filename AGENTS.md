@@ -34,9 +34,12 @@ The project uses a unified Design System. **NEVER** use hardcoded values for col
 - **Standard:** Use `low` or `medium` presets.
 
 ### Typography
-- **Usage:** Use `AppTypography` static styles.
-- **File:** `lib/core/theme/tokens/typography.dart`.
-- **Standard:** Always use the appropriate scale (`h1`, `h2`, `bodyMedium`, `label`, etc.) and override only the color if necessary.
+- **Usage:** Access via `context.textStyles`.
+- **System:** `TextTheme` (standard Flutter) configured via `AppTypography`.
+- **Standard:** 
+  - Use `context.textStyles.h1`, `h2`, `bodyMedium`, etc.
+  - **Why?** It ensures the text responds to the active Theme (Light/Dark).
+  - **Exception:** Use `AppTypography` directly ONLY when defining the theme or when a `BuildContext` is not available.
 
 ## 2. Architecture & File Structure
 - **Modularization:** Each screen and widget MUST be in its own file.

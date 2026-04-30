@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:thekr_app/core/router/app_router.dart';
 import 'package:thekr_app/features/home/data/daily_content_data.dart';
@@ -72,7 +71,7 @@ class _InspirationCarouselState extends State<InspirationCarousel> {
               children: [
                 Text(
                   'إلهامات يومية',
-                  style: AppTypography.h3.copyWith(fontWeight: FontWeight.bold),
+                  style: context.textStyles.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Row(
                   children: List.generate(
@@ -173,7 +172,7 @@ class _InspirationCard extends StatelessWidget {
                       ),
                       child: Text(
                         item.type,
-                        style: AppTypography.label.copyWith(
+                        style: context.textStyles.labelLarge?.copyWith(
                           color: context.colors.primary,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Tajawal',
@@ -191,7 +190,7 @@ class _InspirationCard extends StatelessWidget {
                       child: Text(
                         item.content,
                         textAlign: TextAlign.center,
-                        style: AppTypography.bodyLarge.copyWith(
+                        style: context.textStyles.bodyLarge?.copyWith(
                           fontSize: _calculateFontSize(item.content, isAyah),
                           fontWeight: isAyah
                               ? FontWeight.normal
@@ -222,7 +221,7 @@ class _InspirationCard extends StatelessWidget {
                           item.subtitle,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTypography.bodySmall.copyWith(
+                          style: context.textStyles.bodySmall?.copyWith(
                             color: context.colors.textSecondary,
                             fontFamily: 'Tajawal',
                             fontWeight: FontWeight.w500,

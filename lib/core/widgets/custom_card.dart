@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/widgets/my_card.dart';
 
@@ -69,7 +68,7 @@ class _CustomCardState extends State<CustomCard>
               children: [
                 Text(
                   widget.title,
-                  style: AppTypography.h3.copyWith(
+                  style: context.textStyles.titleLarge?.copyWith(
                     color: widget.isHighlighted
                         ? context.colors.primary
                         : context.colors.textPrimary,
@@ -81,7 +80,7 @@ class _CustomCardState extends State<CustomCard>
                   SizedBox(height: 4.h),
                   Text(
                     widget.subTitle!,
-                    style: AppTypography.bodyMedium.copyWith(
+                    style: context.textStyles.bodyMedium?.copyWith(
                       color: context.colors.textSecondary,
                     ),
                   ),
@@ -93,7 +92,7 @@ class _CustomCardState extends State<CustomCard>
             SizedBox(width: context.insets.sm),
             Text(
               widget.trailing!,
-              style: AppTypography.bodyMedium.copyWith(
+              style: context.textStyles.bodyMedium?.copyWith(
                 color: context.colors.primary,
                 fontWeight: FontWeight.w600,
               ),
@@ -119,7 +118,7 @@ class _CustomCardState extends State<CustomCard>
         padding: const EdgeInsets.only(top: 5),
         child: Text(
           widget.leading!,
-          style: AppTypography.bodyMedium.copyWith(
+          style: context.textStyles.bodyMedium?.copyWith(
             color: context.colors.primary,
             fontWeight: FontWeight.bold,
           ),

@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/features/husn_al_muslim/widgets/husn_al_muslim_item_widget.dart';
 
@@ -98,13 +97,13 @@ class _HusinAlMuslimDetailsScreenState
                   const SizedBox(height: 16),
                   Text(
                     'تم إكمال جميع الأذكار',
-                    style: AppTypography.h2.copyWith(
+                    style: context.textStyles.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     'تقبل الله منك',
-                    style: AppTypography.bodyMedium.copyWith(
+                    style: context.textStyles.bodyMedium?.copyWith(
                       color: Colors.grey,
                     ),
                   ),

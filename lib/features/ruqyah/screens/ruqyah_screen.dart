@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/utils/constants/app_constants.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
 import 'package:thekr_app/core/widgets/app_scaffold.dart';
 import 'package:thekr_app/core/widgets/base_app_bar.dart';
@@ -32,7 +29,7 @@ class RuqyahScreen extends StatelessWidget {
             indicatorColor: context.colors.secondary,
             labelColor: context.colors.secondary,
             unselectedLabelColor: context.colors.textSecondary,
-            labelStyle: AppTypography.button,
+            labelStyle: context.textStyles.labelSmall,
             indicatorSize: TabBarIndicatorSize.label,
             tabs: const [
               Tab(text: 'آيات الرقية'),
@@ -80,8 +77,8 @@ class RuqyahList extends StatelessWidget {
                         ),
                         child: Text(
                           item.title,
-                          style: AppTypography.bodySmall.copyWith(
-                            color: context.colors.primary,
+                          style: context.textStyles.bodySmall?.copyWith(
+                            color: context.colors.textSecondary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -96,8 +93,8 @@ class RuqyahList extends StatelessWidget {
                           ),
                           child: Text(
                             'كررها ${item.count} مرات',
-                            style: AppTypography.label.copyWith(
-                              color: context.colors.secondary,
+                            style: context.textStyles.labelLarge?.copyWith(
+                              color: context.colors.textSecondary,
                             ),
                           ),
                         ),
@@ -107,7 +104,7 @@ class RuqyahList extends StatelessWidget {
                   Text(
                     item.content,
                     textAlign: TextAlign.center,
-                    style: AppTypography.h2.copyWith(
+                    style: context.textStyles.bodyMedium?.copyWith(
                       height: 1.8.h,
                       fontWeight: FontWeight.normal,
                     ),

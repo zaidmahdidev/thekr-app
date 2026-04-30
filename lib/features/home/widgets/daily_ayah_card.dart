@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/router/app_router.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/features/home/data/daily_content_data.dart';
 
@@ -68,7 +67,7 @@ class DailyAyahCard extends StatelessWidget {
                       ),
                       child: Text(
                         'آية اليوم',
-                        style: AppTypography.label.copyWith(
+                        style: context.textStyles.labelLarge?.copyWith(
                           color: context.colors.primary,
                           fontWeight: FontWeight.bold,
                         ),
@@ -80,7 +79,7 @@ class DailyAyahCard extends StatelessWidget {
                 Text(
                   ayah.text,
                   textAlign: TextAlign.center,
-                  style: AppTypography.h2.copyWith(
+                  style: context.textStyles.headlineMedium?.copyWith(
                     height: 1.6,
                     color: context.colors.textPrimary,
                     fontFamily: 'hafs',
@@ -104,7 +103,7 @@ class DailyAyahCard extends StatelessWidget {
                           '${ayah.surah} - [${ayah.ayahNumber}]',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTypography.bodySmall.copyWith(
+                          style: context.textStyles.bodySmall?.copyWith(
                             color: context.colors.textSecondary,
                             fontStyle: FontStyle.italic,
                           ),

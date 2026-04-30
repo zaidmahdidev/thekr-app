@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/extensions/theme_extension.dart';
-import '../../../../core/theme/tokens/typography.dart';
 import '../../../../core/utils/constants/app_assets.dart';
 import '../models/prophet_story.dart';
 
@@ -104,7 +103,7 @@ class ProphetDetailsHeader extends StatelessWidget {
                     color: Colors.transparent,
                     child: Text(
                       prophet.name,
-                      style: AppTypography.h3.copyWith(
+                      style: context.textStyles.titleLarge?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: (20 - (4 * t)).sp,

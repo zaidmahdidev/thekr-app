@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:readmore/readmore.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
@@ -118,7 +117,7 @@ class _HusnAlMuslimItemWidgetState extends ConsumerState<HusnAlMuslimItemWidget>
           const SizedBox(height: 10),
           Text(
             widget.text,
-            style: AppTypography.bodyLarge.copyWith(
+            style: context.textStyles.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
               height: 1.8,
               fontSize: fontSize,
@@ -134,15 +133,15 @@ class _HusnAlMuslimItemWidgetState extends ConsumerState<HusnAlMuslimItemWidget>
               trimMode: TrimMode.Line,
               trimCollapsedText: 'قراءة المزيد',
               trimExpandedText: ' قراءة اقل',
-              lessStyle: AppTypography.bodyMedium.copyWith(
+              lessStyle: context.textStyles.bodyMedium?.copyWith(
                 color: context.colors.secondary,
                 fontSize: fontSize * 0.8,
               ),
-              moreStyle: AppTypography.bodyMedium.copyWith(
+              moreStyle: context.textStyles.bodyMedium?.copyWith(
                 color: context.colors.secondary,
                 fontSize: fontSize * 0.8,
               ),
-              style: AppTypography.bodyMedium.copyWith(
+              style: context.textStyles.bodyMedium?.copyWith(
                 color: Colors.grey,
                 height: 1.6,
                 fontSize: fontSize * 0.8,

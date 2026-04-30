@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readmore/readmore.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
@@ -128,13 +127,13 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
                   const SizedBox(height: 16),
                   Text(
                     'تم إكمال جميع الأذكار',
-                    style: AppTypography.h2.copyWith(
+                    style: context.textStyles.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     'تقبل الله منك',
-                    style: AppTypography.bodyMedium.copyWith(
+                    style: context.textStyles.bodyMedium?.copyWith(
                       color: Colors.grey,
                     ),
                   ),

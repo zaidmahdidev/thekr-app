@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import '../models/misbaha_models.dart';
 
 class OrnamentalZikrSelector extends StatelessWidget {
@@ -40,7 +39,7 @@ class OrnamentalZikrSelector extends StatelessWidget {
               value: zikr,
               child: Text(
                 zikr.label,
-                style: AppTypography.bodyMedium.copyWith(
+                style: context.textStyles.bodyMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: context.colors.primary,
                 ),

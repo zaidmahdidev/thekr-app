@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/features/asma_allah/data/asma_allah_data.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/services/share_service.dart';
@@ -30,7 +29,7 @@ class AsmaAllahGridItem extends ConsumerWidget {
           child: Text(
             item.name,
             textAlign: TextAlign.center,
-            style: AppTypography.bodyMedium.copyWith(
+            style: context.textStyles.bodyMedium?.copyWith(
               fontWeight: FontWeight.bold,
               fontFamily: 'hafs',
               fontSize: 14.sp,
@@ -81,7 +80,7 @@ class AsmaAllahGridItem extends ConsumerWidget {
                 SizedBox(height: context.insets.sm),
                 Text(
                   item.name,
-                  style: AppTypography.h1.copyWith(
+                  style: context.textStyles.displayLarge?.copyWith(
                     color: context.colors.primary,
                     fontFamily: 'hafs',
                     fontSize: (fontSize + 6).sp,
@@ -92,7 +91,7 @@ class AsmaAllahGridItem extends ConsumerWidget {
                 Text(
                   item.meaning,
                   textAlign: TextAlign.center,
-                  style: AppTypography.bodyLarge.copyWith(
+                  style: context.textStyles.bodyLarge?.copyWith(
                     height: 1.6,
                     color: context.colors.textPrimary,
                     fontSize: fontSize.sp,

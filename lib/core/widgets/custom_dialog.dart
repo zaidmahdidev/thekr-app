@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
+import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/widgets/base_animation_list_view.dart';
 
 class CustomDialog extends StatelessWidget {
@@ -32,7 +32,7 @@ class CustomDialog extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        content: Text(message, style: AppTypography.bodyMedium),
+        content: Text(message, style: context.textStyles.bodyMedium),
         actions: [
           CupertinoDialogAction(
             onPressed: onYes,

@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:auto_route/auto_route.dart';
@@ -166,10 +165,8 @@ class HomeAppBar extends StatelessWidget {
                     SizedBox(height: 10.h),
                     Text(
                       hijriDate,
-                      style: AppTypography.h3.copyWith(
-                        // color: context.colors.secondary,
+                      style: context.textStyles.titleLarge?.copyWith(
                         color: Colors.white,
-
                         fontWeight: FontWeight.bold,
                         fontSize: 15.sp,
                       ),
@@ -177,7 +174,7 @@ class HomeAppBar extends StatelessWidget {
                     SizedBox(height: 6.h),
                     Text(
                       todayDate,
-                      style: AppTypography.h3.copyWith(
+                      style: context.textStyles.titleLarge?.copyWith(
                         color: Colors.white.withValues(alpha: 0.7),
                         fontSize: 13.sp,
                       ),
@@ -185,7 +182,7 @@ class HomeAppBar extends StatelessWidget {
                     SizedBox(height: 8.h),
                     Text(
                       intl.DateFormat('h:mm', 'ar').format(currentTime),
-                      style: AppTypography.h1.copyWith(
+                      style: context.textStyles.displayLarge?.copyWith(
                         fontSize: 64.sp,
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
@@ -229,7 +226,7 @@ class HomeAppBar extends StatelessWidget {
                             SizedBox(width: 8.w),
                             Text(
                               remainingTime,
-                              style: AppTypography.label.copyWith(
+                              style: context.textStyles.labelLarge?.copyWith(
                                 fontSize: 11.sp,
                                 fontWeight: FontWeight.bold,
                               ),

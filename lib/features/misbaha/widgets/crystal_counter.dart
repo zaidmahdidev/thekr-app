@@ -2,7 +2,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 
 class CrystalCounter extends StatelessWidget {
   final int count;
@@ -31,7 +30,7 @@ class CrystalCounter extends StatelessWidget {
                 fit: BoxFit.scaleDown,
                 child: Text(
                   _formatNumber(count),
-                  style: AppTypography.h1.copyWith(
+                  style: context.textStyles.displayLarge?.copyWith(
                     fontSize: 50.sp,
                     color: context.colors.primary,
                     fontWeight: FontWeight.bold,
@@ -41,7 +40,7 @@ class CrystalCounter extends StatelessWidget {
               SizedBox(height: context.insets.sm),
               Text(
                 'تَسبيحَة',
-                style: AppTypography.label.copyWith(
+                style: context.textStyles.labelLarge?.copyWith(
                   color: context.colors.primary.withValues(alpha: 0.6),
                   fontWeight: FontWeight.w600,
                   letterSpacing: 2,

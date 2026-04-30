@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -130,7 +129,7 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
                   padding: EdgeInsets.symmetric(horizontal: context.insets.lg),
                   child: Text(
                     'اختر القناة',
-                    style: AppTypography.h3.copyWith(
+                    style: context.textStyles.titleLarge?.copyWith(
                       color: context.colors.primary,
                     ),
                   ),
@@ -298,7 +297,7 @@ class _NoInternetPlaceholder extends StatelessWidget {
           SizedBox(height: context.insets.md),
           Text(
             'لا يوجد اتصال بالإنترنت',
-            style: AppTypography.h3.copyWith(color: context.colors.textPrimary),
+            style: context.textStyles.titleLarge?.copyWith(color: context.colors.textPrimary),
           ),
           SizedBox(height: context.insets.sm),
           TextButton.icon(
@@ -360,7 +359,7 @@ class _StreamCard extends StatelessWidget {
         ),
         title: Text(
           stream.title,
-          style: AppTypography.h3.copyWith(
+          style: context.textStyles.titleLarge?.copyWith(
             fontSize: 14.sp,
             color: isSelected
                 ? context.colors.primary
@@ -370,7 +369,7 @@ class _StreamCard extends StatelessWidget {
         subtitle: stream.description != null
             ? Text(
                 stream.description!,
-                style: AppTypography.bodySmall.copyWith(
+                style: context.textStyles.bodySmall?.copyWith(
                   color: context.colors.textSecondary,
                 ),
               )

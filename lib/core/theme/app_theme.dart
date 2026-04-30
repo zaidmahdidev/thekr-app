@@ -36,9 +36,16 @@ class AppTheme {
         titleTextStyle: AppTypography.h3.copyWith(color: Colors.white),
       ),
       textTheme: TextTheme(
-        bodyMedium: AppTypography.bodyMedium,
-        bodyLarge: AppTypography.bodyLarge,
+        displayLarge: AppTypography.h1,
+        headlineLarge: AppTypography.h1,
+        headlineMedium: AppTypography.h2,
+        titleLarge: AppTypography.h3,
         titleMedium: AppTypography.h3,
+        bodyLarge: AppTypography.bodyLarge,
+        bodyMedium: AppTypography.bodyMedium,
+        bodySmall: AppTypography.bodySmall,
+        labelLarge: AppTypography.label,
+        labelSmall: AppTypography.button,
       ),
       extensions: [
         AppThemeExtension(
@@ -84,9 +91,16 @@ class AppTheme {
         titleTextStyle: AppTypography.h3.copyWith(color: Colors.white),
       ),
       textTheme: TextTheme(
-        bodyMedium: AppTypography.bodyMedium.copyWith(color: Colors.white),
-        bodyLarge: AppTypography.bodyLarge.copyWith(color: Colors.white),
+        displayLarge: AppTypography.h1.copyWith(color: Colors.white),
+        headlineLarge: AppTypography.h1.copyWith(color: Colors.white),
+        headlineMedium: AppTypography.h2.copyWith(color: Colors.white),
+        titleLarge: AppTypography.h3.copyWith(color: Colors.white),
         titleMedium: AppTypography.h3.copyWith(color: Colors.white),
+        bodyLarge: AppTypography.bodyLarge.copyWith(color: Colors.white),
+        bodyMedium: AppTypography.bodyMedium.copyWith(color: Colors.white),
+        bodySmall: AppTypography.bodySmall.copyWith(color: Colors.white),
+        labelLarge: AppTypography.label.copyWith(color: Colors.white),
+        labelSmall: AppTypography.button.copyWith(color: Colors.white),
       ),
       extensions: [
         AppThemeExtension(

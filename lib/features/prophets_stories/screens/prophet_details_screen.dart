@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extensions/theme_extension.dart';
-import '../../../../core/theme/tokens/typography.dart';
 import '../models/prophet_story.dart';
 import '../widgets/prophet_details_header.dart';
 import '../widgets/prophet_lesson_item.dart';
@@ -58,7 +57,7 @@ class ProphetDetailsScreen extends ConsumerWidget {
                 ProphetSectionTitle(title: prophet.title, isHero: true),
                 Text(
                   prophet.brief,
-                  style: AppTypography.bodyMedium.copyWith(
+                  style: context.textStyles.bodyMedium?.copyWith(
                     color: context.colors.textSecondary,
                     height: 1.6,
                     fontStyle: FontStyle.italic,
@@ -70,7 +69,7 @@ class ProphetDetailsScreen extends ConsumerWidget {
                 const ProphetSectionHeader(title: 'القصة'),
                 Text(
                   prophet.fullStory,
-                  style: AppTypography.bodyLarge.copyWith(
+                  style: context.textStyles.bodyLarge?.copyWith(
                     color: context.colors.textPrimary,
                     fontSize: fontSize.sp,
                     height: 1.6,

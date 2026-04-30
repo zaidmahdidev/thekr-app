@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
@@ -84,10 +83,10 @@ class PrayerTimesCard extends StatelessWidget {
         children: [
           Text(
             item.name,
-            style: AppTypography.label.copyWith(
+            style: context.textStyles.labelLarge?.copyWith(
               color: item.isNext
                   ? context.colors.secondary
-                  : Theme.of(context).textTheme.bodyMedium?.color,
+                  : context.textStyles.bodyMedium?.color,
               fontSize: 12.5.sp,
               fontWeight: item.isNext ? FontWeight.bold : FontWeight.normal,
             ),
@@ -95,7 +94,7 @@ class PrayerTimesCard extends StatelessWidget {
           SizedBox(height: 8.h),
           Text(
             item.time,
-            style: AppTypography.bodySmall.copyWith(
+            style: context.textStyles.bodySmall?.copyWith(
               color: item.isNext
                   ? context.colors.secondary
                   : context.colors.primary,

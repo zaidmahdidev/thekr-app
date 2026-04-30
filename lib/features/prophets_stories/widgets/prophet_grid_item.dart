@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/router/app_router.dart';
 import '../models/prophet_story.dart';
 
@@ -92,7 +91,7 @@ class ProphetGridItem extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
-                          style: AppTypography.h3.copyWith(
+                          style: context.textStyles.titleLarge?.copyWith(
                             color: context.colors.textPrimary,
                             fontWeight: FontWeight.bold,
                             fontSize: 11.sp,
@@ -106,7 +105,7 @@ class ProphetGridItem extends StatelessWidget {
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTypography.label.copyWith(
+                    style: context.textStyles.labelLarge?.copyWith(
                       color: context.colors.textSecondary,
                       fontSize: 8.sp,
                       height: 1.2,

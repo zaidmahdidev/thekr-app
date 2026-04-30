@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/extensions/theme_extension.dart';
-import '../../../../core/theme/tokens/typography.dart';
 
 class ProphetVerseCard extends StatelessWidget {
   final String verse;
@@ -44,7 +43,7 @@ class ProphetVerseCard extends StatelessWidget {
           Text(
             verse,
             textAlign: TextAlign.center,
-            style: AppTypography.bodyLarge.copyWith(
+            style: context.textStyles.bodyLarge?.copyWith(
               color: context.colors.primary,
               fontFamily: 'hafs',
               fontSize: fontSize.sp,

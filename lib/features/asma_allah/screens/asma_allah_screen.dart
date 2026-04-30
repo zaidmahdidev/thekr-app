@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/widgets/app_scaffold.dart';
 import 'package:thekr_app/features/asma_allah/data/asma_allah_data.dart';
 import 'package:thekr_app/features/asma_allah/widgets/asma_allah_grid_item.dart';
@@ -42,7 +41,7 @@ class AsmaAllahScreen extends StatelessWidget {
                   Text(
                     'وَلِلَّهِ الْأَسْمَاءُ الْحُسْنَىٰ فَادْعُوهُ بِهَا',
                     textAlign: TextAlign.center,
-                    style: AppTypography.h2.copyWith(
+                    style: context.textStyles.headlineMedium?.copyWith(
                       fontFamily: 'hafs',
                       color: context.colors.primary,
                       height: 1.5,
