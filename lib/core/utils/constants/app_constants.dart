@@ -3,7 +3,7 @@ class AppConstants {
   static const String appVersion = '1.1.0';
 
   // Package Name (تأكد من مطابقتها لما هو موجود في الـ AndroidManifest)
-  static const String packageName = 'com.example.thekr_app';
+  static const String packageName = 'com.zaid.thekr_app';
 
   // App Links
   static const String playStoreUrl =
