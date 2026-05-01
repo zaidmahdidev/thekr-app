@@ -2,28 +2,30 @@ import 'package:flutter/material.dart';
 import 'app_theme_extension.dart';
 import 'tokens/design_tokens.dart';
 import 'tokens/typography.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
 class AppTheme {
-  static ThemeData light() {
+  static ThemeData light(AppThemeType type) {
+    final colors = _getColors(type, Brightness.light);
     return ThemeData(
       brightness: Brightness.light,
-      primaryColor: AppColors.light.primary,
+      primaryColor: colors.primary,
       primarySwatch: AppColors.primarySwatch,
       colorScheme:
           ColorScheme.fromSwatch(
             primarySwatch: AppColors.primarySwatch,
           ).copyWith(
-            primary: AppColors.light.primary,
-            secondary: AppColors.light.secondary,
-            surface: AppColors.light.surface,
-            error: AppColors.light.error,
+            primary: colors.primary,
+            secondary: colors.secondary,
+            surface: colors.surface,
+            error: colors.error,
           ),
-      scaffoldBackgroundColor: AppColors.light.background,
+      scaffoldBackgroundColor: colors.background,
       useMaterial3: false,
       fontFamily: 'Tajawal',
       appBarTheme: AppBarTheme(
         toolbarHeight: 80,
-        backgroundColor: const Color(0xFF0E645C),
+        backgroundColor: colors.primary,
         elevation: 0,
         centerTitle: true,
         shape: const RoundedRectangleBorder(
@@ -49,7 +51,7 @@ class AppTheme {
       ),
       extensions: [
         AppThemeExtension(
-          colors: AppColors.light,
+          colors: colors,
           corners: AppCorners.defaultValues(),
           insets: AppInsets.defaultValues(),
           shadows: AppShadows.light(),
@@ -58,27 +60,28 @@ class AppTheme {
     );
   }
 
-  static ThemeData dark() {
+  static ThemeData dark(AppThemeType type) {
+    final colors = _getColors(type, Brightness.dark);
     return ThemeData(
       brightness: Brightness.dark,
-      primaryColor: AppColors.dark.primary,
+      primaryColor: colors.primary,
       primarySwatch: AppColors.primarySwatch,
       colorScheme:
           ColorScheme.fromSwatch(
             primarySwatch: AppColors.primarySwatch,
             brightness: Brightness.dark,
           ).copyWith(
-            primary: AppColors.dark.primary,
-            secondary: AppColors.dark.secondary,
-            surface: AppColors.dark.surface,
-            error: AppColors.dark.error,
+            primary: colors.primary,
+            secondary: colors.secondary,
+            surface: colors.surface,
+            error: colors.error,
           ),
-      scaffoldBackgroundColor: AppColors.dark.background,
+      scaffoldBackgroundColor: colors.background,
       useMaterial3: false,
       fontFamily: 'Tajawal',
       appBarTheme: AppBarTheme(
         toolbarHeight: 80,
-        backgroundColor: const Color(0xFF0E645C),
+        backgroundColor: colors.primary,
         elevation: 0,
         centerTitle: true,
         shape: const RoundedRectangleBorder(
@@ -104,12 +107,24 @@ class AppTheme {
       ),
       extensions: [
         AppThemeExtension(
-          colors: AppColors.dark,
+          colors: colors,
           corners: AppCorners.defaultValues(),
           insets: AppInsets.defaultValues(),
           shadows: AppShadows.dark(),
         ),
       ],
     );
+  }
+
+  static AppColors _getColors(AppThemeType type, Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+    switch (type) {
+      case AppThemeType.defaultTheme:
+        return isDark ? AppColors.dark : AppColors.light;
+      case AppThemeType.desert:
+        return isDark ? AppColors.desertDark : AppColors.desertLight;
+      case AppThemeType.forest:
+        return isDark ? AppColors.forestDark : AppColors.forestLight;
+    }
   }
 }

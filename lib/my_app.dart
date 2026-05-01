@@ -71,8 +71,8 @@ class _MyAppState extends ConsumerState<MyApp> {
       builder: (context, child) {
         return MaterialApp.router(
           title: 'ذِكر',
-          theme: AppTheme.light(),
-          darkTheme: AppTheme.dark(),
+          theme: AppTheme.light(settings.appTheme),
+          darkTheme: AppTheme.dark(settings.appTheme),
           themeMode: themeMode,
           locale: const Locale('ar'),
           supportedLocales: const [Locale('ar'), Locale('en')],

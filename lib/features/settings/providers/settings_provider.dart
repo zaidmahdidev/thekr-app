@@ -42,9 +42,12 @@ enum ShareTemplate {
   }
 }
 
+enum AppThemeType { defaultTheme, desert, forest }
+
 /// حالة الإعدادات الشاملة
 class SettingsState {
   final ThemeMode themeMode;
+  final AppThemeType appTheme;
   final bool notificationsEnabled;
   final String languageCode;
   final double fontSize;
@@ -53,6 +56,7 @@ class SettingsState {
 
   SettingsState({
     required this.themeMode,
+    this.appTheme = AppThemeType.defaultTheme,
     this.notificationsEnabled = true,
     this.languageCode = 'ar',
     this.fontSize = 16.0,
@@ -62,6 +66,7 @@ class SettingsState {
 
   SettingsState copyWith({
     ThemeMode? themeMode,
+    AppThemeType? appTheme,
     bool? notificationsEnabled,
     String? languageCode,
     double? fontSize,
@@ -70,6 +75,7 @@ class SettingsState {
   }) {
     return SettingsState(
       themeMode: themeMode ?? this.themeMode,
+      appTheme: appTheme ?? this.appTheme,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
       languageCode: languageCode ?? this.languageCode,
       fontSize: fontSize ?? this.fontSize,
@@ -80,20 +86,25 @@ class SettingsState {
 }
 
 /// المزود الخاص بالإعدادات
-final settingsProvider =
-    StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
-  return SettingsNotifier();
-});
+final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
+  (ref) {
+    return SettingsNotifier();
+  },
+);
 
 class SettingsNotifier extends StateNotifier<SettingsState> {
   SettingsNotifier()
-      : super(SettingsState(
+    : super(
+        SettingsState(
           themeMode: _getInitialTheme(),
+          appTheme: _getInitialAppTheme(),
           fontSize: CacheHelper.getData(key: 'fontSize') ?? 16.0,
           homeSections: _getInitialHomeSections(),
-          notificationsEnabled: CacheHelper.getData(key: 'notificationsEnabled') ?? true,
+          notificationsEnabled:
+              CacheHelper.getData(key: 'notificationsEnabled') ?? true,
           shareTemplate: _getInitialShareTemplate(),
-        ));
+        ),
+      );
 
   static ThemeMode _getInitialTheme() {
     final String? theme = CacheHelper.getData(key: 'themeMode');
@@ -102,16 +113,27 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     return ThemeMode.system;
   }
 
+  static AppThemeType _getInitialAppTheme() {
+    final String? theme = CacheHelper.getData(key: 'appTheme');
+    if (theme == null) return AppThemeType.defaultTheme;
+    return AppThemeType.values.firstWhere(
+      (e) => e.name == theme,
+      orElse: () => AppThemeType.defaultTheme,
+    );
+  }
+
   static List<HomeSection> _getInitialHomeSections() {
     final List<dynamic>? saved = CacheHelper.getData(key: 'homeSections');
     if (saved == null) {
       return HomeSection.values;
     }
     return saved
-        .map((e) => HomeSection.values.firstWhere(
-              (element) => element.name == e,
-              orElse: () => HomeSection.prayerTimes,
-            ))
+        .map(
+          (e) => HomeSection.values.firstWhere(
+            (element) => element.name == e,
+            orElse: () => HomeSection.prayerTimes,
+          ),
+        )
         .toList();
   }
 
@@ -127,6 +149,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   void toggleTheme(ThemeMode mode) {
     state = state.copyWith(themeMode: mode);
     CacheHelper.saveData(key: 'themeMode', value: mode.name);
+  }
+
+  void updateAppTheme(AppThemeType theme) {
+    state = state.copyWith(appTheme: theme);
+    CacheHelper.saveData(key: 'appTheme', value: theme.name);
   }
 
   void toggleNotifications(bool enabled) {

@@ -170,6 +170,117 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               ),
                         ),
                       ),
+                      const Divider(height: 1, indent: 20, endIndent: 20),
+                      Padding(
+                        padding: EdgeInsets.all(context.insets.md),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.palette_rounded,
+                                  size: 20.sp,
+                                  color: Colors.teal,
+                                ),
+                                SizedBox(width: 12.w),
+                                Text(
+                                  'ألوان التطبيق (الثيمات)',
+                                  style: context.textStyles.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: context.insets.md),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: AppThemeType.values.map((theme) {
+                                final isSelected = settings.appTheme == theme;
+                                Color primaryColor;
+                                switch (theme) {
+                                  case AppThemeType.defaultTheme:
+                                    primaryColor = const Color(0xFF0E645C);
+                                    break;
+                                  case AppThemeType.desert:
+                                    primaryColor = const Color(0xFFC19A6B);
+                                    break;
+                                  case AppThemeType.forest:
+                                    primaryColor = const Color(0xFF2D5A27);
+                                    break;
+                                }
+
+                                return Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => ref
+                                        .read(settingsProvider.notifier)
+                                        .updateAppTheme(theme),
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(
+                                        horizontal: 4.w,
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 12.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? primaryColor.withValues(
+                                                alpha: 0.1,
+                                              )
+                                            : context.colors.surface,
+                                        borderRadius: BorderRadius.circular(
+                                          context.corners.md,
+                                        ),
+                                        border: Border.all(
+                                          color: isSelected
+                                              ? primaryColor
+                                              : primaryColor.withValues(
+                                                  alpha: 0.2,
+                                                ),
+                                          width: isSelected ? 2 : 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Container(
+                                          width: 32.w,
+                                          height: 32.w,
+                                          decoration: BoxDecoration(
+                                            color: primaryColor,
+                                            shape: BoxShape.circle,
+                                            boxShadow: isSelected
+                                                ? [
+                                                    BoxShadow(
+                                                      color: primaryColor
+                                                          .withValues(
+                                                            alpha: 0.4,
+                                                          ),
+                                                      blurRadius: 10,
+                                                      offset: const Offset(
+                                                        0,
+                                                        4,
+                                                      ),
+                                                    ),
+                                                  ]
+                                                : null,
+                                          ),
+                                          child: isSelected
+                                              ? const Icon(
+                                                  Icons.check,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                )
+                                              : null,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(height: 1, indent: 20, endIndent: 20),
                       SettingsTile(
                         title: 'ترتيب الشاشة الرئيسية',
                         subtitle: 'تحكم في مكان ظهور العناصر في الرئيسية',

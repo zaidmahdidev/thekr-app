@@ -57,6 +57,52 @@ class AppColors {
     textPrimary: Color(0xFFF8F9FA),
     textSecondary: Color(0xFFADB5BD),
   );
+
+  // Desert Theme
+  static const desertLight = AppColors(
+    primary: Color(0xFFC19A6B), // Desert Sand
+    secondary: Color(0xFFE1AD01), // Mustard Gold
+    surface: Color(0xFFFFF9E3),
+    error: Color(0xFFDC3545),
+    success: Color(0xFF28A745),
+    background: Color(0xFFFDF5E6), // Old Lace
+    textPrimary: Color(0xFF5D4037),
+    textSecondary: Color(0xFF8D6E63),
+  );
+
+  static const desertDark = AppColors(
+    primary: Color(0xFFC19A6B),
+    secondary: Color(0xFFE1AD01),
+    surface: Color(0xFF2D241E),
+    error: Color(0xFFE35D6A),
+    success: Color(0xFF47C363),
+    background: Color(0xFF1B1613),
+    textPrimary: Color(0xFFEFEBE9),
+    textSecondary: Color(0xFFBCAAA4),
+  );
+
+  // Forest Theme
+  static const forestLight = AppColors(
+    primary: Color(0xFF2D5A27), // Forest Green
+    secondary: Color(0xFF8DA47E), // Sage Green
+    surface: Color(0xFFF1F4F0),
+    error: Color(0xFFDC3545),
+    success: Color(0xFF2E7D32),
+    background: Color(0xFFE8EDE7),
+    textPrimary: Color(0xFF1B3022),
+    textSecondary: Color(0xFF4A5D4E),
+  );
+
+  static const forestDark = AppColors(
+    primary: Color(0xFF4A7C44),
+    secondary: Color(0xFF8DA47E),
+    surface: Color(0xFF1E261F),
+    error: Color(0xFFE35D6A),
+    success: Color(0xFF47C363),
+    background: Color(0xFF121812),
+    textPrimary: Color(0xFFE8F5E9),
+    textSecondary: Color(0xFFA5B0A6),
+  );
 }
 
 class AppCorners {

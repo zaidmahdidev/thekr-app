@@ -14,7 +14,8 @@ class CustomizeHomeLayoutScreen extends ConsumerStatefulWidget {
       _CustomizeHomeLayoutScreenState();
 }
 
-class _CustomizeHomeLayoutScreenState extends ConsumerState<CustomizeHomeLayoutScreen> {
+class _CustomizeHomeLayoutScreenState
+    extends ConsumerState<CustomizeHomeLayoutScreen> {
   // قائمة محلية للاحتفاظ بالترتيب المؤقت قبل الحفظ
   late List<HomeSection> _tempSections;
 
@@ -103,10 +104,7 @@ class _CustomizeHomeLayoutScreenState extends ConsumerState<CustomizeHomeLayoutS
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.info_outline_rounded,
-                  color: context.colors.primary,
-                ),
+                Icon(Icons.info_outline_rounded, color: context.colors.primary),
                 SizedBox(width: context.insets.md),
                 Expanded(
                   child: Text(
