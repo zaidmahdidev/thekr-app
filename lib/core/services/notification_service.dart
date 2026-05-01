@@ -4,6 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Handle background messages here if needed
+  debugPrint("Handling a background message: ${message.messageId}");
+}
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -12,6 +19,8 @@ class NotificationService {
 
   static final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
+  
+  static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
   static Function(String?)? onNotificationClick;
 
@@ -25,6 +34,9 @@ class NotificationService {
       tz.setLocalLocation(tz.getLocation('UTC'));
     }
 
+    // Initialize FCM
+    await _initializeFCM();
+
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -37,6 +49,45 @@ class NotificationService {
         onNotificationClick?.call(response.payload);
       },
     );
+  }
+
+  static Future<void> _initializeFCM() async {
+    // Set background handler
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    // Get FCM Token
+    try {
+      String? token = await _messaging.getToken();
+      debugPrint("FCM Token: $token");
+      // You can save this token to your server here
+    } catch (e) {
+      debugPrint("Error getting FCM token: $e");
+    }
+
+    // Handle foreground messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+
+      if (notification != null && android != null) {
+        _notifications.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'azkar_channel',
+              'تذكير الأذكار',
+              channelDescription: 'إشعارات تذكير أذكار الصباح والمساء',
+              importance: Importance.high,
+              priority: Priority.high,
+              playSound: true,
+              enableVibration: true,
+            ),
+          ),
+        );
+      }
+    });
   }
 
   static Future<void> checkLaunchNotification() async {
@@ -54,11 +105,22 @@ class NotificationService {
   }
 
   static Future<bool> requestPermissions() async {
+    // FCM Permissions
+    NotificationSettings settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+      provisional: false,
+    );
+
+    final bool fcmGranted =
+        settings.authorizationStatus == AuthorizationStatus.authorized;
+
+    // Local Notifications Permissions
     final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-        _notifications
-            .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin
-            >();
+        _notifications.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
 
     if (androidImplementation != null) {
       final bool? granted = await androidImplementation
@@ -68,9 +130,9 @@ class NotificationService {
 
       await _createNotificationChannel();
 
-      return (granted ?? false) && (exactAlarmGranted ?? false);
+      return (granted ?? false) && (exactAlarmGranted ?? false) && fcmGranted;
     }
-    return true;
+    return fcmGranted;
   }
 
   static Future<void> _createNotificationChannel() async {

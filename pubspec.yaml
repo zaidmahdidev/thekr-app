@@ -39,6 +39,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.2.3
   firebase_core: ^4.7.0
+  firebase_messaging: ^16.2.0
   firebase_remote_config: ^6.4.0
   package_info_plus: ^9.0.1
   firebase_analytics: ^12.3.0 
