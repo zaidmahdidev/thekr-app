@@ -399,22 +399,6 @@ class QuranRouteArgs {
 }
 
 /// generated route for
-/// [RuqyahScreen]
-class RuqyahRoute extends PageRouteInfo<void> {
-  const RuqyahRoute({List<PageRouteInfo>? children})
-    : super(RuqyahRoute.name, initialChildren: children);
-
-  static const String name = 'RuqyahRoute';
-
-  static PageInfo page = PageInfo(
-    name,
-    builder: (data) {
-      return const RuqyahScreen();
-    },
-  );
-}
-
-/// generated route for
 /// [SettingsScreen]
 class SettingsRoute extends PageRouteInfo<void> {
   const SettingsRoute({List<PageRouteInfo>? children})

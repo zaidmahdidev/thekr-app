@@ -82,12 +82,6 @@ class HomeFeaturesGrid extends StatelessWidget {
             route: const LiveStreamRoute(),
           ),
           _FeatureItem(
-            title: "الرقية الشرعية",
-            icon: Icons.health_and_safety_rounded,
-            color: const Color(0xff00bcd4),
-            route: const RuqyahRoute(),
-          ),
-          _FeatureItem(
             title: "الإعدادات",
             icon: Icons.settings_suggest_rounded,
             color: const Color(0xff95a5a6),
