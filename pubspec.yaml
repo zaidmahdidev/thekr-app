@@ -41,6 +41,8 @@ dependencies:
   firebase_core: ^4.7.0
   firebase_remote_config: ^6.4.0
   package_info_plus: ^9.0.1
+  firebase_analytics: ^12.3.0 
+  firebase_crashlytics: ^5.2.0 
   readmore: ^3.0.0
   hexcolor: ^3.0.1
   flutter_staggered_animations: ^1.1.1

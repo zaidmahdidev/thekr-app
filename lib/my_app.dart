@@ -13,6 +13,7 @@ import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 import 'package:thekr_app/core/services/notification_service.dart';
 import 'package:thekr_app/core/services/review_service.dart';
 import 'package:thekr_app/features/azkar/data/azkar_model.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -92,7 +93,11 @@ class _MyAppState extends ConsumerState<MyApp> {
           },
           debugShowCheckedModeBanner: false,
           scaffoldMessengerKey: scaffoldMessengerKey,
-          routerConfig: _appRouter.config(),
+          routerConfig: _appRouter.config(
+            navigatorObservers: () => [
+              FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+            ],
+          ),
         );
       },
     );

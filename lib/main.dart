@@ -13,6 +13,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'package:thekr_app/firebase_options.dart';
 import 'package:thekr_app/core/services/remote_config_service.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
@@ -23,6 +25,16 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // تفعيل رصد الأخطاء التلقائي
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  };
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
   await RemoteConfigService().init();
   await AppConstants.init();
   await initializeDateFormatting('ar', null);
