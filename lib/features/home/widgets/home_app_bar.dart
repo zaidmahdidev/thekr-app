@@ -34,10 +34,10 @@ class HomeAppBar extends StatelessWidget {
           end: Alignment.bottomCenter,
           colors: [
             context.colors.primary,
-            context.colors.background,
+            // context.colors.background,
             context.colors.background,
           ],
-          stops: const [0.0, 0.85, 1.0],
+          // stops: const [0.0, 0.85, 1.0],
         ),
         icon: Icons.nightlight_round,
       );

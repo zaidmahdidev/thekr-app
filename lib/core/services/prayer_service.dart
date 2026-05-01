@@ -1,20 +1,17 @@
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:thekr_app/core/services/cache_helper.dart';
 import 'package:thekr_app/features/home/models/app_prayer_times.dart';
 
 class PrayerService {
   static Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return Future.error('Location services are disabled.');
     }
 
-    permission = await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -26,12 +23,10 @@ class PrayerService {
       return Future.error('Location permissions are permanently denied');
     }
 
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition();
   }
 
-  static AppPrayerTimes _convertToAppModel(PrayerTimes times) {
+  static AppPrayerTimes _convertToAppModel(PrayerTimes times, {bool isLocationOff = false}) {
     return AppPrayerTimes(
       fajr: times.fajr,
       sunrise: times.sunrise,
@@ -39,19 +34,49 @@ class PrayerService {
       asr: times.asr,
       maghrib: times.maghrib,
       isha: times.isha,
+      isLocationOff: isLocationOff,
     );
   }
 
   static Future<AppPrayerTimes?> getCurrentPrayerTimes() async {
     try {
-      // Default coordinates (Mecca)
-      Coordinates coordinates = Coordinates(21.4225, 39.8262);
+      Coordinates coordinates = Coordinates(21.4225, 39.8262); // Mecca fallback
+      bool isLocationOff = false;
 
       try {
-        Position position = await _determinePosition();
-        coordinates = Coordinates(position.latitude, position.longitude);
+        LocationPermission permission = await Geolocator.checkPermission();
+        
+        if (permission == LocationPermission.always || 
+            permission == LocationPermission.whileInUse) {
+          Position position = await Geolocator.getCurrentPosition();
+          coordinates = Coordinates(position.latitude, position.longitude);
+        } else if (permission == LocationPermission.denied) {
+          // Check if we have already asked for permission once to avoid repeated prompts
+          final dynamic hasRequestedData = CacheHelper.getData(key: 'location_requested');
+          final bool hasRequested = (hasRequestedData is bool) ? hasRequestedData : false;
+          
+          if (!hasRequested) {
+            // This is likely the first time, or we haven't recorded a request yet
+            await CacheHelper.saveData(key: 'location_requested', value: true);
+            permission = await Geolocator.requestPermission();
+            
+            if (permission == LocationPermission.always || 
+                permission == LocationPermission.whileInUse) {
+              Position position = await Geolocator.getCurrentPosition();
+              coordinates = Coordinates(position.latitude, position.longitude);
+            } else {
+              isLocationOff = true;
+            }
+          } else {
+            // We have already asked once, and the user denied. 
+            // We show the button instead of showing the system dialog again automatically.
+            isLocationOff = true;
+          }
+        } else {
+          isLocationOff = true;
+        }
       } catch (e) {
-        debugPrint('Geolocator error: $e');
+        isLocationOff = true;
       }
 
       final params = CalculationMethod.karachi.getParameters();
@@ -59,9 +84,8 @@ class PrayerService {
 
       final dateComponents = DateComponents.from(DateTime.now());
       final adhanTimes = PrayerTimes(coordinates, dateComponents, params);
-      return _convertToAppModel(adhanTimes);
+      return _convertToAppModel(adhanTimes, isLocationOff: isLocationOff);
     } catch (e) {
-      debugPrint('Error getting prayer times: $e');
       return null;
     }
   }
@@ -69,11 +93,19 @@ class PrayerService {
   static Future<AppPrayerTimes?> getNextDayPrayerTimes() async {
     try {
       Coordinates coordinates = Coordinates(21.4225, 39.8262);
+      bool isLocationOff = false;
+
       try {
-        Position position = await _determinePosition();
-        coordinates = Coordinates(position.latitude, position.longitude);
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.always || 
+            permission == LocationPermission.whileInUse) {
+          Position position = await Geolocator.getCurrentPosition();
+          coordinates = Coordinates(position.latitude, position.longitude);
+        } else {
+          isLocationOff = true;
+        }
       } catch (e) {
-        /* Fallback to Mecca */
+        isLocationOff = true;
       }
 
       final params = CalculationMethod.karachi.getParameters();
@@ -83,7 +115,7 @@ class PrayerService {
       final dateComponents = DateComponents.from(tomorrow);
       final adhanTimes = PrayerTimes(coordinates, dateComponents, params);
 
-      return _convertToAppModel(adhanTimes);
+      return _convertToAppModel(adhanTimes, isLocationOff: isLocationOff);
     } catch (e) {
       return null;
     }
@@ -104,7 +136,7 @@ class PrayerService {
       case Prayer.isha:
         return 'العشاء';
       default:
-        return 'الفجر'; // Default to Fajr for next day logic
+        return 'الفجر';
     }
   }
 }

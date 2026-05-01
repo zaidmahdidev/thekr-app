@@ -6,6 +6,7 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:hijri/hijri_calendar.dart';
 
+import 'package:geolocator/geolocator.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/widgets/custom_dialog.dart';
 import 'package:thekr_app/features/home/providers/prayer_provider.dart';
@@ -29,16 +30,33 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen>
+    with WidgetsBindingObserver {
   DateTime? _lastPressedAt;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     HijriCalendar.setLocal('ar');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkForUpdate();
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Automatic refresh when returning from permission dialog
+      ref.invalidate(prayerTimesProvider);
+      ref.invalidate(tomorrowPrayerTimesProvider);
+    }
   }
 
   Future<void> _checkForUpdate() async {
@@ -133,24 +151,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 case HomeSection.prayerTimes:
                   return SliverToBoxAdapter(
                     key: const ValueKey('prayerTimes'),
-                    child: PrayerTimesCard(prayerTimes: prayerTimes),
+                    child: PrayerTimesCard(
+                      prayerTimes: prayerTimes,
+                      onRequestLocation: () async {
+                        LocationPermission permission =
+                            await Geolocator.checkPermission();
+
+                        if (permission == LocationPermission.deniedForever) {
+                          showToast(
+                            text: 'يرجى تفعيل صلاحية الموقع من إعدادات الهاتف',
+                          );
+                        } else {
+                          await Geolocator.requestPermission();
+                          ref.invalidate(prayerTimesProvider);
+                          ref.invalidate(tomorrowPrayerTimesProvider);
+                        }
+                      },
+                    ),
                   );
                 case HomeSection.inspiration:
                   return const InspirationCarousel(
                     key: ValueKey('inspiration'),
                   );
                 case HomeSection.features:
-                  return const HomeFeaturesGrid(
-                    key: ValueKey('features'),
-                  );
+                  return const HomeFeaturesGrid(key: ValueKey('features'));
                 case HomeSection.dynamicSections:
                   return const HomeDynamicSections(
                     key: ValueKey('dynamicSections'),
                   );
                 case HomeSection.shareCard:
-                  return const ShareAppCard(
-                    key: ValueKey('shareCard'),
-                  );
+                  return const ShareAppCard(key: ValueKey('shareCard'));
               }
             }),
           ],
@@ -163,7 +193,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final now = DateTime.now();
     final backButtonHasNotBeenPressedOrSnackBarHasClosed =
         _lastPressedAt == null ||
-            now.difference(_lastPressedAt!) > const Duration(seconds: 2);
+        now.difference(_lastPressedAt!) > const Duration(seconds: 2);
 
     if (backButtonHasNotBeenPressedOrSnackBarHasClosed) {
       _lastPressedAt = now;

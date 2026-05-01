@@ -8,6 +8,8 @@ class AppPrayerTimes {
   final DateTime maghrib;
   final DateTime isha;
 
+  final bool isLocationOff;
+
   AppPrayerTimes({
     required this.fajr,
     required this.sunrise,
@@ -15,6 +17,7 @@ class AppPrayerTimes {
     required this.asr,
     required this.maghrib,
     required this.isha,
+    this.isLocationOff = false,
   });
 
   DateTime getTimeFor(AppPrayer prayer) {
