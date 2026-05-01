@@ -14,7 +14,7 @@ class RemoteConfigService {
     try {
       await _remoteConfig.setConfigSettings(RemoteConfigSettings(
         fetchTimeout: const Duration(minutes: 1),
-        minimumFetchInterval: Duration.zero, // تحديث فوري أثناء التجربة
+        minimumFetchInterval: const Duration(hours: 5),
       ));
 
       // القيم الافتراضية في حال عدم وجود اتصال

@@ -98,29 +98,17 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Active Player with Custom Overlay
+                // Active Player
                 if (_isConnected)
                   Container(
                     width: double.infinity,
-                    // aspectRatio: 16 / 9,
                     margin: EdgeInsets.all(context.insets.md),
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(context.corners.lg),
                       boxShadow: context.shadows.low,
                     ),
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        player,
-                        // Custom Controls Overlay
-                        Positioned.fill(
-                          child: _PlayerControlsOverlay(
-                            controller: _controller,
-                          ),
-                        ),
-                      ],
-                    ),
+                    child: player,
                   )
                 else
                   _NoInternetPlaceholder(onRetry: _checkInitialConnection),
@@ -167,108 +155,7 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
   }
 }
 
-class _PlayerControlsOverlay extends StatefulWidget {
-  final YoutubePlayerController controller;
 
-  const _PlayerControlsOverlay({required this.controller});
-
-  @override
-  State<_PlayerControlsOverlay> createState() => _PlayerControlsOverlayState();
-}
-
-class _PlayerControlsOverlayState extends State<_PlayerControlsOverlay> {
-  bool _isVisible = true;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => setState(() => _isVisible = !_isVisible),
-      child: AnimatedOpacity(
-        opacity: _isVisible ? 1.0 : 0.0,
-        duration: const Duration(milliseconds: 300),
-        child: Container(
-          color: Colors.black26,
-          child: Stack(
-            children: [
-              // Center Play/Pause
-              Center(
-                child: IconButton(
-                  icon: Icon(
-                    widget.controller.value.isPlaying
-                        ? Icons.pause_rounded
-                        : Icons.play_arrow_rounded,
-                    size: 50.w,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    if (widget.controller.value.isPlaying) {
-                      widget.controller.pause();
-                    } else {
-                      widget.controller.play();
-                    }
-                    setState(() {});
-                  },
-                ),
-              ),
-              // Bottom Controls
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: EdgeInsets.all(context.insets.sm),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [
-                        Colors.black.withValues(alpha: 0.7),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Status Badge (Live)
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: context.insets.xl,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: context.colors.error,
-                          borderRadius: BorderRadius.circular(4.r),
-                        ),
-                        child: Text(
-                          'مباشر',
-                          style: context.textStyles.bodySmall!.copyWith(
-                            color: Colors.white,
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      // Full Screen Button
-                      IconButton(
-                        icon: const Icon(
-                          Icons.fullscreen_rounded,
-                          color: Colors.white,
-                        ),
-                        onPressed: () =>
-                            widget.controller.toggleFullScreenMode(),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class _NoInternetPlaceholder extends StatelessWidget {
   final VoidCallback onRetry;
