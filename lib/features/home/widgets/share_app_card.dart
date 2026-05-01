@@ -5,6 +5,7 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/utils/constants/app_constants.dart';
+import 'package:thekr_app/features/settings/widgets/app_share_sheet.dart';
 
 class ShareAppCard extends StatelessWidget {
   const ShareAppCard({super.key});
@@ -89,15 +90,15 @@ class ShareAppCard extends StatelessWidget {
                   SizedBox(height: context.insets.sm),
                   ElevatedButton.icon(
                     onPressed: () {
-                      ShareService.shareAsText(
-                        context,
-                        AppConstants.shareMessage,
-                        null,
-                        includeSignature: false,
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        isScrollControlled: true,
+                        builder: (context) => const AppShareSheet(),
                       );
                     },
                     icon: const Icon(Icons.share, size: 18),
-                    label: const Text('مشاركة التطبيق الآن'),
+                    label: const Text('مشاركة التطبيق'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: context.colors.primary,

@@ -15,7 +15,9 @@ class AppShareSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: context.colors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(context.corners.xl)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(context.corners.xl),
+        ),
       ),
       child: Stack(
         children: [
@@ -24,13 +26,10 @@ class AppShareSheet extends StatelessWidget {
             left: -50,
             child: Opacity(
               opacity: 0.05,
-              child: Image.asset(
-                AppAssets.bg,
-                width: 250.w,
-              ),
+              child: Image.asset(AppAssets.bg, width: 250.w),
             ),
           ),
-          
+
           Padding(
             padding: EdgeInsets.all(context.insets.lg),
             child: Column(
@@ -46,7 +45,7 @@ class AppShareSheet extends StatelessWidget {
                     borderRadius: BorderRadius.circular(context.corners.sm),
                   ),
                 ),
-                
+
                 Text(
                   'مشاركة التطبيق',
                   style: context.textStyles.titleSmall?.copyWith(
@@ -54,9 +53,9 @@ class AppShareSheet extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                
+
                 SizedBox(height: context.insets.lg),
-                
+
                 // Static QR Code Container
                 Container(
                   padding: EdgeInsets.all(context.insets.md),
@@ -87,9 +86,9 @@ class AppShareSheet extends StatelessWidget {
                     ],
                   ),
                 ),
-                
+
                 SizedBox(height: context.insets.lg),
-                
+
                 Text(
                   'انسخ الرابط أو شاركه مباشرة عبر تطبيقات التواصل الاجتماعي لنشر الخير',
                   textAlign: TextAlign.center,
@@ -98,18 +97,23 @@ class AppShareSheet extends StatelessWidget {
                     height: 1.5,
                   ),
                 ),
-                
+
                 SizedBox(height: context.insets.lg),
-                
+
                 // Copy Link Row
                 GestureDetector(
                   onTap: () {
-                    Clipboard.setData(const ClipboardData(text: AppConstants.playStoreUrl));
+                    Clipboard.setData(
+                      const ClipboardData(text: AppConstants.playStoreUrl),
+                    );
                     Navigator.pop(context);
                     showToast(text: 'تم نسخ رابط التطبيق');
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 10.h,
+                      horizontal: 20.w,
+                    ),
                     decoration: BoxDecoration(
                       color: context.colors.primary.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(context.corners.lg),
@@ -124,7 +128,7 @@ class AppShareSheet extends StatelessWidget {
                         ),
                         SizedBox(width: 8.w),
                         Text(
-                          'نسخ رابط المتجر',
+                          'نسخ الرابط',
                           style: context.textStyles.bodySmall?.copyWith(
                             color: context.colors.primary,
                             fontWeight: FontWeight.bold,
@@ -134,9 +138,9 @@ class AppShareSheet extends StatelessWidget {
                     ),
                   ),
                 ),
-                
+
                 SizedBox(height: context.insets.md),
-                
+
                 // Share App Button - Premium Styled
                 SizedBox(
                   width: double.infinity,
@@ -159,7 +163,10 @@ class AppShareSheet extends StatelessWidget {
                           AppConstants.shareMessage,
                         );
                       },
-                      icon: const Icon(Icons.share_rounded, color: Colors.white),
+                      icon: const Icon(
+                        Icons.share_rounded,
+                        color: Colors.white,
+                      ),
                       label: Text(
                         'مشاركة التطبيق الآن',
                         style: context.textStyles.bodyLarge?.copyWith(
@@ -172,14 +179,16 @@ class AppShareSheet extends StatelessWidget {
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(vertical: 16.h),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(context.corners.lg),
+                          borderRadius: BorderRadius.circular(
+                            context.corners.lg,
+                          ),
                         ),
                         elevation: 0,
                       ),
                     ),
                   ),
                 ),
-                
+
                 SizedBox(height: MediaQuery.of(context).padding.bottom + 8.h),
               ],
             ),
