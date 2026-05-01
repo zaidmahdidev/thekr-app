@@ -191,18 +191,37 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           children: [
                             Row(
                               children: [
-                                Icon(
-                                  Icons.format_size_rounded,
-                                  color: context.colors.primary,
-                                  size: 20.sp,
-                                ),
-                                SizedBox(width: context.insets.sm),
+                                // SizedBox(width: context.insets.sm),
                                 Text(
                                   'حجم الخط في القراءة',
                                   style: context.textStyles.bodyMedium
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 const Spacer(),
+                                TextButton(
+                                  onPressed: () => ref
+                                      .read(settingsProvider.notifier)
+                                      .updateFontSize(16.0),
+                                  style: TextButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 2.w,
+                                      vertical: 2.h,
+                                    ),
+                                    minimumSize: Size.zero,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    backgroundColor: context.colors.primary,
+                                  ),
+                                  child: Text(
+                                    'الافتراضي',
+                                    style: context.textStyles.bodySmall
+                                        ?.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                ),
+                                SizedBox(width: context.insets.sm),
                                 Text(
                                   '${settings.fontSize.toInt()}',
                                   style: context.textStyles.bodySmall?.copyWith(
@@ -213,10 +232,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               ],
                             ),
                             Slider.adaptive(
-                              value: settings.fontSize,
-                              min: 18.0,
-                              max: 30.0,
-                              divisions: 4,
+                              value: settings.fontSize.clamp(14.0, 24.0),
+                              min: 14.0,
+                              max: 24.0,
+                              divisions: 5,
                               activeColor: context.colors.primary,
                               onChanged: (val) => ref
                                   .read(settingsProvider.notifier)
@@ -423,29 +442,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             backgroundColor: Colors.transparent,
                             isScrollControlled: true,
                             builder: (context) => const AppShareSheet(),
-                          );
-                        },
-                      ),
-                      SettingsTile(
-                        title: 'عن التطبيق',
-                        icon: Icons.info_rounded,
-                        iconColor: Colors.grey,
-                        onTap: () {
-                          showAboutDialog(
-                            context: context,
-                            applicationName: AppConstants.appName,
-                            applicationVersion: AppConstants.appVersion,
-                            applicationIcon: Image.asset(
-                              AppAssets.logo,
-                              width: 40.w,
-                              errorBuilder: (_, __, ___) =>
-                                  Icon(Icons.mosque, size: 30.sp),
-                            ),
-                            children: [
-                              Text(
-                                'تطبيق صدقة جارية يهدف لنشر الأذكار والأدعية الصحيحة.\nتم التطوير بواسطة: ${AppConstants.developerName}',
-                              ),
-                            ],
                           );
                         },
                       ),

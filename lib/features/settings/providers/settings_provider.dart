@@ -55,7 +55,7 @@ class SettingsState {
     required this.themeMode,
     this.notificationsEnabled = true,
     this.languageCode = 'ar',
-    this.fontSize = 18.0,
+    this.fontSize = 16.0,
     required this.homeSections,
     this.shareTemplate = ShareTemplate.classic,
   });
@@ -89,7 +89,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   SettingsNotifier()
       : super(SettingsState(
           themeMode: _getInitialTheme(),
-          fontSize: CacheHelper.getData(key: 'fontSize') ?? 18.0,
+          fontSize: CacheHelper.getData(key: 'fontSize') ?? 16.0,
           homeSections: _getInitialHomeSections(),
           notificationsEnabled: CacheHelper.getData(key: 'notificationsEnabled') ?? true,
           shareTemplate: _getInitialShareTemplate(),
