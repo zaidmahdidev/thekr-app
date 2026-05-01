@@ -142,9 +142,9 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.symmetric(horizontal: context.insets.md),
-                  itemCount: LiveStream.defaults.length,
+                  itemCount: LiveStream.all.length,
                   itemBuilder: (context, index) {
-                    final stream = LiveStream.defaults[index];
+                    final stream = LiveStream.all[index];
                     final isSelected = selectedStream.id == stream.id;
 
                     return _StreamCard(

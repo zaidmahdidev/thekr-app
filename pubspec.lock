@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "93.0.0"
+  _flutterfire_internals:
+    dependency: transitive
+    description:
+      name: _flutterfire_internals
+      sha256: bda3b7b55958bfd867addc40d067b4b11f7b8846d57671f5b5a6e7f9a56fe3ad
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.69"
   adhan:
     dependency: "direct main"
     description:
@@ -353,6 +361,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.1"
+  firebase_core:
+    dependency: "direct main"
+    description:
+      name: firebase_core
+      sha256: d5a94b884dcb1e6d3430298e94bfe002238094cdfd5e29202d536ee2120f9158
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.7.0"
+  firebase_core_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_core_platform_interface
+      sha256: "0ecda14c1bfc9ed8cac303dd0f8d04a320811b479362a9a4efb14fd331a473ce"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.3"
+  firebase_core_web:
+    dependency: transitive
+    description:
+      name: firebase_core_web
+      sha256: dc5096257cd67292d34d78ceeb90836f02a4be921b5f3934311a02bb2376118c
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.6.0"
+  firebase_remote_config:
+    dependency: "direct main"
+    description:
+      name: firebase_remote_config
+      sha256: "4d6a88587fc5d7f74f784614dc4f4f3a809a7e3fb3ea860039d07cde1e33fb86"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.4.0"
+  firebase_remote_config_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_remote_config_platform_interface
+      sha256: "1a83a256052dbb1ed7d50afa796a8528542e79619b5baecb9a02e226728088dd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.2"
+  firebase_remote_config_web:
+    dependency: transitive
+    description:
+      name: firebase_remote_config_web
+      sha256: fc2e7e41f536af73743105fccf0a5c71e635209d892e64e15fc8ba20756ad65f
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.10.6"
   fixnum:
     dependency: transitive
     description:
@@ -950,7 +1006,7 @@ packages:
     source: hosted
     version: "2.2.0"
   package_info_plus:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: package_info_plus
       sha256: "468c26b4254ab01979fa5e4a98cb343ea3631b9acee6f21028997419a80e1a20"

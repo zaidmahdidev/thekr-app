@@ -38,8 +38,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.2.3
-  # get: ^4.6.6
-  # fluttertoast: ^9.0.0
+  firebase_core: ^4.7.0
+  firebase_remote_config: ^6.4.0
+  package_info_plus: ^9.0.1
   readmore: ^3.0.0
   hexcolor: ^3.0.1
   flutter_staggered_animations: ^1.1.1
@@ -51,7 +52,6 @@ dependencies:
   flutter_launcher_icons: ^0.14.2
   rename: ^3.0.2
   share_plus: ^10.1.2
-  package_info_plus: ^10.1.0
   in_app_review: ^2.0.9
   flutter_local_notifications: ^19.5.0
   timezone: 0.10.1
