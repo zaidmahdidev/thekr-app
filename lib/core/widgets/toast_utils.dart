@@ -47,13 +47,13 @@ void showToast({
     SnackBar(
       content: Row(
         children: [
-          Icon(icon, size: 22.w),
+          Icon(icon, size: 22.w, color: Colors.white),
           SizedBox(width: context.insets.sm),
           Expanded(
             child: Text(
               text,
               style: context.textStyles.bodyMedium?.copyWith(
-                color: textColor ?? context.colors.textPrimary,
+                color: Colors.white,
               ),
             ),
           ),

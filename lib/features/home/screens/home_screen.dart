@@ -199,7 +199,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       _lastPressedAt = now;
       showToast(
         text: 'اضغط مرة أخرى للخروج',
-        backgroundColor: context.colors.primary,
       );
     } else {
       SystemNavigator.pop();

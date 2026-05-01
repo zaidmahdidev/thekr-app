@@ -39,7 +39,6 @@ class _CustomAzkarWidgetState extends ConsumerState<CustomAzkarWidget> {
                   Clipboard.setData(ClipboardData(text: widget.details));
                   showToast(
                     text: 'تم النسخ',
-                    backgroundColor: context.colors.background,
                   );
                 },
                 borderRadius: BorderRadius.circular(20),

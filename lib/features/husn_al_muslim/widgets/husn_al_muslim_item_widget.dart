@@ -85,7 +85,6 @@ class _HusnAlMuslimItemWidgetState extends ConsumerState<HusnAlMuslimItemWidget>
                   Clipboard.setData(ClipboardData(text: widget.text));
                   showToast(
                     text: 'تم النسخ',
-                    backgroundColor: context.colors.background,
                   );
                 },
                 borderRadius: BorderRadius.circular(20),

@@ -21,7 +21,7 @@ class ProphetDetailsScreen extends ConsumerWidget {
 
   void _copyToClipboard(BuildContext context, String text, String message) {
     Clipboard.setData(ClipboardData(text: text));
-    showToast(text: message,backgroundColor: context.colors.background);
+    showToast(text: message);
   }
 
   @override
@@ -100,10 +100,12 @@ class ProphetDetailsScreen extends ConsumerWidget {
                   const ProphetSectionHeader(title: 'الدروس والعبَر'),
                   Column(
                     children: prophet.lessons
-                        .map((lesson) => ProphetLessonItem(
-                              lesson: lesson,
-                              fontSize: fontSize - 2,
-                            ))
+                        .map(
+                          (lesson) => ProphetLessonItem(
+                            lesson: lesson,
+                            fontSize: fontSize - 2,
+                          ),
+                        )
                         .toList(),
                   ),
                 ],

@@ -85,7 +85,7 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
       }
     } catch (e) {
       notifier.setCapturing(false);
-      if (mounted) showToast(text: 'حدث خطأ أثناء المشاركة');
+      if (mounted) showToast(text: 'حدث خطأ أثناء المشاركة',state: ToastStates.ERROR);
     }
   }
 
@@ -182,7 +182,8 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
 
       await Share.shareXFiles([XFile(imagePath.path)]);
     } catch (e) {
-      if (mounted) showToast(text: 'حدث خطأ أثناء إنشاء الصورة');
+      if (mounted)
+        showToast(text: 'حدث خطأ أثناء إنشاء الصورة', state: ToastStates.ERROR);
     }
   }
 
