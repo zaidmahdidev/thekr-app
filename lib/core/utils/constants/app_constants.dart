@@ -1,6 +1,18 @@
+import 'package:package_info_plus/package_info_plus.dart';
+
 class AppConstants {
   static const String appName = 'ذكر';
-  static const String appVersion = '1.1.0';
+  static String appVersion = '1.2.0';
+
+  // Initialize app constants (to be called in main)
+  static Future<void> init() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      appVersion = packageInfo.version;
+    } catch (e) {
+      // Keep default if it fails
+    }
+  }
 
   // Package Name (تأكد من مطابقتها لما هو موجود في الـ AndroidManifest)
   static const String packageName = 'com.zaid.thekr_app';

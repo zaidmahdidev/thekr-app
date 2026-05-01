@@ -9,12 +9,15 @@ import 'package:thekr_app/core/services/notification_service.dart';
 import 'package:thekr_app/my_app.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'package:thekr_app/core/utils/constants/app_constants.dart';
+
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AppConstants.init();
   await initializeDateFormatting('ar', null);
 
   await CacheHelper.init();

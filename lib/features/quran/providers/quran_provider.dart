@@ -2,26 +2,30 @@ import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
 
+enum QuranTheme { light, dark, sepia, green, blueGrey }
+
 class QuranState {
   final int currentPage;
   final bool isCapturing;
-  final bool isDarkMode;
+  final QuranTheme readingTheme;
 
   QuranState({
     required this.currentPage,
     this.isCapturing = false,
-    this.isDarkMode = false,
+    this.readingTheme = QuranTheme.light,
   });
+
+  bool get isDarkMode => readingTheme == QuranTheme.dark || readingTheme == QuranTheme.blueGrey;
 
   QuranState copyWith({
     int? currentPage,
     bool? isCapturing,
-    bool? isDarkMode,
+    QuranTheme? readingTheme,
   }) {
     return QuranState(
       currentPage: currentPage ?? this.currentPage,
       isCapturing: isCapturing ?? this.isCapturing,
-      isDarkMode: isDarkMode ?? this.isDarkMode,
+      readingTheme: readingTheme ?? this.readingTheme,
     );
   }
 }
@@ -30,22 +34,30 @@ class QuranNotifier extends StateNotifier<QuranState> {
   QuranNotifier(int initialPage)
       : super(QuranState(
           currentPage: initialPage,
-          isDarkMode: CacheHelper.getData(key: 'isDarkMode') ??
-              PlatformDispatcher.instance.platformBrightness == Brightness.dark,
+          readingTheme: _getInitialTheme(),
         ));
 
   static const _lastPageKey = 'pageNumber';
-  static const _isDarkKey = 'isDarkMode';
+  static const _themeKey = 'quranReadingTheme';
+
+  static QuranTheme _getInitialTheme() {
+    final themeIndex = CacheHelper.getData(key: _themeKey);
+    if (themeIndex != null && themeIndex < QuranTheme.values.length) {
+      return QuranTheme.values[themeIndex];
+    }
+    return PlatformDispatcher.instance.platformBrightness == Brightness.dark
+        ? QuranTheme.dark
+        : QuranTheme.light;
+  }
 
   Future<void> updatePage(int page) async {
     state = state.copyWith(currentPage: page);
     await _persistPage(page);
   }
 
-  void toggleDarkMode() {
-    final newValue = !state.isDarkMode;
-    state = state.copyWith(isDarkMode: newValue);
-    CacheHelper.saveData(key: _isDarkKey, value: newValue);
+  void setTheme(QuranTheme theme) {
+    state = state.copyWith(readingTheme: theme);
+    CacheHelper.saveData(key: _themeKey, value: theme.index);
   }
 
   void setCapturing(bool capturing) {

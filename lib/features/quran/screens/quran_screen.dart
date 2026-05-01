@@ -15,6 +15,8 @@ import 'dart:io';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:thekr_app/core/widgets/share_options_sheet.dart';
+import 'package:thekr_app/features/quran/widgets/ayah_share_template.dart';
+import 'package:thekr_app/features/quran/widgets/quran_theme_bar.dart';
 import '../providers/quran_provider.dart';
 
 @RoutePage()
@@ -32,6 +34,7 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
   final ScreenshotController _ayahScreenshotController = ScreenshotController();
   bool _isInitialized = false;
   late int _lastPage;
+  bool _showThemes = false;
 
   @override
   void initState() {
@@ -85,7 +88,8 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
       }
     } catch (e) {
       notifier.setCapturing(false);
-      if (mounted) showToast(text: 'حدث خطأ أثناء المشاركة',state: ToastStates.ERROR);
+      if (mounted)
+        showToast(text: 'حدث خطأ أثناء المشاركة', state: ToastStates.ERROR);
     }
   }
 
@@ -208,43 +212,69 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Only watch isDarkMode and isCapturing to avoid rebuilds on page change
-    final isDarkMode = ref.watch(
-      quranProvider(widget.currentPage).select((s) => s.isDarkMode),
-    );
-    final isCapturing = ref.watch(
-      quranProvider(widget.currentPage).select((s) => s.isCapturing),
-    );
+    final quranState = ref.watch(quranProvider(widget.currentPage));
+    final readingTheme = quranState.readingTheme;
+    final isDarkMode = quranState.isDarkMode;
+    final isCapturing = quranState.isCapturing;
 
-    return Screenshot(
-      controller: _screenshotController,
-      child: QuranLibraryScreen(
-        parentContext: context,
-        isDark: isDarkMode,
-        showAyahBookmarkedIcon: true,
-        useDefaultAppBar: !isCapturing,
-        appLanguageCode: 'ar',
-        isShowTabBar: !isCapturing,
-        enableWordSelection: true,
-        isShowAudioSlider: !isCapturing,
-        topBarStyle:
-            QuranTopBarStyle.defaults(
+    Color backgroundColor;
+    Color textColor;
+    Color ayahIconColor;
+
+    switch (readingTheme) {
+      case QuranTheme.light:
+        backgroundColor = const Color(0xFFFFFDF5);
+        textColor = Colors.black87;
+        ayahIconColor = context.colors.primary;
+        break;
+      case QuranTheme.dark:
+        backgroundColor = const Color(0xFF1F2125);
+        textColor = Colors.white.withValues(alpha: 0.9);
+        ayahIconColor = Colors.white;
+        break;
+      case QuranTheme.sepia:
+        backgroundColor = const Color(0xFFF4ECD8);
+        textColor = const Color(0xFF5B4636);
+        ayahIconColor = const Color(0xFF8D6E63);
+        break;
+      case QuranTheme.green:
+        backgroundColor = const Color(0xFFE8F5E9);
+        textColor = const Color(0xFF1B5E20);
+        ayahIconColor = const Color(0xFF2E7D32);
+        break;
+      case QuranTheme.blueGrey:
+        backgroundColor = const Color(0xFF343A41);
+        textColor = const Color(0xFFECEFF1);
+        ayahIconColor = const Color(0xFFB0BEC5);
+        break;
+    }
+
+    return Stack(
+      children: [
+        Screenshot(
+          controller: _screenshotController,
+          child: QuranLibraryScreen(
+            parentContext: context,
+            isDark: isDarkMode,
+            showAyahBookmarkedIcon: true,
+            useDefaultAppBar: !isCapturing,
+            appLanguageCode: 'ar',
+            isShowTabBar: !isCapturing,
+            enableWordSelection: true,
+            isShowAudioSlider: !isCapturing,
+            topBarStyle: QuranTopBarStyle.defaults(
               isDark: isDarkMode,
               context: context,
             ).copyWith(
               backgroundColor: context.colors.surface,
               customTopBarWidgets: [
                 IconButton(
-                  onPressed: () => ref
-                      .read(quranProvider(widget.currentPage).notifier)
-                      .toggleDarkMode(),
+                  onPressed: () => setState(() => _showThemes = !_showThemes),
                   icon: Icon(
-                    isDarkMode
-                        ? Icons.light_mode_rounded
-                        : Icons.dark_mode_rounded,
-                    color: context.colors.primary,
+                    Icons.palette_rounded,
+                    color: _showThemes ? context.colors.secondary : context.colors.primary,
                   ),
-                  tooltip: 'تبديل مظهر المصحف',
+                  tooltip: 'تغيير نمط القراءة',
                 ),
                 IconButton(
                   onPressed: _shareCurrentPage,
@@ -256,29 +286,23 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
                 ),
               ],
             ),
-        onPageChanged: (page) {
-          int realPage = page + 1;
-          _lastPage = realPage;
-          if (_isInitialized) {
-            ref
-                .read(quranProvider(widget.currentPage).notifier)
-                .updatePage(realPage);
-          }
-        },
-        backgroundColor: isDarkMode
-            ? const Color(0xFF121212)
-            : const Color(0xFFFFFDF5),
-        textColor: isDarkMode
-            ? Colors.white.withValues(alpha: 0.9)
-            : Colors.black87,
-        ayahIconColor: isDarkMode ? Colors.white : context.colors.primary,
-        ayahSelectedBackgroundColor: context.colors.primary.withValues(
-          alpha: 0.15,
-        ),
-        appIconPathForPlayAudioInBackground: AppAssets.logo,
-
-        ayahMenuStyle:
-            AyahMenuStyle.defaults(
+            onPageChanged: (page) {
+              int realPage = page + 1;
+              _lastPage = realPage;
+              if (_isInitialized) {
+                ref
+                    .read(quranProvider(widget.currentPage).notifier)
+                    .updatePage(realPage);
+              }
+            },
+            backgroundColor: backgroundColor,
+            textColor: textColor,
+            ayahIconColor: ayahIconColor,
+            ayahSelectedBackgroundColor: context.colors.primary.withValues(
+              alpha: 0.15,
+            ),
+            appIconPathForPlayAudioInBackground: AppAssets.logo,
+            ayahMenuStyle: AyahMenuStyle.defaults(
               isDark: isDarkMode,
               context: context,
             ).copyWith(
@@ -290,140 +314,14 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
                 ),
               ],
             ),
-      ),
-    );
-  }
-}
-
-class AyahShareTemplate extends StatelessWidget {
-  final AyahModel ayah;
-  final String surahName;
-  final bool isDark;
-  final Color primaryColor;
-  final Color textColor;
-  final String displayText;
-  final String fontFamily;
-  final bool isCustomFont;
-
-  const AyahShareTemplate({
-    super.key,
-    required this.ayah,
-    required this.surahName,
-    required this.isDark,
-    required this.primaryColor,
-    required this.textColor,
-    required this.displayText,
-    required this.fontFamily,
-    required this.isCustomFont,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final bgColor = isDark ? const Color(0xFF1A1A1A) : const Color(0xFFFFFDF5);
-
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Material(
-        color: Colors.transparent,
-        child: Container(
-          width: 450,
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Surah Name Banner
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  SvgPicture.asset(
-                    AssetsPath.assets.surahSvgBanner,
-                    width: 320,
-                    colorFilter: ColorFilter.mode(
-                      primaryColor,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 0),
-                    child: Text(
-                      'surah${ayah.surahNumber.toString().padLeft(3, '0')}surah-icon',
-                      style: TextStyle(
-                        fontFamily: 'surah-name-v4',
-                        package: 'quran_library',
-                        fontSize: 32,
-                        color: textColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 15),
-              Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: displayText,
-                      style: TextStyle(
-                        fontFamily: fontFamily,
-                        package: isCustomFont ? null : 'quran_library',
-                        fontSize: 24,
-                        height: 2.0,
-                        color: textColor,
-                      ),
-                    ),
-                    TextSpan(
-                      text:
-                          ' \u202F${_toArabicDigits(ayah.ayahNumber)}\u202F\u202F',
-                      style: TextStyle(
-                        fontFamily: 'ayahNumber',
-                        package: 'quran_library',
-                        fontSize: 28,
-                        height: 1.5,
-                        color: primaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-                textAlign: TextAlign.center,
-                textDirection: TextDirection.rtl,
-              ),
-              const SizedBox(height: 15),
-              // Footer (App Info)
-              Image.asset(AppAssets.logo, width: 35, height: 35),
-              Text(
-                'بواسطة تطبيق ${AppConstants.appName}',
-                style: TextStyle(
-                  color: textColor.withValues(alpha: 0.6),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ],
           ),
         ),
-      ),
+        if (_showThemes && !isCapturing)
+          QuranThemeBar(
+            currentPage: widget.currentPage,
+            onThemeSelected: () => setState(() => _showThemes = false),
+          ),
+      ],
     );
-  }
-
-  String _toArabicDigits(int number) {
-    final english = number.toString();
-    final Map<String, String> arabic = {
-      '0': '٠',
-      '1': '١',
-      '2': '٢',
-      '3': '٣',
-      '4': '٤',
-      '5': '٥',
-      '6': '٦',
-      '7': '٧',
-      '8': '٨',
-      '9': '٩',
-    };
-    return english.split('').map((char) => arabic[char] ?? char).join();
   }
 }
