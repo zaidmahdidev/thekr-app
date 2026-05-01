@@ -79,15 +79,9 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
 
       if (uint8list != null) {
         final directory = await getTemporaryDirectory();
-        final imagePath = File(
-          '${directory.path}/quran_page_$_lastPage.png',
-        );
+        final imagePath = File('${directory.path}/quran_page_$_lastPage.png');
         await imagePath.writeAsBytes(uint8list);
-        await Share.shareXFiles(
-          [XFile(imagePath.path)],
-          text:
-              'من تطبيق ${AppConstants.appName}\n${AppConstants.playStoreUrl}',
-        );
+        await Share.shareXFiles([XFile(imagePath.path)]);
       }
     } catch (e) {
       notifier.setCapturing(false);

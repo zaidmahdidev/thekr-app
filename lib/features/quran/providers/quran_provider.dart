@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
 
@@ -26,10 +27,12 @@ class QuranState {
 }
 
 class QuranNotifier extends StateNotifier<QuranState> {
-  QuranNotifier(int initialPage) : super(QuranState(
-    currentPage: initialPage,
-    isDarkMode: CacheHelper.getData(key: 'quran_is_dark') ?? false,
-  ));
+  QuranNotifier(int initialPage)
+      : super(QuranState(
+          currentPage: initialPage,
+          isDarkMode: CacheHelper.getData(key: 'isDarkMode') ??
+              PlatformDispatcher.instance.platformBrightness == Brightness.dark,
+        ));
 
   static const _lastPageKey = 'pageNumber';
   static const _isDarkKey = 'isDarkMode';
