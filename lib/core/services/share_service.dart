@@ -211,7 +211,7 @@ class ShareService {
 
             child: Column(
               children: [
-                Image.asset(AppAssets.logo, width: 30.w, height: 30.w),
+                Image.asset(AppAssets.logo, width: 35.w, height: 35.w),
                 Text(
                   'بواسطة تطبيق ' + AppConstants.appName,
                   style: TextStyle(

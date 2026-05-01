@@ -74,7 +74,7 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
     try {
       notifier.setCapturing(true);
       await Future.delayed(const Duration(milliseconds: 150));
-      final uint8list = await _screenshotController.capture(pixelRatio: 2.0);
+      final uint8list = await _screenshotController.capture(pixelRatio: 3.0);
       notifier.setCapturing(false);
 
       if (uint8list != null) {
@@ -170,6 +170,7 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
           isCustomFont: isCustomFont,
         ),
         targetSize: Size(450, calculatedHeight),
+        pixelRatio: 3.0,
         delay: const Duration(milliseconds: 500),
       );
 
@@ -392,7 +393,6 @@ class AyahShareTemplate extends StatelessWidget {
               const SizedBox(height: 15),
               // Footer (App Info)
               Image.asset(AppAssets.logo, width: 35, height: 35),
-              const SizedBox(height: 4),
               Text(
                 'بواسطة تطبيق ${AppConstants.appName}',
                 style: TextStyle(
