@@ -186,9 +186,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                 SizedBox(width: 12.w),
                                 Text(
                                   'ألوان التطبيق (الثيمات)',
-                                  style: context.textStyles.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: context.textStyles.bodyMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
@@ -369,103 +368,82 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               ),
                             ),
                             SizedBox(height: context.insets.md),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: ShareTemplate.values.map((template) {
-                                final isSelected =
-                                    settings.shareTemplate == template;
-                                return Expanded(
-                                  child: GestureDetector(
+                            SizedBox(
+                              height: 120.h,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                physics: const BouncingScrollPhysics(),
+                                children: ShareTemplate.values.map((template) {
+                                  final isSelected =
+                                      settings.shareTemplate == template;
+                                  return GestureDetector(
                                     onTap: () => ref
                                         .read(settingsProvider.notifier)
                                         .updateShareTemplate(template),
-                                    child: Container(
-                                      margin: EdgeInsets.symmetric(
-                                        horizontal: 4.w,
+                                    child: AnimatedContainer(
+                                      duration: const Duration(
+                                        milliseconds: 250,
                                       ),
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 12.h,
+                                      margin: EdgeInsets.only(
+                                        left: 12.w,
+                                        bottom: 8.h,
+                                        top: 4.h,
                                       ),
+                                      // width: 200.w,
                                       decoration: BoxDecoration(
-                                        color: isSelected
-                                            ? context.colors.primary.withValues(
-                                                alpha: 0.1,
-                                              )
-                                            : context.colors.surface,
                                         borderRadius: BorderRadius.circular(
-                                          context.corners.md,
+                                          24.r,
                                         ),
                                         border: Border.all(
                                           color: isSelected
                                               ? context.colors.primary
                                               : context.colors.primary
                                                     .withValues(alpha: 0.1),
-                                          width: isSelected ? 2 : 1,
+                                          width: isSelected ? 3 : 1,
                                         ),
                                       ),
-                                      child: Column(
+                                      child: Stack(
                                         children: [
-                                          Icon(
-                                            template == ShareTemplate.classic
-                                                ? Icons.auto_awesome_rounded
-                                                : template ==
-                                                      ShareTemplate.luxury
-                                                ? Icons
-                                                      .workspace_premium_rounded
-                                                : Icons.waves_rounded,
-                                            color: isSelected
-                                                ? context.colors.primary
-                                                : context.colors.textSecondary,
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              20.r,
+                                            ),
+                                            child: FittedBox(
+                                              fit: BoxFit.cover,
+                                              child: ShareService.buildShareCard(
+                                                context,
+                                                template,
+                                                '﴿فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ﴾',
+                                                null,
+                                              ),
+                                            ),
                                           ),
-                                          SizedBox(height: 8.h),
-                                          Text(
-                                            template.title.split(' ')[0],
-                                            style: context.textStyles.bodySmall
-                                                ?.copyWith(
-                                                  fontWeight: isSelected
-                                                      ? FontWeight.bold
-                                                      : FontWeight.normal,
-                                                  color: isSelected
-                                                      ? context.colors.primary
-                                                      : context
-                                                            .colors
-                                                            .textPrimary,
+                                          if (isSelected)
+                                            Positioned(
+                                              top: 8,
+                                              right: 8,
+                                              child: Container(
+                                                padding: EdgeInsets.all(4.w),
+                                                decoration: BoxDecoration(
+                                                  color: context.colors.primary,
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: Colors.white,
+                                                    width: 1.5,
+                                                  ),
                                                 ),
-                                          ),
+                                                child: const Icon(
+                                                  Icons.check,
+                                                  color: Colors.white,
+                                                  size: 14,
+                                                ),
+                                              ),
+                                            ),
                                         ],
                                       ),
                                     ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                            SizedBox(height: context.insets.lg),
-                            // Live Preview Card
-                            Center(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    'معاينة بطاقة المشاركة',
-                                    style: context.textStyles.bodySmall
-                                        ?.copyWith(
-                                          color: context.colors.textSecondary,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                  ),
-                                  SizedBox(height: context.insets.sm),
-                                  SizedBox(
-                                    width: 0.6.sw,
-                                    child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: ShareService.buildShareCard(
-                                        context,
-                                        settings.shareTemplate,
-                                        '﴿فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ﴾',
-                                        null,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                  );
+                                }).toList(),
                               ),
                             ),
                           ],
