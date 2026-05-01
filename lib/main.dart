@@ -32,7 +32,7 @@ void main() async {
   runApp(
     ProviderScope(
       child: DevicePreview(
-        enabled: kReleaseMode,
+        enabled: !kReleaseMode,
         builder: (context) => const MyApp(),
       ),
     ),

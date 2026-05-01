@@ -32,11 +32,11 @@ class QuranNotifier extends StateNotifier<QuranState> {
   ));
 
   static const _lastPageKey = 'pageNumber';
-  static const _isDarkKey = 'quran_is_dark';
+  static const _isDarkKey = 'isDarkMode';
 
-  void updatePage(int page) {
+  Future<void> updatePage(int page) async {
     state = state.copyWith(currentPage: page);
-    _persistPage(page);
+    await _persistPage(page);
   }
 
   void toggleDarkMode() {
@@ -49,12 +49,12 @@ class QuranNotifier extends StateNotifier<QuranState> {
     state = state.copyWith(isCapturing: capturing);
   }
 
-  void _persistPage(int page) {
-    CacheHelper.saveData(key: _lastPageKey, value: page);
+  Future<void> _persistPage(int page) async {
+    await CacheHelper.saveData(key: _lastPageKey, value: page);
   }
 
-  void saveCurrentProgress() {
-    _persistPage(state.currentPage);
+  Future<void> saveCurrentProgress() async {
+    await _persistPage(state.currentPage);
   }
 }
 

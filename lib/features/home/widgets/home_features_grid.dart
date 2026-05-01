@@ -28,9 +28,10 @@ class HomeFeaturesGrid extends StatelessWidget {
             title: "القرآن الكريم",
             icon: Icons.menu_book_rounded,
             color: const Color(0xff27ae60),
-            route: QuranRoute(
-              currentPage: CacheHelper.getData(key: 'pageNumber') ?? 1,
-            ),
+            onTap: () {
+              final lastPage = CacheHelper.getData(key: 'pageNumber') ?? 1;
+              context.router.push(QuranRoute(currentPage: lastPage));
+            },
           ),
           _FeatureItem(
             title: "الأذكار",
@@ -103,12 +104,14 @@ class _FeatureItem extends StatelessWidget {
   final IconData icon;
   final Color color;
   final PageRouteInfo? route;
+  final VoidCallback? onTap;
 
   const _FeatureItem({
     required this.title,
     required this.icon,
     required this.color,
     this.route,
+    this.onTap,
   });
 
   @override
@@ -117,9 +120,15 @@ class _FeatureItem extends StatelessWidget {
       title: title,
       icon: icon,
       color: color,
-      onTap: () => route != null
-          ? context.router.push(route!)
-          : showToast(text: 'قريباً إن شاء الله'),
+      onTap: () {
+        if (onTap != null) {
+          onTap!();
+        } else if (route != null) {
+          context.router.push(route!);
+        } else {
+          showToast(text: 'قريباً إن شاء الله');
+        }
+      },
     );
   }
 }

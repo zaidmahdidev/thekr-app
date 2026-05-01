@@ -8,6 +8,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/services/cache_helper.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'dart:io';
@@ -29,18 +30,24 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
     with WidgetsBindingObserver {
   final ScreenshotController _screenshotController = ScreenshotController();
   final ScreenshotController _ayahScreenshotController = ScreenshotController();
+  bool _isInitialized = false;
+  late int _lastPage;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _lastPage = widget.currentPage;
 
-    // Set orientations for Quran reading experience
     _setFullOrientations();
 
-    // Jump to the saved page after initialization
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      QuranLibrary().jumpToPage(widget.currentPage);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (mounted) {
+        QuranLibrary().jumpToPage(_lastPage);
+        setState(() {
+          _isInitialized = true;
+        });
+      }
     });
   }
 
@@ -73,7 +80,7 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
       if (uint8list != null) {
         final directory = await getTemporaryDirectory();
         final imagePath = File(
-          '${directory.path}/quran_page_${state.currentPage}.png',
+          '${directory.path}/quran_page_$_lastPage.png',
         );
         await imagePath.writeAsBytes(uint8list);
         await Share.shareXFiles(
@@ -188,23 +195,30 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
   void dispose() {
     _resetOrientations();
     WidgetsBinding.instance.removeObserver(this);
-    ref.read(quranProvider(widget.currentPage).notifier).saveCurrentProgress();
+    // Direct save to cache on dispose (consistent with old version)
+    CacheHelper.saveData(key: 'pageNumber', value: _lastPage);
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      ref
-          .read(quranProvider(widget.currentPage).notifier)
-          .saveCurrentProgress();
+    if ((state == AppLifecycleState.paused ||
+            state == AppLifecycleState.inactive) &&
+        mounted) {
+      // Save directly to cache when app is backgrounded
+      CacheHelper.saveData(key: 'pageNumber', value: _lastPage);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final quranState = ref.watch(quranProvider(widget.currentPage));
-    final isDarkMode = quranState.isDarkMode;
+    // Only watch isDarkMode and isCapturing to avoid rebuilds on page change
+    final isDarkMode = ref.watch(
+      quranProvider(widget.currentPage).select((s) => s.isDarkMode),
+    );
+    final isCapturing = ref.watch(
+      quranProvider(widget.currentPage).select((s) => s.isCapturing),
+    );
 
     return Screenshot(
       controller: _screenshotController,
@@ -212,11 +226,11 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
         parentContext: context,
         isDark: isDarkMode,
         showAyahBookmarkedIcon: true,
-        useDefaultAppBar: !quranState.isCapturing,
+        useDefaultAppBar: !isCapturing,
         appLanguageCode: 'ar',
-        isShowTabBar: !quranState.isCapturing,
+        isShowTabBar: !isCapturing,
         enableWordSelection: true,
-        isShowAudioSlider: !quranState.isCapturing,
+        isShowAudioSlider: !isCapturing,
         topBarStyle:
             QuranTopBarStyle.defaults(
               isDark: isDarkMode,
@@ -246,16 +260,22 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
                 ),
               ],
             ),
-        onPageChanged: (page) => ref
-            .read(quranProvider(widget.currentPage).notifier)
-            .updatePage(page + 1),
+        onPageChanged: (page) {
+          int realPage = page + 1;
+          _lastPage = realPage;
+          if (_isInitialized) {
+            ref
+                .read(quranProvider(widget.currentPage).notifier)
+                .updatePage(realPage);
+          }
+        },
         backgroundColor: isDarkMode
             ? const Color(0xFF121212)
             : const Color(0xFFFFFDF5),
         textColor: isDarkMode
             ? Colors.white.withValues(alpha: 0.9)
             : Colors.black87,
-        ayahIconColor: context.colors.primary,
+        ayahIconColor: isDarkMode ? Colors.white : context.colors.primary,
         ayahSelectedBackgroundColor: context.colors.primary.withValues(
           alpha: 0.15,
         ),
