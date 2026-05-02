@@ -170,7 +170,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               ),
                         ),
                       ),
-                      const Divider(height: 1, indent: 20, endIndent: 20),
                       Padding(
                         padding: EdgeInsets.all(context.insets.md),
                         child: Column(
@@ -214,7 +213,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                     onTap: () => ref
                                         .read(settingsProvider.notifier)
                                         .updateAppTheme(theme),
-                                    child: Container(
+                                    child: AnimatedContainer(
+                                      duration: const Duration(milliseconds: 300),
                                       margin: EdgeInsets.symmetric(
                                         horizontal: 4.w,
                                       ),
@@ -240,9 +240,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                         ),
                                       ),
                                       child: Center(
-                                        child: Container(
-                                          width: 32.w,
-                                          height: 32.w,
+                                        child: AnimatedContainer(
+                                          duration: const Duration(milliseconds: 300),
+                                          width: isSelected ? 28.w : 32.w,
+                                          height: isSelected ? 28.w : 32.w,
                                           decoration: BoxDecoration(
                                             color: primaryColor,
                                             shape: BoxShape.circle,
@@ -262,13 +263,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                                   ]
                                                 : null,
                                           ),
-                                          child: isSelected
-                                              ? const Icon(
-                                                  Icons.check,
-                                                  color: Colors.white,
-                                                  size: 20,
-                                                )
-                                              : null,
+                                          child: AnimatedSwitcher(
+                                            duration: const Duration(milliseconds: 200),
+                                            child: isSelected
+                                                ? const Icon(
+                                                    Icons.check,
+                                                    key: ValueKey('check'),
+                                                    color: Colors.white,
+                                                    size: 18,
+                                                  )
+                                                : const SizedBox.shrink(),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -342,8 +347,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ],
                         ),
                       ),
-                      const Divider(height: 1, indent: 20, endIndent: 20),
-                      const Divider(height: 1, indent: 20, endIndent: 20),
                       SettingsTile(
                         title: 'ترتيب الشاشة الرئيسية',
                         subtitle: 'تحكم في مكان ظهور العناصر في الرئيسية',
@@ -353,12 +356,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                         iconColor: Colors.purple,
                       ),
-                      const Divider(height: 1, indent: 20, endIndent: 20),
-
-                      // Font Size Adjustment (Moved here)
                       SettingsTile(
                         title: 'بطاقة المشاركة',
-                        subtitle: 'تخصيص شكل ومحتوى بطاقة مشاركة الأذكار',
+                        subtitle: 'تخصيص شكل ومحتوى بطاقة المشاركة ',
                         icon: Icons.auto_awesome_outlined,
                         iconColor: Colors.orange,
                         onTap: () => context.pushRoute(const ShareAppRoute()),

@@ -143,7 +143,7 @@ class ShareAppScreen extends ConsumerWidget {
                 Container(
                   padding: EdgeInsets.all(context.insets.md),
                   decoration: BoxDecoration(
-                    color: context.colors.secondary.withValues(alpha: 0.05),
+                    color: context.colors.secondary.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(context.corners.md),
                     border: Border.all(
                       color: context.colors.secondary.withValues(alpha: 0.1),
