@@ -12,14 +12,6 @@ class AsmaAllahScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Standard Dart mapping to ensure reliability without external dependencies
-    final List<AsmaAllah> asmaAllahList = asmaAllah.entries
-        .toList()
-        .asMap()
-        .entries
-        .map((e) => AsmaAllah.fromMapEntry(e.value, e.key))
-        .toList();
-
     return AppScaffold(
       title: 'أسماء الله الحسنى',
       body: CustomScrollView(

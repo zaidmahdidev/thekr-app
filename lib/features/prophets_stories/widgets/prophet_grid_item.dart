@@ -33,87 +33,81 @@ class ProphetGridItem extends StatelessWidget {
           width: 1,
         ),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(context.corners.lg),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: InkWell(
-            onTap: () => context.pushRoute(ProphetDetailsRoute(prophet: prophet)),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: context.insets.sm,
-                vertical: context.insets.sm,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Icon Container with Glassy Gradient
-                  Container(
-                    width: 48.w,
-                    height: 48.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          context.colors.primary.withValues(alpha: 0.1),
-                          context.colors.primary.withValues(alpha: 0.05),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: context.colors.primary.withValues(alpha: 0.2),
-                        width: 1,
-                      ),
-                    ),
-                    child: Center(
-                      child: Hero(
-                        tag: 'prophet_emoji_${prophet.id}',
-                        child: Material(
-                          color: Colors.transparent,
-                          child: Text(
-                            prophet.emoji,
-                            style: TextStyle(
-                              fontSize: 32.sp,
-                            ),
-                          ),
+      child: InkWell(
+        onTap: () => context.pushRoute(ProphetDetailsRoute(prophet: prophet)),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: context.insets.sm,
+            vertical: context.insets.sm,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Icon Container with Glassy Gradient
+              Container(
+                width: 48.w,
+                height: 48.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      context.colors.primary.withValues(alpha: 0.1),
+                      context.colors.primary.withValues(alpha: 0.05),
+                    ],
+                  ),
+                  border: Border.all(
+                    color: context.colors.primary.withValues(alpha: 0.2),
+                    width: 1,
+                  ),
+                ),
+                child: Center(
+                  child: Hero(
+                    tag: 'prophet_emoji_${prophet.id}',
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Text(
+                        prophet.emoji,
+                        style: TextStyle(
+                          fontSize: 32.sp,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(height: context.insets.sm),
-                    Hero(
-                      tag: 'prophet_name_${prophet.id}',
-                      child: Material(
-                        color: Colors.transparent,
-                        child: Text(
-                          prophet.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: context.textStyles.titleLarge?.copyWith(
-                            color: context.colors.textPrimary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 11.sp,
-                          ),
-                        ),
-                      ),
-                    ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    prophet.title,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
+                ),
+              ),
+              SizedBox(height: context.insets.sm),
+              Hero(
+                tag: 'prophet_name_${prophet.id}',
+                child: Material(
+                  color: Colors.transparent,
+                  child: Text(
+                    prophet.name,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: context.textStyles.labelLarge?.copyWith(
-                      color: context.colors.textSecondary,
-                      fontSize: 8.sp,
-                      height: 1.2,
+                    textAlign: TextAlign.center,
+                    style: context.textStyles.titleLarge?.copyWith(
+                      color: context.colors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 11.sp,
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+              SizedBox(height: 2.h),
+              Text(
+                prophet.title,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: context.textStyles.labelLarge?.copyWith(
+                  color: context.colors.textSecondary,
+                  fontSize: 8.sp,
+                  height: 1.2,
+                ),
+              ),
+            ],
           ),
         ),
       ),
