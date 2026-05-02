@@ -1,3 +1,5 @@
+import 'package:thekr_app/core/services/remote_config_service.dart';
+
 class LiveStream {
   final String id;
   final String title;
@@ -13,19 +15,19 @@ class LiveStream {
     this.thumbnailUrl,
   });
 
-  static const List<LiveStream> defaults = [
-    LiveStream(
-      id: 'makkah',
-      title: 'بث مكة المكرمة - قرآن كريم',
-      youtubeId: 'fZvuHkHYaXk', // Stable live stream for Makkah
-      description: 'بث مباشر من المسجد الحرام بمكة المكرمة',
-    ),
-    LiveStream(
-      id: 'madinah',
-      title: 'بث المدينة المنورة - السنة النبوية',
-      youtubeId: 'vGGu3ZgGWXY', // Current stable Live ID
-      description:
-          'بث مباشر لقناة السنة النبوية من المسجد النبوي بالمدينة المنورة',
-    ),
-  ];
+  static List<LiveStream> get all => [
+        LiveStream(
+          id: 'madinah',
+          title: 'بث المدينة المنورة - السنة النبوية',
+          youtubeId: RemoteConfigService().madinahStreamId,
+          description:
+              'بث مباشر لقناة السنة النبوية من المسجد النبوي بالمدينة المنورة',
+        ),
+        LiveStream(
+          id: 'makkah',
+          title: 'بث مكة المكرمة - قرآن كريم',
+          youtubeId: RemoteConfigService().makkahStreamId,
+          description: 'بث مباشر من المسجد الحرام بمكة المكرمة',
+        ),
+      ];
 }

@@ -2,7 +2,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 
 class CrystalCounter extends StatelessWidget {
   final int count;
@@ -29,27 +28,19 @@ class CrystalCounter extends StatelessWidget {
             children: [
               FittedBox(
                 fit: BoxFit.scaleDown,
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  transitionBuilder: (child, animation) => FadeTransition(
-                    opacity: animation,
-                    child: ScaleTransition(scale: animation, child: child),
-                  ),
-                  child: Text(
-                    _formatNumber(count),
-                    key: ValueKey(count),
-                    style: AppTypography.h1.copyWith(
-                      fontSize: 54.sp,
-                      color: context.colors.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
+                child: Text(
+                  _formatNumber(count),
+                  style: context.textStyles.displayLarge?.copyWith(
+                    fontSize: 50.sp,
+                    color: context.colors.primary,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
               SizedBox(height: context.insets.sm),
               Text(
                 'تَسبيحَة',
-                style: AppTypography.label.copyWith(
+                style: context.textStyles.labelLarge?.copyWith(
                   color: context.colors.primary.withValues(alpha: 0.6),
                   fontWeight: FontWeight.w600,
                   letterSpacing: 2,

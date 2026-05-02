@@ -10,12 +10,14 @@ class AzkarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> categories = azkarList.keys.cast<String>().toList();
+
     return AppScaffold(
       title: 'أذكار المسلم',
       body: ListView.builder(
-        itemCount: azkarList.length,
+        itemCount: categories.length,
         itemBuilder: (context, index) {
-          String key = azkarList.keys.elementAt(index);
+          final String key = categories[index];
 
           return CustomCard(
             leading: '${index + 1}',

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:readmore/readmore.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
-class AzkarItemWidget extends StatefulWidget {
+class AzkarItemWidget extends ConsumerStatefulWidget {
   final String details;
   final String? bless;
   final int currentCount;
@@ -24,10 +25,10 @@ class AzkarItemWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<AzkarItemWidget> createState() => _AzkarItemWidgetState();
+  ConsumerState<AzkarItemWidget> createState() => _AzkarItemWidgetState();
 }
 
-class _AzkarItemWidgetState extends State<AzkarItemWidget>
+class _AzkarItemWidgetState extends ConsumerState<AzkarItemWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
@@ -67,6 +68,9 @@ class _AzkarItemWidgetState extends State<AzkarItemWidget>
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(settingsProvider);
+    final fontSize = settings.fontSize;
+    
     final progress =
         (widget.originalCount - widget.currentCount) / widget.originalCount;
 
@@ -84,8 +88,6 @@ class _AzkarItemWidgetState extends State<AzkarItemWidget>
                   Clipboard.setData(ClipboardData(text: widget.details));
                   showToast(
                     text: 'تم النسخ',
-                    textColor: context.colors.primary,
-                    backgroundColor: Colors.white,
                   );
                 },
                 borderRadius: BorderRadius.circular(20),
@@ -100,6 +102,7 @@ class _AzkarItemWidgetState extends State<AzkarItemWidget>
               InkWell(
                 onTap: () => ShareService.showShareSheet(
                   context,
+                  ref,
                   content: widget.details,
                   subtitle: widget.bless,
                 ),
@@ -124,9 +127,10 @@ class _AzkarItemWidgetState extends State<AzkarItemWidget>
           const SizedBox(height: 10),
           Text(
             widget.details,
-            style: AppTypography.bodyLarge.copyWith(
+            style: context.textStyles.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
               height: 1.8,
+              fontSize: fontSize,
             ),
             textAlign: TextAlign.center,
           ),
@@ -139,13 +143,17 @@ class _AzkarItemWidgetState extends State<AzkarItemWidget>
               trimMode: TrimMode.Line,
               trimCollapsedText: 'قراءة المزيد',
               trimExpandedText: ' قراءة اقل',
-              lessStyle: AppTypography.bodyMedium.copyWith(
+              lessStyle: context.textStyles.bodyMedium?.copyWith(
                 color: context.colors.secondary,
+                fontSize: fontSize * 0.8,
               ),
-              moreStyle: AppTypography.bodyMedium.copyWith(
+              moreStyle: context.textStyles.bodyMedium?.copyWith(
                 color: context.colors.secondary,
+                fontSize: fontSize * 0.8,
               ),
-              style: AppTypography.bodyMedium.copyWith(),
+              style: context.textStyles.bodyMedium?.copyWith(
+                fontSize: fontSize * 0.8,
+              ),
             ),
             const SizedBox(height: 15),
           ],
@@ -178,7 +186,7 @@ class _AzkarItemWidgetState extends State<AzkarItemWidget>
                           Text(
                             'تم بحمد الله',
                             key: const ValueKey('completed_text'),
-                            style: AppTypography.bodySmall.copyWith(
+                            style: context.textStyles.bodySmall?.copyWith(
                               color: Colors.green,
                               fontWeight: FontWeight.bold,
                             ),
@@ -203,7 +211,7 @@ class _AzkarItemWidgetState extends State<AzkarItemWidget>
                       child: Text(
                         'التكرار : ${widget.currentCount}',
                         key: ValueKey('count_${widget.currentCount}'),
-                        style: AppTypography.bodySmall.copyWith(
+                        style: context.textStyles.bodySmall?.copyWith(
                           color: context.colors.secondary,
                           fontWeight: FontWeight.bold,
                         ),

@@ -9,7 +9,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/extensions/size_extension.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/widgets/app_scaffold.dart';
 
 @RoutePage()
@@ -37,7 +36,7 @@ class _QiblahScreenState extends State<QiblahScreen> {
             return Center(
               child: Text(
                 "Error: ${snapshot.error.toString()}",
-                style: AppTypography.bodyMedium,
+                style: context.textStyles.bodyMedium,
               ),
             );
           }
@@ -47,7 +46,7 @@ class _QiblahScreenState extends State<QiblahScreen> {
             return Center(
               child: Text(
                 "Your device is not supported",
-                style: AppTypography.bodyMedium,
+                style: context.textStyles.bodyMedium,
               ),
             );
           }
@@ -75,7 +74,7 @@ class LocationErrorWidget extends StatelessWidget {
           const SizedBox(height: 32),
           Text(
             error!,
-            style: AppTypography.bodyMedium.copyWith(
+            style: context.textStyles.bodyMedium?.copyWith(
               color: context.colors.error,
               fontWeight: FontWeight.bold,
             ),
@@ -209,7 +208,7 @@ class QiblahCompassWidget extends StatelessWidget {
               bottom: 8,
               child: Text(
                 "${qiblahDirection.offset.toStringAsFixed(3)}°",
-                style: AppTypography.bodyMedium,
+                style: context.textStyles.bodyMedium,
               ),
             ),
           ],

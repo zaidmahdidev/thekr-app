@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:readmore/readmore.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
-class CustomAzkarWidget extends StatefulWidget {
+class CustomAzkarWidget extends ConsumerStatefulWidget {
   const CustomAzkarWidget({Key? key, required this.details, this.bless})
     : super(key: key);
 
@@ -16,12 +17,15 @@ class CustomAzkarWidget extends StatefulWidget {
   final String? bless;
 
   @override
-  State<CustomAzkarWidget> createState() => _CustomAzkarWidgetState();
+  ConsumerState<CustomAzkarWidget> createState() => _CustomAzkarWidgetState();
 }
 
-class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
+class _CustomAzkarWidgetState extends ConsumerState<CustomAzkarWidget> {
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(settingsProvider);
+    final fontSize = settings.fontSize;
+
     return MyCard(
       child: Column(
         children: [
@@ -35,8 +39,6 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
                   Clipboard.setData(ClipboardData(text: widget.details));
                   showToast(
                     text: 'تم النسخ',
-                    textColor: context.colors.primary,
-                    backgroundColor: Colors.white,
                   );
                 },
                 borderRadius: BorderRadius.circular(20),
@@ -51,6 +53,7 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
               InkWell(
                 onTap: () => ShareService.showShareSheet(
                   context,
+                  ref,
                   content: widget.details,
                   subtitle: widget.bless,
                 ),
@@ -67,9 +70,10 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
           ),
           Text(
             widget.details,
-            style: AppTypography.bodyLarge.copyWith(
+            style: context.textStyles.bodyLarge?.copyWith(
               height: 1.8,
               fontWeight: FontWeight.bold,
+              fontSize: fontSize,
             ),
             textAlign: TextAlign.center,
           ),
@@ -82,13 +86,17 @@ class _CustomAzkarWidgetState extends State<CustomAzkarWidget> {
               trimMode: TrimMode.Line,
               trimCollapsedText: 'قراءة المزيد',
               trimExpandedText: ' قراءة اقل',
-              lessStyle: AppTypography.bodyMedium.copyWith(
+              lessStyle: context.textStyles.bodyMedium?.copyWith(
                 color: context.colors.secondary,
+                fontSize: fontSize * 0.8,
               ),
-              moreStyle: AppTypography.bodyMedium.copyWith(
+              moreStyle: context.textStyles.bodyMedium?.copyWith(
                 color: context.colors.secondary,
+                fontSize: fontSize * 0.8,
               ),
-              style: AppTypography.bodyMedium.copyWith(),
+              style: context.textStyles.bodyMedium?.copyWith(
+                fontSize: fontSize * 0.8,
+              ),
             ),
           ],
         ],

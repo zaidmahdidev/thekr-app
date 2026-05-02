@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readmore/readmore.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/features/azkar/widgets/azkar_item_widget.dart';
+import 'package:thekr_app/core/services/analytics_service.dart';
 
 @RoutePage()
 class AzkarListScreen extends StatefulWidget {
@@ -28,6 +28,7 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
   @override
   void initState() {
     super.initState();
+    AnalyticsService.logZekrSelected(widget.type, widget.type);
     azkarWithCounters = widget.azkarList.map((azkar) {
       final repeatStr = azkar['repeat'] ?? '1';
       final count = int.tryParse(repeatStr) ?? 1;
@@ -128,13 +129,13 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
                   const SizedBox(height: 16),
                   Text(
                     'تم إكمال جميع الأذكار',
-                    style: AppTypography.h2.copyWith(
+                    style: context.textStyles.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     'تقبل الله منك',
-                    style: AppTypography.bodyMedium.copyWith(
+                    style: context.textStyles.bodyMedium?.copyWith(
                       color: Colors.grey,
                     ),
                   ),

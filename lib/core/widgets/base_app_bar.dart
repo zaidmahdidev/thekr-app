@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -53,7 +52,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
                     (title != null
                         ? Text(
                             title!,
-                            style: AppTypography.h3.copyWith(
+                            style: context.textStyles.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: context.colors.textPrimary,
                               fontSize: 18.sp,

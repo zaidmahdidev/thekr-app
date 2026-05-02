@@ -6,20 +6,11 @@ class AppAssets {
 
   // Branding
   static const String logo = '$_imagesPath/thekr.png';
-  static const String quranLogo = '$_imagesPath/quran_logo.png';
+  // static const String quranLogo = '$_imagesPath/quran_logo.png';
   static const String hero = '$_imagesPath/hero.png';
   static const String bg = '$_imagesPath/bg.png';
+  static const String qrCode = '$_imagesPath/qrcode.png';
 
-  // Navigation / Main Features
-  static const String quran = '$_imagesPath/quran.png';
-  static const String azkar = '$_imagesPath/praying.png';
-  static const String husnAlMuslim = '$_imagesPath/husnalmoslem.png';
-  static const String hadith = '$_imagesPath/hadithNawawi.webp';
-  static const String asmaAllah = '$_imagesPath/AllahNames.png';
-  static const String qiblah = '$_imagesPath/keblah.png';
-  static const String stories = '$_imagesPath/stories.png';
-  static const String misbaha = '$_imagesPath/misbaha.png';
-  static const String live = '$_imagesPath/live.png';
 
   // UI Elements
   static const String around = '$_imagesPath/around.png';

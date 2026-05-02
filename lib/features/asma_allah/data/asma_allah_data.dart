@@ -190,3 +190,10 @@ final Map<String, dynamic> asmaAllah = {
   'الصبور':
       'الحليم الذي لا يعاجل العصاة بالنقمة، بل يعفوا ويؤخر، ولا يسرع بالفعل قبل أوانه.',
 };
+
+final List<AsmaAllah> asmaAllahList = asmaAllah.entries
+    .toList()
+    .asMap()
+    .entries
+    .map((e) => AsmaAllah.fromMapEntry(e.value, e.key))
+    .toList();

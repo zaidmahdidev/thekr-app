@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/utils/constants/app_assets.dart';
-import 'package:thekr_app/features/home/widgets/modern_feature_card.dart';
+import 'package:thekr_app/features/home/widgets/feature_card.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
 import 'package:thekr_app/core/router/app_router.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
@@ -19,58 +18,74 @@ class HomeFeaturesGrid extends StatelessWidget {
       ),
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 0.82,
-          crossAxisSpacing: context.insets.sm,
-          mainAxisSpacing: context.insets.sm,
+          crossAxisCount: 4,
+          childAspectRatio: 0.75,
+          crossAxisSpacing: context.insets.sm * 0.8,
+          mainAxisSpacing: context.insets.sm * 0.8,
         ),
         delegate: SliverChildListDelegate([
           _FeatureItem(
             title: "القرآن الكريم",
-            icon: AppAssets.quran,
-            route: SurahRoute(
-              currentPage: CacheHelper.getData(key: 'pageNumber') ?? 1,
-            ),
+            icon: Icons.menu_book_rounded,
+            color: const Color(0xff27ae60),
+            onTap: () {
+              final lastPage = CacheHelper.getData(key: 'pageNumber') ?? 1;
+              context.router.push(QuranRoute(currentPage: lastPage));
+            },
           ),
           _FeatureItem(
             title: "الأذكار",
-            icon: AppAssets.azkar,
+            icon: Icons.wb_sunny_rounded,
+            color: const Color(0xfff39c12),
             route: const AzkarRoute(),
           ),
           _FeatureItem(
             title: "حصن المسلم",
-            icon: AppAssets.husnAlMuslim,
+            icon: Icons.security_rounded,
+            color: const Color(0xff2c3e50),
             route: const HusinAlMuslimRoute(),
           ),
           _FeatureItem(
             title: "الأربعين النووية",
-            icon: AppAssets.hadith,
+            icon: Icons.library_books_rounded,
+            color: const Color(0xffc0392b),
             route: const HadithNawawiRoute(),
           ),
           _FeatureItem(
             title: "أسماء الله",
-            icon: AppAssets.asmaAllah,
+            icon: Icons.auto_awesome_rounded,
+            color: const Color(0xff8e44ad),
             route: AsmaAllahRoute(),
           ),
           _FeatureItem(
             title: "القبلة",
-            icon: AppAssets.qiblah,
+            icon: Icons.explore_rounded,
+            color: const Color(0xff16a085),
             route: const QiblahRoute(),
           ),
           _FeatureItem(
             title: "قصص الأنبياء",
-            icon: AppAssets.stories,
+            icon: Icons.history_edu_rounded,
+            color: const Color(0xff795548),
             route: const ProphetsListRoute(),
           ),
           _FeatureItem(
-            title: "المسبحة",
-            icon: AppAssets.misbaha,
+            title: "المسبحة الالكترونية",
+            icon: Icons.touch_app,
+            color: const Color(0xff5d2c01),
             route: const MisbahaRoute(),
           ),
           _FeatureItem(
             title: "بث مباشر",
-            icon: AppAssets.live,
+            icon: Icons.live_tv_rounded,
+            color: const Color(0xffe74c3c),
             route: const LiveStreamRoute(),
+          ),
+          _FeatureItem(
+            title: "الإعدادات",
+            icon: Icons.settings_suggest_rounded,
+            color: const Color(0xff95a5a6),
+            route: const SettingsRoute(),
           ),
         ]),
       ),
@@ -80,19 +95,34 @@ class HomeFeaturesGrid extends StatelessWidget {
 
 class _FeatureItem extends StatelessWidget {
   final String title;
-  final String icon;
+  final IconData icon;
+  final Color color;
   final PageRouteInfo? route;
+  final VoidCallback? onTap;
 
-  const _FeatureItem({required this.title, required this.icon, this.route});
+  const _FeatureItem({
+    required this.title,
+    required this.icon,
+    required this.color,
+    this.route,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ModernFeatureCard(
+    return FeatureCard(
       title: title,
-      imgUrl: icon,
-      onTap: () => route != null
-          ? context.router.push(route!)
-          : showToast(text: 'قريباً إن شاء الله'),
+      icon: icon,
+      color: color,
+      onTap: () {
+        if (onTap != null) {
+          onTap!();
+        } else if (route != null) {
+          context.router.push(route!);
+        } else {
+          showToast(text: 'قريباً إن شاء الله');
+        }
+      },
     );
   }
 }

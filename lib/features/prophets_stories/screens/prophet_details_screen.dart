@@ -2,34 +2,33 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/extensions/theme_extension.dart';
-import '../../../../core/theme/tokens/typography.dart';
 import '../models/prophet_story.dart';
 import '../widgets/prophet_details_header.dart';
 import '../widgets/prophet_lesson_item.dart';
 import '../widgets/prophet_section_header.dart';
 import '../widgets/prophet_verse_card.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../../../core/services/share_service.dart';
+import '../../settings/providers/settings_provider.dart';
 
 @RoutePage()
-class ProphetDetailsScreen extends StatelessWidget {
+class ProphetDetailsScreen extends ConsumerWidget {
   final ProphetStory prophet;
 
   const ProphetDetailsScreen({super.key, required this.prophet});
 
   void _copyToClipboard(BuildContext context, String text, String message) {
     Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: context.colors.primary,
-      ),
-    );
+    showToast(text: message);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    final fontSize = settings.fontSize;
+
     return Scaffold(
       backgroundColor: context.colors.background,
       body: CustomScrollView(
@@ -44,6 +43,7 @@ class ProphetDetailsScreen extends StatelessWidget {
             ),
             onShare: () => ShareService.showShareSheet(
               context,
+              ref,
               content: prophet.name,
               subtitle: '${prophet.title}\n\n${prophet.fullStory}',
             ),
@@ -58,10 +58,11 @@ class ProphetDetailsScreen extends StatelessWidget {
                 ProphetSectionTitle(title: prophet.title, isHero: true),
                 Text(
                   prophet.brief,
-                  style: AppTypography.bodyMedium.copyWith(
+                  style: context.textStyles.bodyMedium?.copyWith(
                     color: context.colors.textSecondary,
                     height: 1.6,
                     fontStyle: FontStyle.italic,
+                    fontSize: (fontSize - 2).sp,
                   ),
                 ),
                 SizedBox(height: context.insets.lg),
@@ -69,9 +70,9 @@ class ProphetDetailsScreen extends StatelessWidget {
                 const ProphetSectionHeader(title: 'القصة'),
                 Text(
                   prophet.fullStory,
-                  style: AppTypography.bodyLarge.copyWith(
+                  style: context.textStyles.bodyLarge?.copyWith(
                     color: context.colors.textPrimary,
-                    fontSize: 16.sp,
+                    fontSize: fontSize.sp,
                     height: 1.6,
                   ),
                 ),
@@ -83,6 +84,7 @@ class ProphetDetailsScreen extends StatelessWidget {
                   ...prophet.quranVerses.map(
                     (verse) => ProphetVerseCard(
                       verse: verse,
+                      fontSize: fontSize + 2,
                       onCopy: () => _copyToClipboard(
                         context,
                         verse,
@@ -98,7 +100,12 @@ class ProphetDetailsScreen extends StatelessWidget {
                   const ProphetSectionHeader(title: 'الدروس والعبَر'),
                   Column(
                     children: prophet.lessons
-                        .map((lesson) => ProphetLessonItem(lesson: lesson))
+                        .map(
+                          (lesson) => ProphetLessonItem(
+                            lesson: lesson,
+                            fontSize: fontSize - 2,
+                          ),
+                        )
                         .toList(),
                   ),
                 ],

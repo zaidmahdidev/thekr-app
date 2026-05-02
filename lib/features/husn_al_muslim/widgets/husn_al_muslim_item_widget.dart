@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:readmore/readmore.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
-class HusnAlMuslimItemWidget extends StatefulWidget {
+class HusnAlMuslimItemWidget extends ConsumerStatefulWidget {
   final String text;
   final String footnote;
   final int currentCount;
@@ -24,10 +25,10 @@ class HusnAlMuslimItemWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<HusnAlMuslimItemWidget> createState() => _HusnAlMuslimItemWidgetState();
+  ConsumerState<HusnAlMuslimItemWidget> createState() => _HusnAlMuslimItemWidgetState();
 }
 
-class _HusnAlMuslimItemWidgetState extends State<HusnAlMuslimItemWidget>
+class _HusnAlMuslimItemWidgetState extends ConsumerState<HusnAlMuslimItemWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
@@ -67,6 +68,9 @@ class _HusnAlMuslimItemWidgetState extends State<HusnAlMuslimItemWidget>
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(settingsProvider);
+    final fontSize = settings.fontSize;
+
     return MyCard(
       onTap: _handleTap,
       child: Column(
@@ -81,8 +85,6 @@ class _HusnAlMuslimItemWidgetState extends State<HusnAlMuslimItemWidget>
                   Clipboard.setData(ClipboardData(text: widget.text));
                   showToast(
                     text: 'تم النسخ',
-                    textColor: context.colors.primary,
-                    backgroundColor: Colors.white,
                   );
                 },
                 borderRadius: BorderRadius.circular(20),
@@ -97,6 +99,7 @@ class _HusnAlMuslimItemWidgetState extends State<HusnAlMuslimItemWidget>
               InkWell(
                 onTap: () => ShareService.showShareSheet(
                   context,
+                  ref,
                   content: widget.text,
                   subtitle: widget.footnote,
                 ),
@@ -114,9 +117,10 @@ class _HusnAlMuslimItemWidgetState extends State<HusnAlMuslimItemWidget>
           const SizedBox(height: 10),
           Text(
             widget.text,
-            style: AppTypography.bodyLarge.copyWith(
+            style: context.textStyles.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
               height: 1.8,
+              fontSize: fontSize,
             ),
             textAlign: TextAlign.center,
           ),
@@ -129,15 +133,18 @@ class _HusnAlMuslimItemWidgetState extends State<HusnAlMuslimItemWidget>
               trimMode: TrimMode.Line,
               trimCollapsedText: 'قراءة المزيد',
               trimExpandedText: ' قراءة اقل',
-              lessStyle: AppTypography.bodyMedium.copyWith(
+              lessStyle: context.textStyles.bodyMedium?.copyWith(
                 color: context.colors.secondary,
+                fontSize: fontSize * 0.8,
               ),
-              moreStyle: AppTypography.bodyMedium.copyWith(
+              moreStyle: context.textStyles.bodyMedium?.copyWith(
                 color: context.colors.secondary,
+                fontSize: fontSize * 0.8,
               ),
-              style: AppTypography.bodyMedium.copyWith(
+              style: context.textStyles.bodyMedium?.copyWith(
                 color: Colors.grey,
                 height: 1.6,
+                fontSize: fontSize * 0.8,
               ),
             ),
             const SizedBox(height: 15),

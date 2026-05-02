@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/extensions/theme_extension.dart';
-import '../../../../core/theme/tokens/typography.dart';
 
 class ProphetLessonItem extends StatelessWidget {
   final String lesson;
-  const ProphetLessonItem({super.key, required this.lesson});
+  final double fontSize;
+  const ProphetLessonItem({super.key, required this.lesson, required this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +26,10 @@ class ProphetLessonItem extends StatelessWidget {
           Expanded(
             child: Text(
               lesson,
-              style: AppTypography.bodyMedium.copyWith(
+              style: context.textStyles.bodyMedium?.copyWith(
                 color: context.colors.textPrimary,
                 height: 1.5,
+                fontSize: fontSize.sp,
               ),
             ),
           ),

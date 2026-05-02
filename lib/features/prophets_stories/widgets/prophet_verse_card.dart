@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/extensions/theme_extension.dart';
-import '../../../../core/theme/tokens/typography.dart';
 
 class ProphetVerseCard extends StatelessWidget {
   final String verse;
   final VoidCallback onCopy;
+  final double fontSize;
 
   const ProphetVerseCard({
     super.key,
     required this.verse,
     required this.onCopy,
+    required this.fontSize,
   });
 
   @override
@@ -42,10 +43,10 @@ class ProphetVerseCard extends StatelessWidget {
           Text(
             verse,
             textAlign: TextAlign.center,
-            style: AppTypography.bodyLarge.copyWith(
+            style: context.textStyles.bodyLarge?.copyWith(
               color: context.colors.primary,
               fontFamily: 'hafs',
-              fontSize: 18.sp,
+              fontSize: fontSize.sp,
               height: 1.5,
             ),
           ),

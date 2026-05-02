@@ -1,32 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/services/notification_service.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
-
-import '../widgets/setting_card.dart';
-import '../widgets/appearance_card.dart';
-import '../widgets/settings_info_card.dart';
-import '../widgets/settings_share_card.dart';
+import 'package:thekr_app/features/settings/widgets/settings_section.dart';
+import 'package:thekr_app/features/settings/widgets/settings_tile.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:thekr_app/core/utils/url_helper.dart';
+import 'package:thekr_app/core/services/review_service.dart';
+import 'package:thekr_app/core/services/share_service.dart';
+import 'package:thekr_app/core/router/app_router.dart';
+import 'package:thekr_app/core/utils/constants/app_constants.dart';
+import 'package:thekr_app/features/settings/widgets/app_share_sheet.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   @override
-  ConsumerState<SettingsScreen> createState() =>
-      _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState
-    extends ConsumerState<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  bool _isLoading = true;
   bool _morningEnabled = true;
   bool _eveningEnabled = true;
+  bool _fridayEnabled = true;
   TimeOfDay _morningTime = const TimeOfDay(hour: 7, minute: 0);
-  TimeOfDay _eveningTime = const TimeOfDay(hour: 19, minute: 0);
-  bool _isLoading = true;
+  TimeOfDay _eveningTime = const TimeOfDay(hour: 18, minute: 0);
 
   @override
   void initState() {
@@ -35,85 +40,43 @@ class _SettingsScreenState
   }
 
   Future<void> _loadSettings() async {
-    try {
-      final morningEnabled =
-          await SettingsService.isMorningNotificationEnabled();
-      final eveningEnabled =
-          await SettingsService.isEveningNotificationEnabled();
-      final morningTime = await SettingsService.getMorningTime();
-      final eveningTime = await SettingsService.getEveningTime();
+    final morningEnabled = await SettingsService.isMorningNotificationEnabled();
+    final eveningEnabled = await SettingsService.isEveningNotificationEnabled();
+    final fridayEnabled = await SettingsService.isFridayNotificationEnabled();
+    final morningTime = await SettingsService.getMorningTime();
+    final eveningTime = await SettingsService.getEveningTime();
 
+    if (mounted) {
       setState(() {
         _morningEnabled = morningEnabled;
         _eveningEnabled = eveningEnabled;
+        _fridayEnabled = fridayEnabled;
         _morningTime = morningTime;
         _eveningTime = eveningTime;
         _isLoading = false;
       });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
-  Future<void> _updateMorningNotification(bool enabled) async {
-    setState(() {
-      _morningEnabled = enabled;
-    });
-
-    await SettingsService.setMorningNotificationEnabled(enabled);
-
-    if (enabled) {
-      await NotificationService.scheduleMorningAzkar(_morningTime);
-      _showSnackBar('تم تفعيل تذكير أذكار الصباح');
-    } else {
-      await NotificationService.cancelMorningNotification();
-      _showSnackBar('تم إلغاء تذكير أذكار الصباح');
-    }
-  }
-
-  Future<void> _updateEveningNotification(bool enabled) async {
-    setState(() {
-      _eveningEnabled = enabled;
-    });
-
-    await SettingsService.setEveningNotificationEnabled(enabled);
-
-    if (enabled) {
-      await NotificationService.scheduleEveningAzkar(_eveningTime);
-      _showSnackBar('تم تفعيل تذكير أذكار المساء');
-    } else {
-      await NotificationService.cancelEveningNotification();
-      _showSnackBar('تم إلغاء تذكير أذكار المساء');
-    }
+  String _formatTime(TimeOfDay time) {
+    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final period = time.period == DayPeriod.am ? 'ص' : 'م';
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute $period';
   }
 
   Future<void> _selectMorningTime() async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _morningTime,
-      builder: (context, child) {
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-            child: child!,
-          ),
-        );
-      },
+      builder: (context, child) =>
+          Directionality(textDirection: TextDirection.rtl, child: child!),
     );
-
     if (picked != null && picked != _morningTime) {
-      setState(() {
-        _morningTime = picked;
-      });
-
+      setState(() => _morningTime = picked);
       await SettingsService.setMorningTime(picked);
-
       if (_morningEnabled) {
         await NotificationService.scheduleMorningAzkar(picked);
-        _showSnackBar('تم تحديث وقت أذكار الصباح');
       }
     }
   }
@@ -122,52 +85,60 @@ class _SettingsScreenState
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _eveningTime,
-      builder: (context, child) {
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-            child: child!,
-          ),
-        );
-      },
+      builder: (context, child) =>
+          Directionality(textDirection: TextDirection.rtl, child: child!),
     );
-
     if (picked != null && picked != _eveningTime) {
-      setState(() {
-        _eveningTime = picked;
-      });
-
+      setState(() => _eveningTime = picked);
       await SettingsService.setEveningTime(picked);
-
       if (_eveningEnabled) {
         await NotificationService.scheduleEveningAzkar(picked);
-        _showSnackBar('تم تحديث وقت أذكار المساء');
       }
     }
   }
 
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message, textAlign: TextAlign.center),
-        backgroundColor: context.colors.primary,
-        duration: const Duration(seconds: 2),
-      ),
-    );
+  Future<void> _updateMorningNotification(bool val) async {
+    setState(() => _morningEnabled = val);
+    await SettingsService.setMorningNotificationEnabled(val);
+    if (val) {
+      await NotificationService.scheduleMorningAzkar(_morningTime);
+      showToast(text: 'تم تفعيل تذكير أذكار الصباح');
+    } else {
+      await NotificationService.cancelMorningNotification();
+      showToast(text: 'تم إلغاء تذكير أذكار الصباح');
+    }
   }
 
-  String _formatTime(TimeOfDay time) {
-    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
-    final minute = time.minute.toString().padLeft(2, '0');
-    final period = time.period == DayPeriod.am ? 'ص' : 'م';
-    return '$hour:$minute $period';
+  Future<void> _updateEveningNotification(bool val) async {
+    setState(() => _eveningEnabled = val);
+    await SettingsService.setEveningNotificationEnabled(val);
+    if (val) {
+      await NotificationService.scheduleEveningAzkar(_eveningTime);
+      showToast(text: 'تم تفعيل تذكير أذكار المساء');
+    } else {
+      await NotificationService.cancelEveningNotification();
+      showToast(text: 'تم إلغاء تذكير أذكار المساء');
+    }
+  }
+
+  Future<void> _updateFridayNotification(bool val) async {
+    setState(() => _fridayEnabled = val);
+    await SettingsService.setFridayNotificationEnabled(val);
+    if (val) {
+      await NotificationService.scheduleFridayKahf(
+        const TimeOfDay(hour: 8, minute: 0),
+      );
+      showToast(text: 'تم تفعيل تذكير سورة الكهف');
+    } else {
+      await NotificationService.cancelFridayNotification();
+      showToast(text: 'تم إلغاء تذكير سورة الكهف');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
-    final isDarkMode = settings.themeMode == ThemeMode.dark;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return AppScaffold(
       title: 'الإعدادات',
@@ -181,51 +152,403 @@ class _SettingsScreenState
                 vertical: context.insets.lg,
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Appearance Section
-                  AppearanceCard(
-                    isDarkMode: isDarkMode,
-                    onThemeChanged: (val) =>
-                        ref.read(settingsProvider.notifier).toggleTheme(val),
+                  const SectionHeader(title: 'المظهر والتخصيص'),
+                  SettingsSection(
+                    children: [
+                      SettingsTile(
+                        title: 'الوضع الليلي',
+                        icon: Icons.dark_mode_rounded,
+                        iconColor: Colors.indigo,
+                        trailing: Switch.adaptive(
+                          value: isDarkMode,
+                          onChanged: (val) => ref
+                              .read(settingsProvider.notifier)
+                              .toggleTheme(
+                                val ? ThemeMode.dark : ThemeMode.light,
+                              ),
+                        ),
+                      ),
+                      const Divider(height: 1, indent: 20, endIndent: 20),
+                      Padding(
+                        padding: EdgeInsets.all(context.insets.md),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.palette_rounded,
+                                  size: 20.sp,
+                                  color: Colors.teal,
+                                ),
+                                SizedBox(width: 12.w),
+                                Text(
+                                  'ألوان التطبيق (الثيمات)',
+                                  style: context.textStyles.bodyMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: context.insets.md),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: AppThemeType.values.map((theme) {
+                                final isSelected = settings.appTheme == theme;
+                                Color primaryColor;
+                                switch (theme) {
+                                  case AppThemeType.defaultTheme:
+                                    primaryColor = const Color(0xFF0E645C);
+                                    break;
+                                  case AppThemeType.desert:
+                                    primaryColor = const Color(0xFFC19A6B);
+                                    break;
+                                  case AppThemeType.forest:
+                                    primaryColor = const Color(0xFF2D5A27);
+                                    break;
+                                }
+
+                                return Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => ref
+                                        .read(settingsProvider.notifier)
+                                        .updateAppTheme(theme),
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(
+                                        horizontal: 4.w,
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 12.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? primaryColor.withValues(
+                                                alpha: 0.1,
+                                              )
+                                            : context.colors.surface,
+                                        borderRadius: BorderRadius.circular(
+                                          context.corners.md,
+                                        ),
+                                        border: Border.all(
+                                          color: isSelected
+                                              ? primaryColor
+                                              : primaryColor.withValues(
+                                                  alpha: 0.2,
+                                                ),
+                                          width: isSelected ? 2 : 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Container(
+                                          width: 32.w,
+                                          height: 32.w,
+                                          decoration: BoxDecoration(
+                                            color: primaryColor,
+                                            shape: BoxShape.circle,
+                                            boxShadow: isSelected
+                                                ? [
+                                                    BoxShadow(
+                                                      color: primaryColor
+                                                          .withValues(
+                                                            alpha: 0.4,
+                                                          ),
+                                                      blurRadius: 10,
+                                                      offset: const Offset(
+                                                        0,
+                                                        4,
+                                                      ),
+                                                    ),
+                                                  ]
+                                                : null,
+                                          ),
+                                          child: isSelected
+                                              ? const Icon(
+                                                  Icons.check,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                )
+                                              : null,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(height: 1, indent: 20, endIndent: 20),
+                      SettingsTile(
+                        title: 'ترتيب الشاشة الرئيسية',
+                        subtitle: 'تحكم في مكان ظهور العناصر في الرئيسية',
+                        icon: Icons.dashboard_customize_rounded,
+                        onTap: () => context.router.push(
+                          const CustomizeHomeLayoutRoute(),
+                        ),
+                        iconColor: Colors.purple,
+                      ),
+                      const Divider(height: 1, indent: 20, endIndent: 20),
+                      // Font Size Adjustment (Moved here)
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: context.insets.lg,
+                          vertical: context.insets.md,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                // SizedBox(width: context.insets.sm),
+                                Text(
+                                  'حجم الخط في القراءة',
+                                  style: context.textStyles.bodyMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                const Spacer(),
+                                TextButton(
+                                  onPressed: () => ref
+                                      .read(settingsProvider.notifier)
+                                      .updateFontSize(16.0),
+                                  style: TextButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 2.w,
+                                      vertical: 2.h,
+                                    ),
+                                    minimumSize: Size.zero,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    backgroundColor: context.colors.primary,
+                                  ),
+                                  child: Text(
+                                    'الافتراضي',
+                                    style: context.textStyles.bodySmall
+                                        ?.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                ),
+                                SizedBox(width: context.insets.sm),
+                                Text(
+                                  '${settings.fontSize.toInt()}',
+                                  style: context.textStyles.bodySmall?.copyWith(
+                                    color: context.colors.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Slider.adaptive(
+                              value: settings.fontSize.clamp(14.0, 24.0),
+                              min: 14.0,
+                              max: 24.0,
+                              divisions: 5,
+                              activeColor: context.colors.primary,
+                              onChanged: (val) => ref
+                                  .read(settingsProvider.notifier)
+                                  .updateFontSize(val),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(height: 1, indent: 20, endIndent: 20),
+                      // Share Card Settings (Moved here)
+                      Padding(
+                        padding: EdgeInsets.all(context.insets.md),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'شكل بطاقة المشاركة',
+                              style: context.textStyles.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: context.insets.md),
+                            SizedBox(
+                              height: 120.h,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                physics: const BouncingScrollPhysics(),
+                                children: ShareTemplate.values.map((template) {
+                                  final isSelected =
+                                      settings.shareTemplate == template;
+                                  return GestureDetector(
+                                    onTap: () => ref
+                                        .read(settingsProvider.notifier)
+                                        .updateShareTemplate(template),
+                                    child: AnimatedContainer(
+                                      duration: const Duration(
+                                        milliseconds: 250,
+                                      ),
+                                      margin: EdgeInsets.only(
+                                        left: 12.w,
+                                        bottom: 8.h,
+                                        top: 4.h,
+                                      ),
+                                      // width: 200.w,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                          24.r,
+                                        ),
+                                        border: Border.all(
+                                          color: isSelected
+                                              ? context.colors.primary
+                                              : context.colors.primary
+                                                    .withValues(alpha: 0.1),
+                                          width: isSelected ? 3 : 1,
+                                        ),
+                                      ),
+                                      child: Stack(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              20.r,
+                                            ),
+                                            child: FittedBox(
+                                              fit: BoxFit.cover,
+                                              child: ShareService.buildShareCard(
+                                                context,
+                                                template,
+                                                '﴿فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ﴾',
+                                                null,
+                                              ),
+                                            ),
+                                          ),
+                                          if (isSelected)
+                                            Positioned(
+                                              top: 8,
+                                              right: 8,
+                                              child: Container(
+                                                padding: EdgeInsets.all(4.w),
+                                                decoration: BoxDecoration(
+                                                  color: context.colors.primary,
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: Colors.white,
+                                                    width: 1.5,
+                                                  ),
+                                                ),
+                                                child: const Icon(
+                                                  Icons.check,
+                                                  color: Colors.white,
+                                                  size: 14,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-
                   SizedBox(height: context.insets.md),
-
-                  // Morning Azkar Section
-                  SettingCard(
-                    title: 'أذكار الصباح',
-                    icon: Icons.wb_sunny_rounded,
-                    iconColor: context.colors.secondary,
-                    isEnabled: _morningEnabled,
-                    onToggle: _updateMorningNotification,
-                    time: _morningTime,
-                    onTimeTap: _selectMorningTime,
-                    formatTime: _formatTime,
+                  const SectionHeader(title: 'التنبيهات'),
+                  SettingsSection(
+                    children: [
+                      SettingsTile(
+                        title: 'أذكار الصباح',
+                        subtitle: _morningEnabled
+                            ? 'تذكير عند ${_formatTime(_morningTime)}'
+                            : 'التذكير متوقف',
+                        icon: Icons.wb_sunny_rounded,
+                        iconColor: Colors.orange,
+                        trailing: Switch.adaptive(
+                          value: _morningEnabled,
+                          onChanged: _updateMorningNotification,
+                        ),
+                        onTap: _morningEnabled ? _selectMorningTime : null,
+                      ),
+                      SettingsTile(
+                        title: 'أذكار المساء',
+                        subtitle: _eveningEnabled
+                            ? 'تذكير عند ${_formatTime(_eveningTime)}'
+                            : 'التذكير متوقف',
+                        icon: Icons.nightlight_round_rounded,
+                        iconColor: Colors.blueAccent,
+                        trailing: Switch.adaptive(
+                          value: _eveningEnabled,
+                          onChanged: _updateEveningNotification,
+                        ),
+                        onTap: _eveningEnabled ? _selectEveningTime : null,
+                      ),
+                      SettingsTile(
+                        title: 'تذكير سورة الكهف',
+                        subtitle: _fridayEnabled
+                            ? 'كل يوم جمعة صباحاً'
+                            : 'التذكير متوقف',
+                        icon: Icons.menu_book_rounded,
+                        iconColor: Colors.green,
+                        trailing: Switch.adaptive(
+                          value: _fridayEnabled,
+                          onChanged: _updateFridayNotification,
+                        ),
+                      ),
+                    ],
                   ),
-
                   SizedBox(height: context.insets.md),
-
-                  // Evening Azkar Section
-                  SettingCard(
-                    title: 'أذكار المساء',
-                    icon: Icons.nightlight_round_rounded,
-                    iconColor: context.colors.primary,
-                    isEnabled: _eveningEnabled,
-                    onToggle: _updateEveningNotification,
-                    time: _eveningTime,
-                    onTimeTap: _selectEveningTime,
-                    formatTime: _formatTime,
+                  const SectionHeader(title: 'الدعم والمعلومات'),
+                  SettingsSection(
+                    children: [
+                      SettingsTile(
+                        title: 'تقييم التطبيق',
+                        icon: Icons.star_rounded,
+                        iconColor: Colors.amber,
+                        onTap: () => ReviewService.requestManualReview(),
+                      ),
+                      SettingsTile(
+                        title: 'تواصل معنا',
+                        icon: Icons.chat_rounded,
+                        iconColor: Colors.teal,
+                        onTap: () => UrlHelper.launchWhatsApp(
+                          phone: AppConstants.whatsappNumber,
+                          message: 'السلام عليكم، لدي استفسار بخصوص تطبيق ذكر',
+                        ),
+                      ),
+                      SettingsTile(
+                        title: 'سياسة الخصوصية',
+                        icon: Icons.privacy_tip_rounded,
+                        iconColor: Colors.redAccent,
+                        onTap: () =>
+                            UrlHelper.launchURL(AppConstants.privacyPolicyUrl),
+                      ),
+                      SettingsTile(
+                        title: 'شارك التطبيق',
+                        icon: Icons.share_rounded,
+                        iconColor: Colors.purple,
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            backgroundColor: Colors.transparent,
+                            isScrollControlled: true,
+                            builder: (context) => const AppShareSheet(),
+                          );
+                        },
+                      ),
+                    ],
                   ),
-
-                  SizedBox(height: context.insets.lg),
-
-                  // Info Section
-                  const SettingsInfoCard(),
-
-                  SizedBox(height: context.insets.md),
-
-                  // Share App Section
-                  const SettingsShareCard(),
+                  SizedBox(height: context.insets.xl),
+                  Center(
+                    child: Text(
+                      'الإصدار ${AppConstants.appVersion}',
+                      style: (context.textStyles.bodySmall ?? const TextStyle())
+                          .copyWith(
+                            color: context.colors.textSecondary.withValues(
+                              alpha: 0.5,
+                            ),
+                            fontSize: 11.sp,
+                          ),
+                    ),
+                  ),
                 ],
               ),
             ),

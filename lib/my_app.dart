@@ -10,6 +10,11 @@ import 'package:thekr_app/core/router/app_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
+import 'package:thekr_app/core/services/notification_service.dart';
+import 'package:thekr_app/core/services/review_service.dart';
+import 'package:thekr_app/features/azkar/data/azkar_model.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -19,6 +24,40 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   final _appRouter = AppRouter();
+
+  @override
+  void initState() {
+    super.initState();
+    _setupNotificationHandling();
+    ReviewService.requestAutoReview();
+  }
+
+  void _setupNotificationHandling() {
+    NotificationService.onNotificationClick = (payload) {
+      if (payload == null) return;
+
+      if (payload == 'morning') {
+        _appRouter.push(
+          AzkarListRoute(
+            azkarList: List<Map<String, String>>.from(azkarList['أذكار الصباح']),
+            type: 'أذكار الصباح',
+          ),
+        );
+      } else if (payload == 'evening') {
+        _appRouter.push(
+          AzkarListRoute(
+            azkarList: List<Map<String, String>>.from(azkarList['أذكار المساء']),
+            type: 'أذكار المساء',
+          ),
+        );
+      } else if (payload == 'surah_kahf') {
+        _appRouter.push(QuranRoute(currentPage: 293));
+      }
+    };
+
+    // التحقق من وجود إشعار تسبب في فتح التطبيق
+    NotificationService.checkLaunchNotification();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +71,8 @@ class _MyAppState extends ConsumerState<MyApp> {
       builder: (context, child) {
         return MaterialApp.router(
           title: 'ذِكر',
-          theme: AppTheme.light(),
-          darkTheme: AppTheme.dark(),
+          theme: AppTheme.light(settings.appTheme),
+          darkTheme: AppTheme.dark(settings.appTheme),
           themeMode: themeMode,
           locale: const Locale('ar'),
           supportedLocales: const [Locale('ar'), Locale('en')],
@@ -54,7 +93,11 @@ class _MyAppState extends ConsumerState<MyApp> {
           },
           debugShowCheckedModeBanner: false,
           scaffoldMessengerKey: scaffoldMessengerKey,
-          routerConfig: _appRouter.config(),
+          routerConfig: _appRouter.config(
+            navigatorObservers: () => [
+              FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+            ],
+          ),
         );
       },
     );

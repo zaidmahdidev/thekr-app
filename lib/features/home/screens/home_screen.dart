@@ -6,6 +6,7 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:hijri/hijri_calendar.dart';
 
+import 'package:geolocator/geolocator.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/widgets/custom_dialog.dart';
 import 'package:thekr_app/features/home/providers/prayer_provider.dart';
@@ -18,6 +19,8 @@ import 'package:thekr_app/features/home/models/app_prayer_times.dart';
 import 'package:thekr_app/features/home/widgets/inspiration_carousel.dart';
 import 'package:thekr_app/features/home/widgets/home_dynamic_sections.dart';
 import 'package:thekr_app/features/home/widgets/share_app_card.dart';
+import 'package:thekr_app/core/widgets/toast_utils.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
 @RoutePage()
 class HomeScreen extends ConsumerStatefulWidget {
@@ -27,14 +30,33 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen>
+    with WidgetsBindingObserver {
+  DateTime? _lastPressedAt;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     HijriCalendar.setLocal('ar');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkForUpdate();
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Automatic refresh when returning from permission dialog
+      ref.invalidate(prayerTimesProvider);
+      ref.invalidate(tomorrowPrayerTimesProvider);
+    }
   }
 
   Future<void> _checkForUpdate() async {
@@ -104,6 +126,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         '${hijriNow.hDay} ${hijriNow.getLongMonthName()} ${hijriNow.hYear} هـ';
 
     final nextPrayer = prayerTimes?.nextPrayer(currentTime);
+    final settings = ref.watch(settingsProvider);
 
     return PopScope(
       canPop: false,
@@ -123,13 +146,43 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               remainingTime: remainingTime,
               nextPrayer: nextPrayer,
             ),
-            SliverToBoxAdapter(
-              child: PrayerTimesCard(prayerTimes: prayerTimes),
-            ),
-            const InspirationCarousel(),
-            const HomeFeaturesGrid(),
-            const HomeDynamicSections(),
-            const ShareAppCard(),
+            ...settings.homeSections.map((section) {
+              switch (section) {
+                case HomeSection.prayerTimes:
+                  return SliverToBoxAdapter(
+                    key: const ValueKey('prayerTimes'),
+                    child: PrayerTimesCard(
+                      prayerTimes: prayerTimes,
+                      onRequestLocation: () async {
+                        LocationPermission permission =
+                            await Geolocator.checkPermission();
+
+                        if (permission == LocationPermission.deniedForever) {
+                          showToast(
+                            text: 'يرجى تفعيل صلاحية الموقع من إعدادات الهاتف',
+                          );
+                        } else {
+                          await Geolocator.requestPermission();
+                          ref.invalidate(prayerTimesProvider);
+                          ref.invalidate(tomorrowPrayerTimesProvider);
+                        }
+                      },
+                    ),
+                  );
+                case HomeSection.inspiration:
+                  return const InspirationCarousel(
+                    key: ValueKey('inspiration'),
+                  );
+                case HomeSection.features:
+                  return const HomeFeaturesGrid(key: ValueKey('features'));
+                case HomeSection.dynamicSections:
+                  return const HomeDynamicSections(
+                    key: ValueKey('dynamicSections'),
+                  );
+                case HomeSection.shareCard:
+                  return const ShareAppCard(key: ValueKey('shareCard'));
+              }
+            }),
           ],
         ),
       ),
@@ -137,14 +190,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _exitMethod(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => CustomDialog(
-        title: 'تنويه',
-        message: 'هل أنت متأكد أنك تريد الخروج؟',
-        onYes: () => SystemNavigator.pop(),
-        onCancel: () => Navigator.pop(context),
-      ),
-    );
+    final now = DateTime.now();
+    final backButtonHasNotBeenPressedOrSnackBarHasClosed =
+        _lastPressedAt == null ||
+        now.difference(_lastPressedAt!) > const Duration(seconds: 2);
+
+    if (backButtonHasNotBeenPressedOrSnackBarHasClosed) {
+      _lastPressedAt = now;
+      showToast(
+        text: 'اضغط مرة أخرى للخروج',
+      );
+    } else {
+      SystemNavigator.pop();
+    }
   }
 }

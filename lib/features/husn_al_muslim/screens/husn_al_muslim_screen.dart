@@ -10,12 +10,14 @@ class HusinAlMuslimScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> categories = husinAlMuslim.keys.cast<String>().toList();
+
     return AppScaffold(
       title: 'حُصن المسلم',
       body: ListView.builder(
-        itemCount: husinAlMuslim.length,
+        itemCount: categories.length,
         itemBuilder: (context, index) {
-          String key = husinAlMuslim.keys.elementAt(index);
+          final String key = categories[index];
           return CustomCard(
             fun: () {
               context.router.push(

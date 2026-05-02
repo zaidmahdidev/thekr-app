@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class ModernFeatureCard extends StatelessWidget {
-  const ModernFeatureCard({
+class FeatureCard extends StatelessWidget {
+  const FeatureCard({
     super.key,
     required this.title,
-    required this.imgUrl,
+    this.imgUrl,
+    this.icon,
     required this.onTap,
     this.color,
   });
 
   final String title;
-  final String imgUrl;
+  final String? imgUrl;
+  final IconData? icon;
   final VoidCallback onTap;
   final Color? color;
 
@@ -49,19 +50,25 @@ class ModernFeatureCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.all(context.insets.sm * 1.5),
+                padding: EdgeInsets.all(context.insets.sm * 1),
                 decoration: BoxDecoration(
                   color: (color ?? context.colors.secondary).withValues(
                     alpha: 0.1,
                   ),
                   shape: BoxShape.circle,
                 ),
-                child: Image.asset(
-                  imgUrl,
-                  width: 35.w,
-                  height: 35.w,
-                  fit: BoxFit.contain,
-                ),
+                child: icon != null
+                    ? Icon(
+                        icon,
+                        size: 28.w,
+                        color: color ?? context.colors.secondary,
+                      )
+                    : Image.asset(
+                        imgUrl ?? "",
+                        width: 32.w,
+                        height: 32.w,
+                        fit: BoxFit.contain,
+                      ),
               ),
               SizedBox(height: 8.h),
               Padding(
@@ -71,7 +78,7 @@ class ModernFeatureCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTypography.bodySmall.copyWith(
+                  style: context.textStyles.bodySmall?.copyWith(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.bold,
                     color: context.colors.textPrimary,
