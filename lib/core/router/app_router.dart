@@ -16,6 +16,7 @@ import 'package:thekr_app/features/live_stream/screens/live_stream_screen.dart';
 import 'package:thekr_app/features/prophets_stories/screens/prophets_list_screen.dart';
 import 'package:thekr_app/features/prophets_stories/screens/prophet_details_screen.dart';
 import 'package:thekr_app/features/misbaha/screens/misbaha_screen.dart';
+import 'package:thekr_app/features/settings/screens/share_app_screen.dart';
 import 'package:thekr_app/features/settings/screens/customize_home_layout_screen.dart';
 
 part 'app_router.gr.dart';
@@ -39,5 +40,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: ProphetDetailsRoute.page),
     AutoRoute(page: MisbahaRoute.page),
     AutoRoute(page: CustomizeHomeLayoutRoute.page),
+    AutoRoute(page: ShareAppRoute.page),
   ];
 }

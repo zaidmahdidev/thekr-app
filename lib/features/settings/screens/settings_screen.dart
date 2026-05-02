@@ -148,8 +148,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             )
           : SingleChildScrollView(
               padding: EdgeInsets.symmetric(
-                horizontal: context.insets.lg,
-                vertical: context.insets.lg,
+                horizontal: context.insets.sm,
+                vertical: context.insets.md,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -279,18 +279,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ],
                         ),
                       ),
-                      const Divider(height: 1, indent: 20, endIndent: 20),
-                      SettingsTile(
-                        title: 'ترتيب الشاشة الرئيسية',
-                        subtitle: 'تحكم في مكان ظهور العناصر في الرئيسية',
-                        icon: Icons.dashboard_customize_rounded,
-                        onTap: () => context.router.push(
-                          const CustomizeHomeLayoutRoute(),
-                        ),
-                        iconColor: Colors.purple,
-                      ),
-                      const Divider(height: 1, indent: 20, endIndent: 20),
-                      // Font Size Adjustment (Moved here)
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: context.insets.lg,
@@ -355,99 +343,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                       ),
                       const Divider(height: 1, indent: 20, endIndent: 20),
-                      // Share Card Settings (Moved here)
-                      Padding(
-                        padding: EdgeInsets.all(context.insets.md),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'شكل بطاقة المشاركة',
-                              style: context.textStyles.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: context.insets.md),
-                            SizedBox(
-                              height: 120.h,
-                              child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                physics: const BouncingScrollPhysics(),
-                                children: ShareTemplate.values.map((template) {
-                                  final isSelected =
-                                      settings.shareTemplate == template;
-                                  return GestureDetector(
-                                    onTap: () => ref
-                                        .read(settingsProvider.notifier)
-                                        .updateShareTemplate(template),
-                                    child: AnimatedContainer(
-                                      duration: const Duration(
-                                        milliseconds: 250,
-                                      ),
-                                      margin: EdgeInsets.only(
-                                        left: 12.w,
-                                        bottom: 8.h,
-                                        top: 4.h,
-                                      ),
-                                      // width: 200.w,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          24.r,
-                                        ),
-                                        border: Border.all(
-                                          color: isSelected
-                                              ? context.colors.primary
-                                              : context.colors.primary
-                                                    .withValues(alpha: 0.1),
-                                          width: isSelected ? 3 : 1,
-                                        ),
-                                      ),
-                                      child: Stack(
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(
-                                              20.r,
-                                            ),
-                                            child: FittedBox(
-                                              fit: BoxFit.cover,
-                                              child: ShareService.buildShareCard(
-                                                context,
-                                                template,
-                                                '﴿فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ﴾',
-                                                null,
-                                              ),
-                                            ),
-                                          ),
-                                          if (isSelected)
-                                            Positioned(
-                                              top: 8,
-                                              right: 8,
-                                              child: Container(
-                                                padding: EdgeInsets.all(4.w),
-                                                decoration: BoxDecoration(
-                                                  color: context.colors.primary,
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: Colors.white,
-                                                    width: 1.5,
-                                                  ),
-                                                ),
-                                                child: const Icon(
-                                                  Icons.check,
-                                                  color: Colors.white,
-                                                  size: 14,
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          ],
+                      const Divider(height: 1, indent: 20, endIndent: 20),
+                      SettingsTile(
+                        title: 'ترتيب الشاشة الرئيسية',
+                        subtitle: 'تحكم في مكان ظهور العناصر في الرئيسية',
+                        icon: Icons.dashboard_customize_rounded,
+                        onTap: () => context.router.push(
+                          const CustomizeHomeLayoutRoute(),
                         ),
+                        iconColor: Colors.purple,
+                      ),
+                      const Divider(height: 1, indent: 20, endIndent: 20),
+
+                      // Font Size Adjustment (Moved here)
+                      SettingsTile(
+                        title: 'بطاقة المشاركة',
+                        subtitle: 'تخصيص شكل ومحتوى بطاقة مشاركة الأذكار',
+                        icon: Icons.auto_awesome_outlined,
+                        iconColor: Colors.orange,
+                        onTap: () => context.pushRoute(const ShareAppRoute()),
                       ),
                     ],
                   ),

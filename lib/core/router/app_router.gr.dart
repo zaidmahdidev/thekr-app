@@ -413,3 +413,19 @@ class SettingsRoute extends PageRouteInfo<void> {
     },
   );
 }
+
+/// generated route for
+/// [ShareAppScreen]
+class ShareAppRoute extends PageRouteInfo<void> {
+  const ShareAppRoute({List<PageRouteInfo>? children})
+    : super(ShareAppRoute.name, initialChildren: children);
+
+  static const String name = 'ShareAppRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ShareAppScreen();
+    },
+  );
+}
