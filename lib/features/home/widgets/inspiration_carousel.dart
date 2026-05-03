@@ -169,7 +169,6 @@ class _InspirationCard extends StatelessWidget {
                     style: context.textStyles.labelLarge?.copyWith(
                       color: context.colors.primary,
                       fontWeight: FontWeight.bold,
-                      fontFamily: 'Tajawal',
                     ),
                   ),
                 ),
@@ -214,7 +213,6 @@ class _InspirationCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: context.textStyles.bodySmall?.copyWith(
                         color: context.colors.textSecondary,
-                        fontFamily: 'Tajawal',
                         fontWeight: FontWeight.w500,
                       ),
                     ),

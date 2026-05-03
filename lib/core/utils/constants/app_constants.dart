@@ -26,6 +26,7 @@ class AppConstants {
   // Social Media & Support
   static const String supportEmail = 'zaidmhdi33@gmail.com';
   static const String whatsappNumber = '+967774814210';
+  static const String developerNumber = '+966559291894';
 
   // Sharing Text
   static const String shareMessage =

@@ -7,6 +7,7 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
+import 'package:thekr_app/features/settings/widgets/developer_social_card.dart';
 import 'package:thekr_app/features/settings/widgets/settings_section.dart';
 import 'package:thekr_app/features/settings/widgets/settings_tile.dart';
 import 'package:share_plus/share_plus.dart';
@@ -369,7 +370,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           subtitle: 'تخصيص شكل ومحتوى بطاقة المشاركة ',
                           icon: Icons.auto_awesome_outlined,
                           iconColor: Colors.orange,
-                          onTap: () => context.pushRoute(const CustomizeShareCardRoute()),
+                          onTap: () => context.pushRoute(
+                            const CustomizeShareCardRoute(),
+                          ),
                         ),
                       ),
                     ],
@@ -460,17 +463,72 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ],
                   ),
                   SizedBox(height: context.insets.xl),
-                  Center(
-                    child: Text(
-                      'الإصدار ${AppConstants.appVersion}',
-                      style: (context.textStyles.bodySmall ?? const TextStyle())
-                          .copyWith(
-                            color: context.colors.textSecondary.withValues(
-                              alpha: 0.5,
-                            ),
-                            fontSize: 11.sp,
+                  Column(
+                    children: [
+                      Text(
+                        'تم التطوير بكل ❤️ بواسطة',
+                        style: context.textStyles.bodySmall?.copyWith(
+                          color: context.colors.textSecondary,
+                          fontSize: 10.sp,
+                        ),
+                      ),
+                      SizedBox(height: context.insets.sm),
+                      Text(
+                        AppConstants.developerName,
+                        style: context.textStyles.bodyLarge?.copyWith(
+                          color: context.colors.primary,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      SizedBox(height: context.insets.md),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          DeveloperSocialCard(
+                            icon: Icons.language_rounded,
+                            color: Colors.blue,
+                            onTap: () =>
+                                UrlHelper.launchURL(AppConstants.websiteUrl),
                           ),
-                    ),
+                          SizedBox(width: context.insets.md),
+                          DeveloperSocialCard(
+                            icon: Icons.email_rounded,
+                            color: Colors.redAccent,
+                            onTap: () => UrlHelper.launchURL(
+                              'mailto:${AppConstants.supportEmail}',
+                            ),
+                          ),
+                          SizedBox(width: context.insets.md),
+                          DeveloperSocialCard(
+                            icon: Icons.chat_rounded,
+                            color: Colors.green,
+                            onTap: () => UrlHelper.launchWhatsApp(
+                              phone: AppConstants.developerNumber,
+                            ),
+                          ),
+                          SizedBox(width: context.insets.md),
+                          DeveloperSocialCard(
+                            icon: Icons.phone,
+                            color: Colors.cyan,
+                            onTap: () => UrlHelper.launchPhone(
+                              AppConstants.developerNumber,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: context.insets.lg),
+                      Text(
+                        'إصدار ${AppConstants.appVersion}',
+                        style: context.textStyles.bodySmall?.copyWith(
+                          color: context.colors.textPrimary.withValues(
+                            alpha: 0.5,
+                          ),
+                          fontSize: 10.sp,
+                        ),
+                      ),
+                      SizedBox(height: context.insets.sm),
+                    ],
                   ),
                 ],
               ),
