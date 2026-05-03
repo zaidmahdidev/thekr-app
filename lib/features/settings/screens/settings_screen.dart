@@ -369,7 +369,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           subtitle: 'تخصيص شكل ومحتوى بطاقة المشاركة ',
                           icon: Icons.auto_awesome_outlined,
                           iconColor: Colors.orange,
-                          onTap: () => context.pushRoute(const ShareAppRoute()),
+                          onTap: () => context.pushRoute(const CustomizeShareCardRoute()),
                         ),
                       ),
                     ],

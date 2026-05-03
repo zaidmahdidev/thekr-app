@@ -9,8 +9,8 @@ import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
 @RoutePage()
-class ShareAppScreen extends ConsumerWidget {
-  const ShareAppScreen({super.key});
+class CustomizeShareCardScreen extends ConsumerWidget {
+  const CustomizeShareCardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -143,10 +143,10 @@ class ShareAppScreen extends ConsumerWidget {
                 Container(
                   padding: EdgeInsets.all(context.insets.md),
                   decoration: BoxDecoration(
-                    color: context.colors.secondary.withValues(alpha: 0.3),
+                    color: context.colors.secondary.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(context.corners.md),
                     border: Border.all(
-                      color: context.colors.secondary.withValues(alpha: 0.1),
+                      color: context.colors.secondary.withValues(alpha: 0.5),
                     ),
                   ),
                   child: Row(
