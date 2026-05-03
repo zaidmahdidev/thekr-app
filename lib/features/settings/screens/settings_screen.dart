@@ -214,7 +214,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                         .read(settingsProvider.notifier)
                                         .updateAppTheme(theme),
                                     child: AnimatedContainer(
-                                      duration: const Duration(milliseconds: 300),
+                                      duration: const Duration(
+                                        milliseconds: 300,
+                                      ),
                                       margin: EdgeInsets.symmetric(
                                         horizontal: 4.w,
                                       ),
@@ -241,7 +243,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                       ),
                                       child: Center(
                                         child: AnimatedContainer(
-                                          duration: const Duration(milliseconds: 300),
+                                          duration: const Duration(
+                                            milliseconds: 300,
+                                          ),
                                           width: isSelected ? 28.w : 32.w,
                                           height: isSelected ? 28.w : 32.w,
                                           decoration: BoxDecoration(
@@ -264,7 +268,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                                 : null,
                                           ),
                                           child: AnimatedSwitcher(
-                                            duration: const Duration(milliseconds: 200),
+                                            duration: const Duration(
+                                              milliseconds: 200,
+                                            ),
                                             child: isSelected
                                                 ? const Icon(
                                                     Icons.check,
@@ -356,12 +362,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                         iconColor: Colors.purple,
                       ),
-                      SettingsTile(
-                        title: 'بطاقة المشاركة',
-                        subtitle: 'تخصيص شكل ومحتوى بطاقة المشاركة ',
-                        icon: Icons.auto_awesome_outlined,
-                        iconColor: Colors.orange,
-                        onTap: () => context.pushRoute(const ShareAppRoute()),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: context.insets.sm),
+                        child: SettingsTile(
+                          title: 'بطاقة المشاركة',
+                          subtitle: 'تخصيص شكل ومحتوى بطاقة المشاركة ',
+                          icon: Icons.auto_awesome_outlined,
+                          iconColor: Colors.orange,
+                          onTap: () => context.pushRoute(const ShareAppRoute()),
+                        ),
                       ),
                     ],
                   ),
