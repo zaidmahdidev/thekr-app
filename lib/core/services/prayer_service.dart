@@ -5,28 +5,62 @@ import 'package:thekr_app/core/services/cache_helper.dart';
 import 'package:thekr_app/features/home/models/app_prayer_times.dart';
 
 class PrayerService {
-  static Future<Position> _determinePosition() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+
+
+  static const String _latKey = 'cached_lat';
+  static const String _lngKey = 'cached_lng';
+
+  static Future<Coordinates> _getEffectiveCoordinates() async {
+    // 1. Try to get from Cache (Fastest)
+    final lat = CacheHelper.getData(key: _latKey);
+    final lng = CacheHelper.getData(key: _lngKey);
+
+    if (lat != null && lng != null) {
+      // Trigger a silent update in the background to keep it fresh
+      _updateLocationInBackground();
+      return Coordinates(lat as double, lng as double);
     }
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+    // 2. Try to get Last Known Position (Fast)
+    try {
+      Position? position = await Geolocator.getLastKnownPosition();
+      if (position != null) {
+        _saveLocationToCache(position.latitude, position.longitude);
+        return Coordinates(position.latitude, position.longitude);
       }
-    }
+    } catch (_) {}
 
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied');
-    }
-
-    return await Geolocator.getCurrentPosition();
+    // 3. Fallback to Mecca (Safe)
+    // We don't wait for getCurrentPosition here to keep it instant
+    // The background update will eventually get the real location
+    _updateLocationInBackground();
+    return Coordinates(21.4225, 39.8262);
   }
 
-  static AppPrayerTimes _convertToAppModel(PrayerTimes times, {bool isLocationOff = false}) {
+  static void _updateLocationInBackground() async {
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        // Use a lower accuracy for faster results and less battery usage
+        Position position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.low,
+            distanceFilter: 10000, // Only update if moved 10km
+          ),
+        );
+        _saveLocationToCache(position.latitude, position.longitude);
+      }
+    } catch (_) {}
+  }
+
+  static void _saveLocationToCache(double lat, double lng) {
+    CacheHelper.saveData(key: _latKey, value: lat);
+    CacheHelper.saveData(key: _lngKey, value: lng);
+  }
+
+  static AppPrayerTimes _convertToAppModel(PrayerTimes times,
+      {bool isLocationOff = false}) {
     return AppPrayerTimes(
       fajr: times.fajr,
       sunrise: times.sunrise,
@@ -40,44 +74,15 @@ class PrayerService {
 
   static Future<AppPrayerTimes?> getCurrentPrayerTimes() async {
     try {
-      Coordinates coordinates = Coordinates(21.4225, 39.8262); // Mecca fallback
+      final coordinates = await _getEffectiveCoordinates();
+      
+      // Check if permission is denied to show the "Location Off" indicator if needed
       bool isLocationOff = false;
-
       try {
         LocationPermission permission = await Geolocator.checkPermission();
-        
-        if (permission == LocationPermission.always || 
-            permission == LocationPermission.whileInUse) {
-          Position position = await Geolocator.getCurrentPosition();
-          coordinates = Coordinates(position.latitude, position.longitude);
-        } else if (permission == LocationPermission.denied) {
-          // Check if we have already asked for permission once to avoid repeated prompts
-          final dynamic hasRequestedData = CacheHelper.getData(key: 'location_requested');
-          final bool hasRequested = (hasRequestedData is bool) ? hasRequestedData : false;
-          
-          if (!hasRequested) {
-            // This is likely the first time, or we haven't recorded a request yet
-            await CacheHelper.saveData(key: 'location_requested', value: true);
-            permission = await Geolocator.requestPermission();
-            
-            if (permission == LocationPermission.always || 
-                permission == LocationPermission.whileInUse) {
-              Position position = await Geolocator.getCurrentPosition();
-              coordinates = Coordinates(position.latitude, position.longitude);
-            } else {
-              isLocationOff = true;
-            }
-          } else {
-            // We have already asked once, and the user denied. 
-            // We show the button instead of showing the system dialog again automatically.
-            isLocationOff = true;
-          }
-        } else {
-          isLocationOff = true;
-        }
-      } catch (e) {
-        isLocationOff = true;
-      }
+        isLocationOff = permission == LocationPermission.denied || 
+                       permission == LocationPermission.deniedForever;
+      } catch (_) {}
 
       final params = CalculationMethod.karachi.getParameters();
       params.madhab = Madhab.shafi;
@@ -92,21 +97,14 @@ class PrayerService {
 
   static Future<AppPrayerTimes?> getNextDayPrayerTimes() async {
     try {
-      Coordinates coordinates = Coordinates(21.4225, 39.8262);
+      final coordinates = await _getEffectiveCoordinates();
+      
       bool isLocationOff = false;
-
       try {
         LocationPermission permission = await Geolocator.checkPermission();
-        if (permission == LocationPermission.always || 
-            permission == LocationPermission.whileInUse) {
-          Position position = await Geolocator.getCurrentPosition();
-          coordinates = Coordinates(position.latitude, position.longitude);
-        } else {
-          isLocationOff = true;
-        }
-      } catch (e) {
-        isLocationOff = true;
-      }
+        isLocationOff = permission == LocationPermission.denied || 
+                       permission == LocationPermission.deniedForever;
+      } catch (_) {}
 
       final params = CalculationMethod.karachi.getParameters();
       params.madhab = Madhab.shafi;
