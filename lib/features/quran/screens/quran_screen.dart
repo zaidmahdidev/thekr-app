@@ -324,11 +324,17 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
                 ),
           ),
         ),
-        if (_showThemes && !isCapturing)
+        if (_showThemes && !isCapturing) ...[
+          GestureDetector(
+            onTap: () => setState(() => _showThemes = false),
+            behavior: HitTestBehavior.translucent,
+            child: const SizedBox.expand(),
+          ),
           QuranThemeBar(
             currentPage: widget.currentPage,
             onThemeSelected: () => setState(() => _showThemes = false),
           ),
+        ],
       ],
     );
   }

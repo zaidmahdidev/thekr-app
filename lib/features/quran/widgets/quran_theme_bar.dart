@@ -16,6 +16,26 @@ class QuranThemeBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentTheme = ref.watch(quranProvider(currentPage)).readingTheme;
+
+    Color getBgColor() {
+      switch (currentTheme) {
+        case QuranTheme.light:
+          return const Color(0xFFFFFDF5);
+        case QuranTheme.dark:
+          return const Color(0xFF1F2125);
+        case QuranTheme.blueGrey:
+          return const Color(0xFF343A41);
+        case QuranTheme.sepia:
+          return const Color(0xFFF4ECD8);
+        case QuranTheme.green:
+          return const Color(0xFFE8F5E9);
+      }
+    }
+
+    final bool isDark =
+        currentTheme == QuranTheme.dark || currentTheme == QuranTheme.blueGrey;
+
     return Positioned(
       top: 90.h,
       left: 50.w,
@@ -32,57 +52,60 @@ class QuranThemeBar extends ConsumerWidget {
             ),
           );
         },
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 5.w),
-          decoration: BoxDecoration(
-            color: context.colors.surface.withValues(alpha: 0.95),
-            borderRadius: BorderRadius.circular(30.r),
-            border: Border.all(
-              color: context.colors.primary.withValues(alpha: 0.1),
-              width: 1,
+        child: GestureDetector(
+          onTap: () {},
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 5.w),
+            decoration: BoxDecoration(
+              color: getBgColor().withValues(alpha: 0.95),
+              borderRadius: BorderRadius.circular(30.r),
+              border: Border.all(
+                color: isDark ? Colors.white10 : Colors.black12,
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _ThemeOption(
-                currentPage: currentPage,
-                theme: QuranTheme.light,
-                color: const Color(0xFFFFFDF5),
-                onSelected: onThemeSelected,
-              ),
-              _ThemeOption(
-                currentPage: currentPage,
-                theme: QuranTheme.dark,
-                color: const Color(0xFF1F2125),
-                onSelected: onThemeSelected,
-              ),
-              _ThemeOption(
-                currentPage: currentPage,
-                theme: QuranTheme.blueGrey,
-                color: const Color(0xFF343A41),
-                onSelected: onThemeSelected,
-              ),
-              _ThemeOption(
-                currentPage: currentPage,
-                theme: QuranTheme.sepia,
-                color: const Color(0xFFF4ECD8),
-                onSelected: onThemeSelected,
-              ),
-              _ThemeOption(
-                currentPage: currentPage,
-                theme: QuranTheme.green,
-                color: const Color(0xFFE8F5E9),
-                onSelected: onThemeSelected,
-              ),
-            ],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _ThemeOption(
+                  currentPage: currentPage,
+                  theme: QuranTheme.light,
+                  color: const Color(0xFFFFFDF5),
+                  onSelected: onThemeSelected,
+                ),
+                _ThemeOption(
+                  currentPage: currentPage,
+                  theme: QuranTheme.dark,
+                  color: const Color(0xFF1F2125),
+                  onSelected: onThemeSelected,
+                ),
+                _ThemeOption(
+                  currentPage: currentPage,
+                  theme: QuranTheme.blueGrey,
+                  color: const Color(0xFF343A41),
+                  onSelected: onThemeSelected,
+                ),
+                _ThemeOption(
+                  currentPage: currentPage,
+                  theme: QuranTheme.sepia,
+                  color: const Color(0xFFF4ECD8),
+                  onSelected: onThemeSelected,
+                ),
+                _ThemeOption(
+                  currentPage: currentPage,
+                  theme: QuranTheme.green,
+                  color: const Color(0xFFE8F5E9),
+                  onSelected: onThemeSelected,
+                ),
+              ],
+            ),
           ),
         ),
       ),
