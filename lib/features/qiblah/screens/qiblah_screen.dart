@@ -81,7 +81,7 @@ class LocationErrorWidget extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           ElevatedButton(
-            child: const Text("اععد المحاولة"),
+            child: const Text("أعد المحاولة"),
             onPressed: () {
               if (callback != null) callback!();
             },
@@ -184,13 +184,18 @@ class QiblahCompassWidget extends StatelessWidget {
     );
 
     return StreamBuilder(
-      stream: FlutterQiblah.qiblahStream,
+      stream: FlutterQiblah.qiblahStream.where((direction) => 
+        direction.direction.isFinite && direction.qiblah.isFinite),
       builder: (_, AsyncSnapshot<QiblahDirection> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
 
         final qiblahDirection = snapshot.data!;
+
+        if (!qiblahDirection.direction.isFinite || !qiblahDirection.qiblah.isFinite) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
         return Stack(
           alignment: Alignment.center,
@@ -207,7 +212,9 @@ class QiblahCompassWidget extends StatelessWidget {
             Positioned(
               bottom: 8,
               child: Text(
-                "${qiblahDirection.offset.toStringAsFixed(3)}°",
+                qiblahDirection.offset.isFinite 
+                  ? "${qiblahDirection.offset.toStringAsFixed(3)}°"
+                  : "...",
                 style: context.textStyles.bodyMedium,
               ),
             ),
