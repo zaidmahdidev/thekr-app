@@ -53,16 +53,22 @@ class ShareService {
     try {
       String shareText = content;
       if (subtitle != null && subtitle.isNotEmpty) {
-        shareText += '\n\n$subtitle';
+        if (shareText.isEmpty) {
+          shareText = subtitle;
+        } else {
+          shareText += '\n\n$subtitle';
+        }
       }
 
-      if (includeSignature) {
-        shareText += '\n\n﴿احمدوا الله دومًا﴾';
-        shareText += '\n\nحمّل تطبيق "ذكر" الآن:';
+      if (includeSignature && !shareText.contains(AppConstants.playStoreUrl)) {
+        shareText += '\n\nتمت المشاركة بواسطة تطبيق "${AppConstants.appName}":';
         shareText += '\n${AppConstants.playStoreUrl}';
       }
 
-      await Share.share(shareText, subject: 'ذكر من ${AppConstants.appName}');
+      await Share.share(
+        shareText,
+        subject: 'مشاركة من ${AppConstants.appName}',
+      );
     } catch (e) {
       Clipboard.setData(ClipboardData(text: content));
       showToast(
@@ -232,11 +238,9 @@ class ShareService {
               Text(
                 content,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: context.textStyles.bodySmall!.copyWith(
                   color: textColor,
                   fontSize: fontSize,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'hafs',
                   height: 1.6,
                 ),
               ),

@@ -149,7 +149,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             )
           : SingleChildScrollView(
               padding: EdgeInsets.symmetric(
-                horizontal: context.insets.sm,
+                horizontal: context.insets.md,
                 vertical: context.insets.md,
               ),
               child: Column(

@@ -9,6 +9,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
+import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'dart:io';
@@ -112,8 +113,10 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
 
   void _shareAyahAsText(AyahModel ayah) {
     final surahName = ayah.arabicName ?? "غير معروف";
-    final text = '﴿${ayah.text}﴾\n[$surahName - آية ${ayah.ayahNumber}]';
-    Share.share(text);
+    final content = '﴿${ayah.text}﴾';
+    final subtitle = '[$surahName - آية ${ayah.ayahNumber}]';
+
+    ShareService.shareAsText(context, content, subtitle);
   }
 
   Future<void> _shareAyahAsImage(AyahModel ayah) async {
@@ -262,30 +265,34 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
             isShowTabBar: !isCapturing,
             enableWordSelection: true,
             isShowAudioSlider: !isCapturing,
-            topBarStyle: QuranTopBarStyle.defaults(
-              isDark: isDarkMode,
-              context: context,
-            ).copyWith(
-              backgroundColor: context.colors.surface,
-              customTopBarWidgets: [
-                IconButton(
-                  onPressed: () => setState(() => _showThemes = !_showThemes),
-                  icon: Icon(
-                    Icons.palette_rounded,
-                    color: _showThemes ? context.colors.secondary : context.colors.primary,
-                  ),
-                  tooltip: 'تغيير نمط القراءة',
+            topBarStyle:
+                QuranTopBarStyle.defaults(
+                  isDark: isDarkMode,
+                  context: context,
+                ).copyWith(
+                  backgroundColor: context.colors.surface,
+                  customTopBarWidgets: [
+                    IconButton(
+                      onPressed: () =>
+                          setState(() => _showThemes = !_showThemes),
+                      icon: Icon(
+                        Icons.palette_rounded,
+                        color: _showThemes
+                            ? context.colors.secondary
+                            : context.colors.primary,
+                      ),
+                      tooltip: 'تغيير نمط القراءة',
+                    ),
+                    IconButton(
+                      onPressed: _shareCurrentPage,
+                      icon: Icon(
+                        Icons.share_rounded,
+                        color: context.colors.primary,
+                      ),
+                      tooltip: 'مشاركة الصفحة',
+                    ),
+                  ],
                 ),
-                IconButton(
-                  onPressed: _shareCurrentPage,
-                  icon: Icon(
-                    Icons.share_rounded,
-                    color: context.colors.primary,
-                  ),
-                  tooltip: 'مشاركة الصفحة',
-                ),
-              ],
-            ),
             onPageChanged: (page) {
               int realPage = page + 1;
               _lastPage = realPage;
@@ -302,18 +309,19 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
               alpha: 0.15,
             ),
             appIconPathForPlayAudioInBackground: AppAssets.logo,
-            ayahMenuStyle: AyahMenuStyle.defaults(
-              isDark: isDarkMode,
-              context: context,
-            ).copyWith(
-              showPlayAllButton: false,
-              customMenuItems: [
-                GestureDetector(
-                  onTap: _onShareAyah,
-                  child: Icon(Icons.share, color: context.colors.primary),
+            ayahMenuStyle:
+                AyahMenuStyle.defaults(
+                  isDark: isDarkMode,
+                  context: context,
+                ).copyWith(
+                  showPlayAllButton: false,
+                  customMenuItems: [
+                    GestureDetector(
+                      onTap: _onShareAyah,
+                      child: Icon(Icons.share, color: context.colors.primary),
+                    ),
+                  ],
                 ),
-              ],
-            ),
           ),
         ),
         if (_showThemes && !isCapturing)

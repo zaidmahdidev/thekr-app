@@ -34,7 +34,7 @@ class AppConstants {
 
   // Social Links
   static const String websiteUrl = 'https://zaidmahdidev.github.io/portfolio/'; // موقعك الشخصي إن وجد
-  static const String developerName = 'زيد مهدي';
+  static const String developerName = 'م.زيد مهدي';
   static const String privacyPolicyUrl =
       'https://zaidmahdidev.github.io/privacy-policy-thekr/';
 }

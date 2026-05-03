@@ -159,8 +159,9 @@ class AppShareSheet extends StatelessWidget {
                         Navigator.pop(context);
                         ShareService.shareAsText(
                           context,
-                          AppConstants.appName,
+                          '',
                           AppConstants.shareMessage,
+                          includeSignature: false,
                         );
                       },
                       icon: const Icon(
