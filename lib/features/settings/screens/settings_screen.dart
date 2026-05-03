@@ -148,6 +148,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               child: CircularProgressIndicator(color: context.colors.primary),
             )
           : SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.symmetric(
                 horizontal: context.insets.md,
                 vertical: context.insets.md,

@@ -241,6 +241,7 @@ class ShareService {
                 style: context.textStyles.bodySmall!.copyWith(
                   color: textColor,
                   fontSize: fontSize,
+                  fontWeight: FontWeight.w700,
                   height: 1.6,
                 ),
               ),

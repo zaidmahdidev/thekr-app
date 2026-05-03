@@ -12,14 +12,16 @@ class RemoteConfigService {
 
   Future<void> init() async {
     try {
-      await _remoteConfig.setConfigSettings(RemoteConfigSettings(
-        fetchTimeout: const Duration(minutes: 1),
-        minimumFetchInterval: const Duration(hours: 5),
-      ));
+      await _remoteConfig.setConfigSettings(
+        RemoteConfigSettings(
+          fetchTimeout: const Duration(minutes: 1),
+          minimumFetchInterval: const Duration(hours: 5),
+        ),
+      );
 
       // القيم الافتراضية في حال عدم وجود اتصال
       await _remoteConfig.setDefaults({
-        _madinahStreamIdKey: 'vGGu3ZgGWXY',
+        _madinahStreamIdKey: 'YVogBZONkpU',
         _makkahStreamIdKey: 'fZvuHkHYaXk',
       });
 

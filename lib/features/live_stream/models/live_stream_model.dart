@@ -16,18 +16,18 @@ class LiveStream {
   });
 
   static List<LiveStream> get all => [
-        LiveStream(
-          id: 'madinah',
-          title: 'بث المدينة المنورة - السنة النبوية',
-          youtubeId: RemoteConfigService().madinahStreamId,
-          description:
-              'بث مباشر لقناة السنة النبوية من المسجد النبوي بالمدينة المنورة',
-        ),
-        LiveStream(
-          id: 'makkah',
-          title: 'بث مكة المكرمة - قرآن كريم',
-          youtubeId: RemoteConfigService().makkahStreamId,
-          description: 'بث مباشر من المسجد الحرام بمكة المكرمة',
-        ),
-      ];
+    LiveStream(
+      id: 'makkah',
+      title: 'بث مكة المكرمة - قرآن كريم',
+      youtubeId: RemoteConfigService().makkahStreamId,
+      description: 'بث مباشر من المسجد الحرام بمكة المكرمة',
+    ),
+    LiveStream(
+      id: 'madinah',
+      title: 'بث المدينة المنورة - السنة النبوية',
+      youtubeId: RemoteConfigService().madinahStreamId,
+      description:
+          'بث مباشر لقناة السنة النبوية من المسجد النبوي بالمدينة المنورة',
+    ),
+  ];
 }
