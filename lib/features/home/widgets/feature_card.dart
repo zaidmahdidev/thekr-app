@@ -65,8 +65,8 @@ class FeatureCard extends StatelessWidget {
                       )
                     : Image.asset(
                         imgUrl ?? "",
-                        width: 32.w,
-                        height: 32.w,
+                        width: 40.w,
+                        height: 40.w,
                         fit: BoxFit.contain,
                       ),
               ),
