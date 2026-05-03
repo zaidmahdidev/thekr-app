@@ -31,8 +31,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _morningEnabled = true;
   bool _eveningEnabled = true;
   bool _fridayEnabled = true;
+  bool _wirdEnabled = false;
   TimeOfDay _morningTime = const TimeOfDay(hour: 7, minute: 0);
   TimeOfDay _eveningTime = const TimeOfDay(hour: 18, minute: 0);
+  TimeOfDay _wirdTime = const TimeOfDay(hour: 21, minute: 0);
 
   @override
   void initState() {
@@ -44,16 +46,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final morningEnabled = await SettingsService.isMorningNotificationEnabled();
     final eveningEnabled = await SettingsService.isEveningNotificationEnabled();
     final fridayEnabled = await SettingsService.isFridayNotificationEnabled();
+    final wirdEnabled = await SettingsService.isWirdNotificationEnabled();
     final morningTime = await SettingsService.getMorningTime();
     final eveningTime = await SettingsService.getEveningTime();
+    final wirdTime = await SettingsService.getWirdTime();
 
     if (mounted) {
       setState(() {
         _morningEnabled = morningEnabled;
         _eveningEnabled = eveningEnabled;
         _fridayEnabled = fridayEnabled;
+        _wirdEnabled = wirdEnabled;
         _morningTime = morningTime;
         _eveningTime = eveningTime;
+        _wirdTime = wirdTime;
         _isLoading = false;
       });
     }
@@ -133,6 +139,34 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     } else {
       await NotificationService.cancelFridayNotification();
       showToast(text: 'تم إلغاء تذكير سورة الكهف');
+    }
+  }
+
+  Future<void> _selectWirdTime() async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _wirdTime,
+      builder: (context, child) =>
+          Directionality(textDirection: TextDirection.rtl, child: child!),
+    );
+    if (picked != null && picked != _wirdTime) {
+      setState(() => _wirdTime = picked);
+      await SettingsService.setWirdTime(picked);
+      if (_wirdEnabled) {
+        await NotificationService.scheduleWirdNotification(picked);
+      }
+    }
+  }
+
+  Future<void> _updateWirdNotification(bool val) async {
+    setState(() => _wirdEnabled = val);
+    await SettingsService.setWirdNotificationEnabled(val);
+    if (val) {
+      await NotificationService.scheduleWirdNotification(_wirdTime);
+      showToast(text: 'تم تفعيل تذكير الورد اليومي');
+    } else {
+      await NotificationService.cancelWirdNotification();
+      showToast(text: 'تم إلغاء تذكير الورد اليومي');
     }
   }
 
@@ -409,11 +443,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         onTap: _eveningEnabled ? _selectEveningTime : null,
                       ),
                       SettingsTile(
+                        title: 'تذكير الورد اليومي',
+                        subtitle: _wirdEnabled
+                            ? 'تذكير عند ${_formatTime(_wirdTime)}'
+                            : 'التذكير متوقف',
+                        icon: Icons.menu_book_rounded,
+                        iconColor: context.colors.primary,
+                        trailing: Switch.adaptive(
+                          value: _wirdEnabled,
+                          onChanged: _updateWirdNotification,
+                        ),
+                        onTap: _wirdEnabled ? _selectWirdTime : null,
+                      ),
+                      SettingsTile(
                         title: 'تذكير سورة الكهف',
                         subtitle: _fridayEnabled
                             ? 'كل يوم جمعة صباحاً'
                             : 'التذكير متوقف',
-                        icon: Icons.menu_book_rounded,
+                        icon: Icons.auto_stories_rounded,
                         iconColor: Colors.green,
                         trailing: Switch.adaptive(
                           value: _fridayEnabled,

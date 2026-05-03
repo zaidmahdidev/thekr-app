@@ -223,6 +223,29 @@ class NotificationService {
     );
   }
 
+  static Future<void> scheduleWirdNotification(TimeOfDay time) async {
+    await _notifications.zonedSchedule(
+      4,
+      '📖 الورد اليومي',
+      'تذكير بقراءة الورد اليومي من القرآن الكريم، اجعل لك نصيباً من كتاب الله',
+      _nextInstanceOfTime(time),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'azkar_channel',
+          'تذكير الأذكار',
+          channelDescription: 'إشعارات تذكير الورد اليومي والأذكار',
+          importance: Importance.high,
+          priority: Priority.high,
+          playSound: true,
+          enableVibration: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time,
+      payload: 'quran_wird',
+    );
+  }
+
   static tz.TZDateTime _nextInstanceOfTime(TimeOfDay time) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduledDate = tz.TZDateTime(
@@ -261,6 +284,10 @@ class NotificationService {
     await _notifications.cancel(3);
   }
 
+  static Future<void> cancelWirdNotification() async {
+    await _notifications.cancel(4);
+  }
+
   static Future<void> cancelAllNotifications() async {
     await _notifications.cancelAll();
   }
@@ -269,6 +296,7 @@ class NotificationService {
     final morningEnabled = await SettingsService.isMorningNotificationEnabled();
     final eveningEnabled = await SettingsService.isEveningNotificationEnabled();
     final fridayEnabled = await SettingsService.isFridayNotificationEnabled();
+    final wirdEnabled = await SettingsService.isWirdNotificationEnabled();
 
     if (morningEnabled) {
       final morningTime = await SettingsService.getMorningTime();
@@ -283,6 +311,11 @@ class NotificationService {
     if (fridayEnabled) {
       await scheduleFridayKahf(const TimeOfDay(hour: 8, minute: 0));
     }
+
+    if (wirdEnabled) {
+      final wirdTime = await SettingsService.getWirdTime();
+      await scheduleWirdNotification(wirdTime);
+    }
   }
 }
 
@@ -290,8 +323,10 @@ class SettingsService {
   static const String _morningEnabledKey = 'morning_notification_enabled';
   static const String _eveningEnabledKey = 'evening_notification_enabled';
   static const String _fridayEnabledKey = 'friday_notification_enabled';
+  static const String _wirdEnabledKey = 'wird_notification_enabled';
   static const String _morningTimeKey = 'morning_notification_time';
   static const String _eveningTimeKey = 'evening_notification_time';
+  static const String _wirdTimeKey = 'wird_notification_time';
 
   static Future<void> setMorningNotificationEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
@@ -308,6 +343,11 @@ class SettingsService {
     await prefs.setBool(_fridayEnabledKey, enabled);
   }
 
+  static Future<void> setWirdNotificationEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_wirdEnabledKey, enabled);
+  }
+
   static Future<void> setMorningTime(TimeOfDay time) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_morningTimeKey, '${time.hour}:${time.minute}');
@@ -316,6 +356,11 @@ class SettingsService {
   static Future<void> setEveningTime(TimeOfDay time) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_eveningTimeKey, '${time.hour}:${time.minute}');
+  }
+
+  static Future<void> setWirdTime(TimeOfDay time) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_wirdTimeKey, '${time.hour}:${time.minute}');
   }
 
   static Future<bool> isMorningNotificationEnabled() async {
@@ -333,6 +378,11 @@ class SettingsService {
     return prefs.getBool(_fridayEnabledKey) ?? true;
   }
 
+  static Future<bool> isWirdNotificationEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_wirdEnabledKey) ?? false;
+  }
+
   static Future<TimeOfDay> getMorningTime() async {
     final prefs = await SharedPreferences.getInstance();
     final timeString = prefs.getString(_morningTimeKey) ?? '6:0';
@@ -343,6 +393,13 @@ class SettingsService {
   static Future<TimeOfDay> getEveningTime() async {
     final prefs = await SharedPreferences.getInstance();
     final timeString = prefs.getString(_eveningTimeKey) ?? '18:0';
+    final parts = timeString.split(':');
+    return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+  }
+
+  static Future<TimeOfDay> getWirdTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    final timeString = prefs.getString(_wirdTimeKey) ?? '21:0';
     final parts = timeString.split(':');
     return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
   }

@@ -49,6 +49,8 @@ class SettingsState {
   final ThemeMode themeMode;
   final AppThemeType appTheme;
   final bool notificationsEnabled;
+  final bool wirdNotificationEnabled;
+  final TimeOfDay wirdNotificationTime;
   final String languageCode;
   final double fontSize;
   final List<HomeSection> homeSections;
@@ -58,6 +60,8 @@ class SettingsState {
     required this.themeMode,
     this.appTheme = AppThemeType.defaultTheme,
     this.notificationsEnabled = true,
+    this.wirdNotificationEnabled = false,
+    this.wirdNotificationTime = const TimeOfDay(hour: 21, minute: 0),
     this.languageCode = 'ar',
     this.fontSize = 16.0,
     required this.homeSections,
@@ -68,6 +72,8 @@ class SettingsState {
     ThemeMode? themeMode,
     AppThemeType? appTheme,
     bool? notificationsEnabled,
+    bool? wirdNotificationEnabled,
+    TimeOfDay? wirdNotificationTime,
     String? languageCode,
     double? fontSize,
     List<HomeSection>? homeSections,
@@ -77,6 +83,9 @@ class SettingsState {
       themeMode: themeMode ?? this.themeMode,
       appTheme: appTheme ?? this.appTheme,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+      wirdNotificationEnabled:
+          wirdNotificationEnabled ?? this.wirdNotificationEnabled,
+      wirdNotificationTime: wirdNotificationTime ?? this.wirdNotificationTime,
       languageCode: languageCode ?? this.languageCode,
       fontSize: fontSize ?? this.fontSize,
       homeSections: homeSections ?? this.homeSections,
@@ -102,6 +111,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           homeSections: _getInitialHomeSections(),
           notificationsEnabled:
               CacheHelper.getData(key: 'notificationsEnabled') ?? true,
+          wirdNotificationEnabled:
+              CacheHelper.getData(key: 'wirdNotificationEnabled') ?? false,
+          wirdNotificationTime: _getInitialWirdTime(),
           shareTemplate: _getInitialShareTemplate(),
         ),
       );
@@ -137,6 +149,13 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         .toList();
   }
 
+  static TimeOfDay _getInitialWirdTime() {
+    final int? hour = CacheHelper.getData(key: 'wirdNotificationHour');
+    final int? minute = CacheHelper.getData(key: 'wirdNotificationMinute');
+    if (hour == null || minute == null) return const TimeOfDay(hour: 21, minute: 0);
+    return TimeOfDay(hour: hour, minute: minute);
+  }
+
   static ShareTemplate _getInitialShareTemplate() {
     final String? template = CacheHelper.getData(key: 'shareTemplate');
     if (template == null) return ShareTemplate.classic;
@@ -159,6 +178,19 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   void toggleNotifications(bool enabled) {
     state = state.copyWith(notificationsEnabled: enabled);
     CacheHelper.saveData(key: 'notificationsEnabled', value: enabled);
+  }
+
+  void toggleWirdNotification(bool enabled) {
+    state = state.copyWith(wirdNotificationEnabled: enabled);
+    CacheHelper.saveData(key: 'wirdNotificationEnabled', value: enabled);
+    // TODO: Schedule/Cancel notification
+  }
+
+  void updateWirdTime(TimeOfDay time) {
+    state = state.copyWith(wirdNotificationTime: time);
+    CacheHelper.saveData(key: 'wirdNotificationHour', value: time.hour);
+    CacheHelper.saveData(key: 'wirdNotificationMinute', value: time.minute);
+    // TODO: Reschedule notification
   }
 
   void updateFontSize(double size) {
