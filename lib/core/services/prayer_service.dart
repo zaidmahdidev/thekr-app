@@ -37,6 +37,22 @@ class PrayerService {
     return Coordinates(21.4225, 39.8262);
   }
 
+  static Future<void> refreshLocation() async {
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        // High accuracy for manual refresh
+        Position position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+          ),
+        );
+        _saveLocationToCache(position.latitude, position.longitude);
+      }
+    } catch (_) {}
+  }
+
   static void _updateLocationInBackground() async {
     try {
       LocationPermission permission = await Geolocator.checkPermission();

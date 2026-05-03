@@ -8,6 +8,7 @@ import 'package:hijri/hijri_calendar.dart';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/services/prayer_service.dart';
 import 'package:thekr_app/core/widgets/custom_dialog.dart';
 import 'package:thekr_app/features/home/providers/prayer_provider.dart';
 import 'package:thekr_app/features/home/providers/time_provider.dart';
@@ -136,54 +137,66 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       },
       child: Scaffold(
         backgroundColor: context.colors.background,
-        body: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            HomeAppBar(
-              currentTime: currentTime,
-              todayDate: todayDate,
-              hijriDate: hijriDate,
-              remainingTime: remainingTime,
-              nextPrayer: nextPrayer,
+        body: RefreshIndicator(
+          color: context.colors.primary,
+          backgroundColor: context.colors.surface,
+          onRefresh: () async {
+            await PrayerService.refreshLocation();
+            ref.invalidate(prayerTimesProvider);
+            ref.invalidate(tomorrowPrayerTimesProvider);
+          },
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
             ),
-            ...settings.homeSections.map((section) {
-              switch (section) {
-                case HomeSection.prayerTimes:
-                  return SliverToBoxAdapter(
-                    key: const ValueKey('prayerTimes'),
-                    child: PrayerTimesCard(
-                      prayerTimes: prayerTimes,
-                      onRequestLocation: () async {
-                        LocationPermission permission =
-                            await Geolocator.checkPermission();
+            slivers: [
+              HomeAppBar(
+                currentTime: currentTime,
+                todayDate: todayDate,
+                hijriDate: hijriDate,
+                remainingTime: remainingTime,
+                nextPrayer: nextPrayer,
+              ),
+              ...settings.homeSections.map((section) {
+                switch (section) {
+                  case HomeSection.prayerTimes:
+                    return SliverToBoxAdapter(
+                      key: const ValueKey('prayerTimes'),
+                      child: PrayerTimesCard(
+                        prayerTimes: prayerTimes,
+                        onRequestLocation: () async {
+                          LocationPermission permission =
+                              await Geolocator.checkPermission();
 
-                        if (permission == LocationPermission.deniedForever) {
-                          showToast(
-                            text: 'يرجى تفعيل صلاحية الموقع من إعدادات الهاتف',
-                          );
-                        } else {
-                          await Geolocator.requestPermission();
-                          ref.invalidate(prayerTimesProvider);
-                          ref.invalidate(tomorrowPrayerTimesProvider);
-                        }
-                      },
-                    ),
-                  );
-                case HomeSection.inspiration:
-                  return const InspirationCarousel(
-                    key: ValueKey('inspiration'),
-                  );
-                case HomeSection.features:
-                  return const HomeFeaturesGrid(key: ValueKey('features'));
-                case HomeSection.dynamicSections:
-                  return const HomeDynamicSections(
-                    key: ValueKey('dynamicSections'),
-                  );
-                case HomeSection.shareCard:
-                  return const ShareAppCard(key: ValueKey('shareCard'));
-              }
-            }),
-          ],
+                          if (permission == LocationPermission.deniedForever) {
+                            showToast(
+                              text:
+                                  'يرجى تفعيل صلاحية الموقع من إعدادات الهاتف',
+                            );
+                          } else {
+                            await Geolocator.requestPermission();
+                            ref.invalidate(prayerTimesProvider);
+                            ref.invalidate(tomorrowPrayerTimesProvider);
+                          }
+                        },
+                      ),
+                    );
+                  case HomeSection.inspiration:
+                    return const InspirationCarousel(
+                      key: ValueKey('inspiration'),
+                    );
+                  case HomeSection.features:
+                    return const HomeFeaturesGrid(key: ValueKey('features'));
+                  case HomeSection.dynamicSections:
+                    return const HomeDynamicSections(
+                      key: ValueKey('dynamicSections'),
+                    );
+                  case HomeSection.shareCard:
+                    return const ShareAppCard(key: ValueKey('shareCard'));
+                }
+              }),
+            ],
+          ),
         ),
       ),
     );
@@ -197,9 +210,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     if (backButtonHasNotBeenPressedOrSnackBarHasClosed) {
       _lastPressedAt = now;
-      showToast(
-        text: 'اضغط مرة أخرى للخروج',
-      );
+      showToast(text: 'اضغط مرة أخرى للخروج');
     } else {
       SystemNavigator.pop();
     }
