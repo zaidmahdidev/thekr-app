@@ -182,7 +182,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               child: CircularProgressIndicator(color: context.colors.primary),
             )
           : SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.symmetric(
                 horizontal: context.insets.md,
                 vertical: context.insets.md,
@@ -343,36 +343,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 const Spacer(),
-                                TextButton(
-                                  onPressed: () => ref
+                                AppButton(
+                                  text:
+                                      'الافتراضي ' +
+                                      '(${settings.fontSize.toInt()})',
+                                  size: AppButtonSize.small,
+                                  isFullWidth: false,
+                                  onTap: () => ref
                                       .read(settingsProvider.notifier)
                                       .updateFontSize(16.0),
-                                  style: TextButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 2.w,
-                                      vertical: 2.h,
-                                    ),
-                                    minimumSize: Size.zero,
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                    backgroundColor: context.colors.primary,
-                                  ),
-                                  child: Text(
-                                    'الافتراضي',
-                                    style: context.textStyles.bodySmall
-                                        ?.copyWith(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                ),
-                                SizedBox(width: context.insets.sm),
-                                Text(
-                                  '${settings.fontSize.toInt()}',
-                                  style: context.textStyles.bodySmall?.copyWith(
-                                    color: context.colors.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
                                 ),
                               ],
                             ),

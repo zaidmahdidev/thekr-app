@@ -32,7 +32,7 @@ class ShareService {
         if (content.length <= 800)
           ShareOption.image(
             onTap: () {
-              _shareAsImage(
+              shareAsImage(
                 context,
                 settings.shareTemplate,
                 content,
@@ -79,12 +79,13 @@ class ShareService {
     }
   }
 
-  static Future<void> _shareAsImage(
+  static Future<void> shareAsImage(
     BuildContext context,
     ShareTemplate template,
     String content,
-    String? subtitle,
-  ) async {
+    String? subtitle, {
+    bool isCustomText = false,
+  }) async {
     try {
       // Precache logo
       final ImageProvider logo = AssetImage(AppAssets.logo);
@@ -95,7 +96,13 @@ class ShareService {
           color: Colors.transparent,
           child: Directionality(
             textDirection: TextDirection.rtl,
-            child: buildShareCard(context, template, content, subtitle),
+            child: buildShareCard(
+              context,
+              template,
+              content,
+              subtitle,
+              isCustomText: isCustomText,
+            ),
           ),
         ),
         context: context,
@@ -117,8 +124,9 @@ class ShareService {
     BuildContext context,
     ShareTemplate template,
     String content,
-    String? subtitle,
-  ) {
+    String? subtitle, {
+    bool isCustomText = false,
+  }) {
     Color bgColor;
     Color textColor;
     Color accentColor;
@@ -206,7 +214,6 @@ class ShareService {
                 AppAssets.bg,
                 width: 220.w,
                 height: 220.w,
-                // color: textColor,
               ),
             ),
           ),
@@ -214,12 +221,13 @@ class ShareService {
             bottom: -30.h,
             right: 0,
             left: 0,
-
             child: Column(
               children: [
                 Image.asset(AppAssets.logo, width: 35.w, height: 35.w),
                 Text(
-                  'بواسطة تطبيق ' + AppConstants.appName,
+                  isCustomText
+                      ? 'نص مخصص عبر تطبيق ${AppConstants.appName}'
+                      : 'بواسطة تطبيق ${AppConstants.appName}',
                   style: TextStyle(
                     color: textColor.withValues(alpha: 0.6),
                     fontSize: 7.sp,
@@ -230,7 +238,6 @@ class ShareService {
               ],
             ),
           ),
-
           Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -238,7 +245,7 @@ class ShareService {
               Text(
                 content,
                 textAlign: TextAlign.center,
-                style: context.textStyles.bodySmall!.copyWith(
+                style: TextStyle(
                   color: textColor,
                   fontSize: fontSize,
                   fontWeight: FontWeight.w700,

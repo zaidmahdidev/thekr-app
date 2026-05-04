@@ -101,7 +101,12 @@ class AppShareSheet extends StatelessWidget {
                 SizedBox(height: context.insets.lg),
 
                 // Copy Link Row
-                GestureDetector(
+                AppButton(
+                  text: 'نسخ الرابط',
+                  icon: Icons.copy_rounded,
+                  variant: AppButtonVariant.secondary,
+                  size: AppButtonSize.small,
+                  isFullWidth: false,
                   onTap: () {
                     Clipboard.setData(
                       const ClipboardData(text: AppConstants.playStoreUrl),
@@ -109,85 +114,22 @@ class AppShareSheet extends StatelessWidget {
                     Navigator.pop(context);
                     showToast(text: 'تم نسخ رابط التطبيق');
                   },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 10.h,
-                      horizontal: 20.w,
-                    ),
-                    decoration: BoxDecoration(
-                      color: context.colors.primary.withValues(alpha: 0.05),
-                      borderRadius: BorderRadius.circular(context.corners.lg),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.copy_rounded,
-                          size: 16.sp,
-                          color: context.colors.primary,
-                        ),
-                        SizedBox(width: 8.w),
-                        Text(
-                          'نسخ الرابط',
-                          style: context.textStyles.bodySmall?.copyWith(
-                            color: context.colors.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
 
                 SizedBox(height: context.insets.md),
 
-                // Share App Button - Premium Styled
-                SizedBox(
-                  width: double.infinity,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.colors.primary.withValues(alpha: 0.3),
-                          blurRadius: 15,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        ShareService.shareAsText(
-                          context,
-                          '',
-                          AppConstants.shareMessage,
-                          includeSignature: false,
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.share_rounded,
-                        color: Colors.white,
-                      ),
-                      label: Text(
-                        'مشاركة التطبيق الآن',
-                        style: context.textStyles.bodyLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: context.colors.primary,
-                        foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            context.corners.lg,
-                          ),
-                        ),
-                        elevation: 0,
-                      ),
-                    ),
-                  ),
+                AppButton(
+                  text: 'مشاركة التطبيق الآن',
+                  icon: Icons.share_rounded,
+                  onTap: () {
+                    Navigator.pop(context);
+                    ShareService.shareAsText(
+                      context,
+                      '',
+                      AppConstants.shareMessage,
+                      includeSignature: false,
+                    );
+                  },
                 ),
 
                 SizedBox(height: MediaQuery.of(context).padding.bottom + 8.h),

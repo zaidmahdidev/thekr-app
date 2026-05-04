@@ -3,17 +3,51 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/widgets/app_scaffold.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+import 'package:thekr_app/core/widgets/toast_utils.dart';
+import 'package:thekr_app/core/widgets/widgets.dart';
 
 @RoutePage()
-class CustomizeShareCardScreen extends ConsumerWidget {
+class CustomizeShareCardScreen extends ConsumerStatefulWidget {
   const CustomizeShareCardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CustomizeShareCardScreen> createState() =>
+      _CustomizeShareCardScreenState();
+}
+
+class _CustomizeShareCardScreenState
+    extends ConsumerState<CustomizeShareCardScreen> {
+  final TextEditingController _textController = TextEditingController(
+    text: '﴿فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ﴾',
+  );
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  void _shareCustomCard(ShareTemplate template) {
+    final text = _textController.text.trim();
+    if (text.isEmpty) {
+      showToast(text: 'يرجى كتابة نص أولاً');
+      return;
+    }
+
+    ShareService.shareAsImage(
+      context,
+      template,
+      text,
+      null,
+      isCustomText: true,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
 
     return AppScaffold(
@@ -25,21 +59,31 @@ class CustomizeShareCardScreen extends ConsumerWidget {
           children: [
             SizedBox(height: context.insets.md),
 
+            // Card Preview
             ClipRRect(
-              borderRadius: BorderRadius.circular(20.r),
+              borderRadius: BorderRadius.circular(24.r),
               child: FittedBox(
                 fit: BoxFit.cover,
-                child: ShareService.buildShareCard(
-                  context,
-                  settings.shareTemplate,
-                  '﴿فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ﴾',
-                  null,
+                child: ValueListenableBuilder(
+                  valueListenable: _textController,
+                  builder: (context, value, child) {
+                    return ShareService.buildShareCard(
+                      context,
+                      settings.shareTemplate,
+                      _textController.text.isEmpty
+                          ? 'اكتب نصك هنا...'
+                          : _textController.text,
+                      null,
+                      isCustomText: true,
+                    );
+                  },
                 ),
               ),
             ),
+
             SizedBox(height: context.insets.xl),
 
-            // Template Selector Section
+            // Template Selector Header
             Text(
               'اختر شكل البطاقة المفضل',
               style: context.textStyles.titleSmall?.copyWith(
@@ -49,6 +93,7 @@ class CustomizeShareCardScreen extends ConsumerWidget {
             ),
             SizedBox(height: context.insets.md),
 
+            // Horizontal Template List
             SizedBox(
               height: 120.h,
               child: ListView.builder(
@@ -70,7 +115,6 @@ class CustomizeShareCardScreen extends ConsumerWidget {
                         bottom: 8.h,
                         top: 4.h,
                       ),
-                      // width: 200.w,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(24.r),
                         border: Border.all(
@@ -81,42 +125,17 @@ class CustomizeShareCardScreen extends ConsumerWidget {
                         ),
                         boxShadow: isSelected ? context.shadows.low : null,
                       ),
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(20.r),
-                            child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: ShareService.buildShareCard(
-                                context,
-                                template,
-                                '﴿فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ﴾',
-                                null,
-                              ),
-                            ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(22.r),
+                        child: FittedBox(
+                          fit: BoxFit.cover,
+                          child: ShareService.buildShareCard(
+                            context,
+                            template,
+                            '﴿فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ﴾',
+                            null,
                           ),
-                          if (isSelected)
-                            Positioned(
-                              top: 8,
-                              right: 8,
-                              child: Container(
-                                padding: EdgeInsets.all(4.w),
-                                decoration: BoxDecoration(
-                                  color: context.colors.primary,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: const Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                  size: 14,
-                                ),
-                              ),
-                            ),
-                        ],
+                        ),
                       ),
                     ),
                   );
@@ -124,37 +143,41 @@ class CustomizeShareCardScreen extends ConsumerWidget {
               ),
             ),
 
-            SizedBox(height: context.insets.md),
+            SizedBox(height: context.insets.xl),
 
-            // Image Share Info
-            Container(
-              padding: EdgeInsets.all(context.insets.md),
-              decoration: BoxDecoration(
-                color: context.colors.secondary.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(context.corners.md),
-                border: Border.all(
-                  color: context.colors.secondary.withValues(alpha: 0.5),
+            // Custom Text Section
+            Text(
+              'اكتب نصك الخاص',
+              style: context.textStyles.titleSmall?.copyWith(
+                color: context.colors.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: context.insets.md),
+            TextField(
+              controller: _textController,
+              maxLines: 3,
+              maxLength: 500,
+              textAlign: TextAlign.center,
+              decoration: InputDecoration(
+                hintText: 'اكتب آية، حديث، أو خاطرة إيمانية...',
+                filled: true,
+                fillColor: context.colors.surface,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  borderSide: BorderSide(
+                    color: context.colors.primary.withValues(alpha: 0.2),
+                  ),
                 ),
               ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.info_outline_rounded,
-                    color: context.colors.secondary,
-                    size: 20,
-                  ),
-                  SizedBox(width: context.insets.sm),
-                  Expanded(
-                    child: Text(
-                      'يتم مشاركة البطاقة المختارة تلقائياً عند مشاركة أي ذكر من داخل التطبيق.',
-                      style: context.textStyles.bodySmall?.copyWith(
-                        color: context.colors.textPrimary,
-                        height: 1.4,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              style: context.textStyles.bodyMedium?.copyWith(height: 1.5),
+            ),
+
+            SizedBox(height: context.insets.lg),
+
+            AppButton(
+              text: 'مشاركة كبطاقة صورة',
+              onTap: () => _shareCustomCard(settings.shareTemplate),
             ),
 
             SizedBox(height: context.insets.xl),

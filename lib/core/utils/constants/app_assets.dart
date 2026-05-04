@@ -21,8 +21,8 @@ class AppAssets {
 
   // Feature Icons (PNGs)
   static const String fQuran = '$_imagesPath/koran.png';
-  static const String fAzkar = '$_imagesPath/book.png';
-  static const String fHusn = '$_imagesPath/praying.png';
+  static const String fAzkar = '$_imagesPath/praying.png';
+  static const String fHusn = '$_imagesPath/book.png';
   static const String fHadith = '$_imagesPath/nuclearforty.png';
   static const String fQiblah = '$_imagesPath/qibla.png';
   static const String fMisbaha = '$_imagesPath/beads.png';
