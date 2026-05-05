@@ -27,43 +27,14 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  bool _isLoading = true;
-  bool _morningEnabled = true;
-  bool _eveningEnabled = true;
-  bool _fridayEnabled = true;
-  bool _wirdEnabled = false;
-  TimeOfDay _morningTime = const TimeOfDay(hour: 7, minute: 0);
-  TimeOfDay _eveningTime = const TimeOfDay(hour: 18, minute: 0);
-  TimeOfDay _wirdTime = const TimeOfDay(hour: 21, minute: 0);
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _loadSettings();
+    // Settings are loaded automatically via settingsProvider
   }
 
-  Future<void> _loadSettings() async {
-    final morningEnabled = await SettingsService.isMorningNotificationEnabled();
-    final eveningEnabled = await SettingsService.isEveningNotificationEnabled();
-    final fridayEnabled = await SettingsService.isFridayNotificationEnabled();
-    final wirdEnabled = await SettingsService.isWirdNotificationEnabled();
-    final morningTime = await SettingsService.getMorningTime();
-    final eveningTime = await SettingsService.getEveningTime();
-    final wirdTime = await SettingsService.getWirdTime();
-
-    if (mounted) {
-      setState(() {
-        _morningEnabled = morningEnabled;
-        _eveningEnabled = eveningEnabled;
-        _fridayEnabled = fridayEnabled;
-        _wirdEnabled = wirdEnabled;
-        _morningTime = morningTime;
-        _eveningTime = eveningTime;
-        _wirdTime = wirdTime;
-        _isLoading = false;
-      });
-    }
-  }
 
   String _formatTime(TimeOfDay time) {
     final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
@@ -72,100 +43,74 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return '$hour:$minute $period';
   }
 
-  Future<void> _selectMorningTime() async {
+  Future<void> _selectMorningTime(TimeOfDay currentTime) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: _morningTime,
+      initialTime: currentTime,
       builder: (context, child) =>
           Directionality(textDirection: TextDirection.rtl, child: child!),
     );
-    if (picked != null && picked != _morningTime) {
-      setState(() => _morningTime = picked);
-      await SettingsService.setMorningTime(picked);
-      if (_morningEnabled) {
-        await NotificationService.scheduleMorningAzkar(picked);
-      }
+    if (picked != null) {
+      ref.read(settingsProvider.notifier).updateMorningTime(picked);
     }
   }
 
-  Future<void> _selectEveningTime() async {
+  Future<void> _selectEveningTime(TimeOfDay currentTime) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: _eveningTime,
+      initialTime: currentTime,
       builder: (context, child) =>
           Directionality(textDirection: TextDirection.rtl, child: child!),
     );
-    if (picked != null && picked != _eveningTime) {
-      setState(() => _eveningTime = picked);
-      await SettingsService.setEveningTime(picked);
-      if (_eveningEnabled) {
-        await NotificationService.scheduleEveningAzkar(picked);
-      }
+    if (picked != null) {
+      ref.read(settingsProvider.notifier).updateEveningTime(picked);
     }
   }
 
   Future<void> _updateMorningNotification(bool val) async {
-    setState(() => _morningEnabled = val);
-    await SettingsService.setMorningNotificationEnabled(val);
+    ref.read(settingsProvider.notifier).toggleMorningNotification(val);
     if (val) {
-      await NotificationService.scheduleMorningAzkar(_morningTime);
       showToast(text: 'تم تفعيل تذكير أذكار الصباح');
     } else {
-      await NotificationService.cancelMorningNotification();
       showToast(text: 'تم إلغاء تذكير أذكار الصباح');
     }
   }
 
   Future<void> _updateEveningNotification(bool val) async {
-    setState(() => _eveningEnabled = val);
-    await SettingsService.setEveningNotificationEnabled(val);
+    ref.read(settingsProvider.notifier).toggleEveningNotification(val);
     if (val) {
-      await NotificationService.scheduleEveningAzkar(_eveningTime);
       showToast(text: 'تم تفعيل تذكير أذكار المساء');
     } else {
-      await NotificationService.cancelEveningNotification();
       showToast(text: 'تم إلغاء تذكير أذكار المساء');
     }
   }
 
   Future<void> _updateFridayNotification(bool val) async {
-    setState(() => _fridayEnabled = val);
-    await SettingsService.setFridayNotificationEnabled(val);
+    ref.read(settingsProvider.notifier).toggleFridayNotification(val);
     if (val) {
-      await NotificationService.scheduleFridayKahf(
-        const TimeOfDay(hour: 8, minute: 0),
-      );
       showToast(text: 'تم تفعيل تذكير سورة الكهف');
     } else {
-      await NotificationService.cancelFridayNotification();
       showToast(text: 'تم إلغاء تذكير سورة الكهف');
     }
   }
 
-  Future<void> _selectWirdTime() async {
+  Future<void> _selectWirdTime(TimeOfDay currentTime) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: _wirdTime,
+      initialTime: currentTime,
       builder: (context, child) =>
           Directionality(textDirection: TextDirection.rtl, child: child!),
     );
-    if (picked != null && picked != _wirdTime) {
-      setState(() => _wirdTime = picked);
-      await SettingsService.setWirdTime(picked);
-      if (_wirdEnabled) {
-        await NotificationService.scheduleWirdNotification(picked);
-      }
+    if (picked != null) {
+      ref.read(settingsProvider.notifier).updateWirdTime(picked);
     }
   }
 
   Future<void> _updateWirdNotification(bool val) async {
-    setState(() => _wirdEnabled = val);
-    await SettingsService.setWirdNotificationEnabled(val);
+    ref.read(settingsProvider.notifier).toggleWirdNotification(val);
     if (val) {
-      await NotificationService.scheduleWirdNotification(_wirdTime);
       showToast(text: 'تم تفعيل تذكير الورد اليومي');
     } else {
-      await NotificationService.cancelWirdNotification();
       showToast(text: 'تم إلغاء تذكير الورد اليومي');
     }
   }
@@ -397,52 +342,64 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       SettingsTile(
                         title: 'أذكار الصباح',
-                        subtitle: _morningEnabled
-                            ? 'تذكير عند ${_formatTime(_morningTime)}'
+                        subtitle: settings.morningNotificationEnabled
+                            ? 'تذكير عند ${_formatTime(settings.morningNotificationTime)}'
                             : 'التذكير متوقف',
                         icon: Icons.wb_sunny_rounded,
                         iconColor: Colors.orange,
                         trailing: Switch.adaptive(
-                          value: _morningEnabled,
+                          value: settings.morningNotificationEnabled,
                           onChanged: _updateMorningNotification,
                         ),
-                        onTap: _morningEnabled ? _selectMorningTime : null,
+                        onTap: settings.morningNotificationEnabled
+                            ? () => _selectMorningTime(
+                              settings.morningNotificationTime,
+                            )
+                            : null,
                       ),
                       SettingsTile(
                         title: 'أذكار المساء',
-                        subtitle: _eveningEnabled
-                            ? 'تذكير عند ${_formatTime(_eveningTime)}'
+                        subtitle: settings.eveningNotificationEnabled
+                            ? 'تذكير عند ${_formatTime(settings.eveningNotificationTime)}'
                             : 'التذكير متوقف',
                         icon: Icons.nightlight_round_rounded,
                         iconColor: Colors.blueAccent,
                         trailing: Switch.adaptive(
-                          value: _eveningEnabled,
+                          value: settings.eveningNotificationEnabled,
                           onChanged: _updateEveningNotification,
                         ),
-                        onTap: _eveningEnabled ? _selectEveningTime : null,
+                        onTap: settings.eveningNotificationEnabled
+                            ? () => _selectEveningTime(
+                              settings.eveningNotificationTime,
+                            )
+                            : null,
                       ),
                       SettingsTile(
                         title: 'تذكير الورد اليومي',
-                        subtitle: _wirdEnabled
-                            ? 'تذكير عند ${_formatTime(_wirdTime)}'
+                        subtitle: settings.wirdNotificationEnabled
+                            ? 'تذكير عند ${_formatTime(settings.wirdNotificationTime)}'
                             : 'التذكير متوقف',
                         icon: Icons.menu_book_rounded,
                         iconColor: context.colors.primary,
                         trailing: Switch.adaptive(
-                          value: _wirdEnabled,
+                          value: settings.wirdNotificationEnabled,
                           onChanged: _updateWirdNotification,
                         ),
-                        onTap: _wirdEnabled ? _selectWirdTime : null,
+                        onTap: settings.wirdNotificationEnabled
+                            ? () => _selectWirdTime(
+                              settings.wirdNotificationTime,
+                            )
+                            : null,
                       ),
                       SettingsTile(
                         title: 'تذكير سورة الكهف',
-                        subtitle: _fridayEnabled
+                        subtitle: settings.fridayNotificationEnabled
                             ? 'كل يوم جمعة صباحاً'
                             : 'التذكير متوقف',
                         icon: Icons.auto_stories_rounded,
                         iconColor: Colors.green,
                         trailing: Switch.adaptive(
-                          value: _fridayEnabled,
+                          value: settings.fridayNotificationEnabled,
                           onChanged: _updateFridayNotification,
                         ),
                       ),

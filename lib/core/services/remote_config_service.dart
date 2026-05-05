@@ -21,7 +21,7 @@ class RemoteConfigService {
 
       // القيم الافتراضية في حال عدم وجود اتصال
       await _remoteConfig.setDefaults({
-        _madinahStreamIdKey: 'YVogBZONkpU',
+        _madinahStreamIdKey: 'BtMUUgApnPs',
         _makkahStreamIdKey: 'fZvuHkHYaXk',
       });
 
