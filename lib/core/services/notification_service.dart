@@ -2,7 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -25,13 +25,19 @@ class NotificationService {
   static Function(String?)? onNotificationClick;
 
   static Future<void> initialize() async {
-    tz.initializeTimeZones();
+    // Initialize timezone data
+    tz_data.initializeTimeZones();
 
     try {
-      final timeZoneName = await FlutterTimezone.getLocalTimezone();
-      tz.setLocalLocation(tz.getLocation(timeZoneName.identifier));
+      final timezoneInfo = await FlutterTimezone.getLocalTimezone();
+      final String id = timezoneInfo.identifier;
+      tz.setLocalLocation(tz.getLocation(id));
     } catch (e) {
-      tz.setLocalLocation(tz.getLocation('UTC'));
+      try {
+        tz.setLocalLocation(tz.getLocation('UTC'));
+      } catch (e) {
+        debugPrint("Could not set local location: $e");
+      }
     }
 
     // Initialize FCM
