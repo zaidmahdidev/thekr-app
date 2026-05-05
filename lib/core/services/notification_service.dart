@@ -105,34 +105,39 @@ class NotificationService {
   }
 
   static Future<bool> requestPermissions() async {
-    // FCM Permissions
-    NotificationSettings settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-      provisional: false,
-    );
+    try {
+      // FCM Permissions
+      NotificationSettings settings = await _messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+        provisional: false,
+      );
 
-    final bool fcmGranted =
-        settings.authorizationStatus == AuthorizationStatus.authorized;
+      final bool fcmGranted =
+          settings.authorizationStatus == AuthorizationStatus.authorized;
 
-    // Local Notifications Permissions
-    final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-        _notifications.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
+      // Local Notifications Permissions
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+          _notifications.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
 
-    if (androidImplementation != null) {
-      final bool? granted = await androidImplementation
-          .requestNotificationsPermission();
-      final bool? exactAlarmGranted = await androidImplementation
-          .requestExactAlarmsPermission();
+      if (androidImplementation != null) {
+        final bool? granted = await androidImplementation
+            .requestNotificationsPermission();
+        final bool? exactAlarmGranted = await androidImplementation
+            .requestExactAlarmsPermission();
 
-      await _createNotificationChannel();
+        await _createNotificationChannel();
 
-      return (granted ?? false) && (exactAlarmGranted ?? false) && fcmGranted;
+        return (granted ?? false) && (exactAlarmGranted ?? false) && fcmGranted;
+      }
+      return fcmGranted;
+    } catch (e) {
+      debugPrint("Error requesting notification permissions: $e");
+      return false;
     }
-    return fcmGranted;
   }
 
   static Future<void> _createNotificationChannel() async {

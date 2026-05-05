@@ -126,27 +126,36 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   static AppThemeType _getInitialAppTheme() {
-    final String? theme = CacheHelper.getData(key: 'appTheme');
-    if (theme == null) return AppThemeType.defaultTheme;
-    return AppThemeType.values.firstWhere(
-      (e) => e.name == theme,
-      orElse: () => AppThemeType.defaultTheme,
-    );
+    try {
+      final dynamic theme = CacheHelper.getData(key: 'appTheme');
+      if (theme == null || theme is! String) return AppThemeType.defaultTheme;
+      return AppThemeType.values.firstWhere(
+        (e) => e.name == theme,
+        orElse: () => AppThemeType.defaultTheme,
+      );
+    } catch (_) {
+      return AppThemeType.defaultTheme;
+    }
   }
 
   static List<HomeSection> _getInitialHomeSections() {
-    final List<dynamic>? saved = CacheHelper.getData(key: 'homeSections');
-    if (saved == null) {
+    try {
+      final dynamic saved = CacheHelper.getData(key: 'homeSections');
+      if (saved == null || saved is! List) {
+        return HomeSection.values;
+      }
+      return saved
+          .map(
+            (e) => HomeSection.values.firstWhere(
+              (element) => element.name == e.toString(),
+              orElse: () => HomeSection.prayerTimes,
+            ),
+          )
+          .whereType<HomeSection>()
+          .toList();
+    } catch (_) {
       return HomeSection.values;
     }
-    return saved
-        .map(
-          (e) => HomeSection.values.firstWhere(
-            (element) => element.name == e,
-            orElse: () => HomeSection.prayerTimes,
-          ),
-        )
-        .toList();
   }
 
   static TimeOfDay _getInitialWirdTime() {

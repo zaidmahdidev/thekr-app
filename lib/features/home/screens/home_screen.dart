@@ -192,8 +192,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   );
                 case HomeSection.shareCard:
                   return const ShareAppCard(key: ValueKey('shareCard'));
+                default:
+                  return const SliverToBoxAdapter(child: SizedBox.shrink());
               }
-            }),
+            }).where((widget) => widget != null).toList(),
           ],
         ),
       ),

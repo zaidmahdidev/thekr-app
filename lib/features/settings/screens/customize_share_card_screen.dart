@@ -85,7 +85,7 @@ class _CustomizeShareCardScreenState
 
             // Template Selector Header
             Text(
-              'اختر شكل البطاقة المفضل',
+              'اختر شكل البطاقة المفضلة',
               style: context.textStyles.titleSmall?.copyWith(
                 color: context.colors.primary,
                 fontWeight: FontWeight.bold,
