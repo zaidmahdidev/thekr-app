@@ -19,7 +19,7 @@ class NotificationService {
 
   static final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
-  
+
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
   static Function(String?)? onNotificationClick;
@@ -44,7 +44,7 @@ class NotificationService {
         InitializationSettings(android: initializationSettingsAndroid);
 
     await _notifications.initialize(
-      initializationSettings,
+      settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         onNotificationClick?.call(response.payload);
       },
@@ -71,10 +71,10 @@ class NotificationService {
 
       if (notification != null && android != null) {
         _notifications.show(
-          notification.hashCode,
-          notification.title,
-          notification.body,
-          const NotificationDetails(
+          id: notification.hashCode,
+          title: notification.title,
+          body: notification.body,
+          notificationDetails: const NotificationDetails(
             android: AndroidNotificationDetails(
               'azkar_channel',
               'تذكير الأذكار',
@@ -93,9 +93,10 @@ class NotificationService {
   static Future<void> checkLaunchNotification() async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
         await _notifications.getNotificationAppLaunchDetails();
-    
+
     if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
-      final payload = notificationAppLaunchDetails?.notificationResponse?.payload;
+      final payload =
+          notificationAppLaunchDetails?.notificationResponse?.payload;
       if (payload != null) {
         Future.delayed(const Duration(seconds: 1), () {
           onNotificationClick?.call(payload);
@@ -119,9 +120,10 @@ class NotificationService {
 
       // Local Notifications Permissions
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          _notifications.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin
-          >();
+          _notifications
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >();
 
       if (androidImplementation != null) {
         final bool? granted = await androidImplementation
@@ -161,11 +163,11 @@ class NotificationService {
 
   static Future<void> scheduleMorningAzkar(TimeOfDay time) async {
     await _notifications.zonedSchedule(
-      1,
-      '🌅 أذكار الصباح',
-      'حان وقت أذكار الصباح، ابدأ يومك بذكر الله',
-      _nextInstanceOfTime(time),
-      const NotificationDetails(
+      id: 1,
+      title: '🌅 أذكار الصباح',
+      body: 'حان وقت أذكار الصباح، ابدأ يومك بذكر الله',
+      scheduledDate: _nextInstanceOfTime(time),
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'azkar_channel',
           'تذكير الأذكار',
@@ -178,17 +180,17 @@ class NotificationService {
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
-      payload: 'morning', 
+      payload: 'morning',
     );
   }
 
   static Future<void> scheduleEveningAzkar(TimeOfDay time) async {
     await _notifications.zonedSchedule(
-      2,
-      '🌙 أذكار المساء',
-      'حان وقت أذكار المساء، اختتم يومك بذكر الله',
-      _nextInstanceOfTime(time),
-      const NotificationDetails(
+      id: 2,
+      title: '🌙 أذكار المساء',
+      body: 'حان وقت أذكار المساء، اختتم يومك بذكر الله',
+      scheduledDate: _nextInstanceOfTime(time),
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'azkar_channel',
           'تذكير الأذكار',
@@ -207,11 +209,11 @@ class NotificationService {
 
   static Future<void> scheduleFridayKahf(TimeOfDay time) async {
     await _notifications.zonedSchedule(
-      3,
-      '📖 سورة الكهف',
-      'يوم الجمعة، لا تنسَ قراءة سورة الكهف، نورٌ ما بين الجمعتين',
-      _nextInstanceOfFriday(time),
-      const NotificationDetails(
+      id: 3,
+      title: '📖 سورة الكهف',
+      body: 'يوم الجمعة، لا تنسَ قراءة سورة الكهف، نورٌ ما بين الجمعتين',
+      scheduledDate: _nextInstanceOfFriday(time),
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'azkar_channel',
           'تذكير الأذكار',
@@ -230,11 +232,11 @@ class NotificationService {
 
   static Future<void> scheduleWirdNotification(TimeOfDay time) async {
     await _notifications.zonedSchedule(
-      4,
-      '📖 الورد اليومي',
-      'تذكير بقراءة الورد اليومي من القرآن الكريم، اجعل لك نصيباً من كتاب الله',
-      _nextInstanceOfTime(time),
-      const NotificationDetails(
+      id: 4,
+      title: '📖 الورد اليومي',
+      body: 'تذكير بقراءة الورد اليومي من القرآن الكريم، اجعل لك نصيباً من كتاب الله',
+      scheduledDate: _nextInstanceOfTime(time),
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'azkar_channel',
           'تذكير الأذكار',
@@ -278,19 +280,19 @@ class NotificationService {
   }
 
   static Future<void> cancelMorningNotification() async {
-    await _notifications.cancel(1);
+    await _notifications.cancel(id: 1);
   }
 
   static Future<void> cancelEveningNotification() async {
-    await _notifications.cancel(2);
+    await _notifications.cancel(id: 2);
   }
 
   static Future<void> cancelFridayNotification() async {
-    await _notifications.cancel(3);
+    await _notifications.cancel(id: 3);
   }
 
   static Future<void> cancelWirdNotification() async {
-    await _notifications.cancel(4);
+    await _notifications.cancel(id: 4);
   }
 
   static Future<void> cancelAllNotifications() async {

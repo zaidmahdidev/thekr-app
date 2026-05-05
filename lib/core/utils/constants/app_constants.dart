@@ -33,7 +33,7 @@ class AppConstants {
       'حمّل تطبيق "ذكر" الآن، رفيقك في الأذكار والعبادات:\n$playStoreUrl';
 
   // Social Links
-  static const String websiteUrl = 'https://zaidmahdidev.github.io/portfolio/'; // موقعك الشخصي إن وجد
+  static const String websiteUrl = 'https://zaidmahdi.vercel.app';
   static const String developerName = 'م.زيد مهدي';
   static const String privacyPolicyUrl =
       'https://zaidmahdidev.github.io/privacy-policy-thekr/';
