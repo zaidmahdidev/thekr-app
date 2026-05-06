@@ -65,11 +65,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     try {
       final info = await InAppUpdate.checkForUpdate();
       if (info.updateAvailability == UpdateAvailability.updateAvailable) {
-        await InAppUpdate.startFlexibleUpdate();
-        // Check if the update is already downloaded (e.g. from a previous attempt)
-        if (info.installStatus == InstallStatus.downloaded) {
-          await InAppUpdate.completeFlexibleUpdate();
-        }
+        await InAppUpdate.performImmediateUpdate();
       }
     } catch (e) {
       debugPrint("Update feature not available: $e");
