@@ -30,13 +30,15 @@ class NotificationService {
 
     try {
       final timezoneInfo = await FlutterTimezone.getLocalTimezone();
-      final String id = timezoneInfo.identifier;
-      tz.setLocalLocation(tz.getLocation(id));
+      final String timezoneName = timezoneInfo.identifier;
+      tz.setLocalLocation(tz.getLocation(timezoneName));
     } catch (e) {
+      debugPrint("Could not set local location, falling back to UTC: $e");
       try {
-        tz.setLocalLocation(tz.getLocation('UTC'));
-      } catch (e) {
-        debugPrint("Could not set local location: $e");
+        // Try UTC as fallback
+        tz.setLocalLocation(tz.UTC);
+      } catch (e2) {
+        debugPrint("Critical: UTC location not found: $e2");
       }
     }
 
@@ -113,16 +115,21 @@ class NotificationService {
 
   static Future<bool> requestPermissions() async {
     try {
-      // FCM Permissions
-      NotificationSettings settings = await _messaging.requestPermission(
-        alert: true,
-        badge: true,
-        sound: true,
-        provisional: false,
-      );
+      // FCM Permissions - Wrap in extra try/catch for Android context issues
+      NotificationSettings? settings;
+      try {
+        settings = await _messaging.requestPermission(
+          alert: true,
+          badge: true,
+          sound: true,
+          provisional: false,
+        );
+      } catch (fcmError) {
+        debugPrint("FCM Permission request failed: $fcmError");
+      }
 
       final bool fcmGranted =
-          settings.authorizationStatus == AuthorizationStatus.authorized;
+          settings?.authorizationStatus == AuthorizationStatus.authorized;
 
       // Local Notifications Permissions
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
@@ -132,18 +139,23 @@ class NotificationService {
               >();
 
       if (androidImplementation != null) {
-        final bool? granted = await androidImplementation
-            .requestNotificationsPermission();
-        final bool? exactAlarmGranted = await androidImplementation
-            .requestExactAlarmsPermission();
+        bool granted = false;
+        bool exactAlarmGranted = false;
+
+        try {
+          granted = await androidImplementation.requestNotificationsPermission() ?? false;
+          exactAlarmGranted = await androidImplementation.requestExactAlarmsPermission() ?? false;
+        } catch (localError) {
+          debugPrint("Local Notification Permission request failed: $localError");
+        }
 
         await _createNotificationChannel();
 
-        return (granted ?? false) && (exactAlarmGranted ?? false) && fcmGranted;
+        return (granted) && (exactAlarmGranted) && fcmGranted;
       }
       return fcmGranted;
     } catch (e) {
-      debugPrint("Error requesting notification permissions: $e");
+      debugPrint("General error requesting notification permissions: $e");
       return false;
     }
   }

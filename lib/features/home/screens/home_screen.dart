@@ -157,7 +157,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               remainingTime: remainingTime,
               nextPrayer: nextPrayer,
             ),
-            ...settings.homeSections.map((section) {
+            ...settings.homeSections.map<Widget>((section) {
               switch (section) {
                 case HomeSection.prayerTimes:
                   return SliverToBoxAdapter(
@@ -192,10 +192,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   );
                 case HomeSection.shareCard:
                   return const ShareAppCard(key: ValueKey('shareCard'));
-                default:
-                  return const SliverToBoxAdapter(child: SizedBox.shrink());
               }
-            }).where((widget) => widget != null).toList(),
+            }).toList(),
           ],
         ),
       ),
