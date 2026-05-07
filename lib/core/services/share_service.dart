@@ -23,12 +23,20 @@ class ShareService {
     required String content,
     String? subtitle,
     bool showSubtitleInImage = false,
+    bool isCustomText = false,
   }) {
     final settings = ref.watch(settingsProvider);
     ShareOptionsSheet.show(
       context: context,
       options: [
-        ShareOption.text(onTap: () => shareAsText(context, content, subtitle)),
+        ShareOption.text(
+          onTap: () => shareAsText(
+            context,
+            content,
+            subtitle,
+            isCustomText: isCustomText,
+          ),
+        ),
         if (content.length <= 800)
           ShareOption.image(
             onTap: () {
@@ -37,6 +45,7 @@ class ShareService {
                 settings.shareTemplate,
                 content,
                 showSubtitleInImage ? subtitle : null,
+                isCustomText: isCustomText,
               );
             },
           ),
@@ -49,6 +58,7 @@ class ShareService {
     String content,
     String? subtitle, {
     bool includeSignature = true,
+    bool isCustomText = false,
   }) async {
     try {
       String shareText = content;
@@ -61,7 +71,10 @@ class ShareService {
       }
 
       if (includeSignature && !shareText.contains(AppConstants.playStoreUrl)) {
-        shareText += '\n\nتمت المشاركة بواسطة تطبيق "${AppConstants.appName}":';
+        final signature = isCustomText
+            ? 'ذكر مخصص عبر تطبيق ${AppConstants.appName}'
+            : 'تمت المشاركة بواسطة تطبيق "${AppConstants.appName}"';
+        shareText += '\n\n$signature:';
         shareText += '\n${AppConstants.playStoreUrl}';
       }
 

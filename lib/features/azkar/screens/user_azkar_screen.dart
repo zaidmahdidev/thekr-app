@@ -27,6 +27,7 @@ class UserAzkarScreen extends ConsumerWidget {
       body: userAthkar.isEmpty
           ? _buildEmptyState(context)
           : ListView.builder(
+              physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.all(context.insets.md),
               itemCount: userAthkar.length,
               itemBuilder: (context, index) {
@@ -60,7 +61,6 @@ class UserAzkarScreen extends ConsumerWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 40.w),
             child: AppButton(
-              
               text: 'إضافة ذكر جديد',
               onTap: () => _showAddSheet(context),
             ),

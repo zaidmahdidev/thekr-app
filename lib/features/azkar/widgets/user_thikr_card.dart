@@ -10,6 +10,8 @@ import 'package:thekr_app/features/azkar/models/user_thikr.dart';
 import 'package:thekr_app/features/azkar/providers/user_azkar_provider.dart';
 import 'package:thekr_app/features/azkar/widgets/add_thikr_sheet.dart';
 
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+
 class UserThikrCard extends ConsumerWidget {
   final UserThikr thikr;
 
@@ -17,70 +19,70 @@ class UserThikrCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    final fontSize = settings.fontSize;
+
     return MyCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildIconButton(context, Icons.delete_outline_rounded, Colors.red,
-                  () {
-                _confirmDelete(context, ref);
-              }),
-              _buildIconButton(
-                  context, Icons.edit_outlined, context.colors.primary, () {
-                _showEditSheet(context);
-              }),
+              _ActionIcon(
+                icon: Icons.edit_outlined,
+                color: Colors.blue,
+                onTap: () => _showEditSheet(context),
+              ),
+              _ActionIcon(
+                icon: Icons.delete_outline_rounded,
+                color: Colors.red,
+                onTap: () => _confirmDelete(context, ref),
+              ),
               const Spacer(),
-              _buildIconButton(
-                  context, Icons.copy_rounded, context.colors.textSecondary, () {
-                Clipboard.setData(ClipboardData(text: thikr.text));
-                showToast(text: 'تم النسخ');
-              }),
-              _buildIconButton(
-                  context, Icons.share_rounded, context.colors.secondary, () {
-                ShareService.showShareSheet(
+              _ActionIcon(
+                icon: Icons.copy_rounded,
+                color: context.colors.textSecondary,
+                onTap: () {
+                  Clipboard.setData(ClipboardData(text: thikr.text));
+                  showToast(text: 'تم نسخ الذكر');
+                },
+              ),
+              _ActionIcon(
+                icon: Icons.share_outlined,
+                color: context.colors.secondary,
+                onTap: () => ShareService.showShareSheet(
                   context,
                   ref,
                   content: thikr.text,
                   subtitle: thikr.description,
-                );
-              }),
+                  isCustomText: true,
+                ),
+              ),
             ],
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: context.insets.md),
           Text(
             thikr.text,
             style: context.textStyles.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
               height: 1.6,
+              fontSize: fontSize,
             ),
             textAlign: TextAlign.center,
           ),
-          if (thikr.description != null) ...[
-            SizedBox(height: 8.h),
+          if (thikr.description != null && thikr.description!.isNotEmpty) ...[
+            SizedBox(height: context.insets.sm),
             Text(
               thikr.description!,
-              style: context.textStyles.bodySmall?.copyWith(
+              style: context.textStyles.bodyMedium?.copyWith(
                 color: context.colors.textSecondary,
+                fontSize: fontSize * 0.8,
               ),
               textAlign: TextAlign.center,
             ),
           ],
-          SizedBox(height: 12.h),
         ],
-      ),
-    );
-  }
-
-  Widget _buildIconButton(
-      BuildContext context, IconData icon, Color color, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(context.corners.md),
-      child: Padding(
-        padding: EdgeInsets.all(8.r),
-        child: Icon(icon, size: 20.r, color: color),
       ),
     );
   }
@@ -100,6 +102,30 @@ class UserThikrCard extends ConsumerWidget {
     context.showSheet(
       title: 'تعديل الذكر',
       child: AddThikrSheet(existingThikr: thikr),
+    );
+  }
+}
+
+class _ActionIcon extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _ActionIcon({
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(context.corners.md),
+      child: Padding(
+        padding: EdgeInsets.all(8.r),
+        child: Icon(icon, size: 20.r, color: color),
+      ),
     );
   }
 }
