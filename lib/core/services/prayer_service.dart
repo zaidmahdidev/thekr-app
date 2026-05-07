@@ -16,8 +16,6 @@ class PrayerService {
     final lng = CacheHelper.getData(key: _lngKey);
 
     if (lat != null && lng != null) {
-      // Trigger a silent update in the background to keep it fresh
-      _updateLocationInBackground();
       return Coordinates(lat as double, lng as double);
     }
 

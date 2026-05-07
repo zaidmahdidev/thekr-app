@@ -105,16 +105,35 @@ class _QiblahCompassState extends State<QiblahCompass> {
   get stream => _locationStreamController.stream;
 
   Future<void> _checkLocationStatus() async {
-    // before running the app please enable your location
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
 
-    final locationStatus = await FlutterQiblah.checkLocationStatus();
-    if (locationStatus.enabled &&
-        locationStatus.status == LocationPermission.denied) {
-      await FlutterQiblah.requestPermissions();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        await Geolocator.openAppSettings();
+      }
+
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        try {
+          await Geolocator.getCurrentPosition(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high,
+            ),
+          );
+        } catch (_) {}
+      }
+
       final s = await FlutterQiblah.checkLocationStatus();
       _locationStreamController.sink.add(s);
-    } else
-      _locationStreamController.sink.add(locationStatus);
+    } catch (e) {
+      debugPrint("Error checking location: $e");
+      final s = await FlutterQiblah.checkLocationStatus();
+      _locationStreamController.sink.add(s);
+    }
   }
 
   @override
@@ -184,8 +203,10 @@ class QiblahCompassWidget extends StatelessWidget {
     );
 
     return StreamBuilder(
-      stream: FlutterQiblah.qiblahStream.where((direction) => 
-        direction.direction.isFinite && direction.qiblah.isFinite),
+      stream: FlutterQiblah.qiblahStream.where(
+        (direction) =>
+            direction.direction.isFinite && direction.qiblah.isFinite,
+      ),
       builder: (_, AsyncSnapshot<QiblahDirection> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -193,7 +214,8 @@ class QiblahCompassWidget extends StatelessWidget {
 
         final qiblahDirection = snapshot.data!;
 
-        if (!qiblahDirection.direction.isFinite || !qiblahDirection.qiblah.isFinite) {
+        if (!qiblahDirection.direction.isFinite ||
+            !qiblahDirection.qiblah.isFinite) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -212,9 +234,9 @@ class QiblahCompassWidget extends StatelessWidget {
             Positioned(
               bottom: 8,
               child: Text(
-                qiblahDirection.offset.isFinite 
-                  ? "${qiblahDirection.offset.toStringAsFixed(3)}°"
-                  : "...",
+                qiblahDirection.offset.isFinite
+                    ? "${qiblahDirection.offset.toStringAsFixed(3)}°"
+                    : "...",
                 style: context.textStyles.bodyMedium,
               ),
             ),
