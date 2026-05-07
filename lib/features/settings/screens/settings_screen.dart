@@ -35,7 +35,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     // Settings are loaded automatically via settingsProvider
   }
 
-
   String _formatTime(TimeOfDay time) {
     final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
     final period = time.period == DayPeriod.am ? 'ص' : 'م';
@@ -322,16 +321,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                         iconColor: Colors.purple,
                       ),
+                      SettingsTile(
+                        title: 'بطاقة المشاركة',
+                        subtitle: 'تخصيص شكل ومحتوى بطاقة المشاركة ',
+                        icon: Icons.auto_awesome_outlined,
+                        iconColor: Colors.orange,
+                        onTap: () =>
+                            context.pushRoute(const CustomizeShareCardRoute()),
+                      ),
                       Padding(
                         padding: EdgeInsets.only(bottom: context.insets.sm),
                         child: SettingsTile(
-                          title: 'بطاقة المشاركة',
-                          subtitle: 'تخصيص شكل ومحتوى بطاقة المشاركة ',
-                          icon: Icons.auto_awesome_outlined,
-                          iconColor: Colors.orange,
-                          onTap: () => context.pushRoute(
-                            const CustomizeShareCardRoute(),
-                          ),
+                          title: 'أذكاري الخاصة',
+                          subtitle: 'أضف أذكارك الشخصية وشاركها',
+                          icon: Icons.bookmark_added_rounded,
+                          onTap: () =>
+                              context.router.push(const UserAzkarRoute()),
+                          iconColor: Colors.teal,
                         ),
                       ),
                     ],
@@ -353,8 +359,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                         onTap: settings.morningNotificationEnabled
                             ? () => _selectMorningTime(
-                              settings.morningNotificationTime,
-                            )
+                                settings.morningNotificationTime,
+                              )
                             : null,
                       ),
                       SettingsTile(
@@ -370,8 +376,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                         onTap: settings.eveningNotificationEnabled
                             ? () => _selectEveningTime(
-                              settings.eveningNotificationTime,
-                            )
+                                settings.eveningNotificationTime,
+                              )
                             : null,
                       ),
                       SettingsTile(
@@ -386,9 +392,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           onChanged: _updateWirdNotification,
                         ),
                         onTap: settings.wirdNotificationEnabled
-                            ? () => _selectWirdTime(
-                              settings.wirdNotificationTime,
-                            )
+                            ? () =>
+                                  _selectWirdTime(settings.wirdNotificationTime)
                             : null,
                       ),
                       SettingsTile(

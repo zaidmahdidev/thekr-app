@@ -429,3 +429,19 @@ class SettingsRoute extends PageRouteInfo<void> {
     },
   );
 }
+
+/// generated route for
+/// [UserAzkarScreen]
+class UserAzkarRoute extends PageRouteInfo<void> {
+  const UserAzkarRoute({List<PageRouteInfo>? children})
+    : super(UserAzkarRoute.name, initialChildren: children);
+
+  static const String name = 'UserAzkarRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const UserAzkarScreen();
+    },
+  );
+}
