@@ -23,30 +23,40 @@ class CustomDialog extends StatelessWidget {
       index: 0,
       verticalOffset: 200,
       horizontalOffset: 0,
-      child: CupertinoAlertDialog(
-        title: Text(
-          title,
-          style: const TextStyle(
-            color: Colors.red,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+      child: CupertinoTheme(
+        data: CupertinoThemeData(
+          brightness: Theme.of(context).brightness,
         ),
-        content: Text(message, style: context.textStyles.bodyMedium),
-        actions: [
-          CupertinoDialogAction(
-            onPressed: onYes,
-            isDestructiveAction: true,
-            child: const Text('نعم'),
+        child: CupertinoAlertDialog(
+          title: Text(
+            title,
+            style: context.textStyles.bodyLarge?.copyWith(
+              color: context.colors.error,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          CupertinoDialogAction(
-            onPressed: onCancel,
-            isDefaultAction: true,
-            child: const Text('لا'),
+          content: Text(
+            message,
+            style: context.textStyles.bodyMedium,
           ),
-        ],
-        insetAnimationCurve: Curves.easeInOut,
-        insetAnimationDuration: const Duration(milliseconds: 300),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: onCancel,
+              isDefaultAction: true,
+              child: Text(
+                'لا',
+                style: TextStyle(color: context.colors.primary),
+              ),
+            ),
+            CupertinoDialogAction(
+              onPressed: onYes,
+              isDestructiveAction: true,
+              child: const Text('نعم'),
+            ),
+          ],
+          insetAnimationCurve: Curves.easeInOut,
+          insetAnimationDuration: const Duration(milliseconds: 300),
+        ),
       ),
     );
   }

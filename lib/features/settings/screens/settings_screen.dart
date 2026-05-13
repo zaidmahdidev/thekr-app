@@ -7,6 +7,7 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
+import 'package:thekr_app/features/settings/widgets/developer_social_card.dart';
 import 'package:thekr_app/features/settings/widgets/settings_section.dart';
 import 'package:thekr_app/features/settings/widgets/settings_tile.dart';
 import 'package:share_plus/share_plus.dart';
@@ -26,36 +27,12 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  bool _isLoading = true;
-  bool _morningEnabled = true;
-  bool _eveningEnabled = true;
-  bool _fridayEnabled = true;
-  TimeOfDay _morningTime = const TimeOfDay(hour: 7, minute: 0);
-  TimeOfDay _eveningTime = const TimeOfDay(hour: 18, minute: 0);
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _loadSettings();
-  }
-
-  Future<void> _loadSettings() async {
-    final morningEnabled = await SettingsService.isMorningNotificationEnabled();
-    final eveningEnabled = await SettingsService.isEveningNotificationEnabled();
-    final fridayEnabled = await SettingsService.isFridayNotificationEnabled();
-    final morningTime = await SettingsService.getMorningTime();
-    final eveningTime = await SettingsService.getEveningTime();
-
-    if (mounted) {
-      setState(() {
-        _morningEnabled = morningEnabled;
-        _eveningEnabled = eveningEnabled;
-        _fridayEnabled = fridayEnabled;
-        _morningTime = morningTime;
-        _eveningTime = eveningTime;
-        _isLoading = false;
-      });
-    }
+    // Settings are loaded automatically via settingsProvider
   }
 
   String _formatTime(TimeOfDay time) {
@@ -65,73 +42,75 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return '$hour:$minute $period';
   }
 
-  Future<void> _selectMorningTime() async {
+  Future<void> _selectMorningTime(TimeOfDay currentTime) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: _morningTime,
+      initialTime: currentTime,
       builder: (context, child) =>
           Directionality(textDirection: TextDirection.rtl, child: child!),
     );
-    if (picked != null && picked != _morningTime) {
-      setState(() => _morningTime = picked);
-      await SettingsService.setMorningTime(picked);
-      if (_morningEnabled) {
-        await NotificationService.scheduleMorningAzkar(picked);
-      }
+    if (picked != null) {
+      ref.read(settingsProvider.notifier).updateMorningTime(picked);
     }
   }
 
-  Future<void> _selectEveningTime() async {
+  Future<void> _selectEveningTime(TimeOfDay currentTime) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: _eveningTime,
+      initialTime: currentTime,
       builder: (context, child) =>
           Directionality(textDirection: TextDirection.rtl, child: child!),
     );
-    if (picked != null && picked != _eveningTime) {
-      setState(() => _eveningTime = picked);
-      await SettingsService.setEveningTime(picked);
-      if (_eveningEnabled) {
-        await NotificationService.scheduleEveningAzkar(picked);
-      }
+    if (picked != null) {
+      ref.read(settingsProvider.notifier).updateEveningTime(picked);
     }
   }
 
   Future<void> _updateMorningNotification(bool val) async {
-    setState(() => _morningEnabled = val);
-    await SettingsService.setMorningNotificationEnabled(val);
+    ref.read(settingsProvider.notifier).toggleMorningNotification(val);
     if (val) {
-      await NotificationService.scheduleMorningAzkar(_morningTime);
       showToast(text: 'تم تفعيل تذكير أذكار الصباح');
     } else {
-      await NotificationService.cancelMorningNotification();
       showToast(text: 'تم إلغاء تذكير أذكار الصباح');
     }
   }
 
   Future<void> _updateEveningNotification(bool val) async {
-    setState(() => _eveningEnabled = val);
-    await SettingsService.setEveningNotificationEnabled(val);
+    ref.read(settingsProvider.notifier).toggleEveningNotification(val);
     if (val) {
-      await NotificationService.scheduleEveningAzkar(_eveningTime);
       showToast(text: 'تم تفعيل تذكير أذكار المساء');
     } else {
-      await NotificationService.cancelEveningNotification();
       showToast(text: 'تم إلغاء تذكير أذكار المساء');
     }
   }
 
   Future<void> _updateFridayNotification(bool val) async {
-    setState(() => _fridayEnabled = val);
-    await SettingsService.setFridayNotificationEnabled(val);
+    ref.read(settingsProvider.notifier).toggleFridayNotification(val);
     if (val) {
-      await NotificationService.scheduleFridayKahf(
-        const TimeOfDay(hour: 8, minute: 0),
-      );
       showToast(text: 'تم تفعيل تذكير سورة الكهف');
     } else {
-      await NotificationService.cancelFridayNotification();
       showToast(text: 'تم إلغاء تذكير سورة الكهف');
+    }
+  }
+
+  Future<void> _selectWirdTime(TimeOfDay currentTime) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: currentTime,
+      builder: (context, child) =>
+          Directionality(textDirection: TextDirection.rtl, child: child!),
+    );
+    if (picked != null) {
+      ref.read(settingsProvider.notifier).updateWirdTime(picked);
+    }
+  }
+
+  Future<void> _updateWirdNotification(bool val) async {
+    ref.read(settingsProvider.notifier).toggleWirdNotification(val);
+    if (val) {
+      showToast(text: 'تم تفعيل تذكير الورد اليومي');
+    } else {
+      showToast(text: 'تم إلغاء تذكير الورد اليومي');
     }
   }
 
@@ -147,9 +126,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               child: CircularProgressIndicator(color: context.colors.primary),
             )
           : SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.symmetric(
-                horizontal: context.insets.lg,
-                vertical: context.insets.lg,
+                horizontal: context.insets.md,
+                vertical: context.insets.md,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,7 +150,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               ),
                         ),
                       ),
-                      const Divider(height: 1, indent: 20, endIndent: 20),
                       Padding(
                         padding: EdgeInsets.all(context.insets.md),
                         child: Column(
@@ -214,7 +193,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                     onTap: () => ref
                                         .read(settingsProvider.notifier)
                                         .updateAppTheme(theme),
-                                    child: Container(
+                                    child: AnimatedContainer(
+                                      duration: const Duration(
+                                        milliseconds: 300,
+                                      ),
                                       margin: EdgeInsets.symmetric(
                                         horizontal: 4.w,
                                       ),
@@ -240,9 +222,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                         ),
                                       ),
                                       child: Center(
-                                        child: Container(
-                                          width: 32.w,
-                                          height: 32.w,
+                                        child: AnimatedContainer(
+                                          duration: const Duration(
+                                            milliseconds: 300,
+                                          ),
+                                          width: isSelected ? 28.w : 32.w,
+                                          height: isSelected ? 28.w : 32.w,
                                           decoration: BoxDecoration(
                                             color: primaryColor,
                                             shape: BoxShape.circle,
@@ -262,13 +247,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                                   ]
                                                 : null,
                                           ),
-                                          child: isSelected
-                                              ? const Icon(
-                                                  Icons.check,
-                                                  color: Colors.white,
-                                                  size: 20,
-                                                )
-                                              : null,
+                                          child: AnimatedSwitcher(
+                                            duration: const Duration(
+                                              milliseconds: 200,
+                                            ),
+                                            child: isSelected
+                                                ? const Icon(
+                                                    Icons.check,
+                                                    key: ValueKey('check'),
+                                                    color: Colors.white,
+                                                    size: 18,
+                                                  )
+                                                : const SizedBox.shrink(),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -279,18 +270,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ],
                         ),
                       ),
-                      const Divider(height: 1, indent: 20, endIndent: 20),
-                      SettingsTile(
-                        title: 'ترتيب الشاشة الرئيسية',
-                        subtitle: 'تحكم في مكان ظهور العناصر في الرئيسية',
-                        icon: Icons.dashboard_customize_rounded,
-                        onTap: () => context.router.push(
-                          const CustomizeHomeLayoutRoute(),
-                        ),
-                        iconColor: Colors.purple,
-                      ),
-                      const Divider(height: 1, indent: 20, endIndent: 20),
-                      // Font Size Adjustment (Moved here)
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: context.insets.lg,
@@ -308,36 +287,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 const Spacer(),
-                                TextButton(
-                                  onPressed: () => ref
+                                AppButton(
+                                  text:
+                                      'الافتراضي ' +
+                                      '(${settings.fontSize.toInt()})',
+                                  size: AppButtonSize.small,
+                                  isFullWidth: false,
+                                  onTap: () => ref
                                       .read(settingsProvider.notifier)
                                       .updateFontSize(16.0),
-                                  style: TextButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 2.w,
-                                      vertical: 2.h,
-                                    ),
-                                    minimumSize: Size.zero,
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                    backgroundColor: context.colors.primary,
-                                  ),
-                                  child: Text(
-                                    'الافتراضي',
-                                    style: context.textStyles.bodySmall
-                                        ?.copyWith(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                ),
-                                SizedBox(width: context.insets.sm),
-                                Text(
-                                  '${settings.fontSize.toInt()}',
-                                  style: context.textStyles.bodySmall?.copyWith(
-                                    color: context.colors.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
                                 ),
                               ],
                             ),
@@ -354,99 +312,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ],
                         ),
                       ),
-                      const Divider(height: 1, indent: 20, endIndent: 20),
-                      // Share Card Settings (Moved here)
+                      SettingsTile(
+                        title: 'ترتيب الشاشة الرئيسية',
+                        subtitle: 'تحكم في مكان ظهور العناصر في الرئيسية',
+                        icon: Icons.dashboard_customize_rounded,
+                        onTap: () => context.router.push(
+                          const CustomizeHomeLayoutRoute(),
+                        ),
+                        iconColor: Colors.purple,
+                      ),
+                      SettingsTile(
+                        title: 'بطاقة المشاركة',
+                        subtitle: 'تخصيص شكل ومحتوى بطاقة المشاركة ',
+                        icon: Icons.auto_awesome_outlined,
+                        iconColor: Colors.orange,
+                        onTap: () =>
+                            context.pushRoute(const CustomizeShareCardRoute()),
+                      ),
                       Padding(
-                        padding: EdgeInsets.all(context.insets.md),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'شكل بطاقة المشاركة',
-                              style: context.textStyles.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: context.insets.md),
-                            SizedBox(
-                              height: 120.h,
-                              child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                physics: const BouncingScrollPhysics(),
-                                children: ShareTemplate.values.map((template) {
-                                  final isSelected =
-                                      settings.shareTemplate == template;
-                                  return GestureDetector(
-                                    onTap: () => ref
-                                        .read(settingsProvider.notifier)
-                                        .updateShareTemplate(template),
-                                    child: AnimatedContainer(
-                                      duration: const Duration(
-                                        milliseconds: 250,
-                                      ),
-                                      margin: EdgeInsets.only(
-                                        left: 12.w,
-                                        bottom: 8.h,
-                                        top: 4.h,
-                                      ),
-                                      // width: 200.w,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          24.r,
-                                        ),
-                                        border: Border.all(
-                                          color: isSelected
-                                              ? context.colors.primary
-                                              : context.colors.primary
-                                                    .withValues(alpha: 0.1),
-                                          width: isSelected ? 3 : 1,
-                                        ),
-                                      ),
-                                      child: Stack(
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(
-                                              20.r,
-                                            ),
-                                            child: FittedBox(
-                                              fit: BoxFit.cover,
-                                              child: ShareService.buildShareCard(
-                                                context,
-                                                template,
-                                                '﴿فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ﴾',
-                                                null,
-                                              ),
-                                            ),
-                                          ),
-                                          if (isSelected)
-                                            Positioned(
-                                              top: 8,
-                                              right: 8,
-                                              child: Container(
-                                                padding: EdgeInsets.all(4.w),
-                                                decoration: BoxDecoration(
-                                                  color: context.colors.primary,
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: Colors.white,
-                                                    width: 1.5,
-                                                  ),
-                                                ),
-                                                child: const Icon(
-                                                  Icons.check,
-                                                  color: Colors.white,
-                                                  size: 14,
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          ],
+                        padding: EdgeInsets.only(bottom: context.insets.sm),
+                        child: SettingsTile(
+                          title: 'أذكاري الخاصة',
+                          subtitle: 'أضف أذكارك الشخصية وشاركها',
+                          icon: Icons.bookmark_added_rounded,
+                          onTap: () =>
+                              context.router.push(const UserAzkarRoute()),
+                          iconColor: Colors.teal,
                         ),
                       ),
                     ],
@@ -457,39 +348,63 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       SettingsTile(
                         title: 'أذكار الصباح',
-                        subtitle: _morningEnabled
-                            ? 'تذكير عند ${_formatTime(_morningTime)}'
+                        subtitle: settings.morningNotificationEnabled
+                            ? 'تذكير عند ${_formatTime(settings.morningNotificationTime)}'
                             : 'التذكير متوقف',
                         icon: Icons.wb_sunny_rounded,
                         iconColor: Colors.orange,
                         trailing: Switch.adaptive(
-                          value: _morningEnabled,
+                          value: settings.morningNotificationEnabled,
                           onChanged: _updateMorningNotification,
                         ),
-                        onTap: _morningEnabled ? _selectMorningTime : null,
+                        onTap: settings.morningNotificationEnabled
+                            ? () => _selectMorningTime(
+                                settings.morningNotificationTime,
+                              )
+                            : null,
                       ),
                       SettingsTile(
                         title: 'أذكار المساء',
-                        subtitle: _eveningEnabled
-                            ? 'تذكير عند ${_formatTime(_eveningTime)}'
+                        subtitle: settings.eveningNotificationEnabled
+                            ? 'تذكير عند ${_formatTime(settings.eveningNotificationTime)}'
                             : 'التذكير متوقف',
                         icon: Icons.nightlight_round_rounded,
                         iconColor: Colors.blueAccent,
                         trailing: Switch.adaptive(
-                          value: _eveningEnabled,
+                          value: settings.eveningNotificationEnabled,
                           onChanged: _updateEveningNotification,
                         ),
-                        onTap: _eveningEnabled ? _selectEveningTime : null,
+                        onTap: settings.eveningNotificationEnabled
+                            ? () => _selectEveningTime(
+                                settings.eveningNotificationTime,
+                              )
+                            : null,
+                      ),
+                      SettingsTile(
+                        title: 'تذكير الورد اليومي',
+                        subtitle: settings.wirdNotificationEnabled
+                            ? 'تذكير عند ${_formatTime(settings.wirdNotificationTime)}'
+                            : 'التذكير متوقف',
+                        icon: Icons.menu_book_rounded,
+                        iconColor: context.colors.primary,
+                        trailing: Switch.adaptive(
+                          value: settings.wirdNotificationEnabled,
+                          onChanged: _updateWirdNotification,
+                        ),
+                        onTap: settings.wirdNotificationEnabled
+                            ? () =>
+                                  _selectWirdTime(settings.wirdNotificationTime)
+                            : null,
                       ),
                       SettingsTile(
                         title: 'تذكير سورة الكهف',
-                        subtitle: _fridayEnabled
+                        subtitle: settings.fridayNotificationEnabled
                             ? 'كل يوم جمعة صباحاً'
                             : 'التذكير متوقف',
-                        icon: Icons.menu_book_rounded,
+                        icon: Icons.auto_stories_rounded,
                         iconColor: Colors.green,
                         trailing: Switch.adaptive(
-                          value: _fridayEnabled,
+                          value: settings.fridayNotificationEnabled,
                           onChanged: _updateFridayNotification,
                         ),
                       ),
@@ -537,17 +452,72 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ],
                   ),
                   SizedBox(height: context.insets.xl),
-                  Center(
-                    child: Text(
-                      'الإصدار ${AppConstants.appVersion}',
-                      style: (context.textStyles.bodySmall ?? const TextStyle())
-                          .copyWith(
-                            color: context.colors.textSecondary.withValues(
-                              alpha: 0.5,
-                            ),
-                            fontSize: 11.sp,
+                  Column(
+                    children: [
+                      Text(
+                        'تم التطوير بكل ❤️ بواسطة',
+                        style: context.textStyles.bodySmall?.copyWith(
+                          color: context.colors.textSecondary,
+                          fontSize: 10.sp,
+                        ),
+                      ),
+                      SizedBox(height: context.insets.sm),
+                      Text(
+                        AppConstants.developerName,
+                        style: context.textStyles.bodyLarge?.copyWith(
+                          color: context.colors.primary,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      SizedBox(height: context.insets.md),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          DeveloperSocialCard(
+                            icon: Icons.language_rounded,
+                            color: Colors.blue,
+                            onTap: () =>
+                                UrlHelper.launchURL(AppConstants.websiteUrl),
                           ),
-                    ),
+                          SizedBox(width: context.insets.md),
+                          DeveloperSocialCard(
+                            icon: Icons.email_rounded,
+                            color: Colors.redAccent,
+                            onTap: () => UrlHelper.launchURL(
+                              'mailto:${AppConstants.supportEmail}',
+                            ),
+                          ),
+                          SizedBox(width: context.insets.md),
+                          DeveloperSocialCard(
+                            icon: Icons.chat_rounded,
+                            color: Colors.green,
+                            onTap: () => UrlHelper.launchWhatsApp(
+                              phone: AppConstants.developerNumber,
+                            ),
+                          ),
+                          SizedBox(width: context.insets.md),
+                          DeveloperSocialCard(
+                            icon: Icons.phone,
+                            color: Colors.cyan,
+                            onTap: () => UrlHelper.launchPhone(
+                              AppConstants.developerNumber,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: context.insets.lg),
+                      Text(
+                        'إصدار ${AppConstants.appVersion}',
+                        style: context.textStyles.bodySmall?.copyWith(
+                          color: context.colors.textPrimary.withValues(
+                            alpha: 0.5,
+                          ),
+                          fontSize: 10.sp,
+                        ),
+                      ),
+                      SizedBox(height: context.insets.sm),
+                    ],
                   ),
                 ],
               ),

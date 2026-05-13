@@ -2,7 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -19,19 +19,27 @@ class NotificationService {
 
   static final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
-  
+
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
   static Function(String?)? onNotificationClick;
 
   static Future<void> initialize() async {
-    tz.initializeTimeZones();
+    // Initialize timezone data
+    tz_data.initializeTimeZones();
 
     try {
-      final timeZoneName = await FlutterTimezone.getLocalTimezone();
-      tz.setLocalLocation(tz.getLocation(timeZoneName.identifier));
+      final timezoneInfo = await FlutterTimezone.getLocalTimezone();
+      final String timezoneName = timezoneInfo.identifier;
+      tz.setLocalLocation(tz.getLocation(timezoneName));
     } catch (e) {
-      tz.setLocalLocation(tz.getLocation('UTC'));
+      debugPrint("Could not set local location, falling back to UTC: $e");
+      try {
+        // Try UTC as fallback
+        tz.setLocalLocation(tz.UTC);
+      } catch (e2) {
+        debugPrint("Critical: UTC location not found: $e2");
+      }
     }
 
     // Initialize FCM
@@ -44,7 +52,7 @@ class NotificationService {
         InitializationSettings(android: initializationSettingsAndroid);
 
     await _notifications.initialize(
-      initializationSettings,
+      settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         onNotificationClick?.call(response.payload);
       },
@@ -71,10 +79,10 @@ class NotificationService {
 
       if (notification != null && android != null) {
         _notifications.show(
-          notification.hashCode,
-          notification.title,
-          notification.body,
-          const NotificationDetails(
+          id: notification.hashCode,
+          title: notification.title,
+          body: notification.body,
+          notificationDetails: const NotificationDetails(
             android: AndroidNotificationDetails(
               'azkar_channel',
               'تذكير الأذكار',
@@ -93,9 +101,10 @@ class NotificationService {
   static Future<void> checkLaunchNotification() async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
         await _notifications.getNotificationAppLaunchDetails();
-    
+
     if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
-      final payload = notificationAppLaunchDetails?.notificationResponse?.payload;
+      final payload =
+          notificationAppLaunchDetails?.notificationResponse?.payload;
       if (payload != null) {
         Future.delayed(const Duration(seconds: 1), () {
           onNotificationClick?.call(payload);
@@ -105,34 +114,50 @@ class NotificationService {
   }
 
   static Future<bool> requestPermissions() async {
-    // FCM Permissions
-    NotificationSettings settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-      provisional: false,
-    );
+    try {
+      // FCM Permissions - Wrap in extra try/catch for Android context issues
+      NotificationSettings? settings;
+      try {
+        settings = await _messaging.requestPermission(
+          alert: true,
+          badge: true,
+          sound: true,
+          provisional: false,
+        );
+      } catch (fcmError) {
+        debugPrint("FCM Permission request failed: $fcmError");
+      }
 
-    final bool fcmGranted =
-        settings.authorizationStatus == AuthorizationStatus.authorized;
+      final bool fcmGranted =
+          settings?.authorizationStatus == AuthorizationStatus.authorized;
 
-    // Local Notifications Permissions
-    final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-        _notifications.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
+      // Local Notifications Permissions
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+          _notifications
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >();
 
-    if (androidImplementation != null) {
-      final bool? granted = await androidImplementation
-          .requestNotificationsPermission();
-      final bool? exactAlarmGranted = await androidImplementation
-          .requestExactAlarmsPermission();
+      if (androidImplementation != null) {
+        bool granted = false;
+        bool exactAlarmGranted = false;
 
-      await _createNotificationChannel();
+        try {
+          granted = await androidImplementation.requestNotificationsPermission() ?? false;
+          exactAlarmGranted = await androidImplementation.requestExactAlarmsPermission() ?? false;
+        } catch (localError) {
+          debugPrint("Local Notification Permission request failed: $localError");
+        }
 
-      return (granted ?? false) && (exactAlarmGranted ?? false) && fcmGranted;
+        await _createNotificationChannel();
+
+        return (granted) && (exactAlarmGranted) && fcmGranted;
+      }
+      return fcmGranted;
+    } catch (e) {
+      debugPrint("General error requesting notification permissions: $e");
+      return false;
     }
-    return fcmGranted;
   }
 
   static Future<void> _createNotificationChannel() async {
@@ -156,11 +181,11 @@ class NotificationService {
 
   static Future<void> scheduleMorningAzkar(TimeOfDay time) async {
     await _notifications.zonedSchedule(
-      1,
-      '🌅 أذكار الصباح',
-      'حان وقت أذكار الصباح، ابدأ يومك بذكر الله',
-      _nextInstanceOfTime(time),
-      const NotificationDetails(
+      id: 1,
+      title: '🌅 أذكار الصباح',
+      body: 'حان وقت أذكار الصباح، ابدأ يومك بذكر الله',
+      scheduledDate: _nextInstanceOfTime(time),
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'azkar_channel',
           'تذكير الأذكار',
@@ -173,17 +198,17 @@ class NotificationService {
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
-      payload: 'morning', 
+      payload: 'morning',
     );
   }
 
   static Future<void> scheduleEveningAzkar(TimeOfDay time) async {
     await _notifications.zonedSchedule(
-      2,
-      '🌙 أذكار المساء',
-      'حان وقت أذكار المساء، اختتم يومك بذكر الله',
-      _nextInstanceOfTime(time),
-      const NotificationDetails(
+      id: 2,
+      title: '🌙 أذكار المساء',
+      body: 'حان وقت أذكار المساء، اختتم يومك بذكر الله',
+      scheduledDate: _nextInstanceOfTime(time),
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'azkar_channel',
           'تذكير الأذكار',
@@ -202,11 +227,11 @@ class NotificationService {
 
   static Future<void> scheduleFridayKahf(TimeOfDay time) async {
     await _notifications.zonedSchedule(
-      3,
-      '📖 سورة الكهف',
-      'يوم الجمعة، لا تنسَ قراءة سورة الكهف، نورٌ ما بين الجمعتين',
-      _nextInstanceOfFriday(time),
-      const NotificationDetails(
+      id: 3,
+      title: '📖 سورة الكهف',
+      body: 'يوم الجمعة، لا تنسَ قراءة سورة الكهف، نورٌ ما بين الجمعتين',
+      scheduledDate: _nextInstanceOfFriday(time),
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'azkar_channel',
           'تذكير الأذكار',
@@ -220,6 +245,29 @@ class NotificationService {
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
       payload: 'surah_kahf',
+    );
+  }
+
+  static Future<void> scheduleWirdNotification(TimeOfDay time) async {
+    await _notifications.zonedSchedule(
+      id: 4,
+      title: '📖 الورد اليومي',
+      body: 'تذكير بقراءة الورد اليومي من القرآن الكريم، اجعل لك نصيباً من كتاب الله',
+      scheduledDate: _nextInstanceOfTime(time),
+      notificationDetails: const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'azkar_channel',
+          'تذكير الأذكار',
+          channelDescription: 'إشعارات تذكير الورد اليومي والأذكار',
+          importance: Importance.high,
+          priority: Priority.high,
+          playSound: true,
+          enableVibration: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time,
+      payload: 'quran_wird',
     );
   }
 
@@ -250,15 +298,19 @@ class NotificationService {
   }
 
   static Future<void> cancelMorningNotification() async {
-    await _notifications.cancel(1);
+    await _notifications.cancel(id: 1);
   }
 
   static Future<void> cancelEveningNotification() async {
-    await _notifications.cancel(2);
+    await _notifications.cancel(id: 2);
   }
 
   static Future<void> cancelFridayNotification() async {
-    await _notifications.cancel(3);
+    await _notifications.cancel(id: 3);
+  }
+
+  static Future<void> cancelWirdNotification() async {
+    await _notifications.cancel(id: 4);
   }
 
   static Future<void> cancelAllNotifications() async {
@@ -269,6 +321,7 @@ class NotificationService {
     final morningEnabled = await SettingsService.isMorningNotificationEnabled();
     final eveningEnabled = await SettingsService.isEveningNotificationEnabled();
     final fridayEnabled = await SettingsService.isFridayNotificationEnabled();
+    final wirdEnabled = await SettingsService.isWirdNotificationEnabled();
 
     if (morningEnabled) {
       final morningTime = await SettingsService.getMorningTime();
@@ -283,6 +336,11 @@ class NotificationService {
     if (fridayEnabled) {
       await scheduleFridayKahf(const TimeOfDay(hour: 8, minute: 0));
     }
+
+    if (wirdEnabled) {
+      final wirdTime = await SettingsService.getWirdTime();
+      await scheduleWirdNotification(wirdTime);
+    }
   }
 }
 
@@ -290,8 +348,10 @@ class SettingsService {
   static const String _morningEnabledKey = 'morning_notification_enabled';
   static const String _eveningEnabledKey = 'evening_notification_enabled';
   static const String _fridayEnabledKey = 'friday_notification_enabled';
+  static const String _wirdEnabledKey = 'wird_notification_enabled';
   static const String _morningTimeKey = 'morning_notification_time';
   static const String _eveningTimeKey = 'evening_notification_time';
+  static const String _wirdTimeKey = 'wird_notification_time';
 
   static Future<void> setMorningNotificationEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
@@ -308,6 +368,11 @@ class SettingsService {
     await prefs.setBool(_fridayEnabledKey, enabled);
   }
 
+  static Future<void> setWirdNotificationEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_wirdEnabledKey, enabled);
+  }
+
   static Future<void> setMorningTime(TimeOfDay time) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_morningTimeKey, '${time.hour}:${time.minute}');
@@ -316,6 +381,11 @@ class SettingsService {
   static Future<void> setEveningTime(TimeOfDay time) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_eveningTimeKey, '${time.hour}:${time.minute}');
+  }
+
+  static Future<void> setWirdTime(TimeOfDay time) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_wirdTimeKey, '${time.hour}:${time.minute}');
   }
 
   static Future<bool> isMorningNotificationEnabled() async {
@@ -333,6 +403,11 @@ class SettingsService {
     return prefs.getBool(_fridayEnabledKey) ?? true;
   }
 
+  static Future<bool> isWirdNotificationEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_wirdEnabledKey) ?? false;
+  }
+
   static Future<TimeOfDay> getMorningTime() async {
     final prefs = await SharedPreferences.getInstance();
     final timeString = prefs.getString(_morningTimeKey) ?? '6:0';
@@ -343,6 +418,13 @@ class SettingsService {
   static Future<TimeOfDay> getEveningTime() async {
     final prefs = await SharedPreferences.getInstance();
     final timeString = prefs.getString(_eveningTimeKey) ?? '18:0';
+    final parts = timeString.split(':');
+    return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+  }
+
+  static Future<TimeOfDay> getWirdTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    final timeString = prefs.getString(_wirdTimeKey) ?? '21:0';
     final parts = timeString.split(':');
     return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
   }

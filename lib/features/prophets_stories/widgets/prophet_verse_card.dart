@@ -40,13 +40,13 @@ class ProphetVerseCard extends StatelessWidget {
               ),
             ),
           ),
+          SizedBox(height: 5.h),
           Text(
             verse,
             textAlign: TextAlign.center,
             style: context.textStyles.bodyLarge?.copyWith(
               color: context.colors.primary,
-              fontFamily: 'hafs',
-              fontSize: fontSize.sp,
+              fontSize: fontSize.sp - 2.sp,
               height: 1.5,
             ),
           ),

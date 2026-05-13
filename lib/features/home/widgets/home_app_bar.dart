@@ -259,7 +259,7 @@ class HomeAppBar extends StatelessWidget {
                 ),
                 child: IconButton(
                   onPressed: () => context.router.push(const SettingsRoute()),
-                  icon: Image.asset(AppAssets.notification, width: 40.w),
+                  icon: Image.asset(AppAssets.notification, width: 23.w),
                 ),
               ),
             ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:thekr_app/core/widgets/app_button.dart';
 import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
 import 'package:thekr_app/features/home/models/app_prayer_times.dart';
 
@@ -63,31 +64,12 @@ class PrayerTimesCard extends StatelessWidget {
           if (isLocationOff)
             Padding(
               padding: EdgeInsets.only(bottom: 8.h),
-              child: InkWell(
+              child: AppButton(
+                text: 'سماح للموقع',
+                icon: Icons.location_on_outlined,
+                size: AppButtonSize.small,
+                isFullWidth: false,
                 onTap: onRequestLocation,
-                borderRadius: BorderRadius.circular(context.corners.sm),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.location_on_outlined,
-                        size: 16.sp,
-                        color: context.colors.primary,
-                      ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        'سماح للموقع',
-                        style: context.textStyles.labelMedium?.copyWith(
-                          color: context.colors.primary,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ),
           FittedBox(

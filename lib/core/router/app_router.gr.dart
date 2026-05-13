@@ -125,6 +125,22 @@ class CustomizeHomeLayoutRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [CustomizeShareCardScreen]
+class CustomizeShareCardRoute extends PageRouteInfo<void> {
+  const CustomizeShareCardRoute({List<PageRouteInfo>? children})
+    : super(CustomizeShareCardRoute.name, initialChildren: children);
+
+  static const String name = 'CustomizeShareCardRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const CustomizeShareCardScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [HadithNawawiScreen]
 class HadithNawawiRoute extends PageRouteInfo<void> {
   const HadithNawawiRoute({List<PageRouteInfo>? children})
@@ -410,6 +426,22 @@ class SettingsRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const SettingsScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [UserAzkarScreen]
+class UserAzkarRoute extends PageRouteInfo<void> {
+  const UserAzkarRoute({List<PageRouteInfo>? children})
+    : super(UserAzkarRoute.name, initialChildren: children);
+
+  static const String name = 'UserAzkarRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const UserAzkarScreen();
     },
   );
 }

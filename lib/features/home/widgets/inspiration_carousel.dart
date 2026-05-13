@@ -40,21 +40,18 @@ class _InspirationCarouselState extends State<InspirationCarousel> {
         content: ayah.text,
         subtitle: '${ayah.surah} - [${ayah.ayahNumber}]',
         icon: Icons.auto_stories_rounded,
-        onTap: () => context.router.push(QuranRoute(currentPage: ayah.page)),
       ),
       _InspirationItem(
         type: 'حديث اليوم',
         content: hadith.text,
         subtitle: hadith.source,
         icon: Icons.menu_book_rounded,
-        onTap: () {},
       ),
       _InspirationItem(
         type: 'ذكر اليوم',
         content: adhkar.text,
         subtitle: adhkar.reward,
         icon: Icons.auto_awesome,
-        onTap: () {},
       ),
     ];
 
@@ -71,7 +68,9 @@ class _InspirationCarouselState extends State<InspirationCarousel> {
               children: [
                 Text(
                   'إلهامات يومية',
-                  style: context.textStyles.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  style: context.textStyles.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Row(
                   children: List.generate(
@@ -143,102 +142,90 @@ class _InspirationCard extends StatelessWidget {
           width: 0.8.w,
         ),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: item.onTap,
-          borderRadius: BorderRadius.circular(context.corners.xl),
-          child: Padding(
-            padding: EdgeInsets.all(context.insets.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+      child: Padding(
+        padding: EdgeInsets.all(context.insets.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      item.icon,
-                      color: context.colors.secondary.withValues(alpha: 0.7),
-                      size: 24.sp,
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: context.insets.sm,
-                        vertical: (context.insets.sm / 2),
-                      ),
-                      decoration: BoxDecoration(
-                        color: context.colors.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(context.corners.md),
-                      ),
-                      child: Text(
-                        item.type,
-                        style: context.textStyles.labelLarge?.copyWith(
-                          color: context.colors.primary,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Tajawal',
-                        ),
-                      ),
-                    ),
-                  ],
+                Icon(
+                  item.icon,
+                  color: context.colors.secondary.withValues(alpha: 0.7),
+                  size: 24.sp,
                 ),
-                const Spacer(),
-                Expanded(
-                  flex: 8,
-                  child: Center(
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: Text(
-                        item.content,
-                        textAlign: TextAlign.center,
-                        style: context.textStyles.bodyLarge?.copyWith(
-                          fontSize: _calculateFontSize(item.content, isAyah),
-                          fontWeight: isAyah
-                              ? FontWeight.normal
-                              : FontWeight.w500,
-                          height: isAyah ? 1.7 : 1.6,
-                          color: context.colors.textPrimary,
-                          fontFamily: isAyah ? 'hafs' : 'Tajawal',
-                        ),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.insets.sm,
+                    vertical: (context.insets.sm / 2),
+                  ),
+                  decoration: BoxDecoration(
+                    color: context.colors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(context.corners.md),
+                  ),
+                  child: Text(
+                    item.type,
+                    style: context.textStyles.labelLarge?.copyWith(
+                      color: context.colors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const Spacer(),
+            Expanded(
+              flex: 8,
+              child: Center(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Text(
+                    item.content,
+                    textAlign: TextAlign.center,
+                    style: context.textStyles.bodyLarge?.copyWith(
+                      fontSize: _calculateFontSize(item.content, isAyah),
+                      fontWeight: isAyah ? FontWeight.normal : FontWeight.w500,
+                      height: isAyah ? 1.7 : 1.6,
+                      color: context.colors.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 35.w,
+                  height: 1.h,
+                  color: context.colors.primary.withValues(alpha: 0.1),
+                ),
+                Flexible(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.insets.sm,
+                    ),
+                    child: Text(
+                      item.subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textStyles.bodySmall?.copyWith(
+                        color: context.colors.textSecondary,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                 ),
-                const Spacer(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 35.w,
-                      height: 1.h,
-                      color: context.colors.primary.withValues(alpha: 0.1),
-                    ),
-                    Flexible(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: context.insets.sm,
-                        ),
-                        child: Text(
-                          item.subtitle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: context.textStyles.bodySmall?.copyWith(
-                            color: context.colors.textSecondary,
-                            fontFamily: 'Tajawal',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 35.w,
-                      height: 1.h,
-                      color: context.colors.primary.withValues(alpha: 0.1),
-                    ),
-                  ],
+                Container(
+                  width: 35.w,
+                  height: 1.h,
+                  color: context.colors.primary.withValues(alpha: 0.1),
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -262,13 +249,11 @@ class _InspirationItem {
   final String content;
   final String subtitle;
   final IconData icon;
-  final VoidCallback onTap;
 
   _InspirationItem({
     required this.type,
     required this.content,
     required this.subtitle,
     required this.icon,
-    required this.onTap,
   });
 }

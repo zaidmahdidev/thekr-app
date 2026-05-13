@@ -34,7 +34,7 @@ It provides a wide range of religious resources and features — all available *
 <table>
   <tr>
     <td><img src="screen_shots/home.png" width="100%"/></td>
-    <td><img src="screen_shots/quran.png" width="100%"/></td>
+    <td><img src="screen_shots/koran.png" width="100%"/></td>
     <td><img src="screen_shots/qiplah.png" width="100%"/></td>
   </tr>
   <tr>

@@ -8,6 +8,7 @@ import 'package:hijri/hijri_calendar.dart';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/services/prayer_service.dart';
 import 'package:thekr_app/core/widgets/custom_dialog.dart';
 import 'package:thekr_app/features/home/providers/prayer_provider.dart';
 import 'package:thekr_app/features/home/providers/time_provider.dart';
@@ -21,6 +22,7 @@ import 'package:thekr_app/features/home/widgets/home_dynamic_sections.dart';
 import 'package:thekr_app/features/home/widgets/share_app_card.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+import 'package:thekr_app/features/home/widgets/branded_refresh_header.dart';
 
 @RoutePage()
 class HomeScreen extends ConsumerStatefulWidget {
@@ -63,7 +65,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     try {
       final info = await InAppUpdate.checkForUpdate();
       if (info.updateAvailability == UpdateAvailability.updateAvailable) {
-        await InAppUpdate.startFlexibleUpdate();
+        await InAppUpdate.performImmediateUpdate();
       }
     } catch (e) {
       debugPrint("Update feature not available: $e");
@@ -137,8 +139,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       child: Scaffold(
         backgroundColor: context.colors.background,
         body: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           slivers: [
+            BrandedRefreshHeader(
+              onRefresh: () async {
+                await PrayerService.refreshLocation();
+                ref.invalidate(prayerTimesProvider);
+                ref.invalidate(tomorrowPrayerTimesProvider);
+              },
+            ),
             HomeAppBar(
               currentTime: currentTime,
               todayDate: todayDate,
@@ -146,7 +157,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               remainingTime: remainingTime,
               nextPrayer: nextPrayer,
             ),
-            ...settings.homeSections.map((section) {
+            ...settings.homeSections.map<Widget>((section) {
               switch (section) {
                 case HomeSection.prayerTimes:
                   return SliverToBoxAdapter(
@@ -182,7 +193,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 case HomeSection.shareCard:
                   return const ShareAppCard(key: ValueKey('shareCard'));
               }
-            }),
+            }).toList(),
           ],
         ),
       ),
@@ -197,9 +208,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     if (backButtonHasNotBeenPressedOrSnackBarHasClosed) {
       _lastPressedAt = now;
-      showToast(
-        text: 'اضغط مرة أخرى للخروج',
-      );
+      showToast(text: 'اضغط مرة أخرى للخروج');
     } else {
       SystemNavigator.pop();
     }

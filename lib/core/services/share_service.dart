@@ -23,20 +23,29 @@ class ShareService {
     required String content,
     String? subtitle,
     bool showSubtitleInImage = false,
+    bool isCustomText = false,
   }) {
     final settings = ref.watch(settingsProvider);
     ShareOptionsSheet.show(
       context: context,
       options: [
-        ShareOption.text(onTap: () => shareAsText(context, content, subtitle)),
+        ShareOption.text(
+          onTap: () => shareAsText(
+            context,
+            content,
+            subtitle,
+            isCustomText: isCustomText,
+          ),
+        ),
         if (content.length <= 800)
           ShareOption.image(
             onTap: () {
-              _shareAsImage(
+              shareAsImage(
                 context,
                 settings.shareTemplate,
                 content,
                 showSubtitleInImage ? subtitle : null,
+                isCustomText: isCustomText,
               );
             },
           ),
@@ -49,20 +58,30 @@ class ShareService {
     String content,
     String? subtitle, {
     bool includeSignature = true,
+    bool isCustomText = false,
   }) async {
     try {
       String shareText = content;
       if (subtitle != null && subtitle.isNotEmpty) {
-        shareText += '\n\n$subtitle';
+        if (shareText.isEmpty) {
+          shareText = subtitle;
+        } else {
+          shareText += '\n\n$subtitle';
+        }
       }
 
-      if (includeSignature) {
-        shareText += '\n\n﴿احمدوا الله دومًا﴾';
-        shareText += '\n\nحمّل تطبيق "ذكر" الآن:';
+      if (includeSignature && !shareText.contains(AppConstants.playStoreUrl)) {
+        final signature = isCustomText
+            ? 'ذكر مخصص عبر تطبيق ${AppConstants.appName}'
+            : 'تمت المشاركة بواسطة تطبيق "${AppConstants.appName}"';
+        shareText += '\n\n$signature:';
         shareText += '\n${AppConstants.playStoreUrl}';
       }
 
-      await Share.share(shareText, subject: 'ذكر من ${AppConstants.appName}');
+      await Share.share(
+        shareText,
+        subject: 'مشاركة من ${AppConstants.appName}',
+      );
     } catch (e) {
       Clipboard.setData(ClipboardData(text: content));
       showToast(
@@ -73,12 +92,13 @@ class ShareService {
     }
   }
 
-  static Future<void> _shareAsImage(
+  static Future<void> shareAsImage(
     BuildContext context,
     ShareTemplate template,
     String content,
-    String? subtitle,
-  ) async {
+    String? subtitle, {
+    bool isCustomText = false,
+  }) async {
     try {
       // Precache logo
       final ImageProvider logo = AssetImage(AppAssets.logo);
@@ -89,7 +109,13 @@ class ShareService {
           color: Colors.transparent,
           child: Directionality(
             textDirection: TextDirection.rtl,
-            child: buildShareCard(context, template, content, subtitle),
+            child: buildShareCard(
+              context,
+              template,
+              content,
+              subtitle,
+              isCustomText: isCustomText,
+            ),
           ),
         ),
         context: context,
@@ -111,8 +137,9 @@ class ShareService {
     BuildContext context,
     ShareTemplate template,
     String content,
-    String? subtitle,
-  ) {
+    String? subtitle, {
+    bool isCustomText = false,
+  }) {
     Color bgColor;
     Color textColor;
     Color accentColor;
@@ -200,7 +227,6 @@ class ShareService {
                 AppAssets.bg,
                 width: 220.w,
                 height: 220.w,
-                // color: textColor,
               ),
             ),
           ),
@@ -208,12 +234,13 @@ class ShareService {
             bottom: -30.h,
             right: 0,
             left: 0,
-
             child: Column(
               children: [
                 Image.asset(AppAssets.logo, width: 35.w, height: 35.w),
                 Text(
-                  'بواسطة تطبيق ' + AppConstants.appName,
+                  isCustomText
+                      ? 'نص مخصص عبر تطبيق ${AppConstants.appName}'
+                      : 'بواسطة تطبيق ${AppConstants.appName}',
                   style: TextStyle(
                     color: textColor.withValues(alpha: 0.6),
                     fontSize: 7.sp,
@@ -224,7 +251,6 @@ class ShareService {
               ],
             ),
           ),
-
           Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -235,8 +261,7 @@ class ShareService {
                 style: TextStyle(
                   color: textColor,
                   fontSize: fontSize,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'hafs',
+                  fontWeight: FontWeight.w700,
                   height: 1.6,
                 ),
               ),

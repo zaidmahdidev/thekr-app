@@ -30,167 +30,112 @@ class AppShareSheet extends StatelessWidget {
             ),
           ),
 
-          Padding(
-            padding: EdgeInsets.all(context.insets.lg),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Handle bar
-                Container(
-                  width: 40.w,
-                  height: 4.h,
-                  margin: EdgeInsets.only(bottom: context.insets.lg),
-                  decoration: BoxDecoration(
-                    color: context.colors.textSecondary.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(context.corners.sm),
-                  ),
-                ),
-
-                Text(
-                  'مشاركة التطبيق',
-                  style: context.textStyles.titleSmall?.copyWith(
-                    color: context.colors.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                SizedBox(height: context.insets.lg),
-
-                // Static QR Code Container
-                Container(
-                  padding: EdgeInsets.all(context.insets.md),
-                  decoration: BoxDecoration(
-                    color: context.colors.background,
-                    borderRadius: BorderRadius.circular(context.corners.xl),
-                    boxShadow: context.shadows.medium,
-                  ),
-                  child: Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(context.corners.md),
-                        child: Image.asset(
-                          AppAssets.qrCode,
-                          width: 160.w,
-                          height: 160.w,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      SizedBox(height: context.insets.sm),
-                      Text(
-                        'امسح الكود لتحميل التطبيق',
-                        style: context.textStyles.bodySmall?.copyWith(
-                          color: Colors.grey[600],
-                          fontSize: 10.sp,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: context.insets.lg),
-
-                Text(
-                  'انسخ الرابط أو شاركه مباشرة عبر تطبيقات التواصل الاجتماعي لنشر الخير',
-                  textAlign: TextAlign.center,
-                  style: context.textStyles.bodyMedium?.copyWith(
-                    color: context.colors.textSecondary,
-                    height: 1.5,
-                  ),
-                ),
-
-                SizedBox(height: context.insets.lg),
-
-                // Copy Link Row
-                GestureDetector(
-                  onTap: () {
-                    Clipboard.setData(
-                      const ClipboardData(text: AppConstants.playStoreUrl),
-                    );
-                    Navigator.pop(context);
-                    showToast(text: 'تم نسخ رابط التطبيق');
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 10.h,
-                      horizontal: 20.w,
-                    ),
+          SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(context.insets.lg),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Handle bar
+                  Container(
+                    width: 40.w,
+                    height: 4.h,
+                    margin: EdgeInsets.only(bottom: context.insets.lg),
                     decoration: BoxDecoration(
-                      color: context.colors.primary.withValues(alpha: 0.05),
-                      borderRadius: BorderRadius.circular(context.corners.lg),
+                      color: context.colors.textSecondary.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(context.corners.sm),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                  ),
+
+                  Text(
+                    'مشاركة التطبيق',
+                    style: context.textStyles.titleSmall?.copyWith(
+                      color: context.colors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  SizedBox(height: context.insets.lg),
+
+                  // Static QR Code Container
+                  Container(
+                    padding: EdgeInsets.all(context.insets.md),
+                    decoration: BoxDecoration(
+                      color: context.colors.background,
+                      borderRadius: BorderRadius.circular(context.corners.xl),
+                      boxShadow: context.shadows.medium,
+                    ),
+                    child: Column(
                       children: [
-                        Icon(
-                          Icons.copy_rounded,
-                          size: 16.sp,
-                          color: context.colors.primary,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(context.corners.md),
+                          child: Image.asset(
+                            AppAssets.qrCode,
+                            width: 160.w,
+                            height: 160.w,
+                            fit: BoxFit.contain,
+                          ),
                         ),
-                        SizedBox(width: 8.w),
+                        SizedBox(height: context.insets.sm),
                         Text(
-                          'نسخ الرابط',
+                          'امسح الكود لتحميل التطبيق',
                           style: context.textStyles.bodySmall?.copyWith(
-                            color: context.colors.primary,
-                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[600],
+                            fontSize: 10.sp,
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
 
-                SizedBox(height: context.insets.md),
+                  SizedBox(height: context.insets.lg),
 
-                // Share App Button - Premium Styled
-                SizedBox(
-                  width: double.infinity,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.colors.primary.withValues(alpha: 0.3),
-                          blurRadius: 15,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        ShareService.shareAsText(
-                          context,
-                          AppConstants.appName,
-                          AppConstants.shareMessage,
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.share_rounded,
-                        color: Colors.white,
-                      ),
-                      label: Text(
-                        'مشاركة التطبيق الآن',
-                        style: context.textStyles.bodyLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: context.colors.primary,
-                        foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            context.corners.lg,
-                          ),
-                        ),
-                        elevation: 0,
-                      ),
+                  Text(
+                    'انسخ الرابط أو شاركه مباشرة عبر تطبيقات التواصل الاجتماعي لنشر الخير',
+                    textAlign: TextAlign.center,
+                    style: context.textStyles.bodyMedium?.copyWith(
+                      color: context.colors.textSecondary,
+                      height: 1.5,
                     ),
                   ),
-                ),
 
-                SizedBox(height: MediaQuery.of(context).padding.bottom + 8.h),
-              ],
+                  SizedBox(height: context.insets.lg),
+
+                  // Copy Link Row
+                  AppButton(
+                    text: 'نسخ الرابط',
+                    icon: Icons.copy_rounded,
+                    variant: AppButtonVariant.secondary,
+                    size: AppButtonSize.small,
+                    isFullWidth: false,
+                    onTap: () {
+                      Clipboard.setData(
+                        const ClipboardData(text: AppConstants.playStoreUrl),
+                      );
+                      Navigator.pop(context);
+                      showToast(text: 'تم نسخ رابط التطبيق');
+                    },
+                  ),
+
+                  SizedBox(height: context.insets.md),
+
+                  AppButton(
+                    text: 'مشاركة التطبيق الآن',
+                    icon: Icons.share_rounded,
+                    onTap: () {
+                      Navigator.pop(context);
+                      ShareService.shareAsText(
+                        context,
+                        '',
+                        AppConstants.shareMessage,
+                        includeSignature: false,
+                      );
+                    },
+                  ),
+
+                  SizedBox(height: MediaQuery.of(context).padding.bottom + 8.h),
+                ],
+              ),
             ),
           ),
         ],

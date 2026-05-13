@@ -31,7 +31,6 @@ class AsmaAllahGridItem extends ConsumerWidget {
             textAlign: TextAlign.center,
             style: context.textStyles.bodyMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              fontFamily: 'hafs',
               fontSize: 14.sp,
             ),
           ),
@@ -63,7 +62,9 @@ class AsmaAllahGridItem extends ConsumerWidget {
               context.insets.md,
               context.insets.md,
               context.insets.md,
-              context.insets.sm, // Smaller bottom padding as SafeArea handles the rest
+              context
+                  .insets
+                  .sm, // Smaller bottom padding as SafeArea handles the rest
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -82,8 +83,7 @@ class AsmaAllahGridItem extends ConsumerWidget {
                   item.name,
                   style: context.textStyles.displayLarge?.copyWith(
                     color: context.colors.primary,
-                    fontFamily: 'hafs',
-                    fontSize: (fontSize + 6).sp,
+                    fontSize: (fontSize + 4).sp,
                   ),
                 ),
                 SizedBox(height: context.insets.sm),
@@ -117,11 +117,15 @@ class AsmaAllahGridItem extends ConsumerWidget {
                         style: OutlinedButton.styleFrom(
                           foregroundColor: context.colors.primary,
                           side: BorderSide(
-                            color: context.colors.primary.withValues(alpha: 0.2),
+                            color: context.colors.primary.withValues(
+                              alpha: 0.2,
+                            ),
                           ),
                           padding: EdgeInsets.symmetric(vertical: 12.h),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(context.corners.md),
+                            borderRadius: BorderRadius.circular(
+                              context.corners.md,
+                            ),
                           ),
                         ),
                       ),
@@ -138,7 +142,9 @@ class AsmaAllahGridItem extends ConsumerWidget {
                           padding: EdgeInsets.symmetric(vertical: 12.h),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(context.corners.md),
+                            borderRadius: BorderRadius.circular(
+                              context.corners.md,
+                            ),
                           ),
                         ),
                       ),

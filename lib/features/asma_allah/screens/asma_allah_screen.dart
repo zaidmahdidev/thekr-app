@@ -34,10 +34,9 @@ class AsmaAllahScreen extends StatelessWidget {
                     'وَلِلَّهِ الْأَسْمَاءُ الْحُسْنَىٰ فَادْعُوهُ بِهَا',
                     textAlign: TextAlign.center,
                     style: context.textStyles.headlineMedium?.copyWith(
-                      fontFamily: 'hafs',
                       color: context.colors.primary,
                       height: 1.5,
-                      fontSize: 18.sp,
+                      fontSize: 16.sp,
                     ),
                   ),
                   SizedBox(height: context.insets.sm),

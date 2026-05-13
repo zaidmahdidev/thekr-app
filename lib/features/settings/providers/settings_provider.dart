@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
+import 'package:thekr_app/core/services/notification_service.dart';
 
 enum HomeSection {
   prayerTimes,
@@ -49,6 +50,13 @@ class SettingsState {
   final ThemeMode themeMode;
   final AppThemeType appTheme;
   final bool notificationsEnabled;
+  final bool morningNotificationEnabled;
+  final TimeOfDay morningNotificationTime;
+  final bool eveningNotificationEnabled;
+  final TimeOfDay eveningNotificationTime;
+  final bool fridayNotificationEnabled;
+  final bool wirdNotificationEnabled;
+  final TimeOfDay wirdNotificationTime;
   final String languageCode;
   final double fontSize;
   final List<HomeSection> homeSections;
@@ -58,6 +66,13 @@ class SettingsState {
     required this.themeMode,
     this.appTheme = AppThemeType.defaultTheme,
     this.notificationsEnabled = true,
+    this.morningNotificationEnabled = true,
+    this.morningNotificationTime = const TimeOfDay(hour: 6, minute: 0),
+    this.eveningNotificationEnabled = true,
+    this.eveningNotificationTime = const TimeOfDay(hour: 18, minute: 0),
+    this.fridayNotificationEnabled = true,
+    this.wirdNotificationEnabled = false,
+    this.wirdNotificationTime = const TimeOfDay(hour: 21, minute: 0),
     this.languageCode = 'ar',
     this.fontSize = 16.0,
     required this.homeSections,
@@ -68,6 +83,13 @@ class SettingsState {
     ThemeMode? themeMode,
     AppThemeType? appTheme,
     bool? notificationsEnabled,
+    bool? morningNotificationEnabled,
+    TimeOfDay? morningNotificationTime,
+    bool? eveningNotificationEnabled,
+    TimeOfDay? eveningNotificationTime,
+    bool? fridayNotificationEnabled,
+    bool? wirdNotificationEnabled,
+    TimeOfDay? wirdNotificationTime,
     String? languageCode,
     double? fontSize,
     List<HomeSection>? homeSections,
@@ -77,6 +99,19 @@ class SettingsState {
       themeMode: themeMode ?? this.themeMode,
       appTheme: appTheme ?? this.appTheme,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+      morningNotificationEnabled:
+          morningNotificationEnabled ?? this.morningNotificationEnabled,
+      morningNotificationTime:
+          morningNotificationTime ?? this.morningNotificationTime,
+      eveningNotificationEnabled:
+          eveningNotificationEnabled ?? this.eveningNotificationEnabled,
+      eveningNotificationTime:
+          eveningNotificationTime ?? this.eveningNotificationTime,
+      fridayNotificationEnabled:
+          fridayNotificationEnabled ?? this.fridayNotificationEnabled,
+      wirdNotificationEnabled:
+          wirdNotificationEnabled ?? this.wirdNotificationEnabled,
+      wirdNotificationTime: wirdNotificationTime ?? this.wirdNotificationTime,
       languageCode: languageCode ?? this.languageCode,
       fontSize: fontSize ?? this.fontSize,
       homeSections: homeSections ?? this.homeSections,
@@ -102,6 +137,26 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           homeSections: _getInitialHomeSections(),
           notificationsEnabled:
               CacheHelper.getData(key: 'notificationsEnabled') ?? true,
+          morningNotificationEnabled:
+              CacheHelper.getData(key: 'morning_notification_enabled') ?? true,
+          morningNotificationTime: _getInitialTime(
+            'morning_notification_time',
+            const TimeOfDay(hour: 6, minute: 0),
+          ),
+          eveningNotificationEnabled:
+              CacheHelper.getData(key: 'evening_notification_enabled') ?? true,
+          eveningNotificationTime: _getInitialTime(
+            'evening_notification_time',
+            const TimeOfDay(hour: 18, minute: 0),
+          ),
+          fridayNotificationEnabled:
+              CacheHelper.getData(key: 'friday_notification_enabled') ?? true,
+          wirdNotificationEnabled:
+              CacheHelper.getData(key: 'wird_notification_enabled') ?? false,
+          wirdNotificationTime: _getInitialTime(
+            'wird_notification_time',
+            const TimeOfDay(hour: 21, minute: 0),
+          ),
           shareTemplate: _getInitialShareTemplate(),
         ),
       );
@@ -114,27 +169,47 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   static AppThemeType _getInitialAppTheme() {
-    final String? theme = CacheHelper.getData(key: 'appTheme');
-    if (theme == null) return AppThemeType.defaultTheme;
-    return AppThemeType.values.firstWhere(
-      (e) => e.name == theme,
-      orElse: () => AppThemeType.defaultTheme,
-    );
+    try {
+      final dynamic theme = CacheHelper.getData(key: 'appTheme');
+      if (theme == null || theme is! String) return AppThemeType.defaultTheme;
+      return AppThemeType.values.firstWhere(
+        (e) => e.name == theme,
+        orElse: () => AppThemeType.defaultTheme,
+      );
+    } catch (_) {
+      return AppThemeType.defaultTheme;
+    }
   }
 
   static List<HomeSection> _getInitialHomeSections() {
-    final List<dynamic>? saved = CacheHelper.getData(key: 'homeSections');
-    if (saved == null) {
+    try {
+      final dynamic saved = CacheHelper.getData(key: 'homeSections');
+      if (saved == null || saved is! List) {
+        return HomeSection.values;
+      }
+      return saved
+          .map(
+            (e) => HomeSection.values.firstWhere(
+              (element) => element.name == e.toString(),
+              orElse: () => HomeSection.prayerTimes,
+            ),
+          )
+          .whereType<HomeSection>()
+          .toList();
+    } catch (_) {
       return HomeSection.values;
     }
-    return saved
-        .map(
-          (e) => HomeSection.values.firstWhere(
-            (element) => element.name == e,
-            orElse: () => HomeSection.prayerTimes,
-          ),
-        )
-        .toList();
+  }
+
+  static TimeOfDay _getInitialTime(String key, TimeOfDay defaultTime) {
+    final dynamic saved = CacheHelper.getData(key: key);
+    if (saved == null || saved is! String) return defaultTime;
+    try {
+      final parts = saved.split(':');
+      return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+    } catch (_) {
+      return defaultTime;
+    }
   }
 
   static ShareTemplate _getInitialShareTemplate() {
@@ -159,6 +234,83 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   void toggleNotifications(bool enabled) {
     state = state.copyWith(notificationsEnabled: enabled);
     CacheHelper.saveData(key: 'notificationsEnabled', value: enabled);
+  }
+
+  void toggleMorningNotification(bool enabled) {
+    state = state.copyWith(morningNotificationEnabled: enabled);
+    CacheHelper.saveData(key: 'morning_notification_enabled', value: enabled);
+    if (enabled) {
+      NotificationService.scheduleMorningAzkar(state.morningNotificationTime);
+    } else {
+      NotificationService.cancelMorningNotification();
+    }
+  }
+
+  void updateMorningTime(TimeOfDay time) {
+    state = state.copyWith(morningNotificationTime: time);
+    CacheHelper.saveData(
+      key: 'morning_notification_time',
+      value: '${time.hour}:${time.minute}',
+    );
+    if (state.morningNotificationEnabled) {
+      NotificationService.scheduleMorningAzkar(time);
+    }
+  }
+
+  void toggleEveningNotification(bool enabled) {
+    state = state.copyWith(eveningNotificationEnabled: enabled);
+    CacheHelper.saveData(key: 'evening_notification_enabled', value: enabled);
+    if (enabled) {
+      NotificationService.scheduleEveningAzkar(state.eveningNotificationTime);
+    } else {
+      NotificationService.cancelEveningNotification();
+    }
+  }
+
+  void updateEveningTime(TimeOfDay time) {
+    state = state.copyWith(eveningNotificationTime: time);
+    CacheHelper.saveData(
+      key: 'evening_notification_time',
+      value: '${time.hour}:${time.minute}',
+    );
+    if (state.eveningNotificationEnabled) {
+      NotificationService.scheduleEveningAzkar(time);
+    }
+  }
+
+  void toggleFridayNotification(bool enabled) {
+    state = state.copyWith(fridayNotificationEnabled: enabled);
+    CacheHelper.saveData(key: 'friday_notification_enabled', value: enabled);
+    if (enabled) {
+      NotificationService.scheduleFridayKahf(
+        const TimeOfDay(hour: 8, minute: 0),
+      );
+    } else {
+      NotificationService.cancelFridayNotification();
+    }
+  }
+
+  void toggleWirdNotification(bool enabled) {
+    state = state.copyWith(wirdNotificationEnabled: enabled);
+    CacheHelper.saveData(key: 'wird_notification_enabled', value: enabled);
+
+    if (enabled) {
+      NotificationService.scheduleWirdNotification(state.wirdNotificationTime);
+    } else {
+      NotificationService.cancelWirdNotification();
+    }
+  }
+
+  void updateWirdTime(TimeOfDay time) {
+    state = state.copyWith(wirdNotificationTime: time);
+    CacheHelper.saveData(
+      key: 'wird_notification_time',
+      value: '${time.hour}:${time.minute}',
+    );
+
+    if (state.wirdNotificationEnabled) {
+      NotificationService.scheduleWirdNotification(time);
+    }
   }
 
   void updateFontSize(double size) {

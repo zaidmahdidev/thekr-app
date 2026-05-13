@@ -26,14 +26,15 @@ class AppConstants {
   // Social Media & Support
   static const String supportEmail = 'zaidmhdi33@gmail.com';
   static const String whatsappNumber = '+967774814210';
+  static const String developerNumber = '+966559291894';
 
   // Sharing Text
   static const String shareMessage =
       'حمّل تطبيق "ذكر" الآن، رفيقك في الأذكار والعبادات:\n$playStoreUrl';
 
   // Social Links
-  static const String websiteUrl = 'https://zaidmahdidev.github.io/portfolio/'; // موقعك الشخصي إن وجد
-  static const String developerName = 'زيد مهدي';
+  static const String websiteUrl = 'https://zaidmahdi.vercel.app';
+  static const String developerName = 'م.زيد مهدي';
   static const String privacyPolicyUrl =
       'https://zaidmahdidev.github.io/privacy-policy-thekr/';
 }
