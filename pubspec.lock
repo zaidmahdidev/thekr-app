@@ -663,10 +663,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_svg
-      sha256: "1ded017b39c8e15c8948ea855070a5ff8ff8b3d5e83f3446e02d6bb12add7ad9"
+      sha256: "35882981abcbfb8c15b286f0cd690ff25bac12d95eff3e25ee207f37d4c42e7f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.4"
+    version: "2.3.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -1249,10 +1249,10 @@ packages:
     dependency: "direct main"
     description:
       name: quran_library
-      sha256: "39e0a1a1e33ba4b5bec49763c976931a9438bdd98bde6dc7647768e680b96f34"
+      sha256: "70ecd46da07481247091c93d9ae5bfd90711b2c8e6adcd6a5bfaeea44a8a67ed"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.3+1"
+    version: "4.2.1"
   readmore:
     dependency: "direct main"
     description:

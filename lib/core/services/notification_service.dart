@@ -5,6 +5,8 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:thekr_app/core/services/prayer_service.dart';
+import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -179,6 +181,26 @@ class NotificationService {
     await androidImplementation?.createNotificationChannel(channel);
   }
 
+  static Future<void> _createAthanChannel() async {
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'athan_channel',
+      'أذان الصلوات',
+      description: 'إشعارات الأذان للصلوات الخمس',
+      importance: Importance.max,
+      playSound: true,
+      enableVibration: true,
+      sound: RawResourceAndroidNotificationSound('athan'),
+    );
+
+    final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+        _notifications
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
+
+    await androidImplementation?.createNotificationChannel(channel);
+  }
+
   static Future<void> scheduleMorningAzkar(TimeOfDay time) async {
     await _notifications.zonedSchedule(
       id: 1,
@@ -271,6 +293,42 @@ class NotificationService {
     );
   }
 
+  static Future<void> scheduleAthan(int id, String title, String body, DateTime time) async {
+    await _createAthanChannel();
+    
+    final tz.TZDateTime scheduledDate = tz.TZDateTime.from(time, tz.local);
+    
+    // Only schedule if time is in the future
+    if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) return;
+
+    await _notifications.zonedSchedule(
+      id: id,
+      title: title,
+      body: body,
+      scheduledDate: scheduledDate,
+      notificationDetails: NotificationDetails(
+        android: const AndroidNotificationDetails(
+          'athan_channel',
+          'أذان الصلوات',
+          channelDescription: 'إشعارات الأذان للصلوات الخمس',
+          importance: Importance.max,
+          priority: Priority.max,
+          playSound: true,
+          sound: RawResourceAndroidNotificationSound('athan'),
+          enableVibration: true,
+          fullScreenIntent: true,
+        ),
+        iOS: const DarwinNotificationDetails(
+          sound: 'makkah.aiff', // We will need to map this in iOS later if provided
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time,
+      payload: 'athan_$id',
+    );
+  }
+
   static tz.TZDateTime _nextInstanceOfTime(TimeOfDay time) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduledDate = tz.TZDateTime(
@@ -317,6 +375,12 @@ class NotificationService {
     await _notifications.cancelAll();
   }
 
+  static Future<void> cancelAthanNotifications() async {
+    for (int i = 10; i <= 15; i++) {
+      await _notifications.cancel(id: i);
+    }
+  }
+
   static Future<void> refreshScheduledNotifications() async {
     final morningEnabled = await SettingsService.isMorningNotificationEnabled();
     final eveningEnabled = await SettingsService.isEveningNotificationEnabled();
@@ -341,6 +405,28 @@ class NotificationService {
       final wirdTime = await SettingsService.getWirdTime();
       await scheduleWirdNotification(wirdTime);
     }
+
+    await cancelAthanNotifications();
+    
+    final times = await PrayerService.getCurrentPrayerTimes();
+    
+    if (times != null) {
+      if (await SettingsService.isFajrAthanEnabled()) {
+        await scheduleAthan(10, 'صلاة ${AppPrayer.fajr.nameArabic}', 'حان الآن موعد صلاة ${AppPrayer.fajr.nameArabic}', times.fajr);
+      }
+      if (await SettingsService.isDhuhrAthanEnabled()) {
+        await scheduleAthan(11, 'صلاة ${AppPrayer.dhuhr.nameArabic}', 'حان الآن موعد صلاة ${AppPrayer.dhuhr.nameArabic}', times.dhuhr);
+      }
+      if (await SettingsService.isAsrAthanEnabled()) {
+        await scheduleAthan(12, 'صلاة ${AppPrayer.asr.nameArabic}', 'حان الآن موعد صلاة ${AppPrayer.asr.nameArabic}', times.asr);
+      }
+      if (await SettingsService.isMaghribAthanEnabled()) {
+        await scheduleAthan(13, 'صلاة ${AppPrayer.maghrib.nameArabic}', 'حان الآن موعد موعد صلاة ${AppPrayer.maghrib.nameArabic}', times.maghrib);
+      }
+      if (await SettingsService.isIshaAthanEnabled()) {
+        await scheduleAthan(14, 'صلاة ${AppPrayer.isha.nameArabic}', 'حان الآن موعد صلاة ${AppPrayer.isha.nameArabic}', times.isha);
+      }
+    }
   }
 }
 
@@ -352,6 +438,7 @@ class SettingsService {
   static const String _morningTimeKey = 'morning_notification_time';
   static const String _eveningTimeKey = 'evening_notification_time';
   static const String _wirdTimeKey = 'wird_notification_time';
+  static const String _athanEnabledKey = 'athan_enabled';
 
   static Future<void> setMorningNotificationEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
@@ -428,4 +515,19 @@ class SettingsService {
     final parts = timeString.split(':');
     return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
   }
+
+  static Future<void> setFajrAthanEnabled(bool enabled) async => (await SharedPreferences.getInstance()).setBool('fajr_athan_enabled', enabled);
+  static Future<bool> isFajrAthanEnabled() async => (await SharedPreferences.getInstance()).getBool('fajr_athan_enabled') ?? true;
+
+  static Future<void> setDhuhrAthanEnabled(bool enabled) async => (await SharedPreferences.getInstance()).setBool('dhuhr_athan_enabled', enabled);
+  static Future<bool> isDhuhrAthanEnabled() async => (await SharedPreferences.getInstance()).getBool('dhuhr_athan_enabled') ?? true;
+
+  static Future<void> setAsrAthanEnabled(bool enabled) async => (await SharedPreferences.getInstance()).setBool('asr_athan_enabled', enabled);
+  static Future<bool> isAsrAthanEnabled() async => (await SharedPreferences.getInstance()).getBool('asr_athan_enabled') ?? true;
+
+  static Future<void> setMaghribAthanEnabled(bool enabled) async => (await SharedPreferences.getInstance()).setBool('maghrib_athan_enabled', enabled);
+  static Future<bool> isMaghribAthanEnabled() async => (await SharedPreferences.getInstance()).getBool('maghrib_athan_enabled') ?? true;
+
+  static Future<void> setIshaAthanEnabled(bool enabled) async => (await SharedPreferences.getInstance()).setBool('isha_athan_enabled', enabled);
+  static Future<bool> isIshaAthanEnabled() async => (await SharedPreferences.getInstance()).getBool('isha_athan_enabled') ?? true;
 }

@@ -343,9 +343,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ],
                   ),
                   SizedBox(height: context.insets.md),
-                  const SectionHeader(title: 'التنبيهات'),
+                  const SectionHeader(title: 'التنبيهات والأذان'),
                   SettingsSection(
                     children: [
+                      SettingsTile(
+                        title: 'تنبيه الصلوات',
+                        subtitle: 'تخصيص تنبيه الأذان لكل صلاة بشكل منفصل واختيار صوت المؤذن.',
+                        icon: Icons.notifications_active_rounded,
+                        iconColor: context.colors.primary,
+                        onTap: () {
+                          context.router.push(const AthanSettingsRoute());
+                        },
+                      ),
                       SettingsTile(
                         title: 'أذكار الصباح',
                         subtitle: settings.morningNotificationEnabled

@@ -27,6 +27,22 @@ class AsmaAllahRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [AthanSettingsScreen]
+class AthanSettingsRoute extends PageRouteInfo<void> {
+  const AthanSettingsRoute({List<PageRouteInfo>? children})
+    : super(AthanSettingsRoute.name, initialChildren: children);
+
+  static const String name = 'AthanSettingsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const AthanSettingsScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [AzkarListScreen]
 class AzkarListRoute extends PageRouteInfo<AzkarListRouteArgs> {
   AzkarListRoute({
