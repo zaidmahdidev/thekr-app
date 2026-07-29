@@ -83,6 +83,12 @@ class HomeFeaturesGrid extends StatelessWidget {
             route: const LiveStreamRoute(),
           ),
           _FeatureItem(
+            title: "التقويم الإسلامي",
+            icon: Icons.calendar_month_rounded,
+            color: const Color(0xff009688),
+            route: const CalendarRoute(),
+          ),
+          _FeatureItem(
             title: "الإعدادات",
             imagePath: AppAssets.fSettings,
             color: const Color(0xff95a5a6),
@@ -96,14 +102,16 @@ class HomeFeaturesGrid extends StatelessWidget {
 
 class _FeatureItem extends StatelessWidget {
   final String title;
-  final String imagePath;
+  final String? imagePath;
+  final IconData? icon;
   final Color color;
   final PageRouteInfo? route;
   final VoidCallback? onTap;
 
   const _FeatureItem({
     required this.title,
-    required this.imagePath,
+    this.imagePath,
+    this.icon,
     required this.color,
     this.route,
     this.onTap,
@@ -114,6 +122,7 @@ class _FeatureItem extends StatelessWidget {
     return FeatureCard(
       title: title,
       imgUrl: imagePath,
+      icon: icon,
       color: color,
       onTap: () {
         if (onTap != null) {

@@ -125,6 +125,22 @@ class AzkarRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [CalendarScreen]
+class CalendarRoute extends PageRouteInfo<void> {
+  const CalendarRoute({List<PageRouteInfo>? children})
+    : super(CalendarRoute.name, initialChildren: children);
+
+  static const String name = 'CalendarRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const CalendarScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [CustomizeHomeLayoutScreen]
 class CustomizeHomeLayoutRoute extends PageRouteInfo<void> {
   const CustomizeHomeLayoutRoute({List<PageRouteInfo>? children})
