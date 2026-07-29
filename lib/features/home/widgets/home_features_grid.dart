@@ -84,9 +84,15 @@ class HomeFeaturesGrid extends StatelessWidget {
           ),
           _FeatureItem(
             title: "التقويم الإسلامي",
-            icon: Icons.calendar_month_rounded,
+            imagePath: AppAssets.fCalendar,
             color: const Color(0xff009688),
             route: const CalendarRoute(),
+          ),
+          _FeatureItem(
+            title: "متتبع العبادات",
+            imagePath: AppAssets.fHabitTracker,
+            color: const Color(0xff3498db),
+            route: const HabitTrackerRoute(),
           ),
           _FeatureItem(
             title: "الإعدادات",

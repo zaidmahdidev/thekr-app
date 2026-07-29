@@ -30,4 +30,6 @@ class AppAssets {
   static const String fSettings = '$_imagesPath/setting.png';
   static const String fAsmaAllah = '$_imagesPath/bismillah.png';
   static const String fProphets = '$_imagesPath/muhammad.png';
+  static const String fCalendar = '$_imagesPath/calendar.png';
+  static const String fHabitTracker = '$_imagesPath/time_habit.png';
 }

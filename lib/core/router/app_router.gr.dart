@@ -173,6 +173,22 @@ class CustomizeShareCardRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [HabitTrackerScreen]
+class HabitTrackerRoute extends PageRouteInfo<void> {
+  const HabitTrackerRoute({List<PageRouteInfo>? children})
+    : super(HabitTrackerRoute.name, initialChildren: children);
+
+  static const String name = 'HabitTrackerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const HabitTrackerScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [HadithNawawiScreen]
 class HadithNawawiRoute extends PageRouteInfo<void> {
   const HadithNawawiRoute({List<PageRouteInfo>? children})
