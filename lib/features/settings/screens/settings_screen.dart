@@ -17,6 +17,8 @@ import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/router/app_router.dart';
 import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'package:thekr_app/features/settings/widgets/app_share_sheet.dart';
+import 'package:thekr_app/core/providers/feature_badge_provider.dart';
+import 'package:thekr_app/core/widgets/new_feature_badge.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -346,14 +348,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   const SectionHeader(title: 'التنبيهات والأذان'),
                   SettingsSection(
                     children: [
-                      SettingsTile(
-                        title: 'تنبيه الصلوات',
-                        subtitle: 'تخصيص تنبيه الأذان لكل صلاة بشكل منفصل واختيار صوت المؤذن.',
-                        icon: Icons.notifications_active_rounded,
-                        iconColor: context.colors.primary,
-                        onTap: () {
-                          context.router.push(const AthanSettingsRoute());
-                        },
+                      NewFeatureBadge(
+                        featureId: 'prayer_alerts',
+                        addedInVersion: '1.2.1',
+                        child: SettingsTile(
+                          title: 'تنبيه الصلوات',
+                          subtitle: 'تخصيص تنبيه الأذان لكل صلاة بشكل منفصل واختيار صوت المؤذن.',
+                          icon: Icons.notifications_active_rounded,
+                          iconColor: context.colors.primary,
+                          onTap: () {
+                            ref.read(featureBadgeProvider.notifier).recordFeatureClick('prayer_alerts');
+                            context.router.push(const AthanSettingsRoute());
+                          },
+                        ),
                       ),
                       SettingsTile(
                         title: 'أذكار الصباح',

@@ -6,6 +6,9 @@ import 'package:thekr_app/core/services/cache_helper.dart';
 import 'package:thekr_app/core/router/app_router.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:thekr_app/core/providers/feature_badge_provider.dart';
+import 'package:thekr_app/core/widgets/new_feature_badge.dart';
 
 class HomeFeaturesGrid extends StatelessWidget {
   const HomeFeaturesGrid({super.key});
@@ -87,12 +90,16 @@ class HomeFeaturesGrid extends StatelessWidget {
             imagePath: AppAssets.fCalendar,
             color: const Color(0xff009688),
             route: const CalendarRoute(),
+            featureId: 'calendar',
+            addedInVersion: '1.2.1',
           ),
           _FeatureItem(
             title: "متتبع العبادات",
             imagePath: AppAssets.fHabitTracker,
             color: const Color(0xff3498db),
             route: const HabitTrackerRoute(),
+            featureId: 'habit_tracker',
+            addedInVersion: '1.2.1',
           ),
           _FeatureItem(
             title: "الإعدادات",
@@ -106,13 +113,15 @@ class HomeFeaturesGrid extends StatelessWidget {
   }
 }
 
-class _FeatureItem extends StatelessWidget {
+class _FeatureItem extends ConsumerWidget {
   final String title;
   final String? imagePath;
   final IconData? icon;
   final Color color;
   final PageRouteInfo? route;
   final VoidCallback? onTap;
+  final String? featureId;
+  final String? addedInVersion;
 
   const _FeatureItem({
     required this.title,
@@ -121,16 +130,24 @@ class _FeatureItem extends StatelessWidget {
     required this.color,
     this.route,
     this.onTap,
+    this.featureId,
+    this.addedInVersion,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return FeatureCard(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bool hasBadge = featureId != null && addedInVersion != null;
+
+    final card = FeatureCard(
       title: title,
       imgUrl: imagePath,
       icon: icon,
       color: color,
       onTap: () {
+        if (hasBadge) {
+          ref.read(featureBadgeProvider.notifier).recordFeatureClick(featureId!);
+        }
+
         if (onTap != null) {
           onTap!();
         } else if (route != null) {
@@ -140,5 +157,15 @@ class _FeatureItem extends StatelessWidget {
         }
       },
     );
+
+    if (hasBadge) {
+      return NewFeatureBadge(
+        featureId: featureId!,
+        addedInVersion: addedInVersion!,
+        child: card,
+      );
+    }
+
+    return card;
   }
 }
