@@ -27,6 +27,22 @@ class AsmaAllahRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [AthanSettingsScreen]
+class AthanSettingsRoute extends PageRouteInfo<void> {
+  const AthanSettingsRoute({List<PageRouteInfo>? children})
+    : super(AthanSettingsRoute.name, initialChildren: children);
+
+  static const String name = 'AthanSettingsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const AthanSettingsScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [AzkarListScreen]
 class AzkarListRoute extends PageRouteInfo<AzkarListRouteArgs> {
   AzkarListRoute({
@@ -109,6 +125,22 @@ class AzkarRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [CalendarScreen]
+class CalendarRoute extends PageRouteInfo<void> {
+  const CalendarRoute({List<PageRouteInfo>? children})
+    : super(CalendarRoute.name, initialChildren: children);
+
+  static const String name = 'CalendarRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const CalendarScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [CustomizeHomeLayoutScreen]
 class CustomizeHomeLayoutRoute extends PageRouteInfo<void> {
   const CustomizeHomeLayoutRoute({List<PageRouteInfo>? children})
@@ -136,6 +168,22 @@ class CustomizeShareCardRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const CustomizeShareCardScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [HabitTrackerScreen]
+class HabitTrackerRoute extends PageRouteInfo<void> {
+  const HabitTrackerRoute({List<PageRouteInfo>? children})
+    : super(HabitTrackerRoute.name, initialChildren: children);
+
+  static const String name = 'HabitTrackerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const HabitTrackerScreen();
     },
   );
 }

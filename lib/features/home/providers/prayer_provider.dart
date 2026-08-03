@@ -3,8 +3,14 @@ import 'package:thekr_app/core/services/prayer_service.dart';
 import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
 import 'package:thekr_app/features/home/models/app_prayer_times.dart';
 
+import 'package:thekr_app/core/services/notification_service.dart';
+
 final prayerTimesProvider = FutureProvider<AppPrayerTimes?>((ref) async {
-  return await PrayerService.getCurrentPrayerTimes();
+  final times = await PrayerService.getCurrentPrayerTimes();
+  if (times != null) {
+    NotificationService.refreshScheduledNotifications();
+  }
+  return times;
 });
 
 final tomorrowPrayerTimesProvider = FutureProvider<AppPrayerTimes?>((

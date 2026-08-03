@@ -98,7 +98,7 @@ class PrayerService {
                        permission == LocationPermission.deniedForever;
       } catch (_) {}
 
-      final params = CalculationMethod.karachi.getParameters();
+      final params = CalculationMethod.umm_al_qura.getParameters();
       params.madhab = Madhab.shafi;
 
       final dateComponents = DateComponents.from(DateTime.now());
@@ -120,7 +120,7 @@ class PrayerService {
                        permission == LocationPermission.deniedForever;
       } catch (_) {}
 
-      final params = CalculationMethod.karachi.getParameters();
+      final params = CalculationMethod.umm_al_qura.getParameters();
       params.madhab = Madhab.shafi;
 
       final tomorrow = DateTime.now().add(const Duration(days: 1));

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:thekr_app/core/widgets/app_button.dart';
+import 'package:thekr_app/core/router/app_router.dart';
 import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
+import 'package:thekr_app/core/widgets/app_button.dart';
 import 'package:thekr_app/features/home/models/app_prayer_times.dart';
+import 'package:auto_route/auto_route.dart';
 
 class PrayerTimesCard extends StatelessWidget {
   const PrayerTimesCard({
@@ -38,28 +40,32 @@ class PrayerTimesCard extends StatelessWidget {
       );
     }).toList();
 
-    return Container(
-      margin: EdgeInsets.all(context.insets.sm),
-      padding: EdgeInsets.symmetric(
-        vertical: context.insets.sm,
-        horizontal: context.insets.sm / 4,
-      ),
-      decoration: BoxDecoration(
-        color: context.colors.surface,
-        borderRadius: BorderRadius.circular(context.corners.lg),
-        border: Border.all(
-          color: context.colors.secondary.withValues(alpha: 0.1),
-          width: 1,
+    return GestureDetector(
+      onTap: () {
+        context.pushRoute(const AthanSettingsRoute());
+      },
+      child: Container(
+        margin: EdgeInsets.all(context.insets.sm),
+        padding: EdgeInsets.symmetric(
+          vertical: context.insets.sm,
+          horizontal: context.insets.sm / 4,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10.r,
-            offset: Offset(0, 4.h),
+        decoration: BoxDecoration(
+          color: context.colors.surface,
+          borderRadius: BorderRadius.circular(context.corners.lg),
+          border: Border.all(
+            color: context.colors.secondary.withValues(alpha: 0.1),
+            width: 1,
           ),
-        ],
-      ),
-      child: Column(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 10.r,
+              offset: Offset(0, 4.h),
+            ),
+          ],
+        ),
+        child: Column(
         children: [
           if (isLocationOff)
             Padding(
@@ -81,6 +87,7 @@ class PrayerTimesCard extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 

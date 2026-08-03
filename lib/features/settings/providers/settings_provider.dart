@@ -57,6 +57,11 @@ class SettingsState {
   final bool fridayNotificationEnabled;
   final bool wirdNotificationEnabled;
   final TimeOfDay wirdNotificationTime;
+  final bool fajrAthanEnabled;
+  final bool dhuhrAthanEnabled;
+  final bool asrAthanEnabled;
+  final bool maghribAthanEnabled;
+  final bool ishaAthanEnabled;
   final String languageCode;
   final double fontSize;
   final List<HomeSection> homeSections;
@@ -73,6 +78,11 @@ class SettingsState {
     this.fridayNotificationEnabled = true,
     this.wirdNotificationEnabled = false,
     this.wirdNotificationTime = const TimeOfDay(hour: 21, minute: 0),
+    this.fajrAthanEnabled = true,
+    this.dhuhrAthanEnabled = true,
+    this.asrAthanEnabled = true,
+    this.maghribAthanEnabled = true,
+    this.ishaAthanEnabled = true,
     this.languageCode = 'ar',
     this.fontSize = 16.0,
     required this.homeSections,
@@ -90,6 +100,11 @@ class SettingsState {
     bool? fridayNotificationEnabled,
     bool? wirdNotificationEnabled,
     TimeOfDay? wirdNotificationTime,
+    bool? fajrAthanEnabled,
+    bool? dhuhrAthanEnabled,
+    bool? asrAthanEnabled,
+    bool? maghribAthanEnabled,
+    bool? ishaAthanEnabled,
     String? languageCode,
     double? fontSize,
     List<HomeSection>? homeSections,
@@ -112,6 +127,11 @@ class SettingsState {
       wirdNotificationEnabled:
           wirdNotificationEnabled ?? this.wirdNotificationEnabled,
       wirdNotificationTime: wirdNotificationTime ?? this.wirdNotificationTime,
+      fajrAthanEnabled: fajrAthanEnabled ?? this.fajrAthanEnabled,
+      dhuhrAthanEnabled: dhuhrAthanEnabled ?? this.dhuhrAthanEnabled,
+      asrAthanEnabled: asrAthanEnabled ?? this.asrAthanEnabled,
+      maghribAthanEnabled: maghribAthanEnabled ?? this.maghribAthanEnabled,
+      ishaAthanEnabled: ishaAthanEnabled ?? this.ishaAthanEnabled,
       languageCode: languageCode ?? this.languageCode,
       fontSize: fontSize ?? this.fontSize,
       homeSections: homeSections ?? this.homeSections,
@@ -157,6 +177,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
             'wird_notification_time',
             const TimeOfDay(hour: 21, minute: 0),
           ),
+          fajrAthanEnabled: CacheHelper.getData(key: 'fajr_athan_enabled') ?? true,
+          dhuhrAthanEnabled: CacheHelper.getData(key: 'dhuhr_athan_enabled') ?? true,
+          asrAthanEnabled: CacheHelper.getData(key: 'asr_athan_enabled') ?? true,
+          maghribAthanEnabled: CacheHelper.getData(key: 'maghrib_athan_enabled') ?? true,
+          ishaAthanEnabled: CacheHelper.getData(key: 'isha_athan_enabled') ?? true,
           shareTemplate: _getInitialShareTemplate(),
         ),
       );
@@ -311,6 +336,31 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     if (state.wirdNotificationEnabled) {
       NotificationService.scheduleWirdNotification(time);
     }
+  }
+
+  void toggleFajrAthan(bool enabled) {
+    state = state.copyWith(fajrAthanEnabled: enabled);
+    CacheHelper.saveData(key: 'fajr_athan_enabled', value: enabled);
+  }
+
+  void toggleDhuhrAthan(bool enabled) {
+    state = state.copyWith(dhuhrAthanEnabled: enabled);
+    CacheHelper.saveData(key: 'dhuhr_athan_enabled', value: enabled);
+  }
+
+  void toggleAsrAthan(bool enabled) {
+    state = state.copyWith(asrAthanEnabled: enabled);
+    CacheHelper.saveData(key: 'asr_athan_enabled', value: enabled);
+  }
+
+  void toggleMaghribAthan(bool enabled) {
+    state = state.copyWith(maghribAthanEnabled: enabled);
+    CacheHelper.saveData(key: 'maghrib_athan_enabled', value: enabled);
+  }
+
+  void toggleIshaAthan(bool enabled) {
+    state = state.copyWith(ishaAthanEnabled: enabled);
+    CacheHelper.saveData(key: 'isha_athan_enabled', value: enabled);
   }
 
   void updateFontSize(double size) {

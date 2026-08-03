@@ -19,6 +19,9 @@ import 'package:thekr_app/features/misbaha/screens/misbaha_screen.dart';
 import 'package:thekr_app/features/settings/screens/customize_share_card_screen.dart';
 import 'package:thekr_app/features/settings/screens/customize_home_layout_screen.dart';
 import 'package:thekr_app/features/azkar/screens/user_azkar_screen.dart';
+import 'package:thekr_app/features/settings/screens/athan_settings_screen.dart';
+import 'package:thekr_app/features/calendar/screens/calendar_screen.dart';
+import 'package:thekr_app/features/habit_tracker/screens/habit_tracker_screen.dart';
 
 part 'app_router.gr.dart';
 
@@ -43,5 +46,8 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: CustomizeHomeLayoutRoute.page),
     AutoRoute(page: CustomizeShareCardRoute.page),
     AutoRoute(page: UserAzkarRoute.page),
+    AutoRoute(page: AthanSettingsRoute.page),
+    AutoRoute(page: CalendarRoute.page),
+    AutoRoute(page: HabitTrackerRoute.page),
   ];
 }
