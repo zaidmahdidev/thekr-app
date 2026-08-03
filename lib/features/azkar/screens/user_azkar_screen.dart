@@ -8,6 +8,7 @@ import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/features/azkar/providers/user_azkar_provider.dart';
 import 'package:thekr_app/features/azkar/widgets/user_thikr_card.dart';
 import 'package:thekr_app/features/azkar/widgets/add_thikr_sheet.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
 @RoutePage()
 class UserAzkarScreen extends ConsumerWidget {
@@ -18,7 +19,29 @@ class UserAzkarScreen extends ConsumerWidget {
     final userAthkar = ref.watch(userAzkarProvider);
 
     return AppScaffold(
-      title: 'أذكاري المخصصة',
+      appBar: BaseAppBar(
+        title: 'أذكاري المخصصة',
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.text_increase_rounded),
+            onPressed: () {
+              final currentSize = ref.read(settingsProvider).fontSize;
+              if (currentSize < 24) {
+                ref.read(settingsProvider.notifier).updateFontSize(currentSize + 2);
+              }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.text_decrease_rounded),
+            onPressed: () {
+              final currentSize = ref.read(settingsProvider).fontSize;
+              if (currentSize > 14) {
+                ref.read(settingsProvider.notifier).updateFontSize(currentSize - 2);
+              }
+            },
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddSheet(context),
         backgroundColor: context.colors.primary,

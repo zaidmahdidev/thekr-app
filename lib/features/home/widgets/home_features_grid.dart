@@ -91,7 +91,7 @@ class HomeFeaturesGrid extends StatelessWidget {
             color: const Color(0xff009688),
             route: const CalendarRoute(),
             featureId: 'calendar',
-            addedInVersion: '1.2.1',
+            addedInVersion: '1.3.0',
           ),
           _FeatureItem(
             title: "متتبع العبادات",
@@ -99,7 +99,7 @@ class HomeFeaturesGrid extends StatelessWidget {
             color: const Color(0xff3498db),
             route: const HabitTrackerRoute(),
             featureId: 'habit_tracker',
-            addedInVersion: '1.2.1',
+            addedInVersion: '1.3.0',
           ),
           _FeatureItem(
             title: "الإعدادات",

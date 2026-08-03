@@ -1,4 +1,3 @@
-
 <br />
 <div align="center">
  <img alt='logo_design' src='screen_shots/cover.png'/>
@@ -20,12 +19,13 @@ It provides a wide range of religious resources and features — all available *
 - 🚫 **No ads**
 - 🧭 **Accurate Qiblah direction**
 - 📖 Full **Qur'an** with clear and readable script
-- 🗂️ All daily **Athkar**
-- 📘 **Hisn Al-Muslim** collection
-- 📿 **99 Names of Allah**
-- 📜 **Al-Arba’een Al-Nawawiya** (40 Hadiths)
-- 📌 **Bookmark** your last read and return anytime
-- 🌙 **User-friendly & elegant UI**
+- 🗂️ All daily **Athkar** & **Hisn Al-Muslim** collection
+- 📿 **99 Names of Allah** & 📜 **Al-Arba’een Al-Nawawiya**
+- ⏰ **Smart Notifications:** Custom audio Durood reminders with sleep-time filtering.
+- 🎨 **Premium UI:** Glassmorphism, dynamic Dark/Light modes, and strict Design System.
+- 📸 **Share Custom Cards:** Generate and share beautifully styled Islamic cards.
+- 🏆 **Habit Tracker:** Track streaks and daily spiritual progression (Eman Level).
+- 🗚 **Accessibility:** In-app font size controls (A+/A-) for elderly readers.
 
 ---
 
@@ -55,16 +55,51 @@ It provides a wide range of religious resources and features — all available *
 
 | Package | Purpose |
 |--------|---------|
-| `shared_preferences` | Store user settings and bookmarks |
-| `fluttertoast` | Show lightweight toast messages |
-| `readmore` | Expand/collapse long text dynamically |
-| `hexcolor` | Use hex color codes easily |
-| `flutter_staggered_animations` | Add smooth UI animations |
-| `in_app_update` | Notify users of app updates (Android) |
-| `awesome_dialog` | Display beautiful dialog popups |
+| `flutter_riverpod` | Robust State Management & Dependency Injection |
+| `auto_route` | Declarative, strong-typed Navigation |
+| `flutter_local_notifications` | Background and scheduled local notifications |
+| `shared_preferences` | Store user settings, bookmarks, and streaks |
+| `adhan` | Calculate accurate daily prayer times |
 | `flutter_qiblah` | Accurately determine Qiblah direction |
-| `animated_splash_screen` | Show animated splash screen |
-| `rename` | Rename the app for different platforms |
+| `readmore` | Expand/collapse long text dynamically |
+| `share_plus` | Share generated cards and text to social media |
+| `table_calendar` | Track reading habits and streaks on a calendar |
+| `flutter_screenutil` | Responsive UI across all screen sizes |
+
+---
+
+## 🏗️ Project Structure
+
+```text
+├── android
+├── assets
+├── ios
+├── lib
+│   ├── core
+│   │   ├── extensions
+│   │   ├── localization
+│   │   ├── providers
+│   │   ├── router
+│   │   ├── services
+│   │   ├── theme
+│   │   ├── utils
+│   │   └── widgets
+│   ├── features
+│   │   ├── asma_allah feature
+│   │   ├── azkar feature
+│   │   ├── calendar feature
+│   │   ├── habit_tracker feature
+│   │   ├── hadith feature
+│   │   ├── home feature
+│   │   ├── husn_al_muslim feature
+│   │   ├── live_stream feature
+│   │   ├── misbaha feature
+│   │   ├── prophets_stories feature
+│   │   ├── qiblah feature
+│   │   ├── quran feature
+│   │   └── settings feature
+│   └── main.dart
+```
 
 ---
 
@@ -90,4 +125,12 @@ flutter run
 
 ---
 ## 🤝 Contributing
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="center">Made with ❤️ for the Muslim Ummah.</p>

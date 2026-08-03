@@ -8,9 +8,11 @@ import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/features/azkar/widgets/azkar_item_widget.dart';
 import 'package:thekr_app/core/services/analytics_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
 @RoutePage()
-class AzkarListScreen extends StatefulWidget {
+class AzkarListScreen extends ConsumerStatefulWidget {
   final List<Map<String, String>> azkarList;
   final String type;
 
@@ -18,10 +20,10 @@ class AzkarListScreen extends StatefulWidget {
     : super(key: key);
 
   @override
-  State<AzkarListScreen> createState() => _AzkarListScreenState();
+  ConsumerState<AzkarListScreen> createState() => _AzkarListScreenState();
 }
 
-class _AzkarListScreenState extends State<AzkarListScreen> {
+class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
   late List<Map<String, dynamic>> azkarWithCounters;
   bool allCompleted = false;
 
@@ -95,6 +97,26 @@ class _AzkarListScreenState extends State<AzkarListScreen> {
     return AppScaffold(
       appBar: BaseAppBar(
         title: widget.type,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.text_increase_rounded),
+            onPressed: () {
+              final currentSize = ref.read(settingsProvider).fontSize;
+              if (currentSize < 24) {
+                ref.read(settingsProvider.notifier).updateFontSize(currentSize + 2);
+              }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.text_decrease_rounded),
+            onPressed: () {
+              final currentSize = ref.read(settingsProvider).fontSize;
+              if (currentSize > 14) {
+                ref.read(settingsProvider.notifier).updateFontSize(currentSize - 2);
+              }
+            },
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(16),
           child: Padding(

@@ -53,6 +53,28 @@ class DailyHabit {
   
   double get progress => completedCount / totalHabits;
 
+  int get totalPoints {
+    int points = 0;
+    // Fard
+    if (fajr) points += 10;
+    if (dhuhr) points += 10;
+    if (asr) points += 10;
+    if (maghrib) points += 10;
+    if (isha) points += 10;
+    // Sunnah
+    if (qiyam) points += 15;
+    if (rawatib) points += 15;
+    // Azkar
+    if (morningAzkar) points += 10;
+    if (eveningAzkar) points += 10;
+    if (quranWird) points += 10;
+    
+    // Perfect Day Bonus
+    if (progress >= 1.0) points += 40;
+    
+    return points;
+  }
+
   DailyHabit copyWith({
     String? dateStr,
     bool? fajr,

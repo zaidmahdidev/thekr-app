@@ -64,6 +64,7 @@ class SettingsState {
   final bool ishaAthanEnabled;
   final String languageCode;
   final double fontSize;
+  final int duroodInterval;
   final List<HomeSection> homeSections;
   final ShareTemplate shareTemplate;
 
@@ -85,6 +86,7 @@ class SettingsState {
     this.ishaAthanEnabled = true,
     this.languageCode = 'ar',
     this.fontSize = 16.0,
+    this.duroodInterval = 0,
     required this.homeSections,
     this.shareTemplate = ShareTemplate.classic,
   });
@@ -107,6 +109,7 @@ class SettingsState {
     bool? ishaAthanEnabled,
     String? languageCode,
     double? fontSize,
+    int? duroodInterval,
     List<HomeSection>? homeSections,
     ShareTemplate? shareTemplate,
   }) {
@@ -134,6 +137,7 @@ class SettingsState {
       ishaAthanEnabled: ishaAthanEnabled ?? this.ishaAthanEnabled,
       languageCode: languageCode ?? this.languageCode,
       fontSize: fontSize ?? this.fontSize,
+      duroodInterval: duroodInterval ?? this.duroodInterval,
       homeSections: homeSections ?? this.homeSections,
       shareTemplate: shareTemplate ?? this.shareTemplate,
     );
@@ -182,6 +186,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           asrAthanEnabled: CacheHelper.getData(key: 'asr_athan_enabled') ?? true,
           maghribAthanEnabled: CacheHelper.getData(key: 'maghrib_athan_enabled') ?? true,
           ishaAthanEnabled: CacheHelper.getData(key: 'isha_athan_enabled') ?? true,
+          duroodInterval: CacheHelper.getData(key: 'durood_interval_minutes') ?? 0,
           shareTemplate: _getInitialShareTemplate(),
         ),
       );
@@ -366,6 +371,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   void updateFontSize(double size) {
     state = state.copyWith(fontSize: size);
     CacheHelper.saveData(key: 'fontSize', value: size);
+  }
+
+  void updateDuroodInterval(int minutes) {
+    state = state.copyWith(duroodInterval: minutes);
+    // NotificationService handles the save and scheduling internally
   }
 
   void reorderHomeSections(List<HomeSection> sections) {

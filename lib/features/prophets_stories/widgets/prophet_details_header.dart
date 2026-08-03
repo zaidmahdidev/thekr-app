@@ -2,10 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/extensions/theme_extension.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils/constants/app_assets.dart';
 import '../models/prophet_story.dart';
+import '../../settings/providers/settings_provider.dart';
 
-class ProphetDetailsHeader extends StatelessWidget {
+class ProphetDetailsHeader extends ConsumerWidget {
   final ProphetStory prophet;
   final VoidCallback onCopyAll;
   final VoidCallback onShare;
@@ -18,7 +20,7 @@ class ProphetDetailsHeader extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final double expandedHeight = 150.h;
     final double collapsedHeight = 50.h;
 
