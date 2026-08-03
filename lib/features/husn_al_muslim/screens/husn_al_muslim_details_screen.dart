@@ -4,9 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/features/husn_al_muslim/widgets/husn_al_muslim_item_widget.dart';
+import 'package:thekr_app/core/widgets/base_app_bar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
 @RoutePage()
-class HusinAlMuslimDetailsScreen extends StatefulWidget {
+class HusinAlMuslimDetailsScreen extends ConsumerStatefulWidget {
   final String title;
   final Map<String, dynamic> dhikrData;
 
@@ -17,12 +20,12 @@ class HusinAlMuslimDetailsScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<HusinAlMuslimDetailsScreen> createState() =>
+  ConsumerState<HusinAlMuslimDetailsScreen> createState() =>
       _HusinAlMuslimDetailsScreenState();
 }
 
 class _HusinAlMuslimDetailsScreenState
-    extends State<HusinAlMuslimDetailsScreen> {
+    extends ConsumerState<HusinAlMuslimDetailsScreen> {
   late List<Map<String, dynamic>> dhikrWithCounters;
   bool allCompleted = false;
 
@@ -83,7 +86,29 @@ class _HusinAlMuslimDetailsScreenState
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      title: widget.title,
+      appBar: BaseAppBar(
+        title: widget.title,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.text_increase_rounded),
+            onPressed: () {
+              final currentSize = ref.read(settingsProvider).fontSize;
+              if (currentSize < 24) {
+                ref.read(settingsProvider.notifier).updateFontSize(currentSize + 2);
+              }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.text_decrease_rounded),
+            onPressed: () {
+              final currentSize = ref.read(settingsProvider).fontSize;
+              if (currentSize > 14) {
+                ref.read(settingsProvider.notifier).updateFontSize(currentSize - 2);
+              }
+            },
+          ),
+        ],
+      ),
       body: dhikrWithCounters.where((dhikr) => !dhikr['isCompleted']).isEmpty
           ? Center(
               child: Column(

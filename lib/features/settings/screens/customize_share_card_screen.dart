@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/extensions/ui_extension.dart';
 import 'package:thekr_app/core/widgets/app_scaffold.dart';
+import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
@@ -145,7 +147,6 @@ class _CustomizeShareCardScreenState
 
             SizedBox(height: context.insets.xl),
 
-            // Custom Text Section
             Text(
               'اكتب نصك الخاص',
               style: context.textStyles.titleSmall?.copyWith(
@@ -154,23 +155,73 @@ class _CustomizeShareCardScreenState
               ),
             ),
             SizedBox(height: context.insets.md),
-            TextField(
-              controller: _textController,
-              maxLines: 3,
-              maxLength: 500,
-              textAlign: TextAlign.center,
-              decoration: InputDecoration(
-                hintText: 'اكتب آية، حديث، أو خاطرة إيمانية...',
-                filled: true,
-                fillColor: context.colors.surface,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                  borderSide: BorderSide(
-                    color: context.colors.primary.withValues(alpha: 0.2),
+            GestureDetector(
+              onTap: () {
+                context.showSheet(
+                  title: 'اكتب نصك الخاص',
+                  child: Builder(
+                    builder: (sheetContext) {
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            TextField(
+                              controller: _textController,
+                              minLines: 4,
+                              maxLines: 8,
+                              maxLength: 500,
+                              textAlign: TextAlign.right,
+                              autofocus: true,
+                              decoration: InputDecoration(
+                                hintText: 'اكتب آية، حديث، أو خاطرة إيمانية...',
+                                filled: true,
+                                fillColor: context.colors.surface,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  borderSide: BorderSide(
+                                    color: context.colors.primary.withValues(alpha: 0.2),
+                                  ),
+                                ),
+                              ),
+                              style: context.textStyles.bodyMedium?.copyWith(height: 1.5),
+                            ),
+                            SizedBox(height: context.insets.lg),
+                            AppButton(
+                              text: 'موافق',
+                              onTap: () => context.maybePop(),
+                            ),
+                            SizedBox(height: context.insets.md),
+                          ],
+                        ),
+                      );
+                    },
                   ),
+                );
+              },
+              child: AbsorbPointer(
+                child: TextField(
+                  controller: _textController,
+                  maxLines: 3,
+                  minLines: 1,
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    hintText: 'اضغط هنا لكتابة نصك الخاص...',
+                    filled: true,
+                    fillColor: context.colors.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(
+                        color: context.colors.primary.withValues(alpha: 0.2),
+                      ),
+                    ),
+                  ),
+                  style: context.textStyles.bodyMedium?.copyWith(height: 1.5),
                 ),
               ),
-              style: context.textStyles.bodyMedium?.copyWith(height: 1.5),
             ),
 
             SizedBox(height: context.insets.lg),

@@ -19,6 +19,7 @@ import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'package:thekr_app/features/settings/widgets/app_share_sheet.dart';
 import 'package:thekr_app/core/providers/feature_badge_provider.dart';
 import 'package:thekr_app/core/widgets/new_feature_badge.dart';
+import 'package:thekr_app/features/settings/widgets/durood_settings_sheet.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -350,7 +351,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       NewFeatureBadge(
                         featureId: 'prayer_alerts',
-                        addedInVersion: '1.2.1',
+                        addedInVersion: '1.3.0',
                         child: SettingsTile(
                           title: 'تنبيه الصلوات',
                           subtitle: 'تخصيص تنبيه الأذان لكل صلاة بشكل منفصل واختيار صوت المؤذن.',
@@ -359,6 +360,35 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           onTap: () {
                             ref.read(featureBadgeProvider.notifier).recordFeatureClick('prayer_alerts');
                             context.router.push(const AthanSettingsRoute());
+                          },
+                        ),
+                      ),
+                      NewFeatureBadge(
+                        featureId: 'durood_reminder',
+                        addedInVersion: '1.3.0',
+                        child: SettingsTile(
+                          title: 'التذكير بالصلاة على النبي',
+                          subtitle: settings.duroodInterval == 0 
+                              ? 'التذكير متوقف'
+                              : settings.duroodInterval == 30
+                                  ? 'كل نصف ساعة' 
+                              : settings.duroodInterval == 60 
+                                  ? 'كل ساعة' 
+                                  : settings.duroodInterval == 10080 
+                                      ? 'يوم الجمعة فقط' 
+                                      : settings.duroodInterval == 1440 
+                                          ? 'مرة يومياً' 
+                                          : 'كل ${settings.duroodInterval ~/ 60} ساعات',
+                          icon: Icons.mosque_rounded,
+                          iconColor: Colors.teal,
+                          onTap: () {
+                            ref.read(featureBadgeProvider.notifier).recordFeatureClick('durood_reminder');
+                            showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              isScrollControlled: true,
+                              builder: (context) => const DuroodSettingsSheet(),
+                            );
                           },
                         ),
                       ),

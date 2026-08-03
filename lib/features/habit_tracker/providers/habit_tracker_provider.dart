@@ -6,22 +6,26 @@ class HabitTrackerState {
   final DateTime selectedDate;
   final DailyHabit habit;
   final int currentStreak;
+  final int totalAllTimePoints;
 
   HabitTrackerState({
     required this.selectedDate,
     required this.habit,
     this.currentStreak = 0,
+    this.totalAllTimePoints = 0,
   });
 
   HabitTrackerState copyWith({
     DateTime? selectedDate,
     DailyHabit? habit,
     int? currentStreak,
+    int? totalAllTimePoints,
   }) {
     return HabitTrackerState(
       selectedDate: selectedDate ?? this.selectedDate,
       habit: habit ?? this.habit,
       currentStreak: currentStreak ?? this.currentStreak,
+      totalAllTimePoints: totalAllTimePoints ?? this.totalAllTimePoints,
     );
   }
 }
@@ -34,6 +38,12 @@ class HabitTrackerNotifier extends StateNotifier<HabitTrackerState> {
         )) {
     _loadHabitForDate(state.selectedDate);
     _calculateStreak();
+    _loadTotalPoints();
+  }
+
+  void _loadTotalPoints() {
+    final points = CacheHelper.getData(key: 'totalAllTimePoints') as int? ?? 0;
+    state = state.copyWith(totalAllTimePoints: points);
   }
 
   void selectDate(DateTime date) {
@@ -91,6 +101,18 @@ class HabitTrackerNotifier extends StateNotifier<HabitTrackerState> {
     final key = 'habit_${newHabit.dateStr}';
     await CacheHelper.saveData(key: key, value: newHabit.toJson());
     _calculateStreak();
+    
+    // Calculate new total points 
+    // Optimization: Instead of scanning all days, we just recalculate the total points by adding the difference.
+    // Or simpler for now, just load all cached habits points if needed, but since it's local we can just add the difference.
+    // Actually, since we only save the *current* habit, we find the diff:
+    final int oldPoints = state.habit.totalPoints;
+    final int newPoints = newHabit.totalPoints;
+    final int diff = newPoints - oldPoints;
+    
+    final int newTotal = state.totalAllTimePoints + diff;
+    await CacheHelper.saveData(key: 'totalAllTimePoints', value: newTotal);
+    state = state.copyWith(totalAllTimePoints: newTotal, habit: newHabit);
   }
 
   // Toggles

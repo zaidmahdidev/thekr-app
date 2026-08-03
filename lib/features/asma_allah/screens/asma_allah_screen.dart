@@ -5,15 +5,20 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/widgets/app_scaffold.dart';
 import 'package:thekr_app/features/asma_allah/data/asma_allah_data.dart';
 import 'package:thekr_app/features/asma_allah/widgets/asma_allah_grid_item.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:thekr_app/core/widgets/base_app_bar.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
 @RoutePage()
-class AsmaAllahScreen extends StatelessWidget {
+class AsmaAllahScreen extends ConsumerWidget {
   const AsmaAllahScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AppScaffold(
-      title: 'أسماء الله الحسنى',
+      appBar: BaseAppBar(
+        title: 'أسماء الله الحسنى',
+      ),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),

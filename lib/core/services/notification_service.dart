@@ -201,6 +201,26 @@ class NotificationService {
     await androidImplementation?.createNotificationChannel(channel);
   }
 
+  static Future<void> _createDuroodChannel() async {
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'durood_channel',
+      'الصلاة على النبي',
+      description: 'تذكير دوري بالصلاة على النبي',
+      importance: Importance.max,
+      playSound: true,
+      enableVibration: true,
+      sound: RawResourceAndroidNotificationSound('durood'),
+    );
+
+    final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+        _notifications
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
+
+    await androidImplementation?.createNotificationChannel(channel);
+  }
+
   static Future<void> scheduleMorningAzkar(TimeOfDay time) async {
     await _notifications.zonedSchedule(
       id: 1,
@@ -371,6 +391,12 @@ class NotificationService {
     await _notifications.cancel(id: 4);
   }
 
+  static Future<void> cancelDuroodNotifications() async {
+    for (int i = 20; i <= 44; i++) {
+      await _notifications.cancel(id: i);
+    }
+  }
+
   static Future<void> cancelAllNotifications() async {
     await _notifications.cancelAll();
   }
@@ -406,6 +432,9 @@ class NotificationService {
       await scheduleWirdNotification(wirdTime);
     }
 
+    final duroodInterval = await SettingsService.getDuroodInterval();
+    await scheduleDuroodReminders(duroodInterval);
+
     await cancelAthanNotifications();
     
     final times = await PrayerService.getCurrentPrayerTimes();
@@ -428,6 +457,80 @@ class NotificationService {
       }
     }
   }
+
+  static Future<void> scheduleDuroodReminders(int intervalMinutes) async {
+    await cancelDuroodNotifications();
+    
+    if (intervalMinutes <= 0) return; // Disabled
+
+    await _createDuroodChannel();
+
+    if (intervalMinutes == 10080) { // 168 hours * 60
+      // Friday only specific times
+      final fridayTimes = [
+        const TimeOfDay(hour: 8, minute: 0),
+        const TimeOfDay(hour: 9, minute: 0),
+        const TimeOfDay(hour: 10, minute: 0),
+        const TimeOfDay(hour: 11, minute: 0),
+        const TimeOfDay(hour: 14, minute: 0),
+        const TimeOfDay(hour: 15, minute: 0),
+        const TimeOfDay(hour: 16, minute: 0),
+        const TimeOfDay(hour: 17, minute: 0),
+        const TimeOfDay(hour: 18, minute: 0),
+      ];
+      for (int i = 0; i < fridayTimes.length; i++) {
+        await _scheduleDuroodAt(20 + i, fridayTimes[i], isFriday: true);
+      }
+      return;
+    }
+
+    // Daily intervals
+    final int count = (24 * 60) ~/ intervalMinutes;
+    int scheduledId = 20;
+    for (int i = 0; i < count; i++) {
+      // Start the cycle at 8:00 AM instead of midnight
+      final int totalMinutes = (8 * 60) + (i * intervalMinutes);
+      final int hour = (totalMinutes ~/ 60) % 24;
+      final int minute = totalMinutes % 60;
+      
+      // Skip sleeping hours (from 11:00 PM (23) to 7:59 AM (7))
+      if (hour >= 23 || hour <= 7) {
+        continue;
+      }
+      
+      await _scheduleDuroodAt(scheduledId++, TimeOfDay(hour: hour, minute: minute));
+    }
+  }
+
+  static Future<void> _scheduleDuroodAt(int id, TimeOfDay time, {bool isFriday = false}) async {
+    final scheduledDate = isFriday ? _nextInstanceOfFriday(time) : _nextInstanceOfTime(time);
+    
+    await _notifications.zonedSchedule(
+      id: id,
+      title: 'ﷺ',
+      body: 'صلِّ على من بكى شوقاً لرؤيتك',
+      scheduledDate: scheduledDate,
+      notificationDetails: const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'durood_channel',
+          'الصلاة على النبي',
+          channelDescription: 'تذكير دوري بالصلاة على النبي',
+          importance: Importance.max,
+          priority: Priority.max,
+          playSound: true,
+          sound: RawResourceAndroidNotificationSound('durood'),
+          enableVibration: true,
+        ),
+        iOS: DarwinNotificationDetails(
+          sound: 'durood.aiff',
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: isFriday ? DateTimeComponents.dayOfWeekAndTime : DateTimeComponents.time,
+      payload: 'durood',
+    );
+  }
 }
 
 class SettingsService {
@@ -439,6 +542,7 @@ class SettingsService {
   static const String _eveningTimeKey = 'evening_notification_time';
   static const String _wirdTimeKey = 'wird_notification_time';
   static const String _athanEnabledKey = 'athan_enabled';
+  static const String _duroodIntervalKey = 'durood_interval_minutes';
 
   static Future<void> setMorningNotificationEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
@@ -530,4 +634,17 @@ class SettingsService {
 
   static Future<void> setIshaAthanEnabled(bool enabled) async => (await SharedPreferences.getInstance()).setBool('isha_athan_enabled', enabled);
   static Future<bool> isIshaAthanEnabled() async => (await SharedPreferences.getInstance()).getBool('isha_athan_enabled') ?? true;
+
+  // 0 means disabled, 30 = half hour, 60 = hour, 180 = 3 hours, 360 = 6 hours, 1440 = once a day, 10080 = friday only
+  static Future<void> setDuroodInterval(int minutes) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_duroodIntervalKey, minutes);
+    await NotificationService.scheduleDuroodReminders(minutes);
+  }
+
+  static Future<int> getDuroodInterval() async {
+    final prefs = await SharedPreferences.getInstance();
+    // Default to 0 (disabled)
+    return prefs.getInt(_duroodIntervalKey) ?? 0;
+  }
 }
