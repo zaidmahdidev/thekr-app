@@ -316,10 +316,12 @@ class NotificationService {
   static Future<void> scheduleAthan(int id, String title, String body, DateTime time) async {
     await _createAthanChannel();
     
-    final tz.TZDateTime scheduledDate = tz.TZDateTime.from(time, tz.local);
+    tz.TZDateTime scheduledDate = tz.TZDateTime.from(time, tz.local);
     
-    // Only schedule if time is in the future
-    if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) return;
+    // If the time is in the past, schedule it for tomorrow to avoid crashes
+    if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
 
     await _notifications.zonedSchedule(
       id: id,
@@ -392,7 +394,7 @@ class NotificationService {
   }
 
   static Future<void> cancelDuroodNotifications() async {
-    for (int i = 20; i <= 44; i++) {
+    for (int i = 20; i <= 100; i++) {
       await _notifications.cancel(id: i);
     }
   }

@@ -351,7 +351,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       NewFeatureBadge(
                         featureId: 'prayer_alerts',
-                        addedInVersion: '1.3.0',
+                        addedInVersion: '1.3.1',
                         child: SettingsTile(
                           title: 'تنبيه الصلوات',
                           subtitle: 'تخصيص تنبيه الأذان لكل صلاة بشكل منفصل واختيار صوت المؤذن.',
@@ -365,7 +365,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                       NewFeatureBadge(
                         featureId: 'durood_reminder',
-                        addedInVersion: '1.3.0',
+                        addedInVersion: '1.3.1',
                         child: SettingsTile(
                           title: 'التذكير بالصلاة على النبي',
                           subtitle: settings.duroodInterval == 0 

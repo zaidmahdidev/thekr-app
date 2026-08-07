@@ -38,14 +38,17 @@ void main() async {
       return true;
     };
 
-    await RemoteConfigService().init();
+    // لا نستخدم await هنا لكي لا يتم تجميد شاشة البداية بسبب بطء الإنترنت
+    RemoteConfigService().init();
     await AppConstants.init();
     await initializeDateFormatting('ar', null);
 
     await CacheHelper.init();
     await NotificationService.initialize();
-    await NotificationService.requestPermissions();
-    await NotificationService.refreshScheduledNotifications();
+    
+    // طلب الصلاحيات وجدولة الإشعارات لا ينبغي أن توقف التطبيق
+    NotificationService.requestPermissions();
+    NotificationService.refreshScheduledNotifications();
 
     await QuranLibrary.init();
 
