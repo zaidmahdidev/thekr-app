@@ -12,6 +12,17 @@ subprojects {
     val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
+// Force a modern compileSdk on older plugins (built against an old SDK).
+// Must stay above evaluationDependsOn so afterEvaluate is registered before :app evaluates.
+subprojects {
+    if (project.name != "app") {
+        afterEvaluate {
+            extensions.findByName("android")?.withGroovyBuilder {
+                "compileSdkVersion"(36)
+            }
+        }
+    }
+}
 subprojects {
     project.evaluationDependsOn(":app")
 }
