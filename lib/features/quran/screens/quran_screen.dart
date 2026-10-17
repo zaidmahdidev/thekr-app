@@ -163,7 +163,7 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
         textAlign: TextAlign.center,
       )..layout(maxWidth: 400);
 
-      final double calculatedHeight = textPainter.height + 250;
+      final double calculatedHeight = textPainter.height + 240;
 
       final uint8list = await _ayahScreenshotController.captureFromWidget(
         AyahShareTemplate(

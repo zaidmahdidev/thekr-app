@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_library/quran_library.dart';
-import 'package:thekr_app/core/utils/constants/app_assets.dart';
-import 'package:thekr_app/core/utils/constants/app_constants.dart';
+import 'package:thekr_app/core/widgets/share_card_divider.dart';
+import 'package:thekr_app/core/widgets/share_card_signature.dart';
 
 class AyahShareTemplate extends StatelessWidget {
   final AyahModel ayah;
@@ -101,17 +101,10 @@ class AyahShareTemplate extends StatelessWidget {
                 textDirection: TextDirection.rtl,
               ),
               const SizedBox(height: 15),
-              // Footer (App Info)
-              Image.asset(AppAssets.logo, width: 35, height: 35),
-              Text(
-                'بواسطة تطبيق ${AppConstants.appName}',
-                style: TextStyle(
-                  color: textColor.withValues(alpha: 0.6),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.5,
-                ),
-              ),
+              // Footer: same divider + signature as every other share card
+              ShareCardDivider(color: primaryColor),
+              const SizedBox(height: 10),
+              ShareCardSignature(color: textColor, accent: primaryColor),
             ],
           ),
         ),

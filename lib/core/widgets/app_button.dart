@@ -49,21 +49,21 @@ class _AppButtonState extends State<AppButton> {
 
     switch (widget.size) {
       case AppButtonSize.small:
-        height = 32.h;
+        height = 30.h;
         fontSize = 11.sp;
         iconSize = 14.w;
         padding = EdgeInsets.symmetric(horizontal: 12.w);
         break;
       case AppButtonSize.medium:
-        height = 46.h;
-        fontSize = 14.sp;
-        iconSize = 20.w;
+        height = 40.h;
+        fontSize = 12.sp;
+        iconSize = 18.w;
         padding = EdgeInsets.symmetric(horizontal: 24.w);
         break;
       case AppButtonSize.large:
-        height = 54.h;
-        fontSize = 16.sp;
-        iconSize = 22.w;
+        height = 50.h;
+        fontSize = 14.sp;
+        iconSize = 20.w;
         padding = EdgeInsets.symmetric(horizontal: 32.w);
         break;
     }
