@@ -12,22 +12,32 @@ class MisbahaNotifier extends StateNotifier<MisbahaState> {
   static const _totalCountKey = 'misbaha_total_count';
   static const _zikrCountPrefix = 'misbaha_zikr_';
   static const _beadTypeKey = 'misbaha_bead_type';
+  static const _targetKey = 'misbaha_target';
 
   /// Loads persisted counts from CacheHelper
   void _loadData() {
     final totalCount = CacheHelper.getData(key: _totalCountKey) ?? 0;
-    final beadTypeName = CacheHelper.getData(key: _beadTypeKey) ?? BeadType.wood.name;
-    
+    final savedTarget = CacheHelper.getData(key: _targetKey);
+    final beadTypeName =
+        CacheHelper.getData(key: _beadTypeKey) ?? BeadType.wood.name;
+
     final counts = <MisbahaZikr, int>{};
     for (final zikr in MisbahaZikr.values) {
-      counts[zikr] = CacheHelper.getData(key: _zikrCountPrefix + zikr.name) ?? 0;
+      counts[zikr] =
+          CacheHelper.getData(key: _zikrCountPrefix + zikr.name) ?? 0;
     }
 
     state = state.copyWith(
       totalCount: totalCount,
       zikrCounts: counts,
       count: counts[state.currentZikr] ?? 0,
-      beadType: BeadType.values.firstWhere((e) => e.name == beadTypeName, orElse: () => BeadType.wood),
+      target: savedTarget is int && misbahaTargets.contains(savedTarget)
+          ? savedTarget
+          : 33,
+      beadType: BeadType.values.firstWhere(
+        (e) => e.name == beadTypeName,
+        orElse: () => BeadType.wood,
+      ),
     );
   }
 
@@ -59,7 +69,7 @@ class MisbahaNotifier extends StateNotifier<MisbahaState> {
   void reset() {
     final newZikrCounts = Map<MisbahaZikr, int>.from(state.zikrCounts);
     newZikrCounts[state.currentZikr] = 0;
-    
+
     state = state.copyWith(count: 0, zikrCounts: newZikrCounts);
     _saveZikrCount(state.currentZikr, 0);
   }
@@ -72,6 +82,12 @@ class MisbahaNotifier extends StateNotifier<MisbahaState> {
     );
   }
 
+  /// Sets the round size (0 = no target).
+  void setTarget(int target) {
+    state = state.copyWith(target: target);
+    CacheHelper.saveData(key: _targetKey, value: target);
+  }
+
   /// Updates the bead type/color
   void setBeadType(BeadType type) {
     state = state.copyWith(beadType: type);
@@ -79,6 +95,8 @@ class MisbahaNotifier extends StateNotifier<MisbahaState> {
   }
 }
 
-final misbahaProvider = StateNotifierProvider<MisbahaNotifier, MisbahaState>((ref) {
+final misbahaProvider = StateNotifierProvider<MisbahaNotifier, MisbahaState>((
+  ref,
+) {
   return MisbahaNotifier();
 });

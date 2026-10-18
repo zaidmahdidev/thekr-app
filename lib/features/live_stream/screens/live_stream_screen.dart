@@ -8,9 +8,12 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import '../models/live_stream_model.dart';
 import '../providers/live_stream_provider.dart';
+import '../widgets/stream_card.dart';
 import '../widgets/stream_player_widget.dart';
 import 'package:thekr_app/core/utils/connectivity_utils.dart';
 
+/// Live broadcasts of the two holy mosques. The screen stays awake while the
+/// stream plays.
 @RoutePage()
 class LiveStreamScreen extends ConsumerStatefulWidget {
   const LiveStreamScreen({super.key});
@@ -44,9 +47,8 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
 
   Future<void> _checkInitialConnection() async {
     final hasNet = await ConnectivityUtils.hasInternet();
-    setState(() {
-      _isConnected = hasNet;
-    });
+    if (!mounted) return;
+    setState(() => _isConnected = hasNet);
     if (!hasNet) {
       showToast(
         text: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من الشبكة',
@@ -58,9 +60,20 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
   Future<void> _handleStreamChange(String youtubeId) async {
     if (await ConnectivityUtils.hasInternet()) {
       _controller.load(youtubeId);
-      setState(() => _isConnected = true);
+      if (mounted) setState(() => _isConnected = true);
     } else {
-      setState(() => _isConnected = false);
+      if (mounted) setState(() => _isConnected = false);
+      showToast(text: 'لا يوجد اتصال بالإنترنت', state: ToastStates.ERROR);
+    }
+  }
+
+  Future<void> _reload() async {
+    final stream = ref.read(selectedStreamProvider);
+    if (await ConnectivityUtils.hasInternet()) {
+      _controller.load(stream.youtubeId);
+      if (mounted) setState(() => _isConnected = true);
+    } else {
+      if (mounted) setState(() => _isConnected = false);
       showToast(text: 'لا يوجد اتصال بالإنترنت', state: ToastStates.ERROR);
     }
   }
@@ -76,7 +89,6 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
   Widget build(BuildContext context) {
     final selectedStream = ref.watch(selectedStreamProvider);
 
-    // Update video if stream changed
     ref.listen(selectedStreamProvider, (previous, next) {
       if (next.youtubeId != previous?.youtubeId) {
         _handleStreamChange(next.youtubeId);
@@ -95,57 +107,48 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
         return AppScaffold(
           title: 'البث المباشر',
           body: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.all(context.insets.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Active Player
                 if (_isConnected)
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.all(context.insets.md),
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(context.corners.lg),
-                      boxShadow: context.shadows.low,
-                    ),
-                    child: player,
-                  )
+                  StreamPlayerWidget(player: player)
                 else
                   _NoInternetPlaceholder(onRetry: _checkInitialConnection),
-
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: context.insets.lg),
-                  child: Text(
-                    'اختر القناة',
-                    style: context.textStyles.titleLarge?.copyWith(
-                      color: context.colors.primary,
-                    ),
-                  ),
-                ),
-
                 SizedBox(height: context.insets.md),
-
-                // Stream List
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(horizontal: context.insets.md),
-                  itemCount: LiveStream.all.length,
-                  itemBuilder: (context, index) {
-                    final stream = LiveStream.all[index];
-                    final isSelected = selectedStream.id == stream.id;
-
-                    return _StreamCard(
-                      stream: stream,
-                      isSelected: isSelected,
-                      onTap: () =>
-                          ref.read(selectedStreamProvider.notifier).state =
-                              stream,
-                    );
-                  },
+                _NowPlaying(stream: selectedStream, onReload: _reload),
+                SizedBox(height: context.insets.lg),
+                Row(
+                  children: [
+                    Container(
+                      width: 4.w,
+                      height: 18.h,
+                      decoration: BoxDecoration(
+                        color: context.colors.secondary,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    SizedBox(width: context.insets.sm),
+                    Text(
+                      'اختر القناة',
+                      style: context.textStyles.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
                 ),
-
-                SizedBox(height: context.insets.xl),
+                SizedBox(height: context.insets.md),
+                for (final stream in LiveStream.all)
+                  StreamCard(
+                    stream: stream,
+                    isSelected: selectedStream.id == stream.id,
+                    onTap: () =>
+                        ref.read(selectedStreamProvider.notifier).state =
+                            stream,
+                  ),
+                SizedBox(height: context.insets.lg),
               ],
             ),
           ),
@@ -155,7 +158,53 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
   }
 }
 
+/// Title of the channel being played with a reload button.
+class _NowPlaying extends StatelessWidget {
+  const _NowPlaying({required this.stream, required this.onReload});
 
+  final LiveStream stream;
+  final VoidCallback onReload;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                stream.title,
+                style: context.textStyles.titleMedium?.copyWith(
+                  color: context.colors.primary,
+                  fontWeight: FontWeight.bold,
+                  height: 1.35,
+                ),
+              ),
+              if (stream.description != null)
+                Text(
+                  stream.description!,
+                  style: context.textStyles.bodySmall?.copyWith(
+                    color: context.colors.textSecondary,
+                    height: 1.5,
+                  ),
+                ),
+            ],
+          ),
+        ),
+        SizedBox(width: context.insets.sm),
+        IconButton(
+          onPressed: onReload,
+          tooltip: 'إعادة تحميل البث',
+          style: IconButton.styleFrom(
+            backgroundColor: context.colors.primary.withValues(alpha: 0.1),
+          ),
+          icon: Icon(Icons.refresh_rounded, color: context.colors.primary),
+        ),
+      ],
+    );
+  }
+}
 
 class _NoInternetPlaceholder extends StatelessWidget {
   final VoidCallback onRetry;
@@ -167,10 +216,10 @@ class _NoInternetPlaceholder extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 200.h,
-      margin: EdgeInsets.all(context.insets.lg),
       decoration: BoxDecoration(
         color: context.colors.surface,
-        borderRadius: BorderRadius.circular(context.corners.lg),
+        borderRadius: BorderRadius.circular(context.corners.xl),
+        border: Border.all(color: context.colors.error.withValues(alpha: 0.2)),
         boxShadow: context.shadows.low,
       ),
       child: Column(
@@ -179,12 +228,15 @@ class _NoInternetPlaceholder extends StatelessWidget {
           Icon(
             Icons.wifi_off_rounded,
             size: 48.w,
-            color: context.colors.error.withValues(alpha: 0.5),
+            color: context.colors.error.withValues(alpha: 0.6),
           ),
           SizedBox(height: context.insets.md),
           Text(
             'لا يوجد اتصال بالإنترنت',
-            style: context.textStyles.titleLarge?.copyWith(color: context.colors.textPrimary),
+            style: context.textStyles.titleMedium?.copyWith(
+              color: context.colors.textPrimary,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: context.insets.sm),
           TextButton.icon(
@@ -196,71 +248,6 @@ class _NoInternetPlaceholder extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _StreamCard extends StatelessWidget {
-  final LiveStream stream;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _StreamCard({
-    required this.stream,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: context.insets.md),
-      decoration: BoxDecoration(
-        color: context.colors.surface,
-        borderRadius: BorderRadius.circular(context.corners.lg),
-        border: Border.all(
-          color: isSelected
-              ? context.colors.primary
-              : context.colors.background.withValues(alpha: 0.1),
-          width: isSelected ? 2 : 1,
-        ),
-        boxShadow: isSelected ? context.shadows.low : null,
-      ),
-      child: ListTile(
-        onTap: onTap,
-        contentPadding: EdgeInsets.all(context.insets.md),
-        leading: Container(
-          width: 50.w,
-          height: 50.w,
-          decoration: BoxDecoration(
-            color: isSelected
-                ? context.colors.primary
-                : context.colors.primary.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.live_tv_rounded,
-            color: isSelected ? Colors.white : context.colors.primary,
-          ),
-        ),
-        title: Text(
-          stream.title,
-          style: context.textStyles.titleLarge?.copyWith(
-            fontSize: 14.sp,
-            color: isSelected
-                ? context.colors.primary
-                : context.colors.textPrimary,
-          ),
-        ),
-        subtitle: stream.description != null
-            ? Text(
-                stream.description!,
-                style: context.textStyles.bodySmall?.copyWith(
-                  color: context.colors.textSecondary,
-                ),
-              )
-            : null,
       ),
     );
   }

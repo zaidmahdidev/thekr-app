@@ -16,7 +16,9 @@ class MinimalistResetButton extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: context.colors.secondary.withValues(alpha: 0.1),
-          border: Border.all(color: context.colors.secondary.withValues(alpha: 0.2)),
+          border: Border.all(
+            color: context.colors.secondary.withValues(alpha: 0.2),
+          ),
         ),
         child: Icon(
           Icons.refresh_rounded,
