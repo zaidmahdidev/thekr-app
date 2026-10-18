@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/core/widgets/app_scaffold.dart';
 import 'package:thekr_app/core/widgets/base_app_bar.dart';
-import 'package:intl/intl.dart';
+import 'package:thekr_app/features/calendar/services/calendar_service.dart';
 import 'package:thekr_app/features/habit_tracker/providers/habit_tracker_provider.dart';
 import 'package:thekr_app/features/habit_tracker/widgets/habit_category_card.dart';
+import 'package:thekr_app/features/habit_tracker/widgets/habit_summary_card.dart';
+import 'package:thekr_app/features/habit_tracker/widgets/habit_week_chart.dart';
 
+/// Worship tracker: pick a day, tick what you did, and follow your progress,
+/// streak and points.
 @RoutePage()
 class HabitTrackerScreen extends ConsumerStatefulWidget {
   const HabitTrackerScreen({super.key});
@@ -19,242 +24,311 @@ class HabitTrackerScreen extends ConsumerStatefulWidget {
 
 class _HabitTrackerScreenState extends ConsumerState<HabitTrackerScreen> {
   final ScrollController _dateScrollController = ScrollController();
-  final List<DateTime> _dates = [];
+  late final List<DateTime> _dates = _generateDates();
+
+  static List<DateTime> _generateDates() {
+    final today = DateTime.now();
+    return [
+      for (int i = HabitTrackerNotifier.historyDays - 1; i >= 0; i--)
+        today.subtract(Duration(days: i)),
+    ];
+  }
 
   @override
   void initState() {
     super.initState();
-    _generateDates();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToSelectedDate();
+      if (_dateScrollController.hasClients) {
+        _dateScrollController.jumpTo(
+          _dateScrollController.position.maxScrollExtent,
+        );
+      }
     });
   }
 
-  void _generateDates() {
-    final today = DateTime.now();
-    for (int i = 30; i >= 0; i--) {
-      _dates.add(today.subtract(Duration(days: i)));
-    }
-  }
-
-  void _scrollToSelectedDate() {
-    if (_dates.isNotEmpty && _dateScrollController.hasClients) {
-      _dateScrollController.animateTo(
-        _dateScrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
+  @override
+  void dispose() {
+    _dateScrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final habitState = ref.watch(habitTrackerProvider);
-    final habitNotifier = ref.read(habitTrackerProvider.notifier);
-    final habit = habitState.habit;
+    final state = ref.watch(habitTrackerProvider);
+    final notifier = ref.read(habitTrackerProvider.notifier);
+    final habit = state.habit;
+    final isToday = DateUtils.isSameDay(state.selectedDate, DateTime.now());
 
     return AppScaffold(
       appBar: BaseAppBar(
         title: 'متتبع العبادات',
         showBlur: true,
-        actions: [
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(left: context.insets.md),
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-              decoration: BoxDecoration(
-                color: Colors.orange.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(context.corners.xl),
-                border: Border.all(color: Colors.orange.withValues(alpha: 0.5)),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    '${habitState.currentStreak}',
-                    style: context.textStyles.titleMedium?.copyWith(
-                      color: Colors.orange,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(width: 4.w),
-                  Text('🔥', style: TextStyle(fontSize: 14.sp)),
-                ],
-              ),
-            ),
-          ),
-        ],
+        actions: [_StreakBadge(days: state.currentStreak)],
       ),
-      body: Column(
-        children: [
-          // Dates Selector
-          Padding(
-            padding: EdgeInsets.only(top: context.insets.lg),
-            child: SizedBox(
-              height: 90.h,
-              child: ListView.builder(
-                controller: _dateScrollController,
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: context.insets.md),
-                itemCount: _dates.length,
-                itemBuilder: (context, index) {
-                  final date = _dates[index];
-                  final isSelected = DateUtils.isSameDay(date, habitState.selectedDate);
-                  return _buildDateCard(context, date, isSelected, () {
-                    habitNotifier.selectDate(date);
-                  });
-                },
-              ),
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: _DateSelector(
+              dates: _dates,
+              progress: state.recentProgress,
+              selected: state.selectedDate,
+              controller: _dateScrollController,
+              onSelected: notifier.selectDate,
             ),
           ),
-          
-          // Content
-          Expanded(
-            child: _buildHabitsList(habit, habitNotifier),
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(
+              context.insets.md,
+              context.insets.sm,
+              context.insets.md,
+              context.insets.xl,
+            ),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                HabitSummaryCard(
+                  habit: habit,
+                  isToday: isToday,
+                  currentStreak: state.currentStreak,
+                  bestStreak: state.bestStreak,
+                  totalPoints: state.totalAllTimePoints,
+                ),
+                SizedBox(height: context.insets.md),
+                HabitWeekChart(
+                  progress: state.recentProgress,
+                  average: state.weeklyAverage,
+                  selectedDate: state.selectedDate,
+                  onSelected: notifier.selectDate,
+                ),
+                SizedBox(height: context.insets.md),
+                HabitCategoryCard(
+                  title: 'الصلوات المفروضة',
+                  icon: Icons.mosque_rounded,
+                  color: context.colors.primary,
+                  items: [
+                    HabitItemData(
+                      title: 'صلاة الفجر',
+                      isDone: habit.fajr,
+                      onToggle: notifier.toggleFajr,
+                      points: 10,
+                    ),
+                    HabitItemData(
+                      title: 'صلاة الظهر',
+                      isDone: habit.dhuhr,
+                      onToggle: notifier.toggleDhuhr,
+                      points: 10,
+                    ),
+                    HabitItemData(
+                      title: 'صلاة العصر',
+                      isDone: habit.asr,
+                      onToggle: notifier.toggleAsr,
+                      points: 10,
+                    ),
+                    HabitItemData(
+                      title: 'صلاة المغرب',
+                      isDone: habit.maghrib,
+                      onToggle: notifier.toggleMaghrib,
+                      points: 10,
+                    ),
+                    HabitItemData(
+                      title: 'صلاة العشاء',
+                      isDone: habit.isha,
+                      onToggle: notifier.toggleIsha,
+                      points: 10,
+                    ),
+                  ],
+                ),
+                HabitCategoryCard(
+                  title: 'النوافل والسنن',
+                  icon: Icons.nightlight_round,
+                  color: context.colors.secondary,
+                  items: [
+                    HabitItemData(
+                      title: 'السنن الرواتب (12 ركعة)',
+                      isDone: habit.rawatib,
+                      onToggle: notifier.toggleRawatib,
+                      points: 15,
+                    ),
+                    HabitItemData(
+                      title: 'قيام الليل / الوتر',
+                      isDone: habit.qiyam,
+                      onToggle: notifier.toggleQiyam,
+                      points: 15,
+                    ),
+                  ],
+                ),
+                HabitCategoryCard(
+                  title: 'القرآن والأذكار',
+                  icon: Icons.menu_book_rounded,
+                  color: context.colors.success,
+                  items: [
+                    HabitItemData(
+                      title: 'الورد القرآني',
+                      isDone: habit.quranWird,
+                      onToggle: notifier.toggleQuranWird,
+                      points: 10,
+                    ),
+                    HabitItemData(
+                      title: 'أذكار الصباح',
+                      isDone: habit.morningAzkar,
+                      onToggle: notifier.toggleMorningAzkar,
+                      points: 10,
+                    ),
+                    HabitItemData(
+                      title: 'أذكار المساء',
+                      isDone: habit.eveningAzkar,
+                      onToggle: notifier.toggleEveningAzkar,
+                      points: 10,
+                    ),
+                  ],
+                ),
+                Text(
+                  'إكمال جميع الطاعات في اليوم يمنحك ${QuranText.digits(40)} نقطة إضافية.',
+                  textAlign: TextAlign.center,
+                  style: context.textStyles.labelSmall?.copyWith(
+                    color: context.colors.textSecondary,
+                    height: 1.4,
+                  ),
+                ),
+              ]),
+            ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildHabitsList(habit, habitNotifier) {
-    return CustomScrollView(
-      physics: const BouncingScrollPhysics(),
-      slivers: [
-        // Progress Ring
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.all(context.insets.lg),
-            child: Container(
-              padding: EdgeInsets.all(context.insets.lg),
-              decoration: BoxDecoration(
-                color: context.colors.surface,
-                borderRadius: BorderRadius.circular(context.corners.xl),
-                boxShadow: [
-                  BoxShadow(
-                    color: context.colors.primary.withValues(alpha: 0.1),
-                    blurRadius: 20.r,
-                    offset: Offset(0, 5.h),
-                  ),
-                ],
+class _StreakBadge extends StatelessWidget {
+  const _StreakBadge({required this.days});
+
+  final int days;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = context.colors.secondary;
+
+    return Center(
+      child: Tooltip(
+        message: 'أيام متتالية بإتمام الصلوات الخمس',
+        child: Container(
+          margin: EdgeInsetsDirectional.only(end: context.insets.sm),
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.14),
+            borderRadius: BorderRadius.circular(context.corners.xl),
+            border: Border.all(color: color.withValues(alpha: 0.45)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.local_fire_department_rounded,
+                size: 18.sp,
+                color: color,
               ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 80.w,
-                    height: 80.w,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        CircularProgressIndicator(
-                          value: habit.progress,
-                          strokeWidth: 8.w,
-                          backgroundColor: context.colors.primary.withValues(alpha: 0.1),
-                          valueColor: AlwaysStoppedAnimation<Color>(context.colors.secondary),
-                          strokeCap: StrokeCap.round,
-                        ),
-                        Center(
-                          child: Text(
-                            '${(habit.progress * 100).toInt()}%',
-                            style: context.textStyles.titleLarge?.copyWith(
-                              color: context.colors.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: context.insets.lg),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'إنجاز اليوم',
-                          style: context.textStyles.titleMedium?.copyWith(
-                            color: context.colors.textPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 4.h),
-                        Text(
-                          habit.progress == 1.0 
-                            ? 'ما شاء الله! لقد أتممت جميع عباداتك اليوم.'
-                            : 'استمر! لقد أتممت ${habit.completedCount} من أصل ${habit.totalHabits} طاعات.',
-                          style: context.textStyles.bodySmall?.copyWith(
-                            color: context.colors.textPrimary.withValues(alpha: 0.7),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              SizedBox(width: 4.w),
+              Text(
+                QuranText.digits(days),
+                style: context.textStyles.titleSmall?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
               ),
-            ),
+            ],
           ),
         ),
-        
-        // Habit Lists
-        SliverPadding(
-          padding: EdgeInsets.symmetric(horizontal: context.insets.lg),
-          sliver: SliverList(
-            delegate: SliverChildListDelegate([
-              HabitCategoryCard(
-                title: 'الصلوات المفروضة',
-                icon: Icons.mosque_rounded,
-                color: const Color(0xff16a085),
-                items: [
-                  HabitItemData(title: 'صلاة الفجر', isDone: habit.fajr, onToggle: habitNotifier.toggleFajr),
-                  HabitItemData(title: 'صلاة الظهر', isDone: habit.dhuhr, onToggle: habitNotifier.toggleDhuhr),
-                  HabitItemData(title: 'صلاة العصر', isDone: habit.asr, onToggle: habitNotifier.toggleAsr),
-                  HabitItemData(title: 'صلاة المغرب', isDone: habit.maghrib, onToggle: habitNotifier.toggleMaghrib),
-                  HabitItemData(title: 'صلاة العشاء', isDone: habit.isha, onToggle: habitNotifier.toggleIsha),
-                ],
-              ),
-              HabitCategoryCard(
-                title: 'النوافل والسنن',
-                icon: Icons.brightness_3_rounded,
-                color: const Color(0xff8e44ad),
-                items: [
-                  HabitItemData(title: 'السنن الرواتب (12 ركعة)', isDone: habit.rawatib, onToggle: habitNotifier.toggleRawatib),
-                  HabitItemData(title: 'قيام الليل / الوتر', isDone: habit.qiyam, onToggle: habitNotifier.toggleQiyam),
-                ],
-              ),
-              HabitCategoryCard(
-                title: 'القرآن والأذكار',
-                icon: Icons.menu_book_rounded,
-                color: const Color(0xffe67e22),
-                items: [
-                  HabitItemData(title: 'الورد القرآني', isDone: habit.quranWird, onToggle: habitNotifier.toggleQuranWird),
-                  HabitItemData(title: 'أذكار الصباح', isDone: habit.morningAzkar, onToggle: habitNotifier.toggleMorningAzkar),
-                  HabitItemData(title: 'أذكار المساء', isDone: habit.eveningAzkar, onToggle: habitNotifier.toggleEveningAzkar),
-                ],
-              ),
-              SizedBox(height: context.insets.xl),
-            ]),
-          ),
-        ),
-      ],
+      ),
     );
   }
+}
 
-  Widget _buildDateCard(BuildContext context, DateTime date, bool isSelected, VoidCallback onTap) {
-    final dayName = DateFormat.E('ar').format(date);
-    final dayNumber = date.day.toString();
-    
+/// Horizontal list of the last days. A small bar under each day shows how much
+/// of that day was completed.
+class _DateSelector extends StatelessWidget {
+  const _DateSelector({
+    required this.dates,
+    required this.progress,
+    required this.selected,
+    required this.controller,
+    required this.onSelected,
+  });
+
+  final List<DateTime> dates;
+  final List<double> progress;
+  final DateTime selected;
+  final ScrollController controller;
+  final ValueChanged<DateTime> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 92.h,
+      child: ListView.builder(
+        controller: controller,
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.insets.md,
+          vertical: context.insets.sm,
+        ),
+        itemCount: dates.length,
+        itemBuilder: (context, index) {
+          final date = dates[index];
+          final value = index < progress.length ? progress[index] : 0.0;
+          return _DateCard(
+            date: date,
+            progress: value,
+            isSelected: DateUtils.isSameDay(date, selected),
+            isToday: index == dates.length - 1,
+            onTap: () => onSelected(date),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _DateCard extends StatelessWidget {
+  const _DateCard({
+    required this.date,
+    required this.progress,
+    required this.isSelected,
+    required this.isToday,
+    required this.onTap,
+  });
+
+  final DateTime date;
+  final double progress;
+  final bool isSelected;
+  final bool isToday;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final dayName = CalendarService.weekdayNames[(date.weekday + 1) % 7];
+    final onColor = isSelected
+        ? context.colors.surface
+        : context.colors.textPrimary;
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: 65.w,
-        margin: EdgeInsets.only(right: context.insets.sm),
+        duration: const Duration(milliseconds: 250),
+        width: 62.w,
+        margin: EdgeInsetsDirectional.only(end: context.insets.sm),
+        padding: EdgeInsets.symmetric(vertical: context.insets.sm),
         decoration: BoxDecoration(
           color: isSelected ? context.colors.primary : context.colors.surface,
           borderRadius: BorderRadius.circular(context.corners.lg),
           border: Border.all(
-            color: isSelected ? context.colors.primary : context.colors.primary.withValues(alpha: 0.1),
-            width: 1,
+            color: isSelected
+                ? context.colors.primary
+                : isToday
+                ? context.colors.secondary
+                : context.colors.primary.withValues(alpha: 0.12),
+            width: isToday && !isSelected ? 1.5 : 1,
           ),
           boxShadow: isSelected
               ? [
@@ -262,26 +336,59 @@ class _HabitTrackerScreenState extends ConsumerState<HabitTrackerScreen> {
                     color: context.colors.primary.withValues(alpha: 0.3),
                     blurRadius: 10.r,
                     offset: Offset(0, 4.h),
-                  )
+                  ),
                 ]
               : null,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                isToday ? 'اليوم' : dayName,
+                style: context.textStyles.labelMedium?.copyWith(
+                  color: onColor.withValues(alpha: isSelected ? 0.85 : 0.6),
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
+              ),
+            ),
             Text(
-              dayName,
-              style: context.textStyles.bodySmall?.copyWith(
-                color: isSelected ? Colors.white : context.colors.textPrimary.withValues(alpha: 0.5),
+              QuranText.digits(date.day),
+              style: context.textStyles.titleLarge?.copyWith(
+                color: isSelected
+                    ? context.colors.surface
+                    : context.colors.primary,
                 fontWeight: FontWeight.bold,
+                height: 1.2,
               ),
             ),
             SizedBox(height: 4.h),
-            Text(
-              dayNumber,
-              style: context.textStyles.titleLarge?.copyWith(
-                color: isSelected ? Colors.white : context.colors.primary,
-                fontWeight: FontWeight.bold,
+            Container(
+              width: 30.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color:
+                    (isSelected
+                            ? context.colors.surface
+                            : context.colors.primary)
+                        .withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(2),
+              ),
+              alignment: AlignmentDirectional.centerStart,
+              child: FractionallySizedBox(
+                widthFactor: progress.clamp(0.0, 1.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: progress >= 1.0
+                        ? context.colors.secondary
+                        : (isSelected
+                              ? context.colors.surface
+                              : context.colors.primary),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
               ),
             ),
           ],
