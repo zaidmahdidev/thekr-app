@@ -116,12 +116,11 @@ flutter:
     - shorebird.yaml
 
   fonts:
-    - family: Tajawal
+    # Amiri (SIL OFL, see assets/fonts/OFL-Amiri.txt): classical Naskh, the app font.
+    - family: Amiri
       fonts:
-        - asset: assets/fonts/Tajawal-Regular.ttf
-        - asset: assets/fonts/Tajawal-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/Tajawal-Bold.ttf
+        - asset: assets/fonts/Amiri-Regular.ttf
+        - asset: assets/fonts/Amiri-Bold.ttf
           weight: 700
 
   # An image asset can refer to one or more resolution-specific "variants", see

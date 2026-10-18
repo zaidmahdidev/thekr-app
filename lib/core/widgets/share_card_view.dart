@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:thekr_app/core/theme/tokens/app_fonts.dart';
 import 'package:thekr_app/core/theme/tokens/share_card_palette.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/utils/quran_text.dart';
@@ -140,7 +141,7 @@ class ShareCardView extends StatelessWidget {
                                     textAlign: TextAlign.center,
                                     style: QuranText.style(
                                       TextStyle(
-                                        fontFamily: 'Tajawal',
+                                        fontFamily: AppFonts.family,
                                         color: palette.text,
                                         fontSize: fontSize,
                                         fontWeight: FontWeight.w700,
@@ -155,7 +156,7 @@ class ShareCardView extends StatelessWidget {
                                       '— ${subtitle!.trim()} —',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        fontFamily: 'Tajawal',
+                                        fontFamily: AppFonts.family,
                                         color: palette.accent,
                                         fontSize: math.max(12, fontSize * 0.55),
                                         fontWeight: FontWeight.w500,

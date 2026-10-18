@@ -101,13 +101,18 @@ class InspirationCard extends ConsumerWidget {
                   ),
                   Expanded(
                     child: Center(
-                      child: SizedBox(
-                        width: textWidth,
-                        child: Text.rich(
-                          reading.span,
-                          textAlign: TextAlign.center,
-                          maxLines: InspirationCard.maxLines,
-                          overflow: TextOverflow.ellipsis,
+                      // Safety net: if the lines are taller than the space (Mushaf
+                      // fonts), shrink slightly instead of clipping.
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: SizedBox(
+                          width: textWidth,
+                          child: Text.rich(
+                            reading.span,
+                            textAlign: TextAlign.center,
+                            maxLines: InspirationCard.maxLines,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
                     ),

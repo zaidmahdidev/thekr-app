@@ -169,6 +169,7 @@ class HomeAppBar extends StatelessWidget {
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 15.sp,
+                        height: 1.3,
                       ),
                     ),
                     SizedBox(height: 6.h),
@@ -177,6 +178,7 @@ class HomeAppBar extends StatelessWidget {
                       style: context.textStyles.titleLarge?.copyWith(
                         color: Colors.white.withValues(alpha: 0.7),
                         fontSize: 13.sp,
+                        height: 1.3,
                       ),
                     ),
                     SizedBox(height: 8.h),
@@ -184,6 +186,8 @@ class HomeAppBar extends StatelessWidget {
                       intl.DateFormat('h:mm', 'ar').format(currentTime),
                       style: context.textStyles.displayLarge?.copyWith(
                         fontSize: 64.sp,
+                        // The big clock needs no extra leading (it overflowed with Amiri).
+                        height: 1.0,
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
                         shadows: [

@@ -120,7 +120,7 @@ class _InspirationCarouselState extends State<InspirationCarousel> {
             ),
           ),
           SizedBox(
-            height: 158.h,
+            height: 172.h,
             child: PageView.builder(
               controller: _pageController,
               clipBehavior: Clip.none,

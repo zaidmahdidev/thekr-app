@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'app_theme_extension.dart';
 import 'tokens/design_tokens.dart';
 import 'tokens/typography.dart';
+import 'package:thekr_app/core/theme/tokens/app_fonts.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 
 class AppTheme {
@@ -22,7 +23,7 @@ class AppTheme {
           ),
       scaffoldBackgroundColor: colors.background,
       useMaterial3: false,
-      fontFamily: 'Tajawal',
+      fontFamily: AppFonts.family,
       appBarTheme: AppBarTheme(
         toolbarHeight: 80,
         backgroundColor: colors.primary,
@@ -78,7 +79,7 @@ class AppTheme {
           ),
       scaffoldBackgroundColor: colors.background,
       useMaterial3: false,
-      fontFamily: 'Tajawal',
+      fontFamily: AppFonts.family,
       appBarTheme: AppBarTheme(
         toolbarHeight: 80,
         backgroundColor: colors.primary,

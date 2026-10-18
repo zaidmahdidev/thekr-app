@@ -221,7 +221,7 @@ const List<AyahModel> dailyAyahs = [
     ayahNumber: 11,
     page: 557,
   ),
-    AyahModel(
+  AyahModel(
     text: "فَبِأَيِّ ءَالَآءِ رَبِّكُمَا تُكَذِّبَانِ",
     surah: "الرحمن",
     surahNumber: 55,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thekr_app/core/theme/tokens/app_fonts.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/utils/constants/app_constants.dart';
 
@@ -38,7 +39,7 @@ class ShareCardSignature extends StatelessWidget {
                 'تطبيق ${AppConstants.appName}',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: 'Tajawal',
+                  fontFamily: AppFonts.family,
                   color: color.withValues(alpha: 0.85),
                   fontSize: 7.5,
                   fontWeight: FontWeight.w700,
@@ -49,7 +50,7 @@ class ShareCardSignature extends StatelessWidget {
                 tagline,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: 'Tajawal',
+                  fontFamily: AppFonts.family,
                   color: accent,
                   fontSize: 5.5,
                   height: 1.3,

@@ -65,9 +65,10 @@ class InspirationReading {
     AyahRef ref,
     Color markColor,
   ) {
-    // Page fonts are drawn a little larger than regular text.
-    final size = (base.fontSize ?? 16) * 1.28;
-    final style = base.copyWith(fontSize: size, height: 1.95);
+    // Page fonts are drawn a little larger than regular text (kept modest so
+    // three lines fit the card).
+    final size = (base.fontSize ?? 16) * 1.12;
+    final style = base.copyWith(fontSize: size, height: 1.8);
 
     return InspirationReading(
       style: style,
