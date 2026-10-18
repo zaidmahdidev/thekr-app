@@ -66,28 +66,30 @@ class PrayerTimesCard extends StatelessWidget {
           ],
         ),
         child: Column(
-        children: [
-          if (isLocationOff)
-            Padding(
-              padding: EdgeInsets.only(bottom: 8.h),
-              child: AppButton(
-                text: 'سماح للموقع',
-                icon: Icons.location_on_outlined,
-                size: AppButtonSize.small,
-                isFullWidth: false,
-                onTap: onRequestLocation,
+          children: [
+            if (isLocationOff)
+              Padding(
+                padding: EdgeInsets.only(bottom: 8.h),
+                child: AppButton(
+                  text: 'سماح للموقع',
+                  icon: Icons.location_on_outlined,
+                  size: AppButtonSize.small,
+                  isFullWidth: false,
+                  onTap: onRequestLocation,
+                ),
+              ),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: items
+                    .map((t) => _buildPrayerItem(context, t))
+                    .toList(),
               ),
             ),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: items.map((t) => _buildPrayerItem(context, t)).toList(),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
     );
   }
 

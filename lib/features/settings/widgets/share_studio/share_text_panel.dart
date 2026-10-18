@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/features/home/data/daily_content_data.dart';
 
 /// Text tab: write your own text or fill it with a random verse / hadith / dhikr.
@@ -35,7 +36,7 @@ class ShareTextPanel extends StatelessWidget {
 
   void _randomDhikr() {
     final dhikr = dailyAdhkars[_random.nextInt(dailyAdhkars.length)];
-    _fill(dhikr.text, dhikr.reward);
+    _fill(dhikr.text, '${dhikr.reward} - ${dhikr.source}');
   }
 
   InputDecoration _decoration(
@@ -101,17 +102,24 @@ class ShareTextPanel extends StatelessWidget {
           ),
         ),
         SizedBox(height: context.insets.sm),
-        TextField(
-          controller: contentController,
-          minLines: 3,
-          maxLines: 3,
-          maxLength: 500,
-          textAlign: TextAlign.start,
-          textInputAction: TextInputAction.newline,
-          style: context.textStyles.bodyMedium?.copyWith(height: 1.6),
-          decoration: _decoration(
-            context,
-            hint: 'اكتب آية أو حديثاً أو خاطرة إيمانية...',
+        ListenableBuilder(
+          listenable: contentController,
+          builder: (context, _) => TextField(
+            controller: contentController,
+            minLines: 3,
+            maxLines: 3,
+            maxLength: 500,
+            textAlign: TextAlign.start,
+            textInputAction: TextInputAction.newline,
+            // Verses from the Quran data need the Quran font to draw correctly.
+            style: QuranText.style(
+              context.textStyles.bodyMedium!.copyWith(height: 1.6),
+              contentController.text,
+            ),
+            decoration: _decoration(
+              context,
+              hint: 'اكتب آية أو حديثاً أو خاطرة إيمانية...',
+            ),
           ),
         ),
         SizedBox(height: context.insets.sm),

@@ -80,7 +80,7 @@ class AppShareSheet extends StatelessWidget {
                         Text(
                           'امسح الكود لتحميل التطبيق',
                           style: context.textStyles.bodySmall?.copyWith(
-                            color: Colors.grey[600],
+                            color: context.colors.textSecondary,
                             fontSize: 10.sp,
                           ),
                         ),
@@ -101,24 +101,6 @@ class AppShareSheet extends StatelessWidget {
 
                   SizedBox(height: context.insets.lg),
 
-                  // Copy Link Row
-                  AppButton(
-                    text: 'نسخ الرابط',
-                    icon: Icons.copy_rounded,
-                    variant: AppButtonVariant.secondary,
-                    size: AppButtonSize.small,
-                    isFullWidth: false,
-                    onTap: () {
-                      Clipboard.setData(
-                        const ClipboardData(text: AppConstants.playStoreUrl),
-                      );
-                      Navigator.pop(context);
-                      showToast(text: 'تم نسخ رابط التطبيق');
-                    },
-                  ),
-
-                  SizedBox(height: context.insets.md),
-
                   AppButton(
                     text: 'مشاركة التطبيق الآن',
                     icon: Icons.share_rounded,
@@ -130,6 +112,21 @@ class AppShareSheet extends StatelessWidget {
                         AppConstants.shareMessage,
                         includeSignature: false,
                       );
+                    },
+                  ),
+
+                  SizedBox(height: context.insets.sm),
+
+                  AppButton(
+                    text: 'نسخ الرابط',
+                    icon: Icons.copy_rounded,
+                    variant: AppButtonVariant.outline,
+                    onTap: () {
+                      Clipboard.setData(
+                        const ClipboardData(text: AppConstants.playStoreUrl),
+                      );
+                      Navigator.pop(context);
+                      showToast(text: 'تم نسخ رابط التطبيق');
                     },
                   ),
 

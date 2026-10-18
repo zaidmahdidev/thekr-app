@@ -23,32 +23,35 @@ class ShareCardSignature extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: Image.asset(AppAssets.logo, width: 22, height: 22),
           ),
-          const SizedBox(width: 6),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 'تطبيق ${AppConstants.appName}',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Tajawal',
                   color: color.withValues(alpha: 0.85),
-                  fontSize: 9.5,
+                  fontSize: 7.5,
                   fontWeight: FontWeight.w700,
                   height: 1.1,
                 ),
               ),
               Text(
                 tagline,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Tajawal',
                   color: accent,
-                  fontSize: 7.5,
+                  fontSize: 5.5,
                   height: 1.3,
                 ),
               ),

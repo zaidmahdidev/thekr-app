@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:auto_route/auto_route.dart';
-import 'package:thekr_app/core/router/app_router.dart';
 import 'package:thekr_app/features/home/data/daily_content_data.dart';
+import 'package:thekr_app/features/home/models/inspiration_item.dart';
+import 'package:thekr_app/features/home/widgets/inspiration_card.dart';
 
+/// "إلهامات يومية": today's verse, hadith and dhikr. Swipe the card or tap the
+/// small tabs in the header. The selection rotates by day of year, so it is
+/// stable for the whole day.
 class InspirationCarousel extends StatefulWidget {
   const InspirationCarousel({super.key});
 
@@ -14,246 +17,163 @@ class InspirationCarousel extends StatefulWidget {
 
 class _InspirationCarouselState extends State<InspirationCarousel> {
   final PageController _pageController = PageController();
-  int _currentPage = 0;
+  final ValueNotifier<int> _currentPage = ValueNotifier<int>(0);
+  late final List<InspirationItem> _items = _buildItems();
 
-  @override
-  Widget build(BuildContext context) {
-    // Selection logic based on day of year
+  static List<InspirationItem> _buildItems() {
     final now = DateTime.now();
     final dayOfYear = now.difference(DateTime(now.year, 1, 1)).inDays;
 
-    // Ayah selection
-    final ayahIndex = dayOfYear % dailyAyahs.length;
-    final ayah = dailyAyahs[ayahIndex];
+    final ayah = dailyAyahs[dayOfYear % dailyAyahs.length];
+    final hadith = dailyHadiths[dayOfYear % dailyHadiths.length];
+    final dhikr = dailyAdhkars[dayOfYear % dailyAdhkars.length];
 
-    // Hadith selection
-    final hadithIndex = dayOfYear % dailyHadiths.length;
-    final hadith = dailyHadiths[hadithIndex];
+    final ayahSource = 'سورة ${ayah.surah} - آية ${ayah.ayahNumber}';
 
-    // Adhkar selection
-    final adhkarsIndex = dayOfYear % dailyAdhkars.length;
-    final adhkar = dailyAdhkars[adhkarsIndex];
-
-    final items = [
-      _InspirationItem(
-        type: 'آية اليوم',
-        content: ayah.text,
-        subtitle: '${ayah.surah} - [${ayah.ayahNumber}]',
-        icon: Icons.auto_stories_rounded,
+    return [
+      InspirationItem(
+        type: InspirationType.ayah,
+        content: '﴿${ayah.text}﴾',
+        footer: ayahSource,
+        source: '$ayahSource - صفحة ${ayah.page}',
+        ayah: AyahRef(
+          surah: ayah.surahNumber,
+          ayah: ayah.ayahNumber,
+          page: ayah.page,
+        ),
       ),
-      _InspirationItem(
-        type: 'حديث اليوم',
+      InspirationItem(
+        type: InspirationType.hadith,
         content: hadith.text,
-        subtitle: hadith.source,
-        icon: Icons.menu_book_rounded,
+        footer: hadith.source,
+        source: hadith.source,
       ),
-      _InspirationItem(
-        type: 'ذكر اليوم',
-        content: adhkar.text,
-        subtitle: adhkar.reward,
-        icon: Icons.auto_awesome,
+      InspirationItem(
+        type: InspirationType.dhikr,
+        content: dhikr.text,
+        footer: dhikr.reward,
+        source: dhikr.source,
+        note: dhikr.note,
       ),
     ];
+  }
 
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _currentPage.dispose();
+    super.dispose();
+  }
+
+  void _goTo(int index) {
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 320),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: context.insets.md,
-              vertical: context.insets.sm,
+            padding: EdgeInsets.fromLTRB(
+              context.insets.md,
+              context.insets.sm,
+              context.insets.md,
+              context.insets.sm,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Container(
+                  width: 4.w,
+                  height: 18.h,
+                  decoration: BoxDecoration(
+                    color: context.colors.secondary,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                SizedBox(width: context.insets.sm),
                 Text(
                   'إلهامات يومية',
-                  style: context.textStyles.titleLarge?.copyWith(
+                  style: context.textStyles.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Row(
-                  children: List.generate(
-                    items.length,
-                    (index) => AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.symmetric(horizontal: 2),
-                      height: 4.h,
-                      width: _currentPage == index ? 12.w : 4.w,
-                      decoration: BoxDecoration(
-                        color: _currentPage == index
-                            ? context.colors.secondary
-                            : context.colors.secondary.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
+                const Spacer(),
+                ValueListenableBuilder<int>(
+                  valueListenable: _currentPage,
+                  builder: (context, page, _) => Row(
+                    children: [
+                      for (int i = 0; i < _items.length; i++)
+                        _TabChip(
+                          icon: _items[i].type.icon,
+                          selected: page == i,
+                          onTap: () => _goTo(i),
+                        ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          SizedBox(height: context.insets.sm),
           SizedBox(
-            height: 155.h,
+            height: 158.h,
             child: PageView.builder(
               controller: _pageController,
-              onPageChanged: (index) => setState(() => _currentPage = index),
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final item = items[index];
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: context.insets.md),
-                  child: _InspirationCard(item: item),
-                );
-              },
+              clipBehavior: Clip.none,
+              onPageChanged: (index) => _currentPage.value = index,
+              itemCount: _items.length,
+              itemBuilder: (context, index) => Padding(
+                padding: EdgeInsets.fromLTRB(
+                  context.insets.md,
+                  2.h,
+                  context.insets.md,
+                  10.h,
+                ),
+                child: InspirationCard(item: _items[index]),
+              ),
             ),
           ),
-          SizedBox(height: context.insets.md),
+          SizedBox(height: context.insets.sm),
         ],
       ),
     );
   }
 }
 
-class _InspirationCard extends StatelessWidget {
-  final _InspirationItem item;
+class _TabChip extends StatelessWidget {
+  const _TabChip({
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
 
-  const _InspirationCard({required this.item});
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final isAyah = item.type == 'آية اليوم';
+    final gold = context.colors.secondary;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: context.colors.surface,
-        borderRadius: BorderRadius.circular(context.corners.xl),
-        boxShadow: context.shadows.low,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            context.colors.primary.withValues(alpha: 0.05),
-            context.colors.surface,
-          ],
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOutCubic,
+        margin: EdgeInsetsDirectional.only(start: 6.w),
+        width: selected ? 38.w : 28.w,
+        height: 26.h,
+        decoration: BoxDecoration(
+          color: selected ? gold : gold.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(context.corners.xl),
         ),
-        border: Border.all(
-          color: context.colors.primary.withValues(alpha: 0.1),
-          width: 0.8.w,
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(context.insets.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(
-                  item.icon,
-                  color: context.colors.secondary.withValues(alpha: 0.7),
-                  size: 24.sp,
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: context.insets.sm,
-                    vertical: (context.insets.sm / 2),
-                  ),
-                  decoration: BoxDecoration(
-                    color: context.colors.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(context.corners.md),
-                  ),
-                  child: Text(
-                    item.type,
-                    style: context.textStyles.labelLarge?.copyWith(
-                      color: context.colors.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const Spacer(),
-            Expanded(
-              flex: 8,
-              child: Center(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Text(
-                    item.content,
-                    textAlign: TextAlign.center,
-                    style: context.textStyles.bodyLarge?.copyWith(
-                      fontSize: _calculateFontSize(item.content, isAyah),
-                      fontWeight: isAyah ? FontWeight.normal : FontWeight.w500,
-                      height: isAyah ? 1.7 : 1.6,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 35.w,
-                  height: 1.h,
-                  color: context.colors.primary.withValues(alpha: 0.1),
-                ),
-                Flexible(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: context.insets.sm,
-                    ),
-                    child: Text(
-                      item.subtitle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: context.textStyles.bodySmall?.copyWith(
-                        color: context.colors.textSecondary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 35.w,
-                  height: 1.h,
-                  color: context.colors.primary.withValues(alpha: 0.1),
-                ),
-              ],
-            ),
-          ],
-        ),
+        child: Icon(icon, size: 14.sp, color: selected ? Colors.white : gold),
       ),
     );
   }
-
-  double _calculateFontSize(String text, bool isAyah) {
-    if (isAyah) {
-      if (text.length > 100) return 16.sp;
-      if (text.length > 60) return 18.sp;
-      return 20.sp;
-    } else {
-      if (text.length > 100) return 13.sp;
-      if (text.length > 60) return 15.sp;
-      return 17.sp;
-    }
-  }
-}
-
-class _InspirationItem {
-  final String type;
-  final String content;
-  final String subtitle;
-  final IconData icon;
-
-  _InspirationItem({
-    required this.type,
-    required this.content,
-    required this.subtitle,
-    required this.icon,
-  });
 }

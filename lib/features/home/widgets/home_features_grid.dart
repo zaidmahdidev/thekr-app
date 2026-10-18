@@ -145,7 +145,9 @@ class _FeatureItem extends ConsumerWidget {
       color: color,
       onTap: () {
         if (hasBadge) {
-          ref.read(featureBadgeProvider.notifier).recordFeatureClick(featureId!);
+          ref
+              .read(featureBadgeProvider.notifier)
+              .recordFeatureClick(featureId!);
         }
 
         if (onTap != null) {

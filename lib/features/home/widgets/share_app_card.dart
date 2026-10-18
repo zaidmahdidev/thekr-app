@@ -1,116 +1,124 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
-import 'package:thekr_app/core/utils/constants/app_constants.dart';
+import 'package:thekr_app/core/widgets/brand_surface.dart';
 import 'package:thekr_app/features/settings/widgets/app_share_sheet.dart';
 
+/// Slim home banner that invites the user to share the app (sadaqah jariyah).
+/// The whole banner is tappable. Colors adapt to light / dark mode.
 class ShareAppCard extends StatelessWidget {
   const ShareAppCard({super.key});
 
+  void _openShareSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => const AppShareSheet(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final style = BrandSurfaceStyle.of(context);
+
     return SliverToBoxAdapter(
-      // padding: EdgeInsets.symmetric(
-      //   horizontal: context.insets.md,
-      //   vertical: context.insets.sm,
-      // ),
-      child: Container(
-        margin: EdgeInsets.all(context.insets.md),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              context.colors.primary,
-              context.colors.primary.withValues(alpha: 0.8),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(context.corners.xl),
-          boxShadow: context.shadows.medium,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          context.insets.md,
+          context.insets.sm,
+          context.insets.md,
+          context.insets.lg,
         ),
-        child: Stack(
-          children: [
-            Positioned(
-              left: 0,
-              bottom: 0,
-              child: ClipRRect(
-                borderRadius: BorderRadiusGeometry.only(
-                  bottomLeft: Radius.circular(context.corners.xl),
-                  topLeft: Radius.circular(context.corners.xl),
-                ),
-                child: Opacity(
-                  opacity: 0.2,
-                  child: Image.asset(AppAssets.bg, width: 95.h),
-                ),
-              ),
-            ),
-            Padding(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(context.corners.xl),
+            onTap: () => _openShareSheet(context),
+            child: BrandSurface(
               padding: EdgeInsets.symmetric(
                 horizontal: context.insets.md,
-                vertical: context.insets.sm,
+                vertical: context.insets.sm + 4.h,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(context.insets.sm),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(
-                            context.corners.md,
-                          ),
-                        ),
-                        child: Icon(
-                          Icons.volunteer_activism,
-                          color: context.colors.secondary,
-                        ),
+                  Container(
+                    padding: EdgeInsets.all(5.r),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(context.corners.lg),
+                      border: Border.all(
+                        color: style.gold.withValues(alpha: 0.35),
                       ),
-                      SizedBox(width: context.insets.sm),
-                      Text(
-                        'الدال على الخير كفاعله',
-                        style: context.textStyles.titleMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(context.corners.md),
+                      child: Image.asset(
+                        AppAssets.logo,
+                        width: 36.w,
+                        height: 36.w,
                       ),
-                    ],
-                  ),
-                  SizedBox(height: context.insets.md),
-                  Text(
-                    'ساهم في نشر التطبيق ليكون صدقة جارية لك ولنا إن شاء الله.',
-                    style: context.textStyles.bodyMedium?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.9),
                     ),
                   ),
-                  SizedBox(height: context.insets.sm),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        isScrollControlled: true,
-                        builder: (context) => const AppShareSheet(),
-                      );
-                    },
-                    icon: const Icon(Icons.share, size: 18),
-                    label: const Text('مشاركة التطبيق'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: context.colors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(context.corners.md),
-                      ),
+                  SizedBox(width: context.insets.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'الدال على الخير كفاعله',
+                          style: context.textStyles.titleSmall?.copyWith(
+                            color: style.text,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 2.h),
+                        Text(
+                          'شارك التطبيق ليكون صدقة جارية لك ولنا',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: context.textStyles.labelMedium?.copyWith(
+                            color: style.textMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: context.insets.sm),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.insets.md,
+                      vertical: 8.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: style.ctaBackground,
+                      borderRadius: BorderRadius.circular(context.corners.xl),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.ios_share_rounded,
+                          size: 15.sp,
+                          color: style.ctaForeground,
+                        ),
+                        SizedBox(width: 5.w),
+                        Text(
+                          'شارك',
+                          style: context.textStyles.labelLarge?.copyWith(
+                            color: style.ctaForeground,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

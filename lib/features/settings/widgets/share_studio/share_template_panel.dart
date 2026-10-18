@@ -51,7 +51,9 @@ class ShareTemplatePanel extends StatelessWidget {
                     height: thumbHeight,
                     padding: EdgeInsets.all(2.5.r),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(context.corners.lg + 3),
+                      borderRadius: BorderRadius.circular(
+                        context.corners.lg + 3,
+                      ),
                       border: Border.all(
                         color: isSelected
                             ? context.colors.primary
@@ -64,7 +66,9 @@ class ShareTemplatePanel extends StatelessWidget {
                       fit: StackFit.expand,
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(context.corners.lg),
+                          borderRadius: BorderRadius.circular(
+                            context.corners.lg,
+                          ),
                           child: FittedBox(
                             fit: BoxFit.cover,
                             child: ShareCardView(

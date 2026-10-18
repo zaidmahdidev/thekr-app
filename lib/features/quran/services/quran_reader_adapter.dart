@@ -60,6 +60,14 @@ class QuranBookmarkInfo {
   }) : _raw = raw;
 }
 
+/// A verse drawn with the Mushaf page fonts: each part uses the font of the page
+/// it sits on (a verse can continue onto the next page).
+class QuranAyahGlyphs {
+  final List<({String glyphs, String fontFamily})> parts;
+
+  const QuranAyahGlyphs(this.parts);
+}
+
 class QuranReaderAdapter {
   QuranReaderAdapter._();
 
@@ -116,6 +124,45 @@ class QuranReaderAdapter {
     try {
       return _library.getJuzByPageNumber(pageNumber: page).juz;
     } catch (_) {
+      return null;
+    }
+  }
+
+  /// Glyphs of one verse in the Mushaf page font, so it looks exactly like the
+  /// reader screen. Returns null when unavailable (caller falls back to plain text).
+  static Future<QuranAyahGlyphs?> ayahGlyphs({
+    required int surah,
+    required int ayah,
+    required int page,
+    required bool isDark,
+  }) async {
+    try {
+      final parts = <({String glyphs, String fontFamily})>[];
+      // The verse may start on the previous page or continue onto the next one.
+      for (final p in [page - 1, page, page + 1]) {
+        if (p < 1 || p > 604) continue;
+        await QuranFontsService.ensurePagesLoaded(p, radius: 0);
+        final buffer = StringBuffer();
+        for (final block in QuranCtrl.instance.getQpcLayoutBlocksForPageSync(
+          p,
+        )) {
+          if (block is! QpcV4AyahLineBlock) continue;
+          for (final segment in block.segments) {
+            if (segment.surahNumber == surah && segment.ayahNumber == ayah) {
+              buffer.write(segment.glyphs);
+            }
+          }
+        }
+        if (buffer.isNotEmpty) {
+          parts.add((
+            glyphs: buffer.toString(),
+            fontFamily: QuranCtrl.instance.getFontPath(p - 1, isDark: isDark),
+          ));
+        }
+      }
+      return parts.isEmpty ? null : QuranAyahGlyphs(parts);
+    } catch (e) {
+      debugPrint('QuranReaderAdapter.ayahGlyphs($surah:$ayah) failed: $e');
       return null;
     }
   }
@@ -332,7 +379,9 @@ class QuranReaderAdapter {
         context: context,
         builder: (_) => Dialog(
           backgroundColor: palette.surface,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: TajweedMenuWidget(isDark: palette.isDark, languageCode: 'ar'),
         ),
       );
@@ -365,7 +414,9 @@ class QuranReaderAdapter {
         context: context,
         builder: (_) => Dialog(
           backgroundColor: palette.surface,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: FontsDownloadWidget(
             languageCode: 'ar',
             isDark: palette.isDark,
