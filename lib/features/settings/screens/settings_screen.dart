@@ -2,27 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:thekr_app/core/services/notification_service.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/features/settings/widgets/developer_social_card.dart';
 import 'package:thekr_app/features/settings/widgets/settings_section.dart';
 import 'package:thekr_app/features/settings/widgets/settings_tile.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:thekr_app/core/utils/url_helper.dart';
 import 'package:thekr_app/core/services/review_service.dart';
-import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/router/app_router.dart';
 import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'package:thekr_app/features/settings/widgets/app_share_sheet.dart';
 import 'package:thekr_app/core/providers/feature_badge_provider.dart';
 import 'package:thekr_app/core/widgets/new_feature_badge.dart';
 import 'package:thekr_app/features/settings/widgets/durood_settings_sheet.dart';
+import 'package:thekr_app/features/settings/widgets/font_size_settings_sheet.dart';
+import 'package:thekr_app/core/theme/tokens/design_tokens.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 import 'package:thekr_app/core/utils/constants/app_icons.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:thekr_app/core/widgets/app_icon.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -46,6 +44,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final period = time.period == DayPeriod.am ? 'ص' : 'م';
     final minute = time.minute.toString().padLeft(2, '0');
     return '$hour:$minute $period';
+  }
+
+  String _getThemeName(AppThemeType type) {
+    switch (type) {
+      case AppThemeType.defaultTheme:
+        return 'الزمردي (الافتراضي)';
+      case AppThemeType.desert:
+        return 'الصحراوي الدافئ';
+      case AppThemeType.forest:
+        return 'الزيتي الهادئ';
+    }
+  }
+
+  Color _getThemeColor(AppThemeType type) {
+    switch (type) {
+      case AppThemeType.defaultTheme:
+        return AppColors.light.primary;
+      case AppThemeType.desert:
+        return AppColors.desertLight.primary;
+      case AppThemeType.forest:
+        return AppColors.forestLight.primary;
+    }
   }
 
   Future<void> _selectMorningTime(TimeOfDay currentTime) async {
@@ -123,7 +143,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return AppScaffold(
       title: 'الإعدادات',
@@ -145,10 +164,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       SettingsTile(
                         title: 'الوضع الليلي',
+                        subtitle: Theme.of(context).brightness == Brightness.dark
+                            ? 'مفعل'
+                            : 'متوقف',
                         icon: HugeIcons.strokeRoundedMoon02,
-                        iconColor: Colors.indigo,
+                        iconColor: context.colors.primary,
                         trailing: Switch.adaptive(
-                          value: isDarkMode,
+                          value: Theme.of(context).brightness == Brightness.dark,
+                          activeThumbColor: context.colors.primary,
+                          activeTrackColor:
+                              context.colors.primary.withValues(alpha: 0.5),
                           onChanged: (val) => ref
                               .read(settingsProvider.notifier)
                               .toggleTheme(
@@ -156,182 +181,89 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               ),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(context.insets.md),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                AppIcon(
-                                  HugeIcons.strokeRoundedPalette,
-                                  size: 20.sp,
-                                  color: Colors.teal,
-                                ),
-                                SizedBox(width: 12.w),
-                                Text(
-                                  'ألوان التطبيق (الثيمات)',
-                                  style: context.textStyles.bodyMedium
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: context.insets.md),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: AppThemeType.values.map((theme) {
-                                final isSelected = settings.appTheme == theme;
-                                Color primaryColor;
-                                switch (theme) {
-                                  case AppThemeType.defaultTheme:
-                                    primaryColor = const Color(0xFF0E645C);
-                                    break;
-                                  case AppThemeType.desert:
-                                    primaryColor = const Color(0xFFC19A6B);
-                                    break;
-                                  case AppThemeType.forest:
-                                    primaryColor = const Color(0xFF2D5A27);
-                                    break;
-                                }
-
-                                return Expanded(
-                                  child: GestureDetector(
-                                    onTap: () => ref
-                                        .read(settingsProvider.notifier)
-                                        .updateAppTheme(theme),
-                                    child: AnimatedContainer(
-                                      duration: const Duration(
-                                        milliseconds: 300,
-                                      ),
-                                      margin: EdgeInsets.symmetric(
-                                        horizontal: 4.w,
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 12.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: isSelected
-                                            ? primaryColor.withValues(
-                                                alpha: 0.1,
-                                              )
-                                            : context.colors.surface,
-                                        borderRadius: BorderRadius.circular(
-                                          context.corners.md,
-                                        ),
-                                        border: Border.all(
-                                          color: isSelected
-                                              ? primaryColor
-                                              : primaryColor.withValues(
-                                                  alpha: 0.2,
-                                                ),
-                                          width: isSelected ? 2 : 1,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: AnimatedContainer(
-                                          duration: const Duration(
-                                            milliseconds: 300,
-                                          ),
-                                          width: isSelected ? 28.w : 32.w,
-                                          height: isSelected ? 28.w : 32.w,
-                                          decoration: BoxDecoration(
-                                            color: primaryColor,
-                                            shape: BoxShape.circle,
-                                            boxShadow: isSelected
-                                                ? [
-                                                    BoxShadow(
-                                                      color: primaryColor
-                                                          .withValues(
-                                                            alpha: 0.4,
-                                                          ),
-                                                      blurRadius: 10,
-                                                      offset: const Offset(
-                                                        0,
-                                                        4,
-                                                      ),
-                                                    ),
-                                                  ]
-                                                : null,
-                                          ),
-                                          child: AnimatedSwitcher(
-                                            duration: const Duration(
-                                              milliseconds: 200,
-                                            ),
-                                            child: isSelected
-                                                ? const AppIcon(
-                                                    HugeIcons.strokeRoundedTick02,
-                                                    key: ValueKey('check'),
-                                                    color: Colors.white,
-                                                    size: 18,
-                                                  )
-                                                : const SizedBox.shrink(),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                      SettingsTile(
+                        title: 'ألوان التطبيق',
+                        subtitle: _getThemeName(settings.appTheme),
+                        icon: HugeIcons.strokeRoundedPalette,
+                        iconColor: context.colors.secondary,
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: AppThemeType.values.map((theme) {
+                            final isSelected = settings.appTheme == theme;
+                            final themeColor = _getThemeColor(theme);
+                            return GestureDetector(
+                              onTap: () => ref
+                                  .read(settingsProvider.notifier)
+                                  .updateAppTheme(theme),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                margin: EdgeInsets.symmetric(horizontal: 3.w),
+                                width: 22.w,
+                                height: 22.w,
+                                decoration: BoxDecoration(
+                                  color: themeColor,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? context.colors.textPrimary
+                                        : Colors.transparent,
+                                    width: 2,
                                   ),
-                                );
-                              }).toList(),
-                            ),
-                          ],
+                                  boxShadow: isSelected
+                                      ? [
+                                          BoxShadow(
+                                            color: themeColor.withValues(
+                                              alpha: 0.35,
+                                            ),
+                                            blurRadius: 4,
+                                            offset: const Offset(0, 1),
+                                          ),
+                                        ]
+                                      : null,
+                                ),
+                                child: isSelected
+                                    ? Center(
+                                        child: AppIcon(
+                                          HugeIcons.strokeRoundedTick02,
+                                          size: 11.sp,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : null,
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: context.insets.lg,
-                          vertical: context.insets.md,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                // SizedBox(width: context.insets.sm),
-                                Text(
-                                  'حجم الخط في القراءة',
-                                  style: context.textStyles.bodyMedium
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                const Spacer(),
-                                AppButton(
-                                  text:
-                                      'الافتراضي ' +
-                                      '(${settings.fontSize.toInt()})',
-                                  size: AppButtonSize.small,
-                                  isFullWidth: false,
-                                  onTap: () => ref
-                                      .read(settingsProvider.notifier)
-                                      .updateFontSize(16.0),
-                                ),
-                              ],
-                            ),
-                            Slider.adaptive(
-                              value: settings.fontSize.clamp(14.0, 24.0),
-                              min: 14.0,
-                              max: 24.0,
-                              divisions: 5,
-                              activeColor: context.colors.primary,
-                              onChanged: (val) => ref
-                                  .read(settingsProvider.notifier)
-                                  .updateFontSize(val),
-                            ),
-                          ],
-                        ),
+                      SettingsTile(
+                        title: 'حجم الخط في القراءة',
+                        subtitle:
+                            '${settings.fontSize.toInt()} نقطة (معاينة حية)',
+                        icon: HugeIcons.strokeRoundedTextFont,
+                        iconColor: context.colors.primary,
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            backgroundColor: Colors.transparent,
+                            isScrollControlled: true,
+                            builder: (context) => const FontSizeSettingsSheet(),
+                          );
+                        },
                       ),
                       SettingsTile(
                         title: 'ترتيب الشاشة الرئيسية',
                         subtitle: 'تحكم في مكان ظهور العناصر في الرئيسية',
                         icon: HugeIcons.strokeRoundedDashboardSquare01,
+                        iconColor: context.colors.primary,
                         onTap: () => context.router.push(
                           const CustomizeHomeLayoutRoute(),
                         ),
-                        iconColor: Colors.purple,
                       ),
                       SettingsTile(
                         title: 'بطاقة المشاركة',
-                        subtitle: 'تخصيص شكل ومحتوى بطاقة المشاركة ',
+                        subtitle: 'تخصيص شكل ومحتوى بطاقة المشاركة',
                         icon: HugeIcons.strokeRoundedSparkles,
-                        iconColor: Colors.orange,
+                        iconColor: context.colors.secondary,
                         onTap: () =>
                             context.pushRoute(const CustomizeShareCardRoute()),
                       ),
@@ -341,9 +273,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           title: 'أذكاري الخاصة',
                           subtitle: 'أضف أذكارك الشخصية وشاركها',
                           icon: HugeIcons.strokeRoundedBookmarkCheck01,
+                          iconColor: context.colors.primary,
                           onTap: () =>
                               context.router.push(const UserAzkarRoute()),
-                          iconColor: Colors.teal,
                         ),
                       ),
                     ],
