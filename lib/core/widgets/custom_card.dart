@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
 import 'package:thekr_app/core/widgets/my_card.dart';
+import 'package:thekr_app/core/widgets/number_badge.dart';
 
 class CustomCard extends StatefulWidget {
   const CustomCard({
@@ -104,24 +104,6 @@ class _CustomCardState extends State<CustomCard> {
   }
 
   Widget _buildLeading(BuildContext context) {
-    return Container(
-      width: 44.w,
-      height: 44.w,
-      alignment: Alignment.center,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(AppAssets.around),
-          fit: BoxFit.contain,
-        ),
-      ),
-      child: Text(
-        widget.leading!,
-        style: context.textStyles.bodyMedium?.copyWith(
-          color: context.colors.primary,
-          fontWeight: FontWeight.bold,
-          height: 1,
-        ),
-      ),
-    );
+    return NumberBadge(number: widget.leading!, size: 46.w);
   }
 }
