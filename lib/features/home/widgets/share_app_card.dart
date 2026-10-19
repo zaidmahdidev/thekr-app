@@ -4,6 +4,8 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/widgets/brand_surface.dart';
 import 'package:thekr_app/features/settings/widgets/app_share_sheet.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Slim home banner that invites the user to share the app (sadaqah jariyah).
 /// The whole banner is tappable. Colors adapt to light / dark mode.
@@ -99,8 +101,8 @@ class ShareAppCard extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.ios_share_rounded,
+                        AppIcon(
+                          AppIcons.share,
                           size: 15.sp,
                           color: style.ctaForeground,
                         ),

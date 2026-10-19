@@ -20,6 +20,9 @@ import 'package:thekr_app/features/settings/widgets/app_share_sheet.dart';
 import 'package:thekr_app/core/providers/feature_badge_provider.dart';
 import 'package:thekr_app/core/widgets/new_feature_badge.dart';
 import 'package:thekr_app/features/settings/widgets/durood_settings_sheet.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -142,7 +145,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       SettingsTile(
                         title: 'الوضع الليلي',
-                        icon: Icons.dark_mode_rounded,
+                        icon: HugeIcons.strokeRoundedMoon02,
                         iconColor: Colors.indigo,
                         trailing: Switch.adaptive(
                           value: isDarkMode,
@@ -160,8 +163,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           children: [
                             Row(
                               children: [
-                                Icon(
-                                  Icons.palette_rounded,
+                                AppIcon(
+                                  HugeIcons.strokeRoundedPalette,
                                   size: 20.sp,
                                   color: Colors.teal,
                                 ),
@@ -255,8 +258,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                               milliseconds: 200,
                                             ),
                                             child: isSelected
-                                                ? const Icon(
-                                                    Icons.check,
+                                                ? const AppIcon(
+                                                    HugeIcons.strokeRoundedTick02,
                                                     key: ValueKey('check'),
                                                     color: Colors.white,
                                                     size: 18,
@@ -318,7 +321,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       SettingsTile(
                         title: 'ترتيب الشاشة الرئيسية',
                         subtitle: 'تحكم في مكان ظهور العناصر في الرئيسية',
-                        icon: Icons.dashboard_customize_rounded,
+                        icon: HugeIcons.strokeRoundedDashboardSquare01,
                         onTap: () => context.router.push(
                           const CustomizeHomeLayoutRoute(),
                         ),
@@ -327,7 +330,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       SettingsTile(
                         title: 'بطاقة المشاركة',
                         subtitle: 'تخصيص شكل ومحتوى بطاقة المشاركة ',
-                        icon: Icons.auto_awesome_outlined,
+                        icon: HugeIcons.strokeRoundedSparkles,
                         iconColor: Colors.orange,
                         onTap: () =>
                             context.pushRoute(const CustomizeShareCardRoute()),
@@ -337,7 +340,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         child: SettingsTile(
                           title: 'أذكاري الخاصة',
                           subtitle: 'أضف أذكارك الشخصية وشاركها',
-                          icon: Icons.bookmark_added_rounded,
+                          icon: HugeIcons.strokeRoundedBookmarkCheck01,
                           onTap: () =>
                               context.router.push(const UserAzkarRoute()),
                           iconColor: Colors.teal,
@@ -355,7 +358,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         child: SettingsTile(
                           title: 'تنبيه الصلوات',
                           subtitle: 'تخصيص تنبيه الأذان لكل صلاة بشكل منفصل واختيار صوت المؤذن.',
-                          icon: Icons.notifications_active_rounded,
+                          icon: HugeIcons.strokeRoundedNotification01,
                           iconColor: context.colors.primary,
                           onTap: () {
                             ref.read(featureBadgeProvider.notifier).recordFeatureClick('prayer_alerts');
@@ -379,7 +382,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                       : settings.duroodInterval == 1440 
                                           ? 'مرة يومياً' 
                                           : 'كل ${settings.duroodInterval ~/ 60} ساعات',
-                          icon: Icons.mosque_rounded,
+                          icon: HugeIcons.strokeRoundedMosque01,
                           iconColor: Colors.teal,
                           onTap: () {
                             ref.read(featureBadgeProvider.notifier).recordFeatureClick('durood_reminder');
@@ -397,7 +400,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         subtitle: settings.morningNotificationEnabled
                             ? 'تذكير عند ${_formatTime(settings.morningNotificationTime)}'
                             : 'التذكير متوقف',
-                        icon: Icons.wb_sunny_rounded,
+                        icon: HugeIcons.strokeRoundedSun03,
                         iconColor: Colors.orange,
                         trailing: Switch.adaptive(
                           value: settings.morningNotificationEnabled,
@@ -414,7 +417,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         subtitle: settings.eveningNotificationEnabled
                             ? 'تذكير عند ${_formatTime(settings.eveningNotificationTime)}'
                             : 'التذكير متوقف',
-                        icon: Icons.nightlight_round_rounded,
+                        icon: HugeIcons.strokeRoundedMoon02,
                         iconColor: Colors.blueAccent,
                         trailing: Switch.adaptive(
                           value: settings.eveningNotificationEnabled,
@@ -431,7 +434,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         subtitle: settings.wirdNotificationEnabled
                             ? 'تذكير عند ${_formatTime(settings.wirdNotificationTime)}'
                             : 'التذكير متوقف',
-                        icon: Icons.menu_book_rounded,
+                        icon: HugeIcons.strokeRoundedBookOpen01,
                         iconColor: context.colors.primary,
                         trailing: Switch.adaptive(
                           value: settings.wirdNotificationEnabled,
@@ -447,7 +450,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         subtitle: settings.fridayNotificationEnabled
                             ? 'كل يوم جمعة صباحاً'
                             : 'التذكير متوقف',
-                        icon: Icons.auto_stories_rounded,
+                        icon: HugeIcons.strokeRoundedBookOpenText,
                         iconColor: Colors.green,
                         trailing: Switch.adaptive(
                           value: settings.fridayNotificationEnabled,
@@ -462,13 +465,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       SettingsTile(
                         title: 'تقييم التطبيق',
-                        icon: Icons.star_rounded,
+                        icon: HugeIcons.strokeRoundedStar,
                         iconColor: Colors.amber,
                         onTap: () => ReviewService.requestManualReview(),
                       ),
                       SettingsTile(
                         title: 'تواصل معنا',
-                        icon: Icons.chat_rounded,
+                        icon: HugeIcons.strokeRoundedMessage01,
                         iconColor: Colors.teal,
                         onTap: () => UrlHelper.launchWhatsApp(
                           phone: AppConstants.whatsappNumber,
@@ -477,14 +480,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                       SettingsTile(
                         title: 'سياسة الخصوصية',
-                        icon: Icons.privacy_tip_rounded,
+                        icon: HugeIcons.strokeRoundedSecurityCheck,
                         iconColor: Colors.redAccent,
                         onTap: () =>
                             UrlHelper.launchURL(AppConstants.privacyPolicyUrl),
                       ),
                       SettingsTile(
                         title: 'شارك التطبيق',
-                        icon: Icons.share_rounded,
+                        icon: AppIcons.share,
                         iconColor: Colors.purple,
                         onTap: () {
                           showModalBottomSheet(
@@ -521,14 +524,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           DeveloperSocialCard(
-                            icon: Icons.language_rounded,
+                            icon: HugeIcons.strokeRoundedGlobe02,
                             color: Colors.blue,
                             onTap: () =>
                                 UrlHelper.launchURL(AppConstants.websiteUrl),
                           ),
                           SizedBox(width: context.insets.md),
                           DeveloperSocialCard(
-                            icon: Icons.email_rounded,
+                            icon: HugeIcons.strokeRoundedMail01,
                             color: Colors.redAccent,
                             onTap: () => UrlHelper.launchURL(
                               'mailto:${AppConstants.supportEmail}',
@@ -536,7 +539,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ),
                           SizedBox(width: context.insets.md),
                           DeveloperSocialCard(
-                            icon: Icons.chat_rounded,
+                            icon: HugeIcons.strokeRoundedMessage01,
                             color: Colors.green,
                             onTap: () => UrlHelper.launchWhatsApp(
                               phone: AppConstants.developerNumber,
@@ -544,7 +547,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ),
                           SizedBox(width: context.insets.md),
                           DeveloperSocialCard(
-                            icon: Icons.phone,
+                            icon: HugeIcons.strokeRoundedCall,
                             color: Colors.cyan,
                             onTap: () => UrlHelper.launchPhone(
                               AppConstants.developerNumber,

@@ -4,6 +4,8 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/features/quran/models/quran_reader_palette.dart';
 import 'package:thekr_app/features/quran/services/quran_reader_adapter.dart';
 import 'package:thekr_app/features/quran/widgets/quran_page_indicator.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Index tab: all surahs or all juz, with the current one highlighted.
 class QuranIndexTab extends StatefulWidget {
@@ -219,7 +221,7 @@ class _IndexTile extends StatelessWidget {
                   ),
                 ),
                 if (isCurrent)
-                  Icon(Icons.bookmark_rounded, size: 18.sp, color: palette.icon),
+                  AppIcon(HugeIcons.strokeRoundedBookmark01, size: 18.sp, color: palette.icon),
               ],
             ),
           ),

@@ -4,6 +4,8 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/features/quran/models/quran_reader_palette.dart';
 import 'package:thekr_app/features/quran/services/quran_reader_adapter.dart';
 import 'package:thekr_app/features/quran/widgets/quran_page_indicator.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Bookmarks tab: the verses the user marked, with jump and delete.
 class QuranBookmarksTab extends StatefulWidget {
@@ -38,8 +40,8 @@ class _QuranBookmarksTabState extends State<QuranBookmarksTab> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.bookmark_border_rounded,
+              AppIcon(
+                HugeIcons.strokeRoundedBookmark01,
                 size: 48.sp,
                 color: palette.icon.withValues(alpha: 0.4),
               ),
@@ -86,7 +88,7 @@ class _QuranBookmarksTabState extends State<QuranBookmarksTab> {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.bookmark_rounded, color: bookmark.color),
+                    AppIcon(HugeIcons.strokeRoundedBookmark01, color: bookmark.color),
                     SizedBox(width: context.insets.md),
                     Expanded(
                       child: Column(
@@ -113,8 +115,8 @@ class _QuranBookmarksTabState extends State<QuranBookmarksTab> {
                     IconButton(
                       tooltip: 'حذف',
                       onPressed: () => _remove(bookmark),
-                      icon: Icon(
-                        Icons.delete_outline_rounded,
+                      icon: AppIcon(
+                        HugeIcons.strokeRoundedDelete02,
                         color: context.colors.error,
                       ),
                     ),

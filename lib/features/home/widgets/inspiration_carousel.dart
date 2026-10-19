@@ -4,6 +4,7 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/features/home/data/daily_content_data.dart';
 import 'package:thekr_app/features/home/models/inspiration_item.dart';
 import 'package:thekr_app/features/home/widgets/inspiration_card.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// "إلهامات يومية": today's verse, hadith and dhikr. Swipe the card or tap the
 /// small tabs in the header. The selection rotates by day of year, so it is
@@ -151,7 +152,7 @@ class _TabChip extends StatelessWidget {
     required this.onTap,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final bool selected;
   final VoidCallback onTap;
 
@@ -172,7 +173,7 @@ class _TabChip extends StatelessWidget {
           color: selected ? gold : gold.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(context.corners.xl),
         ),
-        child: Icon(icon, size: 14.sp, color: selected ? Colors.white : gold),
+        child: AppIcon(icon, size: 14.sp, color: selected ? Colors.white : gold),
       ),
     );
   }

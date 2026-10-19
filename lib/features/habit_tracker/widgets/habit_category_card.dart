@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/quran_text.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// A group of habits (e.g. the five prayers) with its own progress.
 class HabitCategoryCard extends StatelessWidget {
   final String title;
-  final IconData icon;
+  final AppIconData icon;
   final Color color;
   final List<HabitItemData> items;
 
@@ -51,7 +53,7 @@ class HabitCategoryCard extends StatelessWidget {
                       color: color.withValues(alpha: 0.18),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(icon, color: color, size: 18.sp),
+                    child: AppIcon(icon, color: color, size: 18.sp),
                   ),
                   SizedBox(width: context.insets.sm + 2.w),
                   Expanded(
@@ -174,8 +176,8 @@ class _HabitRow extends StatelessWidget {
                 transitionBuilder: (child, animation) =>
                     ScaleTransition(scale: animation, child: child),
                 child: item.isDone
-                    ? Icon(
-                        Icons.check_rounded,
+                    ? AppIcon(
+                        HugeIcons.strokeRoundedTick02,
                         key: const ValueKey('done'),
                         color: Colors.white,
                         size: 18.sp,

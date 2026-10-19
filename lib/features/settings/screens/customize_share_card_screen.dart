@@ -14,6 +14,9 @@ import 'package:thekr_app/features/settings/widgets/share_studio/share_format_pa
 import 'package:thekr_app/features/settings/widgets/share_studio/share_studio_tab_bar.dart';
 import 'package:thekr_app/features/settings/widgets/share_studio/share_template_panel.dart';
 import 'package:thekr_app/features/settings/widgets/share_studio/share_text_panel.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Share card studio: live preview on top, editing panels at the bottom.
 @RoutePage()
@@ -28,9 +31,9 @@ class CustomizeShareCardScreen extends ConsumerStatefulWidget {
 class _CustomizeShareCardScreenState
     extends ConsumerState<CustomizeShareCardScreen> {
   static const _tabs = [
-    ShareStudioTab(icon: Icons.edit_note_rounded, label: 'النص'),
-    ShareStudioTab(icon: Icons.palette_rounded, label: 'القالب'),
-    ShareStudioTab(icon: Icons.tune_rounded, label: 'التنسيق'),
+    ShareStudioTab(icon: HugeIcons.strokeRoundedNoteEdit, label: 'النص'),
+    ShareStudioTab(icon: HugeIcons.strokeRoundedPalette, label: 'القالب'),
+    ShareStudioTab(icon: HugeIcons.strokeRoundedSettings05, label: 'التنسيق'),
   ];
 
   final TextEditingController _contentController = TextEditingController(
@@ -309,13 +312,13 @@ class _ActionRow extends StatelessWidget {
     return Row(
       children: [
         _SquareAction(
-          icon: Icons.copy_rounded,
+          icon: HugeIcons.strokeRoundedCopy01,
           tooltip: 'نسخ النص',
           onTap: onCopy,
         ),
         SizedBox(width: context.insets.sm),
         _SquareAction(
-          icon: Icons.text_snippet_rounded,
+          icon: HugeIcons.strokeRoundedNote01,
           tooltip: 'مشاركة كنص',
           onTap: onShareText,
         ),
@@ -323,7 +326,7 @@ class _ActionRow extends StatelessWidget {
         Expanded(
           child: AppButton(
             text: 'مشاركة كصورة',
-            icon: Icons.ios_share_rounded,
+            icon: AppIcons.share,
             isLoading: sharing,
             onTap: onShareImage,
           ),
@@ -340,7 +343,7 @@ class _SquareAction extends StatelessWidget {
     required this.onTap,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final String tooltip;
   final VoidCallback onTap;
 
@@ -357,7 +360,7 @@ class _SquareAction extends StatelessWidget {
           child: SizedBox(
             width: 46.h,
             height: 46.h,
-            child: Icon(icon, size: 20.sp, color: context.colors.primary),
+            child: AppIcon(icon, size: 20.sp, color: context.colors.primary),
           ),
         ),
       ),

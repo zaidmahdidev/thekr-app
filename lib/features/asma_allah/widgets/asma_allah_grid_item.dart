@@ -6,6 +6,9 @@ import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class AsmaAllahGridItem extends ConsumerWidget {
   final AsmaAllah item;
@@ -112,7 +115,7 @@ class AsmaAllahGridItem extends ConsumerWidget {
                             showSubtitleInImage: true,
                           );
                         },
-                        icon: Icon(Icons.share_outlined, size: 20.w),
+                        icon: AppIcon(AppIcons.share, size: 20.w),
                         label: const Text('مشاركة'),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: context.colors.primary,
@@ -134,7 +137,7 @@ class AsmaAllahGridItem extends ConsumerWidget {
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: () => Navigator.pop(context),
-                        icon: Icon(Icons.check_circle_outline, size: 20.w),
+                        icon: AppIcon(HugeIcons.strokeRoundedCheckmarkCircle02, size: 20.w),
                         label: const Text('فهمت'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: context.colors.primary,

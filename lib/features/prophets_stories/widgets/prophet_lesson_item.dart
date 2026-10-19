@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/extensions/theme_extension.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class ProphetLessonItem extends StatelessWidget {
   final String lesson;
@@ -16,8 +18,8 @@ class ProphetLessonItem extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.only(top: 6.h),
-            child: Icon(
-              Icons.circle,
+            child: AppIcon(
+              HugeIcons.strokeRoundedCircle,
               size: 6.r,
               color: context.colors.secondary,
             ),

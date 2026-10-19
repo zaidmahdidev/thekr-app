@@ -8,6 +8,9 @@ import 'package:thekr_app/core/widgets/app_button.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
 import 'package:thekr_app/features/home/models/inspiration_item.dart';
 import 'package:thekr_app/features/home/widgets/inspiration_reading.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Full text of a daily inspiration with its source, copy and share.
 class InspirationDetailSheet extends ConsumerWidget {
@@ -72,7 +75,7 @@ class InspirationDetailSheet extends ConsumerWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(item.type.icon, size: 18.sp, color: accent),
+                  AppIcon(item.type.icon, size: 18.sp, color: accent),
                   SizedBox(width: 6.w),
                   Text(
                     item.type.label,
@@ -130,7 +133,7 @@ class InspirationDetailSheet extends ConsumerWidget {
                   Expanded(
                     child: AppButton(
                       text: 'نسخ',
-                      icon: Icons.copy_rounded,
+                      icon: HugeIcons.strokeRoundedCopy01,
                       variant: AppButtonVariant.outline,
                       onTap: () {
                         Clipboard.setData(
@@ -147,7 +150,7 @@ class InspirationDetailSheet extends ConsumerWidget {
                   Expanded(
                     child: AppButton(
                       text: 'مشاركة',
-                      icon: Icons.ios_share_rounded,
+                      icon: AppIcons.share,
                       onTap: () => ShareService.showShareSheet(
                         context,
                         ref,

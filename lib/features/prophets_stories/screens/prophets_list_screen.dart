@@ -7,6 +7,8 @@ import '../../../../core/widgets/app_scaffold.dart';
 import '../data/prophets_data.dart';
 import '../models/prophet_story.dart';
 import '../widgets/prophet_grid_item.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 @RoutePage()
 class ProphetsListScreen extends StatefulWidget {
@@ -54,12 +56,12 @@ class _ProphetsListScreenState extends State<ProphetsListScreen> {
               style: context.textStyles.bodyMedium,
               decoration: InputDecoration(
                 hintText: 'ابحث عن نبي...',
-                prefixIcon: const Icon(Icons.search_rounded),
+                prefixIcon: const AppIcon(HugeIcons.strokeRoundedSearch01),
                 suffixIcon: _controller.text.isEmpty
                     ? null
                     : IconButton(
                         tooltip: 'مسح',
-                        icon: const Icon(Icons.close_rounded),
+                        icon: const AppIcon(HugeIcons.strokeRoundedCancel01),
                         onPressed: () => setState(_controller.clear),
                       ),
                 filled: true,

@@ -7,6 +7,8 @@ import 'package:thekr_app/features/husn_al_muslim/widgets/husn_al_muslim_item_wi
 import 'package:thekr_app/core/widgets/base_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 @RoutePage()
 class HusinAlMuslimDetailsScreen extends ConsumerStatefulWidget {
@@ -90,7 +92,7 @@ class _HusinAlMuslimDetailsScreenState
         title: widget.title,
         actions: [
           IconButton(
-            icon: const Icon(Icons.text_increase_rounded),
+            icon: const AppIcon(HugeIcons.strokeRoundedZoomIn),
             onPressed: () {
               final currentSize = ref.read(settingsProvider).fontSize;
               if (currentSize < 24) {
@@ -99,7 +101,7 @@ class _HusinAlMuslimDetailsScreenState
             },
           ),
           IconButton(
-            icon: const Icon(Icons.text_decrease_rounded),
+            icon: const AppIcon(HugeIcons.strokeRoundedZoomOut),
             onPressed: () {
               final currentSize = ref.read(settingsProvider).fontSize;
               if (currentSize > 14) {
@@ -114,8 +116,8 @@ class _HusinAlMuslimDetailsScreenState
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.check_circle,
+                  AppIcon(
+                    HugeIcons.strokeRoundedCheckmarkCircle02,
                     color: context.colors.primary,
                     size: 80,
                   ),

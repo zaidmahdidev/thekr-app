@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Output shape of the shared card image.
 enum ShareCardRatio {
@@ -40,14 +41,14 @@ enum ShareCardRatio {
     }
   }
 
-  IconData get icon {
+  AppIconData get icon {
     switch (this) {
       case ShareCardRatio.square:
-        return Icons.crop_square_rounded;
+        return HugeIcons.strokeRoundedSquare;
       case ShareCardRatio.portrait:
-        return Icons.crop_portrait_rounded;
+        return HugeIcons.strokeRoundedRectangular;
       case ShareCardRatio.story:
-        return Icons.smartphone_rounded;
+        return HugeIcons.strokeRoundedSmartPhone01;
     }
   }
 }

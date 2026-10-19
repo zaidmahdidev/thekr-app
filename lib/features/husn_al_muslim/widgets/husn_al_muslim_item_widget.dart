@@ -7,6 +7,9 @@ import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class HusnAlMuslimItemWidget extends ConsumerStatefulWidget {
   final String text;
@@ -93,7 +96,7 @@ class _HusnAlMuslimItemWidgetState extends ConsumerState<HusnAlMuslimItemWidget>
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.copy, size: 18),
+                  child: const AppIcon(HugeIcons.strokeRoundedCopy01, size: 18),
                 ),
               ),
               InkWell(
@@ -109,7 +112,7 @@ class _HusnAlMuslimItemWidgetState extends ConsumerState<HusnAlMuslimItemWidget>
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.share, size: 20),
+                  child: const AppIcon(AppIcons.share, size: 20),
                 ),
               ),
             ],

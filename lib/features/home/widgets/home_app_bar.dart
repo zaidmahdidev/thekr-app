@@ -9,6 +9,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:thekr_app/core/router/app_router.dart';
 
 import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class HomeAppBar extends StatelessWidget {
   final DateTime currentTime;
@@ -39,7 +41,7 @@ class HomeAppBar extends StatelessWidget {
           ],
           // stops: const [0.0, 0.85, 1.0],
         ),
-        icon: Icons.nightlight_round,
+        icon: HugeIcons.strokeRoundedMoon02,
       );
     }
 
@@ -58,7 +60,7 @@ class HomeAppBar extends StatelessWidget {
             ],
             // stops: const [0.0, 0.3, 0.6, 0.85, 1.0],
           ),
-          icon: Icons.brightness_3_rounded,
+          icon: HugeIcons.strokeRoundedMoon02,
         );
       case AppPrayer.sunrise:
       case AppPrayer.dhuhr:
@@ -74,7 +76,7 @@ class HomeAppBar extends StatelessWidget {
             ],
             // stops: const [0.0, 0.6, 0.85, 1.0],
           ),
-          icon: Icons.wb_sunny_rounded,
+          icon: HugeIcons.strokeRoundedSun03,
         );
       case AppPrayer.asr:
         return _AppBarTheme(
@@ -89,7 +91,7 @@ class HomeAppBar extends StatelessWidget {
             ],
             // stops: const [0.0, 0.6, 0.85, 1.0],
           ),
-          icon: Icons.wb_twilight_rounded,
+          icon: HugeIcons.strokeRoundedSunset,
         );
       case AppPrayer.maghrib:
         return _AppBarTheme(
@@ -104,7 +106,7 @@ class HomeAppBar extends StatelessWidget {
             ],
             // stops: const [0.0, 0.6, 0.85, 1.0],
           ),
-          icon: Icons.wb_twilight_rounded,
+          icon: HugeIcons.strokeRoundedSunset,
         );
       case AppPrayer.isha:
         return _AppBarTheme(
@@ -119,7 +121,7 @@ class HomeAppBar extends StatelessWidget {
             ],
             // stops: const [0.0, 0.6, 0.85, 1.0],
           ),
-          icon: Icons.nightlight_round,
+          icon: HugeIcons.strokeRoundedMoon02,
         );
     }
   }
@@ -222,7 +224,7 @@ class HomeAppBar extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(
+                            AppIcon(
                               theme.icon,
                               color: context.colors.secondary,
                               size: 14.sp,
@@ -276,7 +278,7 @@ class HomeAppBar extends StatelessWidget {
 
 class _AppBarTheme {
   final Gradient gradient;
-  final IconData icon;
+  final AppIconData icon;
 
   _AppBarTheme({required this.gradient, required this.icon});
 }

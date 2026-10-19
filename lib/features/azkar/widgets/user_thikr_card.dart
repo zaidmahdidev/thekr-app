@@ -11,6 +11,9 @@ import 'package:thekr_app/features/azkar/providers/user_azkar_provider.dart';
 import 'package:thekr_app/features/azkar/widgets/add_thikr_sheet.dart';
 
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class UserThikrCard extends ConsumerWidget {
   final UserThikr thikr;
@@ -30,18 +33,18 @@ class UserThikrCard extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _ActionIcon(
-                icon: Icons.edit_outlined,
+                icon: HugeIcons.strokeRoundedEdit02,
                 color: Colors.blue,
                 onTap: () => _showEditSheet(context),
               ),
               _ActionIcon(
-                icon: Icons.delete_outline_rounded,
+                icon: HugeIcons.strokeRoundedDelete02,
                 color: Colors.red,
                 onTap: () => _confirmDelete(context, ref),
               ),
               const Spacer(),
               _ActionIcon(
-                icon: Icons.copy_rounded,
+                icon: HugeIcons.strokeRoundedCopy01,
                 color: context.colors.textSecondary,
                 onTap: () {
                   Clipboard.setData(ClipboardData(text: thikr.text));
@@ -49,7 +52,7 @@ class UserThikrCard extends ConsumerWidget {
                 },
               ),
               _ActionIcon(
-                icon: Icons.share_outlined,
+                icon: AppIcons.share,
                 color: context.colors.secondary,
                 onTap: () => ShareService.showShareSheet(
                   context,
@@ -107,7 +110,7 @@ class UserThikrCard extends ConsumerWidget {
 }
 
 class _ActionIcon extends StatelessWidget {
-  final IconData icon;
+  final AppIconData icon;
   final Color color;
   final VoidCallback onTap;
 
@@ -124,7 +127,7 @@ class _ActionIcon extends StatelessWidget {
       borderRadius: BorderRadius.circular(context.corners.md),
       child: Padding(
         padding: EdgeInsets.all(8.r),
-        child: Icon(icon, size: 20.r, color: color),
+        child: AppIcon(icon, size: 20.r, color: color),
       ),
     );
   }

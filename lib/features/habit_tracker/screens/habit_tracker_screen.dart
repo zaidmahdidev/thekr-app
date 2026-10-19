@@ -11,6 +11,8 @@ import 'package:thekr_app/features/habit_tracker/providers/habit_tracker_provide
 import 'package:thekr_app/features/habit_tracker/widgets/habit_category_card.dart';
 import 'package:thekr_app/features/habit_tracker/widgets/habit_summary_card.dart';
 import 'package:thekr_app/features/habit_tracker/widgets/habit_week_chart.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Worship tracker: pick a day, tick what you did, and follow your progress,
 /// streak and points.
@@ -103,7 +105,7 @@ class _HabitTrackerScreenState extends ConsumerState<HabitTrackerScreen> {
                 SizedBox(height: context.insets.md),
                 HabitCategoryCard(
                   title: 'الصلوات المفروضة',
-                  icon: Icons.mosque_rounded,
+                  icon: HugeIcons.strokeRoundedMosque01,
                   color: context.colors.primary,
                   items: [
                     HabitItemData(
@@ -140,7 +142,7 @@ class _HabitTrackerScreenState extends ConsumerState<HabitTrackerScreen> {
                 ),
                 HabitCategoryCard(
                   title: 'النوافل والسنن',
-                  icon: Icons.nightlight_round,
+                  icon: HugeIcons.strokeRoundedMoon02,
                   color: context.colors.secondary,
                   items: [
                     HabitItemData(
@@ -159,7 +161,7 @@ class _HabitTrackerScreenState extends ConsumerState<HabitTrackerScreen> {
                 ),
                 HabitCategoryCard(
                   title: 'القرآن والأذكار',
-                  icon: Icons.menu_book_rounded,
+                  icon: HugeIcons.strokeRoundedBookOpen01,
                   color: context.colors.success,
                   items: [
                     HabitItemData(
@@ -222,8 +224,8 @@ class _StreakBadge extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.local_fire_department_rounded,
+              AppIcon(
+                HugeIcons.strokeRoundedFire,
                 size: 18.sp,
                 color: color,
               ),

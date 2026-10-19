@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/features/quran/models/quran_reader_palette.dart';
 import 'package:thekr_app/features/quran/services/quran_reader_adapter.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Single "more" button for the Quran top bar. It replaces the row of secondary
 /// icons (share, surah audio, auto scroll, tajweed rules, recitations, fonts)
@@ -32,35 +35,35 @@ class QuranMoreMenuButton extends StatelessWidget {
 
         final items = [
           _MenuItem(
-            icon: Icons.ios_share_rounded,
+            icon: AppIcons.share,
             title: 'مشاركة الصفحة',
             onTap: () => run(onSharePage),
           ),
           _MenuItem(
-            icon: Icons.headphones_rounded,
+            icon: HugeIcons.strokeRoundedHeadphones,
             title: 'الاستماع للسور',
             onTap: () =>
                 run(() => QuranReaderAdapter.openSurahAudio(host, palette)),
           ),
           _MenuItem(
-            icon: Icons.swipe_down_alt_rounded,
+            icon: HugeIcons.strokeRoundedArrowDown01,
             title: 'تمرير تلقائي',
             onTap: () => run(QuranReaderAdapter.toggleAutoScroll),
           ),
           _MenuItem(
-            icon: Icons.color_lens_rounded,
+            icon: HugeIcons.strokeRoundedPalette,
             title: 'أحكام التجويد',
             onTap: () =>
                 run(() => QuranReaderAdapter.openTajweedRules(host, palette)),
           ),
           _MenuItem(
-            icon: Icons.record_voice_over_rounded,
+            icon: HugeIcons.strokeRoundedMicVocal,
             title: 'القراءات العشر',
             onTap: () =>
                 run(() => QuranReaderAdapter.openRecitations(host, palette)),
           ),
           _MenuItem(
-            icon: Icons.font_download_rounded,
+            icon: HugeIcons.strokeRoundedTextFont,
             title: 'خطوط المصحف',
             onTap: () => run(() => QuranReaderAdapter.openFonts(host, palette)),
           ),
@@ -78,13 +81,13 @@ class QuranMoreMenuButton extends StatelessWidget {
       tooltip: 'المزيد',
       padding: EdgeInsets.zero,
       constraints: BoxConstraints.tightFor(width: 38.w, height: 44.h),
-      icon: Icon(Icons.more_vert_rounded, size: 22.sp, color: palette.icon),
+      icon: AppIcon(HugeIcons.strokeRoundedMoreVertical, size: 22.sp, color: palette.icon),
     );
   }
 }
 
 class _MenuItem {
-  final IconData icon;
+  final AppIconData icon;
   final String title;
   final VoidCallback onTap;
 
@@ -175,7 +178,7 @@ class _MenuTile extends StatelessWidget {
               color: palette.icon.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
-            child: Icon(item.icon, size: 25.sp, color: palette.icon),
+            child: AppIcon(item.icon, size: 25.sp, color: palette.icon),
           ),
           SizedBox(height: context.insets.sm),
           Text(

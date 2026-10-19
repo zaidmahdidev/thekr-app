@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/features/settings/models/share_card_style.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Format tab: image shape, text size and the app signature.
 class ShareFormatPanel extends StatelessWidget {
@@ -49,8 +51,8 @@ class ShareFormatPanel extends StatelessWidget {
         _SectionLabel('حجم الخط'),
         Row(
           children: [
-            Icon(
-              Icons.text_decrease_rounded,
+            AppIcon(
+              HugeIcons.strokeRoundedZoomOut,
               size: 18.sp,
               color: context.colors.textSecondary,
             ),
@@ -64,8 +66,8 @@ class ShareFormatPanel extends StatelessWidget {
                 onChanged: onFontScaleChanged,
               ),
             ),
-            Icon(
-              Icons.text_increase_rounded,
+            AppIcon(
+              HugeIcons.strokeRoundedZoomIn,
               size: 18.sp,
               color: context.colors.textSecondary,
             ),
@@ -147,7 +149,7 @@ class _RatioTile extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Icon(ratio.icon, size: 22.sp, color: color),
+            AppIcon(ratio.icon, size: 22.sp, color: color),
             SizedBox(height: 4.h),
             Text(
               ratio.label,

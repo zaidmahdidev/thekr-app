@@ -6,6 +6,8 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/features/quran/models/quran_reader_palette.dart';
 import 'package:thekr_app/features/quran/services/quran_reader_adapter.dart';
 import 'package:thekr_app/features/quran/widgets/quran_page_indicator.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Search tab: matches surah names / numbers first, then verses by their text.
 class QuranSearchTab extends StatefulWidget {
@@ -84,11 +86,11 @@ class _QuranSearchTabState extends State<QuranSearchTab> {
               hintStyle: context.textStyles.bodySmall?.copyWith(
                 color: palette.textMuted,
               ),
-              prefixIcon: Icon(Icons.search_rounded, color: palette.icon),
+              prefixIcon: AppIcon(HugeIcons.strokeRoundedSearch01, color: palette.icon),
               suffixIcon: _controller.text.isEmpty
                   ? null
                   : IconButton(
-                      icon: Icon(Icons.close_rounded, color: palette.textMuted),
+                      icon: AppIcon(HugeIcons.strokeRoundedCancel01, color: palette.textMuted),
                       onPressed: () {
                         _controller.clear();
                         _search('');
@@ -110,13 +112,13 @@ class _QuranSearchTabState extends State<QuranSearchTab> {
         Expanded(
           child: _query.isEmpty
               ? _Hint(
-                  icon: Icons.manage_search_rounded,
+                  icon: HugeIcons.strokeRoundedSearchList01,
                   text: 'اكتب كلمة للبحث في القرآن الكريم',
                   palette: palette,
                 )
               : results == 0
               ? _Hint(
-                  icon: Icons.search_off_rounded,
+                  icon: HugeIcons.strokeRoundedSearchRemove,
                   text: 'لا توجد نتائج مطابقة',
                   palette: palette,
                 )
@@ -129,7 +131,7 @@ class _QuranSearchTabState extends State<QuranSearchTab> {
                     if (index < _surahs.length) {
                       final surah = _surahs[index];
                       return _ResultTile(
-                        icon: Icons.menu_book_rounded,
+                        icon: HugeIcons.strokeRoundedBookOpen01,
                         title: 'سورة ${surah.name}',
                         subtitle: '${quranDigits(surah.ayahCount)} آية',
                         palette: palette,
@@ -138,7 +140,7 @@ class _QuranSearchTabState extends State<QuranSearchTab> {
                     }
                     final ayah = _ayahs[index - _surahs.length];
                     return _ResultTile(
-                      icon: Icons.format_quote_rounded,
+                      icon: HugeIcons.strokeRoundedQuoteDown,
                       title: ayah.text,
                       maxTitleLines: 2,
                       subtitle:
@@ -157,7 +159,7 @@ class _QuranSearchTabState extends State<QuranSearchTab> {
 class _Hint extends StatelessWidget {
   const _Hint({required this.icon, required this.text, required this.palette});
 
-  final IconData icon;
+  final AppIconData icon;
   final String text;
   final QuranReaderPalette palette;
 
@@ -167,7 +169,7 @@ class _Hint extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 44.sp, color: palette.icon.withValues(alpha: 0.4)),
+          AppIcon(icon, size: 44.sp, color: palette.icon.withValues(alpha: 0.4)),
           SizedBox(height: context.insets.sm),
           Text(
             text,
@@ -191,7 +193,7 @@ class _ResultTile extends StatelessWidget {
     this.maxTitleLines = 1,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final String title;
   final String subtitle;
   final QuranReaderPalette palette;
@@ -212,7 +214,7 @@ class _ResultTile extends StatelessWidget {
             padding: EdgeInsets.all(context.insets.sm + 4.w),
             child: Row(
               children: [
-                Icon(icon, size: 20.sp, color: palette.icon),
+                AppIcon(icon, size: 20.sp, color: palette.icon),
                 SizedBox(width: context.insets.sm + 2.w),
                 Expanded(
                   child: Column(

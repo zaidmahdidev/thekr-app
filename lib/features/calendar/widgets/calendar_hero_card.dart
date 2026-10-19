@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/widgets/brand_surface.dart';
 import 'package:thekr_app/features/calendar/services/calendar_service.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Today's Hijri and Gregorian date, plus the next special day.
 class CalendarHeroCard extends StatelessWidget {
@@ -39,7 +41,7 @@ class CalendarHeroCard extends StatelessWidget {
               color: style.controlBackground,
               border: Border.all(color: style.gold.withValues(alpha: 0.4)),
             ),
-            child: Icon(Icons.nightlight_round, size: 26.sp, color: style.gold),
+            child: AppIcon(HugeIcons.strokeRoundedMoon02, size: 26.sp, color: style.gold),
           ),
           SizedBox(width: context.insets.md),
           Expanded(
@@ -74,7 +76,7 @@ class CalendarHeroCard extends StatelessWidget {
                   SizedBox(height: context.insets.sm),
                   Row(
                     children: [
-                      Icon(Icons.event_rounded, size: 14.sp, color: style.gold),
+                      AppIcon(HugeIcons.strokeRoundedCalendar01, size: 14.sp, color: style.gold),
                       SizedBox(width: 6.w),
                       Flexible(
                         child: Text(

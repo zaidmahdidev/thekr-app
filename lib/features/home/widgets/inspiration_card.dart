@@ -9,6 +9,9 @@ import 'package:thekr_app/core/widgets/toast_utils.dart';
 import 'package:thekr_app/features/home/models/inspiration_item.dart';
 import 'package:thekr_app/features/home/widgets/inspiration_detail_sheet.dart';
 import 'package:thekr_app/features/home/widgets/inspiration_reading.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Daily inspiration card with a FIXED size: one font size per type, at most
 /// three lines. Longer text is cut with "قراءة المزيد" and opens the full text in
@@ -74,7 +77,7 @@ class InspirationCard extends ConsumerWidget {
                     height: 28.h,
                     child: Row(
                       children: [
-                        Icon(item.type.icon, size: 15.sp, color: style.accent),
+                        AppIcon(item.type.icon, size: 15.sp, color: style.accent),
                         SizedBox(width: 6.w),
                         Text(
                           item.type.label,
@@ -85,13 +88,13 @@ class InspirationCard extends ConsumerWidget {
                         ),
                         const Spacer(),
                         _RoundButton(
-                          icon: Icons.copy_rounded,
+                          icon: HugeIcons.strokeRoundedCopy01,
                           tooltip: 'نسخ',
                           style: style,
                           onTap: _copy,
                         ),
                         _RoundButton(
-                          icon: Icons.ios_share_rounded,
+                          icon: AppIcons.share,
                           tooltip: 'مشاركة',
                           style: style,
                           onTap: () => _share(context, ref),
@@ -200,7 +203,7 @@ class _RoundButton extends StatelessWidget {
     required this.onTap,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final String tooltip;
   final BrandSurfaceStyle style;
   final VoidCallback onTap;
@@ -221,7 +224,7 @@ class _RoundButton extends StatelessWidget {
               shape: BoxShape.circle,
               color: style.controlBackground,
             ),
-            child: Icon(icon, size: 14.sp, color: style.controlForeground),
+            child: AppIcon(icon, size: 14.sp, color: style.controlForeground),
           ),
         ),
       ),

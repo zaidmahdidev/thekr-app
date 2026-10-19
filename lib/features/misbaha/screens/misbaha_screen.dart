@@ -14,6 +14,8 @@ import '../widgets/progress_counter.dart';
 import '../widgets/zikr_selector.dart';
 import '../widgets/reset_button.dart';
 import '../widgets/bead_color_picker.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Electronic tasbih: tap anywhere to count. Beads slide along the string, the
 /// ring fills up to the round target and a strong vibration marks each round.
@@ -158,7 +160,7 @@ class _MisbahaScreenState extends ConsumerState<MisbahaScreen>
                         children: [
                           Expanded(
                             child: _InfoChip(
-                              icon: Icons.flag_rounded,
+                              icon: HugeIcons.strokeRoundedFlag01,
                               label: state.target > 0
                                   ? 'الهدف ${QuranText.digits(state.target)}'
                                   : 'بدون هدف',
@@ -168,7 +170,7 @@ class _MisbahaScreenState extends ConsumerState<MisbahaScreen>
                           if (state.target > 0) ...[
                             SizedBox(width: context.insets.sm),
                             _InfoChip(
-                              icon: Icons.loop_rounded,
+                              icon: HugeIcons.strokeRoundedRepeat,
                               label: QuranText.digits(rounds),
                             ),
                           ],
@@ -200,7 +202,7 @@ class _MisbahaScreenState extends ConsumerState<MisbahaScreen>
 class _InfoChip extends StatelessWidget {
   const _InfoChip({required this.icon, required this.label, this.onTap});
 
-  final IconData icon;
+  final AppIconData icon;
   final String label;
   final VoidCallback? onTap;
 
@@ -224,7 +226,7 @@ class _InfoChip extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 14.sp, color: context.colors.secondary),
+              AppIcon(icon, size: 14.sp, color: context.colors.secondary),
               SizedBox(width: 4.w),
               Flexible(
                 child: FittedBox(

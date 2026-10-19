@@ -9,6 +9,8 @@ import 'package:thekr_app/features/calendar/widgets/calendar_day_details.dart';
 import 'package:thekr_app/features/calendar/widgets/calendar_hero_card.dart';
 import 'package:thekr_app/features/calendar/widgets/calendar_month_grid.dart';
 import 'package:thekr_app/features/calendar/widgets/upcoming_occasions_card.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Islamic calendar: Hijri or Gregorian month grid with occasions, recommended
 /// fasting days, a day details card and the coming special days.
@@ -199,7 +201,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             Row(
               children: [
                 _NavButton(
-                  icon: Icons.chevron_left_rounded,
+                  icon: HugeIcons.strokeRoundedArrowLeft01,
                   tooltip: 'الشهر السابق',
                   onTap: () => _shift(-1),
                 ),
@@ -225,7 +227,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   ),
                 ),
                 _NavButton(
-                  icon: Icons.chevron_right_rounded,
+                  icon: HugeIcons.strokeRoundedArrowRight01,
                   tooltip: 'الشهر التالي',
                   onTap: () => _shift(1),
                 ),
@@ -245,7 +247,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               SizedBox(height: context.insets.sm),
               TextButton.icon(
                 onPressed: () => _focusOn(_today),
-                icon: Icon(Icons.today_rounded, size: 18.sp),
+                icon: AppIcon(HugeIcons.strokeRoundedCalendar03, size: 18.sp),
                 label: const Text('العودة لليوم'),
                 style: TextButton.styleFrom(
                   foregroundColor: context.colors.secondary,
@@ -266,7 +268,7 @@ class _NavButton extends StatelessWidget {
     required this.onTap,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final String tooltip;
   final VoidCallback onTap;
 
@@ -278,7 +280,7 @@ class _NavButton extends StatelessWidget {
       style: IconButton.styleFrom(
         backgroundColor: context.colors.primary.withValues(alpha: 0.1),
       ),
-      icon: Icon(icon, color: context.colors.primary),
+      icon: AppIcon(icon, color: context.colors.primary),
     );
   }
 }

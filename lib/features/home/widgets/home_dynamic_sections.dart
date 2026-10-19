@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class HomeDynamicSections extends StatelessWidget {
   const HomeDynamicSections({super.key});
@@ -36,7 +38,7 @@ class FridaySunanCard extends StatelessWidget {
     return _BaseDynamicCard(
       title: 'سنن يوم الجمعة',
       subtitle: 'نور ما بين الجمعتين',
-      icon: Icons.auto_awesome,
+      icon: HugeIcons.strokeRoundedSparkles,
       color: Colors.amber.shade700,
       items: const [
         'قراءة سورة الكهف',
@@ -58,7 +60,7 @@ class FastingReminderCard extends StatelessWidget {
     return _BaseDynamicCard(
       title: 'تذكير بصيام غدٍ',
       subtitle: 'صيام يوم $dayName',
-      icon: Icons.wb_sunny_outlined,
+      icon: HugeIcons.strokeRoundedSun03,
       color: context.colors.secondary,
       description:
           'عن النبي ﷺ قال: "تُعْرَضُ الأعمالُ يومَ الاثنين والخميس، فَأُحِبُّ أَنْ يُعْرَضَ عَملي وأنا صائم".',
@@ -69,7 +71,7 @@ class FastingReminderCard extends StatelessWidget {
 class _BaseDynamicCard extends StatelessWidget {
   final String title;
   final String subtitle;
-  final IconData icon;
+  final AppIconData icon;
   final Color color;
   final List<String>? items;
   final String? description;
@@ -110,7 +112,7 @@ class _BaseDynamicCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(icon, color: color, size: 20),
+                AppIcon(icon, color: color, size: 20),
                 SizedBox(width: context.insets.sm),
                 Text(
                   title,

@@ -9,6 +9,8 @@ import 'package:thekr_app/features/azkar/providers/user_azkar_provider.dart';
 import 'package:thekr_app/features/azkar/widgets/user_thikr_card.dart';
 import 'package:thekr_app/features/azkar/widgets/add_thikr_sheet.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 @RoutePage()
 class UserAzkarScreen extends ConsumerWidget {
@@ -23,7 +25,7 @@ class UserAzkarScreen extends ConsumerWidget {
         title: 'أذكاري المخصصة',
         actions: [
           IconButton(
-            icon: const Icon(Icons.text_increase_rounded),
+            icon: const AppIcon(HugeIcons.strokeRoundedZoomIn),
             onPressed: () {
               final currentSize = ref.read(settingsProvider).fontSize;
               if (currentSize < 24) {
@@ -32,7 +34,7 @@ class UserAzkarScreen extends ConsumerWidget {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.text_decrease_rounded),
+            icon: const AppIcon(HugeIcons.strokeRoundedZoomOut),
             onPressed: () {
               final currentSize = ref.read(settingsProvider).fontSize;
               if (currentSize > 14) {
@@ -45,7 +47,7 @@ class UserAzkarScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddSheet(context),
         backgroundColor: context.colors.primary,
-        child: const Icon(Icons.add_rounded, color: Colors.white),
+        child: const AppIcon(HugeIcons.strokeRoundedAdd01, color: Colors.white),
       ),
       body: userAthkar.isEmpty
           ? _buildEmptyState(context)
@@ -66,8 +68,8 @@ class UserAzkarScreen extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.auto_awesome_rounded,
+          AppIcon(
+            HugeIcons.strokeRoundedSparkles,
             size: 80.sp,
             color: context.colors.primary.withValues(alpha: 0.2),
           ),

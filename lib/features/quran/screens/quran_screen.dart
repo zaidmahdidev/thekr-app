@@ -18,6 +18,8 @@ import 'package:thekr_app/features/quran/models/quran_reader_palette.dart';
 import 'package:thekr_app/features/quran/widgets/quran_top_bar.dart';
 import 'package:thekr_app/features/quran/widgets/quran_theme_bar.dart';
 import '../providers/quran_provider.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 @RoutePage()
 class QuranScreen extends ConsumerStatefulWidget {
@@ -262,7 +264,7 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
                   customMenuItems: [
                     GestureDetector(
                       onTap: _onShareAyah,
-                      child: Icon(Icons.share, color: context.colors.primary),
+                      child: AppIcon(AppIcons.share, color: context.colors.primary),
                     ),
                   ],
                 ),

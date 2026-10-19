@@ -4,6 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/extensions/theme_extension.dart';
 import '../../../../core/utils/constants/app_assets.dart';
 import '../models/prophet_story.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Header of the story screen: a rounded banner with the prophet's name and
 /// title that folds into a slim bar with the name when the story is scrolled.
@@ -88,19 +91,19 @@ class ProphetDetailsHeader extends StatelessWidget {
                 child: Row(
                   children: [
                     _GlassButton(
-                      icon: Icons.arrow_back_ios_new_rounded,
+                      icon: HugeIcons.strokeRoundedArrowLeft01,
                       tooltip: 'رجوع',
                       onPressed: () => context.maybePop(),
                     ),
                     const Spacer(),
                     _GlassButton(
-                      icon: Icons.share_outlined,
+                      icon: AppIcons.share,
                       tooltip: 'مشاركة',
                       onPressed: onShare,
                     ),
                     SizedBox(width: context.insets.sm),
                     _GlassButton(
-                      icon: Icons.copy_all_outlined,
+                      icon: HugeIcons.strokeRoundedCopy01,
                       tooltip: 'نسخ القصة',
                       onPressed: onCopyAll,
                     ),
@@ -220,7 +223,7 @@ class _GlassButton extends StatelessWidget {
     required this.onPressed,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final String tooltip;
   final VoidCallback onPressed;
 
@@ -237,9 +240,9 @@ class _GlassButton extends StatelessWidget {
           customBorder: const CircleBorder(),
           onTap: onPressed,
           child: SizedBox(
-            width: 38.w,
-            height: 38.w,
-            child: Icon(icon, color: Colors.white, size: 19.sp),
+            width: 42.w,
+            height: 42.w,
+            child: AppIcon(icon, color: Colors.white, size: 24.sp),
           ),
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/features/calendar/models/islamic_occasion.dart';
 import 'package:thekr_app/features/calendar/services/calendar_service.dart';
 import 'package:thekr_app/features/calendar/widgets/calendar_hero_card.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// The next special days with a countdown.
 class UpcomingOccasionsCard extends StatelessWidget {
@@ -88,7 +89,7 @@ class _Row extends StatelessWidget {
                 color: color.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
-              child: Icon(item.occasion.kind.icon, size: 19.sp, color: color),
+              child: AppIcon(item.occasion.kind.icon, size: 19.sp, color: color),
             ),
             SizedBox(width: context.insets.sm + 2.w),
             Expanded(

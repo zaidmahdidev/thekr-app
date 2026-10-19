@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class FeatureCard extends StatelessWidget {
   const FeatureCard({
@@ -14,7 +15,7 @@ class FeatureCard extends StatelessWidget {
 
   final String title;
   final String? imgUrl;
-  final IconData? icon;
+  final AppIconData? icon;
   final VoidCallback onTap;
   final Color? color;
 
@@ -58,8 +59,8 @@ class FeatureCard extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: icon != null
-                    ? Icon(
-                        icon,
+                    ? AppIcon(
+                        icon!,
                         size: 28.w,
                         color: color ?? context.colors.secondary,
                       )

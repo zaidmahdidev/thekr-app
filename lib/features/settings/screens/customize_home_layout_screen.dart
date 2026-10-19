@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 @RoutePage()
 class CustomizeHomeLayoutScreen extends ConsumerStatefulWidget {
@@ -104,7 +107,7 @@ class _CustomizeHomeLayoutScreenState
             ),
             child: Row(
               children: [
-                Icon(Icons.info_outline_rounded, color: context.colors.primary),
+                AppIcon(HugeIcons.strokeRoundedInformationCircle, color: context.colors.primary),
                 SizedBox(width: context.insets.md),
                 Expanded(
                   child: Text(
@@ -172,8 +175,8 @@ class _SectionPreviewCard extends StatelessWidget {
               color: context.colors.primary.withValues(alpha: 0.05),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.drag_indicator_rounded,
+                  AppIcon(
+                    HugeIcons.strokeRoundedDragDropVertical,
                     color: context.colors.textSecondary,
                     size: 20,
                   ),
@@ -214,8 +217,8 @@ class _SectionPreviewCard extends StatelessWidget {
                     color: context.colors.primary.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    Icons.access_time,
+                  child: AppIcon(
+                    HugeIcons.strokeRoundedClock01,
                     size: 14,
                     color: context.colors.primary,
                   ),
@@ -240,8 +243,8 @@ class _SectionPreviewCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(
-                    Icons.auto_awesome,
+                  AppIcon(
+                    HugeIcons.strokeRoundedSparkles,
                     size: 12,
                     color: context.colors.secondary,
                   ),
@@ -283,8 +286,8 @@ class _SectionPreviewCard extends StatelessWidget {
                 color: context.colors.background,
                 borderRadius: BorderRadius.circular(context.corners.sm),
               ),
-              child: Icon(
-                Icons.apps,
+              child: AppIcon(
+                HugeIcons.strokeRoundedGridView,
                 size: 16,
                 color: context.colors.primary.withValues(alpha: 0.3),
               ),
@@ -304,7 +307,7 @@ class _SectionPreviewCard extends StatelessWidget {
                     color: Colors.amber.withValues(alpha: 0.2),
                   ),
                 ),
-                child: const Icon(Icons.event, color: Colors.amber, size: 16),
+                child: const AppIcon(HugeIcons.strokeRoundedCalendar01, color: Colors.amber, size: 16),
               ),
             ),
             const SizedBox(width: 8),
@@ -318,8 +321,8 @@ class _SectionPreviewCard extends StatelessWidget {
                     color: context.colors.secondary.withValues(alpha: 0.2),
                   ),
                 ),
-                child: Icon(
-                  Icons.wb_sunny,
+                child: AppIcon(
+                  HugeIcons.strokeRoundedSun03,
                   color: context.colors.secondary,
                   size: 16,
                 ),
@@ -343,7 +346,7 @@ class _SectionPreviewCard extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.share, color: Colors.white, size: 16),
+              const AppIcon(AppIcons.share, color: Colors.white, size: 16),
               const SizedBox(width: 8),
               Container(
                 width: 80,

@@ -11,6 +11,8 @@ import '../providers/live_stream_provider.dart';
 import '../widgets/stream_card.dart';
 import '../widgets/stream_player_widget.dart';
 import 'package:thekr_app/core/utils/connectivity_utils.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Live broadcasts of the two holy mosques. The screen stays awake while the
 /// stream plays.
@@ -199,7 +201,7 @@ class _NowPlaying extends StatelessWidget {
           style: IconButton.styleFrom(
             backgroundColor: context.colors.primary.withValues(alpha: 0.1),
           ),
-          icon: Icon(Icons.refresh_rounded, color: context.colors.primary),
+          icon: AppIcon(HugeIcons.strokeRoundedRefresh, color: context.colors.primary),
         ),
       ],
     );
@@ -225,8 +227,8 @@ class _NoInternetPlaceholder extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.wifi_off_rounded,
+          AppIcon(
+            HugeIcons.strokeRoundedWifiDisconnected01,
             size: 48.w,
             color: context.colors.error.withValues(alpha: 0.6),
           ),
@@ -241,7 +243,7 @@ class _NoInternetPlaceholder extends StatelessWidget {
           SizedBox(height: context.insets.sm),
           TextButton.icon(
             onPressed: onRetry,
-            icon: const Icon(Icons.refresh_rounded),
+            icon: const AppIcon(HugeIcons.strokeRoundedRefresh),
             label: const Text('إعادة المحاولة'),
             style: TextButton.styleFrom(
               foregroundColor: context.colors.primary,

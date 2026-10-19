@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import '../models/live_stream_model.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// A channel in the list: YouTube thumbnail, live badge, title and description.
 class StreamCard extends StatelessWidget {
@@ -77,10 +79,10 @@ class StreamCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: context.insets.sm),
-                Icon(
+                AppIcon(
                   isSelected
-                      ? Icons.graphic_eq_rounded
-                      : Icons.play_circle_outline_rounded,
+                      ? HugeIcons.strokeRoundedAudioWave01
+                      : HugeIcons.strokeRoundedPlayCircle,
                   color: isSelected
                       ? accent
                       : context.colors.textSecondary.withValues(alpha: 0.6),
@@ -107,8 +109,8 @@ class _Thumbnail extends StatelessWidget {
 
     final fallback = Container(
       color: context.colors.primary.withValues(alpha: 0.12),
-      child: Icon(
-        Icons.live_tv_rounded,
+      child: AppIcon(
+        HugeIcons.strokeRoundedTv01,
         color: context.colors.primary,
         size: 26.sp,
       ),

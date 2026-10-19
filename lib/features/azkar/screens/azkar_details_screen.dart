@@ -10,6 +10,8 @@ import 'package:thekr_app/features/azkar/widgets/azkar_item_widget.dart';
 import 'package:thekr_app/core/services/analytics_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 @RoutePage()
 class AzkarListScreen extends ConsumerStatefulWidget {
@@ -99,7 +101,7 @@ class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
         title: widget.type,
         actions: [
           IconButton(
-            icon: const Icon(Icons.text_increase_rounded),
+            icon: const AppIcon(HugeIcons.strokeRoundedZoomIn),
             onPressed: () {
               final currentSize = ref.read(settingsProvider).fontSize;
               if (currentSize < 24) {
@@ -108,7 +110,7 @@ class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.text_decrease_rounded),
+            icon: const AppIcon(HugeIcons.strokeRoundedZoomOut),
             onPressed: () {
               final currentSize = ref.read(settingsProvider).fontSize;
               if (currentSize > 14) {
@@ -147,7 +149,7 @@ class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.check_circle, color: Colors.green, size: 80),
+                  const AppIcon(HugeIcons.strokeRoundedCheckmarkCircle02, color: Colors.green, size: 80),
                   const SizedBox(height: 16),
                   Text(
                     'تم إكمال جميع الأذكار',

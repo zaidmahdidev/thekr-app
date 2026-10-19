@@ -4,6 +4,8 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/core/widgets/brand_surface.dart';
 import 'package:thekr_app/features/habit_tracker/models/daily_habit_model.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Hero card of the habit tracker: the day's progress ring and the key numbers.
 class HabitSummaryCard extends StatelessWidget {
@@ -90,8 +92,8 @@ class HabitSummaryCard extends StatelessWidget {
                     SizedBox(height: 6.h),
                     Row(
                       children: [
-                        Icon(
-                          Icons.stars_rounded,
+                        AppIcon(
+                          HugeIcons.strokeRoundedStars,
                           size: 15.sp,
                           color: style.gold,
                         ),
@@ -115,21 +117,21 @@ class HabitSummaryCard extends StatelessWidget {
           Row(
             children: [
               _Stat(
-                icon: Icons.local_fire_department_rounded,
+                icon: HugeIcons.strokeRoundedFire,
                 value: currentStreak,
                 label: 'أيام متتالية',
                 style: style,
               ),
               SizedBox(width: context.insets.sm),
               _Stat(
-                icon: Icons.emoji_events_rounded,
+                icon: HugeIcons.strokeRoundedTrophy,
                 value: bestStreak,
                 label: 'أفضل سلسلة',
                 style: style,
               ),
               SizedBox(width: context.insets.sm),
               _Stat(
-                icon: Icons.workspace_premium_rounded,
+                icon: HugeIcons.strokeRoundedAward01,
                 value: totalPoints,
                 label: 'إجمالي النقاط',
                 style: style,
@@ -150,7 +152,7 @@ class _Stat extends StatelessWidget {
     required this.style,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final int value;
   final String label;
   final BrandSurfaceStyle style;
@@ -166,7 +168,7 @@ class _Stat extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Icon(icon, size: 18.sp, color: style.gold),
+            AppIcon(icon, size: 18.sp, color: style.gold),
             SizedBox(height: 2.h),
             Text(
               QuranText.digits(value),

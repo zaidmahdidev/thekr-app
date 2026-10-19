@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/widgets/app_bottom_sheet.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class ShareOption {
-  final IconData icon;
+  final AppIconData icon;
   final String label;
   final VoidCallback onTap;
 
@@ -12,7 +14,7 @@ class ShareOption {
 
   factory ShareOption.text({required VoidCallback onTap}) {
     return ShareOption(
-      icon: Icons.text_fields_rounded,
+      icon: HugeIcons.strokeRoundedTextFont,
       label: 'مشاركة كنص',
       onTap: onTap,
     );
@@ -20,7 +22,7 @@ class ShareOption {
 
   factory ShareOption.image({required VoidCallback onTap}) {
     return ShareOption(
-      icon: Icons.image_outlined,
+      icon: HugeIcons.strokeRoundedImage01,
       label: 'مشاركة كصورة',
       onTap: onTap,
     );
@@ -52,7 +54,7 @@ class ShareOptionsSheet extends StatelessWidget {
   }
 
   Widget _buildOption(BuildContext context, ShareOption option) {
-    final isText = option.icon == Icons.text_fields_rounded;
+    final isText = option.icon == HugeIcons.strokeRoundedTextFont;
     final color = isText ? Colors.blue : Colors.amber;
     final subtitle = isText
         ? 'نسخ النص أو مشاركته مباشرة'
@@ -78,7 +80,7 @@ class ShareOptionsSheet extends StatelessWidget {
                 color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(context.corners.md),
               ),
-              child: Icon(option.icon, color: color, size: 22.sp),
+              child: AppIcon(option.icon, color: color, size: 22.sp),
             ),
             SizedBox(width: context.insets.md),
             Expanded(
@@ -103,8 +105,8 @@ class ShareOptionsSheet extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
+            AppIcon(
+              HugeIcons.strokeRoundedArrowRight01,
               color: context.colors.textSecondary.withValues(alpha: 0.2),
               size: 14.sp,
             ),

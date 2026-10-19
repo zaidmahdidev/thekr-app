@@ -6,6 +6,8 @@ import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/core/services/share_service.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class AppShareSheet extends StatelessWidget {
   const AppShareSheet({super.key});
@@ -103,7 +105,7 @@ class AppShareSheet extends StatelessWidget {
 
                   AppButton(
                     text: 'مشاركة التطبيق الآن',
-                    icon: Icons.share_rounded,
+                    icon: AppIcons.share,
                     onTap: () {
                       Navigator.pop(context);
                       ShareService.shareAsText(
@@ -119,7 +121,7 @@ class AppShareSheet extends StatelessWidget {
 
                   AppButton(
                     text: 'نسخ الرابط',
-                    icon: Icons.copy_rounded,
+                    icon: HugeIcons.strokeRoundedCopy01,
                     variant: AppButtonVariant.outline,
                     onTap: () {
                       Clipboard.setData(

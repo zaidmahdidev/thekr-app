@@ -4,6 +4,8 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/widgets/share_card_view.dart';
 import 'package:thekr_app/features/settings/models/share_card_style.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Template tab: horizontally scrolling live thumbnails of every template.
 class ShareTemplatePanel extends StatelessWidget {
@@ -88,8 +90,8 @@ class ShareTemplatePanel extends StatelessWidget {
                                 color: context.colors.primary,
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(
-                                Icons.check_rounded,
+                              child: AppIcon(
+                                HugeIcons.strokeRoundedTick02,
                                 size: 12.sp,
                                 color: context.colors.surface,
                               ),

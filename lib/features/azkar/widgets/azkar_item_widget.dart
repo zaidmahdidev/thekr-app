@@ -7,6 +7,9 @@ import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class AzkarItemWidget extends ConsumerStatefulWidget {
   final String details;
@@ -96,7 +99,7 @@ class _AzkarItemWidgetState extends ConsumerState<AzkarItemWidget>
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.copy, size: 18),
+                  child: const AppIcon(HugeIcons.strokeRoundedCopy01, size: 18),
                 ),
               ),
               InkWell(
@@ -114,8 +117,8 @@ class _AzkarItemWidgetState extends ConsumerState<AzkarItemWidget>
                   ),
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
-                    child: const Icon(
-                      Icons.share,
+                    child: const AppIcon(
+                      AppIcons.share,
                       size: 20,
                       key: ValueKey('share'),
                     ),
@@ -177,8 +180,8 @@ class _AzkarItemWidgetState extends ConsumerState<AzkarItemWidget>
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(
-                            Icons.check_circle,
+                          const AppIcon(
+                            HugeIcons.strokeRoundedCheckmarkCircle02,
                             color: Colors.green,
                             size: 16,
                           ),

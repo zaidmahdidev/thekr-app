@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 enum OccasionKind {
   /// Eid days.
@@ -41,16 +43,16 @@ enum OccasionKind {
     }
   }
 
-  IconData get icon {
+  AppIconData get icon {
     switch (this) {
       case OccasionKind.eid:
-        return Icons.celebration_rounded;
+        return HugeIcons.strokeRoundedPartyPopper;
       case OccasionKind.special:
-        return Icons.star_rounded;
+        return HugeIcons.strokeRoundedStar;
       case OccasionKind.fasting:
-        return Icons.no_food_rounded;
+        return HugeIcons.strokeRoundedRestaurant01;
       case OccasionKind.sunnah:
-        return Icons.mosque_rounded;
+        return HugeIcons.strokeRoundedMosque01;
     }
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/features/calendar/models/islamic_occasion.dart';
 import 'package:thekr_app/features/calendar/services/calendar_service.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Everything about the selected day: both dates, occasions, fasting and Friday.
 class CalendarDayDetails extends StatelessWidget {
@@ -35,7 +37,7 @@ class CalendarDayDetails extends StatelessWidget {
         ),
       if (day.isFriday)
         _DetailTile(
-          icon: Icons.mosque_rounded,
+          icon: HugeIcons.strokeRoundedMosque01,
           color: context.colors.secondary,
           title: 'يوم الجمعة',
           subtitle: 'يُستحب قراءة سورة الكهف والإكثار من الصلاة على النبي ﷺ.',
@@ -98,7 +100,7 @@ class _DetailTile extends StatelessWidget {
     required this.subtitle,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final Color color;
   final String title;
   final String subtitle;
@@ -121,7 +123,7 @@ class _DetailTile extends StatelessWidget {
               color: color.withValues(alpha: 0.18),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 18.sp, color: color),
+            child: AppIcon(icon, size: 18.sp, color: color),
           ),
           SizedBox(width: context.insets.sm + 2.w),
           Expanded(

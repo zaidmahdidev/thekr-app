@@ -10,6 +10,8 @@ import 'package:thekr_app/features/quran/services/quran_reader_adapter.dart';
 import 'package:thekr_app/features/quran/widgets/navigator/quran_navigator_sheet.dart';
 import 'package:thekr_app/features/quran/widgets/quran_more_menu.dart';
 import 'package:thekr_app/features/quran/widgets/quran_page_indicator.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// App-styled top bar for the Quran reader, colored by the reading theme.
 ///
@@ -124,21 +126,21 @@ class _QuranTopBarState extends ConsumerState<QuranTopBar> {
                       child: Row(
                         children: [
                           _BarIcon(
-                            icon: Icons.arrow_back_ios_new_rounded,
+                            icon: HugeIcons.strokeRoundedArrowLeft01,
                             tooltip: 'رجوع',
                             color: palette.text,
                             size: 18.sp,
                             onTap: widget.onBack,
                           ),
                           _BarIcon(
-                            icon: Icons.format_list_bulleted_rounded,
+                            icon: HugeIcons.strokeRoundedList,
                             tooltip: 'الفهرس',
                             color: palette.icon,
                             onTap: () =>
                                 _openNavigator(QuranNavigatorTab.contents),
                           ),
                           _BarIcon(
-                            icon: Icons.search_rounded,
+                            icon: HugeIcons.strokeRoundedSearch01,
                             tooltip: 'بحث',
                             color: palette.icon,
                             onTap: () =>
@@ -160,7 +162,7 @@ class _QuranTopBarState extends ConsumerState<QuranTopBar> {
                             ),
                           ),
                           _BarIcon(
-                            icon: Icons.mic_rounded,
+                            icon: HugeIcons.strokeRoundedMic01,
                             tooltip: 'التسميع',
                             color: palette.icon,
                             activeColor: palette.accent,
@@ -168,7 +170,7 @@ class _QuranTopBarState extends ConsumerState<QuranTopBar> {
                             onTap: QuranReaderAdapter.toggleTasmee,
                           ),
                           _BarIcon(
-                            icon: Icons.palette_rounded,
+                            icon: HugeIcons.strokeRoundedPalette,
                             tooltip: 'نمط القراءة',
                             color: palette.icon,
                             activeColor: palette.accent,
@@ -236,7 +238,7 @@ class _BarIcon extends StatelessWidget {
     this.size,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final String tooltip;
   final VoidCallback onTap;
   final Color color;
@@ -258,7 +260,7 @@ class _BarIcon extends StatelessWidget {
             ? tint.withValues(alpha: 0.15)
             : Colors.transparent,
       ),
-      icon: Icon(icon, size: size ?? 22.sp, color: tint),
+      icon: AppIcon(icon, size: size ?? 22.sp, color: tint),
     );
   }
 }

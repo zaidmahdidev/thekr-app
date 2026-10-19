@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 enum InspirationType {
   ayah,
@@ -16,14 +17,14 @@ enum InspirationType {
     }
   }
 
-  IconData get icon {
+  AppIconData get icon {
     switch (this) {
       case InspirationType.ayah:
-        return Icons.auto_stories_rounded;
+        return HugeIcons.strokeRoundedBookOpenText;
       case InspirationType.hadith:
-        return Icons.format_quote_rounded;
+        return HugeIcons.strokeRoundedQuoteDown;
       case InspirationType.dhikr:
-        return Icons.auto_awesome_rounded;
+        return HugeIcons.strokeRoundedSparkles;
     }
   }
 }

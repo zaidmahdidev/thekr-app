@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class DeveloperSocialCard extends StatelessWidget {
-  final IconData icon;
+  final AppIconData icon;
   final Color color;
   final VoidCallback onTap;
 
@@ -25,7 +26,7 @@ class DeveloperSocialCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(context.corners.md),
           border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
         ),
-        child: Icon(icon, size: 18.sp, color: color),
+        child: AppIcon(icon, size: 18.sp, color: color),
       ),
     );
   }

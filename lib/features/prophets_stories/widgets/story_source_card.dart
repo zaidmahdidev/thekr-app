@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import '../models/prophet_story.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Shown at the end of a story: the book the text comes from, or a notice when
 /// the story is not documented yet.
@@ -28,10 +30,10 @@ class StorySourceCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
+              AppIcon(
                 documented
-                    ? Icons.verified_rounded
-                    : Icons.hourglass_top_rounded,
+                    ? HugeIcons.strokeRoundedCheckmarkBadge01
+                    : HugeIcons.strokeRoundedHourglass,
                 color: accent,
                 size: 20.sp,
               ),

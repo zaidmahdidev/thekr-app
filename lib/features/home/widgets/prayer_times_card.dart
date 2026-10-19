@@ -7,6 +7,7 @@ import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
 import 'package:thekr_app/core/widgets/app_button.dart';
 import 'package:thekr_app/features/home/models/app_prayer_times.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class PrayerTimesCard extends StatelessWidget {
   const PrayerTimesCard({
@@ -72,7 +73,7 @@ class PrayerTimesCard extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: 8.h),
                 child: AppButton(
                   text: 'سماح للموقع',
-                  icon: Icons.location_on_outlined,
+                  icon: HugeIcons.strokeRoundedLocation01,
                   size: AppButtonSize.small,
                   isFullWidth: false,
                   onTap: onRequestLocation,

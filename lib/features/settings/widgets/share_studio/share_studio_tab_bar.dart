@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class ShareStudioTab {
-  final IconData icon;
+  final AppIconData icon;
   final String label;
 
   const ShareStudioTab({required this.icon, required this.label});
@@ -51,7 +52,7 @@ class ShareStudioTabBar extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
+                      AppIcon(
                         tabs[i].icon,
                         size: 17.sp,
                         color: i == selected

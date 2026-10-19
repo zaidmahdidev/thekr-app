@@ -9,6 +9,7 @@ import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/core/providers/feature_badge_provider.dart';
 import 'package:thekr_app/core/widgets/new_feature_badge.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class HomeFeaturesGrid extends StatelessWidget {
   const HomeFeaturesGrid({super.key});
@@ -116,7 +117,7 @@ class HomeFeaturesGrid extends StatelessWidget {
 class _FeatureItem extends ConsumerWidget {
   final String title;
   final String? imagePath;
-  final IconData? icon;
+  final AppIconData? icon;
   final Color color;
   final PageRouteInfo? route;
   final VoidCallback? onTap;

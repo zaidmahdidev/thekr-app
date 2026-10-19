@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/quran_text.dart';
 import '../models/misbaha_models.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Pill showing the current dhikr. Tap to choose another one from a sheet that
 /// also shows how many times each dhikr was counted.
@@ -68,8 +70,8 @@ class OrnamentalZikrSelector extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 4.w),
-              Icon(
-                Icons.expand_more_rounded,
+              AppIcon(
+                HugeIcons.strokeRoundedArrowDown01,
                 color: context.colors.secondary,
                 size: 20.w,
               ),
@@ -172,10 +174,10 @@ class _ZikrTile extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(
+                AppIcon(
                   selected
-                      ? Icons.radio_button_checked_rounded
-                      : Icons.radio_button_unchecked_rounded,
+                      ? HugeIcons.strokeRoundedRadioButton
+                      : HugeIcons.strokeRoundedCircle,
                   size: 20.sp,
                   color: selected
                       ? context.colors.primary

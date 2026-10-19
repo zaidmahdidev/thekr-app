@@ -5,6 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/features/home/data/daily_content_data.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 /// Text tab: write your own text or fill it with a random verse / hadith / dhikr.
 class ShareTextPanel extends StatelessWidget {
@@ -84,17 +86,17 @@ class ShareTextPanel extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             children: [
               _QuickChip(
-                icon: Icons.menu_book_rounded,
+                icon: HugeIcons.strokeRoundedBookOpen01,
                 label: 'آية عشوائية',
                 onTap: _randomAyah,
               ),
               _QuickChip(
-                icon: Icons.format_quote_rounded,
+                icon: HugeIcons.strokeRoundedQuoteDown,
                 label: 'حديث',
                 onTap: _randomHadith,
               ),
               _QuickChip(
-                icon: Icons.auto_awesome_rounded,
+                icon: HugeIcons.strokeRoundedSparkles,
                 label: 'ذكر',
                 onTap: _randomDhikr,
               ),
@@ -145,7 +147,7 @@ class _QuickChip extends StatelessWidget {
     required this.onTap,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final String label;
   final VoidCallback onTap;
 
@@ -163,7 +165,7 @@ class _QuickChip extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: context.insets.md),
             child: Row(
               children: [
-                Icon(icon, size: 16.sp, color: context.colors.secondary),
+                AppIcon(icon, size: 16.sp, color: context.colors.secondary),
                 SizedBox(width: 6.w),
                 Text(
                   label,
