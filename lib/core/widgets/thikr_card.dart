@@ -7,6 +7,7 @@ import 'package:readmore/readmore.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
@@ -147,11 +148,15 @@ class _ThikrCardState extends ConsumerState<ThikrCard> {
                   Text(
                     widget.text,
                     textAlign: TextAlign.center,
-                    style: context.textStyles.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      height: 1.8,
-                      fontSize: fontSize,
-                      color: colors.textPrimary,
+                    // Uthmani Quran text needs the Quran font to show its marks.
+                    style: QuranText.style(
+                      context.textStyles.bodyLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        height: 1.8,
+                        fontSize: fontSize,
+                        color: colors.textPrimary,
+                      ),
+                      widget.text,
                     ),
                   ),
                   if (_hasFootnote) ...[
