@@ -1,1 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75.36 628.58"><g data-name="Layer 2"><path fill="#3a6477" d="M55.86 313.94a18.16 18.16 0 0 1-18.18 18.14v296.49l36.69-303.85a37.56 37.56 0 0 0-36.69-46.13v17.21a18.16 18.16 0 0 1 18.18 18.14"/><path fill="#4c819e" d="M0 316.18a37.4 37.4 0 0 0 1 8.53l36.68 303.87v-296.5a18.14 18.14 0 1 1 0-36.28v-17.21A37.64 37.64 0 0 0 0 316.18"/><path fill="#892121" d="M19.5 314.64a18.17 18.17 0 0 1 18.18-18.15V0L1 303.86A37.56 37.56 0 0 0 37.68 350v-17.22a18.16 18.16 0 0 1-18.18-18.14"/><path fill="#682121" d="M75.36 312.39a37.5 37.5 0 0 0-1-8.53L37.68 0v296.49a18.15 18.15 0 1 1 0 36.29V350a37.64 37.64 0 0 0 37.68-37.61"/><path fill="#505050" d="M5 34.68v46.14a1.91 1.91 0 0 0 1.45 1.85l7.48 1.87 7.64-3.85 8.92 8L37 90.32a1.8 1.8 0 0 0 .46.06 1.8 1.8 0 0 0 .47-.06l30.59-7.65A1.9 1.9 0 0 0 70 80.82V34.68l-32.5 8.13Z"/><path fill="#373737" d="M37.5 42.81v47.57a1.8 1.8 0 0 0 .47-.06l30.59-7.65A1.9 1.9 0 0 0 70 80.82V34.68Z"/><path fill="#ffe132" d="M5 39.88v11.59l32 8a2.2 2.2 0 0 0 .93 0l32-8V39.88L37.5 48Z"/><path fill="#fac80f" d="m38 59.48 32-8v-11.6L37.5 48v11.53a2.4 2.4 0 0 0 .5-.05"/><path fill="#646464" d="M37.5 44.24a1.8 1.8 0 0 1-.46-.06L6.45 36.53a1.91 1.91 0 0 1 0-3.7L37 25.18a1.83 1.83 0 0 1 .93 0l30.59 7.65a1.91 1.91 0 0 1 0 3.7L38 44.18a1.8 1.8 0 0 1-.5.06"/><path fill="#505050" d="m38 44.18 30.59-7.65a1.91 1.91 0 0 0 0-3.7L38 25.18a1.8 1.8 0 0 0-.47-.06v19.12a1.8 1.8 0 0 0 .47-.06"/><path fill="#ffe132" d="M29.05 67.81 16.3 64.62a1.91 1.91 0 0 0-2.37 1.86v18.06l16.56 4.14v-19a1.91 1.91 0 0 0-1.44-1.87"/><path fill="#fac80f" d="m17.75 85.5 8.92 2.23V71.16l-8.92-2.23Z"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+<defs>
+<linearGradient id="gL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8A6420"/><stop offset="1" stop-color="#D9B05A"/></linearGradient>
+<linearGradient id="gR" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F5DE98"/><stop offset="1" stop-color="#C79A3E"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7E3A1"/><stop offset=".5" stop-color="#C79A3E"/><stop offset="1" stop-color="#8A6420"/></linearGradient>
+<radialGradient id="badge" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#14705F"/><stop offset="1" stop-color="#042A25"/></radialGradient>
+<radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFE9A8" stop-opacity=".55"/><stop offset="1" stop-color="#FFE9A8" stop-opacity="0"/></radialGradient>
+<radialGradient id="hub" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#FBEBB4"/><stop offset=".6" stop-color="#C79A3E"/><stop offset="1" stop-color="#7A561A"/></radialGradient>
+</defs>
+<path d="M186 204L200 214L214 204L200 268Z" fill="#06352F" stroke="#D4A94A" stroke-width="1.4" stroke-linejoin="round"/>
+<path d="M200 214L214 204L200 268Z" fill="#0B4A41"/>
+<path d="M200 92L187 200L200 208Z" fill="url(#gL)"/>
+<path d="M200 92L213 200L200 208Z" fill="url(#gR)"/>
+<path d="M200 92L213 200L200 208L187 200Z" fill="none" stroke="#FFF1C4" stroke-opacity=".7" stroke-width=".8" stroke-linejoin="round"/>
+<path d="M200 100L200 204" stroke="#FFFFFF" stroke-opacity=".35" stroke-width=".8"/>
+<circle cx="200" cy="58" r="44" fill="url(#glow)"/>
+<circle cx="200" cy="58" r="29" fill="url(#gold)"/>
+<circle cx="200" cy="58" r="26" fill="url(#badge)"/>
+<circle cx="200" cy="58" r="23" fill="none" stroke="#F1D78F" stroke-opacity=".5" stroke-width=".7" stroke-dasharray="1.5 2.5"/>
+<polygon points="187,54 205,54 205,74 187,74" fill="#1A1A1A"/>
+<polygon points="205,54 213,50 213,70 205,74" fill="#0A0A0A"/>
+<polygon points="187,54 195,50 213,50 205,54" fill="#3A3A3A"/>
+<polygon points="187,58 205,58 205,61.6 187,61.6" fill="url(#gold)"/>
+<polygon points="205,58 213,54 213,57.6 205,61.6" fill="#B98B33"/>
+<rect x="193" y="64.5" width="5.4" height="9.5" rx="1" fill="url(#gold)"/>
+<circle cx="200" cy="200" r="19" fill="url(#hub)" stroke="#FFF1C4" stroke-width=".8"/>
+<circle cx="200" cy="200" r="11" fill="#06352F" stroke="#D4A94A" stroke-width="1.2"/>
+<circle cx="200" cy="200" r="4" fill="url(#hub)"/>
+</svg>

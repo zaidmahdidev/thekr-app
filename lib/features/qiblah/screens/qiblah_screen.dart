@@ -4,12 +4,14 @@ import 'dart:math' show pi;
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/extensions/size_extension.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/widgets/app_scaffold.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 @RoutePage()
 class QiblahScreen extends StatefulWidget {
@@ -70,7 +72,7 @@ class LocationErrorWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Icon(Icons.location_off, size: 150, color: context.colors.error),
+          AppIcon(HugeIcons.strokeRoundedLocationOffline01, size: 150, color: context.colors.error),
           const SizedBox(height: 32),
           Text(
             error!,
@@ -192,15 +194,13 @@ class _QiblahCompassState extends State<QiblahCompass> {
 }
 
 class QiblahCompassWidget extends StatelessWidget {
+  /// Tolerance (in degrees) within which the phone is considered facing Qibla.
+  static const double _alignedTolerance = 3;
+
   @override
   Widget build(BuildContext context) {
-    final compassSvg = SvgPicture.asset(AppAssets.compass);
-    final needleSvg = SvgPicture.asset(
-      AppAssets.needle,
-      fit: BoxFit.contain,
-      height: context.getHeight(40),
-      alignment: Alignment.center,
-    );
+    final compassSvg = SvgPicture.asset(AppAssets.compass, fit: BoxFit.contain);
+    final needleSvg = SvgPicture.asset(AppAssets.needle, fit: BoxFit.contain);
 
     return StreamBuilder(
       stream: FlutterQiblah.qiblahStream.where(
@@ -219,25 +219,99 @@ class QiblahCompassWidget extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        return Stack(
-          alignment: Alignment.center,
+        final colors = context.colors;
+        var delta = qiblahDirection.qiblah % 360;
+        if (delta > 180) delta -= 360;
+        final isAligned = delta.abs() <= _alignedTolerance;
+        final accent = isAligned ? colors.success : colors.secondary;
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Transform.rotate(
-              angle: (qiblahDirection.direction * (pi / 180) * -1),
-              child: compassSvg,
+            AspectRatio(
+              aspectRatio: 1,
+              child: Padding(
+                padding: EdgeInsets.all(context.insets.md),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    // Soft halo behind the dial, turns green once aligned.
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 350),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: accent.withValues(alpha: 0.35),
+                            blurRadius: isAligned ? 48.r : 32.r,
+                            spreadRadius: isAligned ? 6.r : 1.r,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Transform.rotate(
+                      angle: qiblahDirection.direction * (pi / 180) * -1,
+                      child: compassSvg,
+                    ),
+                    Transform.rotate(
+                      angle: qiblahDirection.qiblah * (pi / 180) * -1,
+                      child: needleSvg,
+                    ),
+                    // Fixed marker showing where the phone is pointing.
+                    Positioned(
+                      top: 0,
+                      child: AppIcon(
+                        HugeIcons.strokeRoundedArrowDown01,
+                        size: 36.sp,
+                        color: accent,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            Transform.rotate(
-              angle: (qiblahDirection.qiblah * (pi / 180) * -1),
-              alignment: Alignment.center,
-              child: needleSvg,
+            SizedBox(height: context.insets.lg),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.insets.lg,
+                vertical: context.insets.sm + 2.w,
+              ),
+              decoration: BoxDecoration(
+                color: accent.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(context.corners.xl),
+                border: Border.all(color: accent.withValues(alpha: 0.6)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppIcon(
+                    isAligned
+                        ? HugeIcons.strokeRoundedCheckmarkCircle02
+                        : HugeIcons.strokeRoundedCompass,
+                    color: accent,
+                    size: 22.sp,
+                  ),
+                  SizedBox(width: context.insets.sm),
+                  Text(
+                    isAligned
+                        ? 'أنت في اتجاه القبلة'
+                        : 'أدر هاتفك نحو الكعبة المشرفة',
+                    style: context.textStyles.bodyMedium?.copyWith(
+                      color: accent,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Positioned(
-              bottom: 8,
-              child: Text(
-                qiblahDirection.offset.isFinite
-                    ? "${qiblahDirection.offset.toStringAsFixed(3)}°"
-                    : "...",
-                style: context.textStyles.bodyMedium,
+            SizedBox(height: context.insets.md),
+            Text(
+              qiblahDirection.offset.isFinite
+                  ? '${qiblahDirection.offset.toStringAsFixed(1)}° عن الشمال'
+                  : '...',
+              style: context.textStyles.bodyMedium?.copyWith(
+                color: colors.textSecondary,
               ),
             ),
           ],
