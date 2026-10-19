@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/theme/tokens/typography.dart';
 import 'package:thekr_app/main.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 enum ToastStates { SUCCESS, ERROR, WARNING }
 
@@ -30,16 +32,16 @@ void showToast({
 
   final color = backgroundColor ?? chooseToastColor(context, state);
 
-  IconData icon;
+  AppIconData icon;
   switch (state) {
     case ToastStates.SUCCESS:
-      icon = Icons.check_circle_rounded;
+      icon = HugeIcons.strokeRoundedCheckmarkCircle02;
       break;
     case ToastStates.ERROR:
-      icon = Icons.error_rounded;
+      icon = HugeIcons.strokeRoundedAlertCircle;
       break;
     case ToastStates.WARNING:
-      icon = Icons.warning_rounded;
+      icon = HugeIcons.strokeRoundedAlert02;
       break;
   }
 
@@ -47,7 +49,7 @@ void showToast({
     SnackBar(
       content: Row(
         children: [
-          Icon(icon, size: 22.w, color: Colors.white),
+          AppIcon(icon, size: 22.w, color: Colors.white),
           SizedBox(width: context.insets.sm),
           Expanded(
             child: Text(

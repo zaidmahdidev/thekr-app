@@ -6,6 +6,8 @@ import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/core/services/share_service.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class AppShareSheet extends StatelessWidget {
   const AppShareSheet({super.key});
@@ -80,7 +82,7 @@ class AppShareSheet extends StatelessWidget {
                         Text(
                           'امسح الكود لتحميل التطبيق',
                           style: context.textStyles.bodySmall?.copyWith(
-                            color: Colors.grey[600],
+                            color: context.colors.textSecondary,
                             fontSize: 10.sp,
                           ),
                         ),
@@ -101,27 +103,9 @@ class AppShareSheet extends StatelessWidget {
 
                   SizedBox(height: context.insets.lg),
 
-                  // Copy Link Row
-                  AppButton(
-                    text: 'نسخ الرابط',
-                    icon: Icons.copy_rounded,
-                    variant: AppButtonVariant.secondary,
-                    size: AppButtonSize.small,
-                    isFullWidth: false,
-                    onTap: () {
-                      Clipboard.setData(
-                        const ClipboardData(text: AppConstants.playStoreUrl),
-                      );
-                      Navigator.pop(context);
-                      showToast(text: 'تم نسخ رابط التطبيق');
-                    },
-                  ),
-
-                  SizedBox(height: context.insets.md),
-
                   AppButton(
                     text: 'مشاركة التطبيق الآن',
-                    icon: Icons.share_rounded,
+                    icon: AppIcons.share,
                     onTap: () {
                       Navigator.pop(context);
                       ShareService.shareAsText(
@@ -130,6 +114,21 @@ class AppShareSheet extends StatelessWidget {
                         AppConstants.shareMessage,
                         includeSignature: false,
                       );
+                    },
+                  ),
+
+                  SizedBox(height: context.insets.sm),
+
+                  AppButton(
+                    text: 'نسخ الرابط',
+                    icon: HugeIcons.strokeRoundedCopy01,
+                    variant: AppButtonVariant.outline,
+                    onTap: () {
+                      Clipboard.setData(
+                        const ClipboardData(text: AppConstants.playStoreUrl),
+                      );
+                      Navigator.pop(context);
+                      showToast(text: 'تم نسخ رابط التطبيق');
                     },
                   ),
 

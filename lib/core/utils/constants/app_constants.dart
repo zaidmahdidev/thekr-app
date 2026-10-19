@@ -2,7 +2,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 class AppConstants {
   static const String appName = 'ذكر';
-  static String appVersion = '1.3.0';
+  static String appVersion = '';
 
   // Initialize app constants (to be called in main)
   static Future<void> init() async {
@@ -34,6 +34,7 @@ class AppConstants {
 
   // Social Links
   static const String websiteUrl = 'https://zaidmahdi.vercel.app';
+  static const String githubUrl = 'https://github.com/zaidmahdidev/thekr-app';
   static const String developerName = 'م.زيد مهدي';
   static const String privacyPolicyUrl =
       'https://zaidmahdidev.github.io/privacy-policy-thekr/';

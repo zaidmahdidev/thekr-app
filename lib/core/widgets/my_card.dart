@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 
+/// The app's list card: soft gradient surface, hairline border and a gentle
+/// press animation. [isHighlighted] gives it the primary tint and border.
 class MyCard extends StatefulWidget {
   final Widget child;
   final VoidCallback? onTap;
@@ -17,32 +19,13 @@ class MyCard extends StatefulWidget {
   State<MyCard> createState() => _MyCardState();
 }
 
-class _MyCardState extends State<MyCard> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 100),
-    );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.98,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class _MyCardState extends State<MyCard> {
+  bool _pressed = false;
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = context.colors;
+    final highlighted = widget.isHighlighted;
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -50,12 +33,16 @@ class _MyCardState extends State<MyCard> with SingleTickerProviderStateMixin {
         horizontal: context.insets.sm,
       ),
       child: GestureDetector(
-        onTapDown: (_) => _controller.forward(),
-        onTapUp: (_) => _controller.reverse(),
-        onTapCancel: () => _controller.reverse(),
+        onTapDown: widget.onTap == null
+            ? null
+            : (_) => setState(() => _pressed = true),
+        onTapUp: (_) => setState(() => _pressed = false),
+        onTapCancel: () => setState(() => _pressed = false),
         onTap: widget.onTap,
-        child: ScaleTransition(
-          scale: _scaleAnimation,
+        child: AnimatedScale(
+          scale: _pressed ? 0.98 : 1,
+          duration: const Duration(milliseconds: 120),
+          curve: Curves.easeOut,
           child: Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(
@@ -63,17 +50,31 @@ class _MyCardState extends State<MyCard> with SingleTickerProviderStateMixin {
               vertical: context.insets.md,
             ),
             decoration: BoxDecoration(
-              color: widget.isHighlighted
-                  ? context.colors.primary.withValues(alpha: isDark ? 0.3 : 0.1)
-                  : context.colors.surface,
-              borderRadius: BorderRadius.circular(context.corners.lg),
-              border: Border.all(
-                color: widget.isHighlighted
-                    ? context.colors.primary
-                    : context.colors.primary.withValues(alpha: 0.1),
-                width: widget.isHighlighted ? 1.5 : 1,
+              borderRadius: BorderRadius.circular(context.corners.xl),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  highlighted
+                      ? colors.primary.withValues(alpha: 0.12)
+                      : colors.surface,
+                  highlighted
+                      ? colors.primary.withValues(alpha: 0.06)
+                      : Color.alphaBlend(
+                          colors.primary.withValues(alpha: 0.035),
+                          colors.surface,
+                        ),
+                ],
               ),
-              boxShadow: widget.isHighlighted ? context.shadows.medium : null,
+              border: Border.all(
+                color: highlighted
+                    ? colors.primary
+                    : colors.primary.withValues(alpha: 0.1),
+                width: highlighted ? 1.5 : 1,
+              ),
+              boxShadow: highlighted
+                  ? context.shadows.medium
+                  : context.shadows.low,
             ),
             child: widget.child,
           ),

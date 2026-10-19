@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import '../providers/quran_provider.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class QuranThemeBar extends ConsumerWidget {
   final int currentPage;
@@ -159,8 +161,8 @@ class _ThemeOption extends ConsumerWidget {
               : null,
         ),
         child: isSelected
-            ? Icon(
-                Icons.check,
+            ? AppIcon(
+                HugeIcons.strokeRoundedTick02,
                 color: theme == QuranTheme.dark || theme == QuranTheme.blueGrey
                     ? Colors.white
                     : context.colors.primary,

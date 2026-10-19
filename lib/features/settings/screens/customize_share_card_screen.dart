@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/extensions/ui_extension.dart';
-import 'package:thekr_app/core/widgets/app_scaffold.dart';
-import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/services/share_service.dart';
-import 'package:thekr_app/features/settings/providers/settings_provider.dart';
-import 'package:thekr_app/core/widgets/toast_utils.dart';
+import 'package:thekr_app/core/widgets/share_card_view.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
+import 'package:thekr_app/features/settings/models/share_card_style.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+import 'package:thekr_app/features/settings/providers/share_card_style_provider.dart';
+import 'package:thekr_app/features/settings/widgets/share_studio/share_format_panel.dart';
+import 'package:thekr_app/features/settings/widgets/share_studio/share_studio_tab_bar.dart';
+import 'package:thekr_app/features/settings/widgets/share_studio/share_template_panel.dart';
+import 'package:thekr_app/features/settings/widgets/share_studio/share_text_panel.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
+/// Share card studio: live preview on top, editing panels at the bottom.
 @RoutePage()
 class CustomizeShareCardScreen extends ConsumerStatefulWidget {
   const CustomizeShareCardScreen({super.key});
@@ -22,121 +30,216 @@ class CustomizeShareCardScreen extends ConsumerStatefulWidget {
 
 class _CustomizeShareCardScreenState
     extends ConsumerState<CustomizeShareCardScreen> {
-  final TextEditingController _textController = TextEditingController(
+  static const _tabs = [
+    ShareStudioTab(icon: HugeIcons.strokeRoundedNoteEdit, label: 'النص'),
+    ShareStudioTab(icon: HugeIcons.strokeRoundedPalette, label: 'القالب'),
+    ShareStudioTab(icon: HugeIcons.strokeRoundedSettings05, label: 'التنسيق'),
+  ];
+
+  final TextEditingController _contentController = TextEditingController(
     text: '﴿فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ﴾',
   );
+  final TextEditingController _sourceController = TextEditingController(
+    text: 'سورة البقرة - آية 152',
+  );
+
+  int _tab = 0;
+  bool _sharing = false;
 
   @override
   void dispose() {
-    _textController.dispose();
+    _contentController.dispose();
+    _sourceController.dispose();
     super.dispose();
   }
 
-  void _shareCustomCard(ShareTemplate template) {
-    final text = _textController.text.trim();
-    if (text.isEmpty) {
-      showToast(text: 'يرجى كتابة نص أولاً');
+  String get _content => _contentController.text.trim();
+  String? get _source {
+    final value = _sourceController.text.trim();
+    return value.isEmpty ? null : value;
+  }
+
+  Future<void> _shareImage() async {
+    if (_content.isEmpty) {
+      showToast(text: 'يرجى كتابة نص أولاً', state: ToastStates.WARNING);
       return;
     }
-
-    ShareService.shareAsImage(
+    FocusScope.of(context).unfocus();
+    setState(() => _sharing = true);
+    await ShareService.shareAsImage(
       context,
-      template,
-      text,
-      null,
+      ref.read(settingsProvider).shareTemplate,
+      _content,
+      _source,
       isCustomText: true,
+      style: ref.read(shareCardStyleProvider),
     );
+    if (mounted) setState(() => _sharing = false);
+  }
+
+  void _shareText() {
+    if (_content.isEmpty) {
+      showToast(text: 'يرجى كتابة نص أولاً', state: ToastStates.WARNING);
+      return;
+    }
+    ShareService.shareAsText(context, _content, _source, isCustomText: true);
+  }
+
+  Future<void> _copy() async {
+    if (_content.isEmpty) return;
+    final text = _source == null ? _content : '$_content\n\n$_source';
+    await Clipboard.setData(ClipboardData(text: text));
+    showToast(text: 'تم نسخ النص');
   }
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
+    final template = ref.watch(settingsProvider.select((s) => s.shareTemplate));
+    final style = ref.watch(shareCardStyleProvider);
 
     return AppScaffold(
       title: 'بطاقة المشاركة',
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.all(context.insets.md),
-        child: Column(
-          children: [
-            SizedBox(height: context.insets.md),
-
-            // Card Preview
-            ClipRRect(
-              borderRadius: BorderRadius.circular(24.r),
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: ValueListenableBuilder(
-                  valueListenable: _textController,
-                  builder: (context, value, child) {
-                    return ShareService.buildShareCard(
-                      context,
-                      settings.shareTemplate,
-                      _textController.text.isEmpty
-                          ? 'اكتب نصك هنا...'
-                          : _textController.text,
-                      null,
-                      isCustomText: true,
-                    );
-                  },
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Column(
+            children: [
+              Expanded(
+                child: _Preview(
+                  contentController: _contentController,
+                  sourceController: _sourceController,
+                  template: template,
+                  style: style,
                 ),
               ),
-            ),
-
-            SizedBox(height: context.insets.xl),
-
-            // Template Selector Header
-            Text(
-              'اختر شكل البطاقة المفضلة',
-              style: context.textStyles.titleSmall?.copyWith(
-                color: context.colors.primary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: context.insets.md),
-
-            // Horizontal Template List
-            SizedBox(
-              height: 120.h,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: ShareTemplate.values.length,
-                itemBuilder: (context, index) {
-                  final template = ShareTemplate.values[index];
-                  final isSelected = settings.shareTemplate == template;
-
-                  return GestureDetector(
-                    onTap: () => ref
-                        .read(settingsProvider.notifier)
-                        .updateShareTemplate(template),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 250),
-                      margin: EdgeInsets.only(
-                        left: 12.w,
-                        bottom: 8.h,
-                        top: 4.h,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24.r),
-                        border: Border.all(
-                          color: isSelected
-                              ? context.colors.primary
-                              : context.colors.primary.withValues(alpha: 0.1),
-                          width: isSelected ? 3 : 1,
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: constraints.maxHeight * 0.62,
+                ),
+                child: _BottomPanel(
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ShareStudioTabBar(
+                          tabs: _tabs,
+                          selected: _tab,
+                          onChanged: (i) => setState(() => _tab = i),
                         ),
-                        boxShadow: isSelected ? context.shadows.low : null,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(22.r),
-                        child: FittedBox(
-                          fit: BoxFit.cover,
-                          child: ShareService.buildShareCard(
-                            context,
-                            template,
-                            '﴿فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ﴾',
-                            null,
+                        SizedBox(height: context.insets.md),
+                        AnimatedSize(
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeOutCubic,
+                          alignment: Alignment.topCenter,
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            child: KeyedSubtree(
+                              key: ValueKey(_tab),
+                              child: _buildPanel(template, style),
+                            ),
                           ),
+                        ),
+                        SizedBox(height: context.insets.md),
+                        _ActionRow(
+                          sharing: _sharing,
+                          onCopy: _copy,
+                          onShareText: _shareText,
+                          onShareImage: _shareImage,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPanel(ShareTemplate template, ShareCardStyle style) {
+    switch (_tab) {
+      case 0:
+        return ShareTextPanel(
+          contentController: _contentController,
+          sourceController: _sourceController,
+        );
+      case 1:
+        return ShareTemplatePanel(
+          selected: template,
+          onSelected: (t) =>
+              ref.read(settingsProvider.notifier).updateShareTemplate(t),
+        );
+      default:
+        final notifier = ref.read(shareCardStyleProvider.notifier);
+        return ShareFormatPanel(
+          style: style,
+          onRatioChanged: notifier.setRatio,
+          onFontScaleChanged: notifier.setFontScale,
+          onSignatureChanged: notifier.setShowSignature,
+        );
+    }
+  }
+}
+
+class _Preview extends StatelessWidget {
+  const _Preview({
+    required this.contentController,
+    required this.sourceController,
+    required this.template,
+    required this.style,
+  });
+
+  final TextEditingController contentController;
+  final TextEditingController sourceController;
+  final ShareTemplate template;
+  final ShareCardStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    final pixelHeight = (1080 / style.ratio.aspect).round();
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        context.insets.lg,
+        context.insets.md,
+        context.insets.lg,
+        context.insets.sm,
+      ),
+      child: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: ListenableBuilder(
+                listenable: Listenable.merge([
+                  contentController,
+                  sourceController,
+                ]),
+                builder: (context, _) {
+                  final text = contentController.text.trim();
+                  return FittedBox(
+                    fit: BoxFit.contain,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: DecoratedBox(
+                        key: ValueKey('${template.name}-${style.ratio.name}'),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x33000000),
+                              blurRadius: 30,
+                              offset: Offset(0, 14),
+                            ),
+                          ],
+                        ),
+                        child: ShareCardView(
+                          template: template,
+                          content: text.isEmpty ? 'اكتب نصك هنا...' : text,
+                          subtitle: sourceController.text,
+                          style: style,
+                          isCustomText: true,
                         ),
                       ),
                     ),
@@ -144,95 +247,121 @@ class _CustomizeShareCardScreenState
                 },
               ),
             ),
-
-            SizedBox(height: context.insets.xl),
-
-            Text(
-              'اكتب نصك الخاص',
-              style: context.textStyles.titleSmall?.copyWith(
-                color: context.colors.primary,
-                fontWeight: FontWeight.bold,
-              ),
+          ),
+          SizedBox(height: context.insets.sm),
+          Text(
+            '${style.ratio.label} · 1080×$pixelHeight',
+            style: context.textStyles.labelSmall?.copyWith(
+              color: context.colors.textSecondary,
             ),
-            SizedBox(height: context.insets.md),
-            GestureDetector(
-              onTap: () {
-                context.showSheet(
-                  title: 'اكتب نصك الخاص',
-                  child: Builder(
-                    builder: (sheetContext) {
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            TextField(
-                              controller: _textController,
-                              minLines: 4,
-                              maxLines: 8,
-                              maxLength: 500,
-                              textAlign: TextAlign.right,
-                              autofocus: true,
-                              decoration: InputDecoration(
-                                hintText: 'اكتب آية، حديث، أو خاطرة إيمانية...',
-                                filled: true,
-                                fillColor: context.colors.surface,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.r),
-                                  borderSide: BorderSide(
-                                    color: context.colors.primary.withValues(alpha: 0.2),
-                                  ),
-                                ),
-                              ),
-                              style: context.textStyles.bodyMedium?.copyWith(height: 1.5),
-                            ),
-                            SizedBox(height: context.insets.lg),
-                            AppButton(
-                              text: 'موافق',
-                              onTap: () => context.maybePop(),
-                            ),
-                            SizedBox(height: context.insets.md),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-              child: AbsorbPointer(
-                child: TextField(
-                  controller: _textController,
-                  maxLines: 3,
-                  minLines: 1,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    hintText: 'اضغط هنا لكتابة نصك الخاص...',
-                    filled: true,
-                    fillColor: context.colors.surface,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide(
-                        color: context.colors.primary.withValues(alpha: 0.2),
-                      ),
-                    ),
-                  ),
-                  style: context.textStyles.bodyMedium?.copyWith(height: 1.5),
-                ),
-              ),
-            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-            SizedBox(height: context.insets.lg),
+class _BottomPanel extends StatelessWidget {
+  const _BottomPanel({required this.child});
 
-            AppButton(
-              text: 'مشاركة كبطاقة صورة',
-              onTap: () => _shareCustomCard(settings.shareTemplate),
-            ),
+  final Widget child;
 
-            SizedBox(height: context.insets.xl),
-          ],
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(
+        context.insets.md,
+        context.insets.md,
+        context.insets.md,
+        context.insets.sm,
+      ),
+      decoration: BoxDecoration(
+        color: context.colors.surface,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(context.corners.xl + 4.r),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: context.colors.textPrimary.withValues(alpha: 0.08),
+            blurRadius: 24,
+            offset: const Offset(0, -6),
+          ),
+        ],
+      ),
+      child: SafeArea(top: false, child: child),
+    );
+  }
+}
+
+class _ActionRow extends StatelessWidget {
+  const _ActionRow({
+    required this.sharing,
+    required this.onCopy,
+    required this.onShareText,
+    required this.onShareImage,
+  });
+
+  final bool sharing;
+  final VoidCallback onCopy;
+  final VoidCallback onShareText;
+  final VoidCallback onShareImage;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _SquareAction(
+          icon: HugeIcons.strokeRoundedCopy01,
+          tooltip: 'نسخ النص',
+          onTap: onCopy,
+        ),
+        SizedBox(width: context.insets.sm),
+        _SquareAction(
+          icon: HugeIcons.strokeRoundedNote01,
+          tooltip: 'مشاركة كنص',
+          onTap: onShareText,
+        ),
+        SizedBox(width: context.insets.sm),
+        Expanded(
+          child: AppButton(
+            text: 'مشاركة كصورة',
+            icon: AppIcons.share,
+            isLoading: sharing,
+            onTap: onShareImage,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SquareAction extends StatelessWidget {
+  const _SquareAction({
+    required this.icon,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  final AppIconData icon;
+  final String tooltip;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: context.colors.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(context.corners.md),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(context.corners.md),
+          onTap: onTap,
+          child: SizedBox(
+            width: 46.h,
+            height: 46.h,
+            child: AppIcon(icon, size: 20.sp, color: context.colors.primary),
+          ),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 enum AppButtonVariant { primary, secondary, outline, ghost }
 
@@ -9,7 +10,7 @@ enum AppButtonSize { small, medium, large }
 class AppButton extends StatefulWidget {
   final String text;
   final VoidCallback? onTap;
-  final IconData? icon;
+  final AppIconData? icon;
   final bool isLoading;
   final AppButtonVariant variant;
   final AppButtonSize size;
@@ -49,21 +50,21 @@ class _AppButtonState extends State<AppButton> {
 
     switch (widget.size) {
       case AppButtonSize.small:
-        height = 32.h;
+        height = 30.h;
         fontSize = 11.sp;
         iconSize = 14.w;
         padding = EdgeInsets.symmetric(horizontal: 12.w);
         break;
       case AppButtonSize.medium:
-        height = 46.h;
-        fontSize = 14.sp;
-        iconSize = 20.w;
+        height = 40.h;
+        fontSize = 12.sp;
+        iconSize = 18.w;
         padding = EdgeInsets.symmetric(horizontal: 24.w);
         break;
       case AppButtonSize.large:
-        height = 54.h;
-        fontSize = 16.sp;
-        iconSize = 22.w;
+        height = 50.h;
+        fontSize = 14.sp;
+        iconSize = 20.w;
         padding = EdgeInsets.symmetric(horizontal: 32.w);
         break;
     }
@@ -143,7 +144,7 @@ class _AppButtonState extends State<AppButton> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (widget.icon != null) ...[
-                        Icon(widget.icon, color: textColor, size: iconSize),
+                        AppIcon(widget.icon!, color: textColor, size: iconSize),
                         SizedBox(width: context.insets.sm),
                       ],
                       Text(

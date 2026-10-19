@@ -1,7 +1,8 @@
 import '../models/prophet_story.dart';
+import 'prophets_sourced_data.dart';
 
 class ProphetsData {
-  static const List<ProphetStory> stories = [
+  static const List<ProphetStory> _base = [
     ProphetStory(
       id: '1',
       name: 'آدم',
@@ -569,4 +570,10 @@ class ProphetsData {
       emoji: '🕋',
     ),
   ];
+
+  /// All prophets. Where a documented text exists (see [SourcedStories]) it
+  /// replaces the older text of the entry.
+  static final List<ProphetStory> stories = List.unmodifiable(
+    _base.map(SourcedStories.apply),
+  );
 }

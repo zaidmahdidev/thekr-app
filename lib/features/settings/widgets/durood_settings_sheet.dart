@@ -5,6 +5,8 @@ import 'package:thekr_app/core/services/notification_service.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class DuroodSettingsSheet extends ConsumerStatefulWidget {
   const DuroodSettingsSheet({super.key});
@@ -99,37 +101,37 @@ class _DuroodSettingsSheetState extends ConsumerState<DuroodSettingsSheet> {
                   _buildOption(
                     title: 'كل نصف ساعة',
                     minutes: 30,
-                    icon: Icons.timer_outlined,
+                    icon: HugeIcons.strokeRoundedTimer02,
                   ),
                   _buildOption(
                     title: 'كل ساعة',
                     minutes: 60,
-                    icon: Icons.hourglass_empty_rounded,
+                    icon: HugeIcons.strokeRoundedHourglass,
                   ),
                   _buildOption(
                     title: 'كل 3 ساعات',
                     minutes: 180,
-                    icon: Icons.access_time_outlined,
+                    icon: HugeIcons.strokeRoundedClock01,
                   ),
                   _buildOption(
                     title: 'كل 6 ساعات',
                     minutes: 360,
-                    icon: Icons.av_timer_outlined,
+                    icon: HugeIcons.strokeRoundedTimer02,
                   ),
                   _buildOption(
                     title: 'مرة يومياً',
                     minutes: 1440,
-                    icon: Icons.calendar_today_outlined,
+                    icon: HugeIcons.strokeRoundedCalendar03,
                   ),
                   _buildOption(
                     title: 'يوم الجمعة فقط',
                     minutes: 10080,
-                    icon: Icons.auto_awesome_outlined,
+                    icon: HugeIcons.strokeRoundedSparkles,
                   ),
                   _buildOption(
                     title: 'إيقاف التذكير',
                     minutes: 0,
-                    icon: Icons.notifications_off_outlined,
+                    icon: HugeIcons.strokeRoundedNotificationOff01,
                     isDestructive: true,
                   ),
 
@@ -146,7 +148,7 @@ class _DuroodSettingsSheetState extends ConsumerState<DuroodSettingsSheet> {
   Widget _buildOption({
     required String title,
     required int minutes,
-    required IconData icon,
+    required AppIconData icon,
     bool isDestructive = false,
   }) {
     final isSelected = _selectedInterval == minutes;
@@ -173,7 +175,7 @@ class _DuroodSettingsSheetState extends ConsumerState<DuroodSettingsSheet> {
         ),
         child: Row(
           children: [
-            Icon(
+            AppIcon(
               icon,
               color: isDestructive 
                   ? Colors.redAccent 
@@ -193,8 +195,8 @@ class _DuroodSettingsSheetState extends ConsumerState<DuroodSettingsSheet> {
               ),
             ),
             if (isSelected)
-              Icon(
-                Icons.check_circle_rounded,
+              AppIcon(
+                HugeIcons.strokeRoundedCheckmarkCircle02,
                 color: context.colors.primary,
                 size: 20.sp,
               ),

@@ -3,18 +3,18 @@ import 'package:intl/intl.dart';
 
 class DailyHabit {
   final String dateStr; // e.g., '2026-08-27'
-  
+
   // Fard Prayers
   final bool fajr;
   final bool dhuhr;
   final bool asr;
   final bool maghrib;
   final bool isha;
-  
+
   // Sunnah & Nawafil
   final bool qiyam;
-  final bool rawatib; 
-  
+  final bool rawatib;
+
   // Azkar & Quran
   final bool morningAzkar;
   final bool eveningAzkar;
@@ -50,7 +50,7 @@ class DailyHabit {
   }
 
   int get totalHabits => 10;
-  
+
   double get progress => completedCount / totalHabits;
 
   int get totalPoints {
@@ -68,10 +68,10 @@ class DailyHabit {
     if (morningAzkar) points += 10;
     if (eveningAzkar) points += 10;
     if (quranWird) points += 10;
-    
+
     // Perfect Day Bonus
     if (progress >= 1.0) points += 40;
-    
+
     return points;
   }
 
@@ -137,7 +137,8 @@ class DailyHabit {
 
   String toJson() => json.encode(toMap());
 
-  factory DailyHabit.fromJson(String source) => DailyHabit.fromMap(json.decode(source));
+  factory DailyHabit.fromJson(String source) =>
+      DailyHabit.fromMap(json.decode(source));
 
   static String formatDate(DateTime date) {
     return DateFormat('yyyy-MM-dd').format(date);

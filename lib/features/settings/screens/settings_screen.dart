@@ -2,24 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:thekr_app/core/services/notification_service.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/features/settings/widgets/developer_social_card.dart';
 import 'package:thekr_app/features/settings/widgets/settings_section.dart';
 import 'package:thekr_app/features/settings/widgets/settings_tile.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:thekr_app/core/utils/url_helper.dart';
 import 'package:thekr_app/core/services/review_service.dart';
-import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/router/app_router.dart';
 import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'package:thekr_app/features/settings/widgets/app_share_sheet.dart';
 import 'package:thekr_app/core/providers/feature_badge_provider.dart';
 import 'package:thekr_app/core/widgets/new_feature_badge.dart';
 import 'package:thekr_app/features/settings/widgets/durood_settings_sheet.dart';
+import 'package:thekr_app/features/settings/widgets/font_size_settings_sheet.dart';
+import 'package:thekr_app/features/settings/widgets/theme_settings_sheet.dart';
+import 'package:thekr_app/core/theme/tokens/design_tokens.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -43,6 +45,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final period = time.period == DayPeriod.am ? 'ص' : 'م';
     final minute = time.minute.toString().padLeft(2, '0');
     return '$hour:$minute $period';
+  }
+
+  String _getThemeName(AppThemeType type) {
+    switch (type) {
+      case AppThemeType.defaultTheme:
+        return 'الزمردي (الافتراضي)';
+      case AppThemeType.desert:
+        return 'الصحراوي الدافئ';
+      case AppThemeType.forest:
+        return 'الزيتي الهادئ';
+    }
   }
 
   Future<void> _selectMorningTime(TimeOfDay currentTime) async {
@@ -120,7 +133,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return AppScaffold(
       title: 'الإعدادات',
@@ -142,10 +154,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       SettingsTile(
                         title: 'الوضع الليلي',
-                        icon: Icons.dark_mode_rounded,
-                        iconColor: Colors.indigo,
+                        subtitle: Theme.of(context).brightness == Brightness.dark
+                            ? 'مفعل'
+                            : 'متوقف',
+                        icon: HugeIcons.strokeRoundedMoon02,
+                        iconColor: context.colors.primary,
                         trailing: Switch.adaptive(
-                          value: isDarkMode,
+                          value: Theme.of(context).brightness == Brightness.dark,
+                          activeThumbColor: context.colors.primary,
+                          activeTrackColor:
+                              context.colors.primary.withValues(alpha: 0.5),
                           onChanged: (val) => ref
                               .read(settingsProvider.notifier)
                               .toggleTheme(
@@ -153,182 +171,97 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               ),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(context.insets.md),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      SettingsTile(
+                        title: 'ألوان التطبيق',
+                        subtitle: _getThemeName(settings.appTheme),
+                        icon: HugeIcons.strokeRoundedPalette,
+                        iconColor: context.colors.secondary,
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.palette_rounded,
-                                  size: 20.sp,
-                                  color: Colors.teal,
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 6.w,
+                                vertical: 3.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: context.colors.background,
+                                borderRadius:
+                                    BorderRadius.circular(context.corners.rc360),
+                                border: Border.all(
+                                  color: context.colors.textSecondary
+                                      .withValues(alpha: 0.15),
                                 ),
-                                SizedBox(width: 12.w),
-                                Text(
-                                  'ألوان التطبيق (الثيمات)',
-                                  style: context.textStyles.bodyMedium
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: context.insets.md),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: AppThemeType.values.map((theme) {
-                                final isSelected = settings.appTheme == theme;
-                                Color primaryColor;
-                                switch (theme) {
-                                  case AppThemeType.defaultTheme:
-                                    primaryColor = const Color(0xFF0E645C);
-                                    break;
-                                  case AppThemeType.desert:
-                                    primaryColor = const Color(0xFFC19A6B);
-                                    break;
-                                  case AppThemeType.forest:
-                                    primaryColor = const Color(0xFF2D5A27);
-                                    break;
-                                }
-
-                                return Expanded(
-                                  child: GestureDetector(
-                                    onTap: () => ref
-                                        .read(settingsProvider.notifier)
-                                        .updateAppTheme(theme),
-                                    child: AnimatedContainer(
-                                      duration: const Duration(
-                                        milliseconds: 300,
-                                      ),
-                                      margin: EdgeInsets.symmetric(
-                                        horizontal: 4.w,
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 12.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: isSelected
-                                            ? primaryColor.withValues(
-                                                alpha: 0.1,
-                                              )
-                                            : context.colors.surface,
-                                        borderRadius: BorderRadius.circular(
-                                          context.corners.md,
-                                        ),
-                                        border: Border.all(
-                                          color: isSelected
-                                              ? primaryColor
-                                              : primaryColor.withValues(
-                                                  alpha: 0.2,
-                                                ),
-                                          width: isSelected ? 2 : 1,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: AnimatedContainer(
-                                          duration: const Duration(
-                                            milliseconds: 300,
-                                          ),
-                                          width: isSelected ? 28.w : 32.w,
-                                          height: isSelected ? 28.w : 32.w,
-                                          decoration: BoxDecoration(
-                                            color: primaryColor,
-                                            shape: BoxShape.circle,
-                                            boxShadow: isSelected
-                                                ? [
-                                                    BoxShadow(
-                                                      color: primaryColor
-                                                          .withValues(
-                                                            alpha: 0.4,
-                                                          ),
-                                                      blurRadius: 10,
-                                                      offset: const Offset(
-                                                        0,
-                                                        4,
-                                                      ),
-                                                    ),
-                                                  ]
-                                                : null,
-                                          ),
-                                          child: AnimatedSwitcher(
-                                            duration: const Duration(
-                                              milliseconds: 200,
-                                            ),
-                                            child: isSelected
-                                                ? const Icon(
-                                                    Icons.check,
-                                                    key: ValueKey('check'),
-                                                    color: Colors.white,
-                                                    size: 18,
-                                                  )
-                                                : const SizedBox.shrink(),
-                                          ),
-                                        ),
-                                      ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 11.w,
+                                    height: 11.w,
+                                    decoration: BoxDecoration(
+                                      color: context.colors.primary,
+                                      shape: BoxShape.circle,
                                     ),
                                   ),
-                                );
-                              }).toList(),
+                                  SizedBox(width: 4.w),
+                                  Container(
+                                    width: 11.w,
+                                    height: 11.w,
+                                    decoration: BoxDecoration(
+                                      color: context.colors.secondary,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: context.insets.sm),
+                            AppIcon(
+                              HugeIcons.strokeRoundedArrowRight01,
+                              size: 16.sp,
+                              color: context.colors.textSecondary,
                             ),
                           ],
                         ),
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            backgroundColor: Colors.transparent,
+                            isScrollControlled: true,
+                            builder: (context) => const ThemeSettingsSheet(),
+                          );
+                        },
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: context.insets.lg,
-                          vertical: context.insets.md,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                // SizedBox(width: context.insets.sm),
-                                Text(
-                                  'حجم الخط في القراءة',
-                                  style: context.textStyles.bodyMedium
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                const Spacer(),
-                                AppButton(
-                                  text:
-                                      'الافتراضي ' +
-                                      '(${settings.fontSize.toInt()})',
-                                  size: AppButtonSize.small,
-                                  isFullWidth: false,
-                                  onTap: () => ref
-                                      .read(settingsProvider.notifier)
-                                      .updateFontSize(16.0),
-                                ),
-                              ],
-                            ),
-                            Slider.adaptive(
-                              value: settings.fontSize.clamp(14.0, 24.0),
-                              min: 14.0,
-                              max: 24.0,
-                              divisions: 5,
-                              activeColor: context.colors.primary,
-                              onChanged: (val) => ref
-                                  .read(settingsProvider.notifier)
-                                  .updateFontSize(val),
-                            ),
-                          ],
-                        ),
+                      SettingsTile(
+                        title: 'حجم الخط في القراءة',
+                        subtitle:
+                            '${settings.fontSize.toInt()} نقطة (معاينة حية)',
+                        icon: HugeIcons.strokeRoundedTextFont,
+                        iconColor: context.colors.primary,
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            backgroundColor: Colors.transparent,
+                            isScrollControlled: true,
+                            builder: (context) => const FontSizeSettingsSheet(),
+                          );
+                        },
                       ),
                       SettingsTile(
                         title: 'ترتيب الشاشة الرئيسية',
                         subtitle: 'تحكم في مكان ظهور العناصر في الرئيسية',
-                        icon: Icons.dashboard_customize_rounded,
+                        icon: HugeIcons.strokeRoundedDashboardSquare01,
+                        iconColor: context.colors.primary,
                         onTap: () => context.router.push(
                           const CustomizeHomeLayoutRoute(),
                         ),
-                        iconColor: Colors.purple,
                       ),
                       SettingsTile(
                         title: 'بطاقة المشاركة',
-                        subtitle: 'تخصيص شكل ومحتوى بطاقة المشاركة ',
-                        icon: Icons.auto_awesome_outlined,
-                        iconColor: Colors.orange,
+                        subtitle: 'تخصيص شكل ومحتوى بطاقة المشاركة',
+                        icon: HugeIcons.strokeRoundedSparkles,
+                        iconColor: context.colors.secondary,
                         onTap: () =>
                             context.pushRoute(const CustomizeShareCardRoute()),
                       ),
@@ -337,10 +270,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         child: SettingsTile(
                           title: 'أذكاري الخاصة',
                           subtitle: 'أضف أذكارك الشخصية وشاركها',
-                          icon: Icons.bookmark_added_rounded,
+                          icon: HugeIcons.strokeRoundedBookmarkCheck01,
+                          iconColor: context.colors.primary,
                           onTap: () =>
                               context.router.push(const UserAzkarRoute()),
-                          iconColor: Colors.teal,
                         ),
                       ),
                     ],
@@ -351,11 +284,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       NewFeatureBadge(
                         featureId: 'prayer_alerts',
-                        addedInVersion: '1.3.0',
+                        addedInVersion: '1.3.1',
                         child: SettingsTile(
                           title: 'تنبيه الصلوات',
                           subtitle: 'تخصيص تنبيه الأذان لكل صلاة بشكل منفصل واختيار صوت المؤذن.',
-                          icon: Icons.notifications_active_rounded,
+                          icon: HugeIcons.strokeRoundedNotification01,
                           iconColor: context.colors.primary,
                           onTap: () {
                             ref.read(featureBadgeProvider.notifier).recordFeatureClick('prayer_alerts');
@@ -365,7 +298,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                       NewFeatureBadge(
                         featureId: 'durood_reminder',
-                        addedInVersion: '1.3.0',
+                        addedInVersion: '1.3.1',
                         child: SettingsTile(
                           title: 'التذكير بالصلاة على النبي',
                           subtitle: settings.duroodInterval == 0 
@@ -379,7 +312,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                       : settings.duroodInterval == 1440 
                                           ? 'مرة يومياً' 
                                           : 'كل ${settings.duroodInterval ~/ 60} ساعات',
-                          icon: Icons.mosque_rounded,
+                          icon: HugeIcons.strokeRoundedMosque01,
                           iconColor: Colors.teal,
                           onTap: () {
                             ref.read(featureBadgeProvider.notifier).recordFeatureClick('durood_reminder');
@@ -397,7 +330,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         subtitle: settings.morningNotificationEnabled
                             ? 'تذكير عند ${_formatTime(settings.morningNotificationTime)}'
                             : 'التذكير متوقف',
-                        icon: Icons.wb_sunny_rounded,
+                        icon: HugeIcons.strokeRoundedSun03,
                         iconColor: Colors.orange,
                         trailing: Switch.adaptive(
                           value: settings.morningNotificationEnabled,
@@ -414,7 +347,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         subtitle: settings.eveningNotificationEnabled
                             ? 'تذكير عند ${_formatTime(settings.eveningNotificationTime)}'
                             : 'التذكير متوقف',
-                        icon: Icons.nightlight_round_rounded,
+                        icon: HugeIcons.strokeRoundedMoon02,
                         iconColor: Colors.blueAccent,
                         trailing: Switch.adaptive(
                           value: settings.eveningNotificationEnabled,
@@ -431,7 +364,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         subtitle: settings.wirdNotificationEnabled
                             ? 'تذكير عند ${_formatTime(settings.wirdNotificationTime)}'
                             : 'التذكير متوقف',
-                        icon: Icons.menu_book_rounded,
+                        icon: HugeIcons.strokeRoundedBookOpen01,
                         iconColor: context.colors.primary,
                         trailing: Switch.adaptive(
                           value: settings.wirdNotificationEnabled,
@@ -447,7 +380,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         subtitle: settings.fridayNotificationEnabled
                             ? 'كل يوم جمعة صباحاً'
                             : 'التذكير متوقف',
-                        icon: Icons.auto_stories_rounded,
+                        icon: HugeIcons.strokeRoundedBookOpenText,
                         iconColor: Colors.green,
                         trailing: Switch.adaptive(
                           value: settings.fridayNotificationEnabled,
@@ -462,13 +395,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       SettingsTile(
                         title: 'تقييم التطبيق',
-                        icon: Icons.star_rounded,
+                        icon: HugeIcons.strokeRoundedStar,
                         iconColor: Colors.amber,
                         onTap: () => ReviewService.requestManualReview(),
                       ),
                       SettingsTile(
                         title: 'تواصل معنا',
-                        icon: Icons.chat_rounded,
+                        icon: HugeIcons.strokeRoundedMessage01,
                         iconColor: Colors.teal,
                         onTap: () => UrlHelper.launchWhatsApp(
                           phone: AppConstants.whatsappNumber,
@@ -477,14 +410,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                       SettingsTile(
                         title: 'سياسة الخصوصية',
-                        icon: Icons.privacy_tip_rounded,
+                        icon: HugeIcons.strokeRoundedSecurityCheck,
                         iconColor: Colors.redAccent,
                         onTap: () =>
                             UrlHelper.launchURL(AppConstants.privacyPolicyUrl),
                       ),
                       SettingsTile(
                         title: 'شارك التطبيق',
-                        icon: Icons.share_rounded,
+                        icon: AppIcons.share,
                         iconColor: Colors.purple,
                         onTap: () {
                           showModalBottomSheet(
@@ -521,14 +454,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           DeveloperSocialCard(
-                            icon: Icons.language_rounded,
+                            icon: HugeIcons.strokeRoundedGlobe02,
                             color: Colors.blue,
                             onTap: () =>
                                 UrlHelper.launchURL(AppConstants.websiteUrl),
                           ),
                           SizedBox(width: context.insets.md),
                           DeveloperSocialCard(
-                            icon: Icons.email_rounded,
+                            icon: HugeIcons.strokeRoundedMail01,
                             color: Colors.redAccent,
                             onTap: () => UrlHelper.launchURL(
                               'mailto:${AppConstants.supportEmail}',
@@ -536,7 +469,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ),
                           SizedBox(width: context.insets.md),
                           DeveloperSocialCard(
-                            icon: Icons.chat_rounded,
+                            icon: HugeIcons.strokeRoundedMessage01,
                             color: Colors.green,
                             onTap: () => UrlHelper.launchWhatsApp(
                               phone: AppConstants.developerNumber,
@@ -544,11 +477,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ),
                           SizedBox(width: context.insets.md),
                           DeveloperSocialCard(
-                            icon: Icons.phone,
+                            icon: HugeIcons.strokeRoundedCall,
                             color: Colors.cyan,
                             onTap: () => UrlHelper.launchPhone(
                               AppConstants.developerNumber,
                             ),
+                          ),
+                          SizedBox(width: context.insets.md),
+                          DeveloperSocialCard(
+                            icon: HugeIcons.strokeRoundedGithub,
+                            color: context.colors.textPrimary,
+                            onTap: () =>
+                                UrlHelper.launchURL(AppConstants.githubUrl),
                           ),
                         ],
                       ),

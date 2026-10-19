@@ -3,6 +3,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
@@ -121,7 +123,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
                 width: 1,
               ),
             ),
-            child: Icon(Icons.arrow_back_ios_new_rounded, size: 16.w),
+            child: AppIcon(HugeIcons.strokeRoundedArrowLeft01, size: 24.w),
           ),
         ),
       ),

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:quran_library/quran_library.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -11,14 +9,17 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
-import 'package:thekr_app/core/utils/constants/app_constants.dart';
 import 'dart:io';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:thekr_app/core/widgets/share_options_sheet.dart';
 import 'package:thekr_app/features/quran/widgets/ayah_share_template.dart';
+import 'package:thekr_app/features/quran/models/quran_reader_palette.dart';
+import 'package:thekr_app/features/quran/widgets/quran_top_bar.dart';
 import 'package:thekr_app/features/quran/widgets/quran_theme_bar.dart';
 import '../providers/quran_provider.dart';
+import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 @RoutePage()
 class QuranScreen extends ConsumerStatefulWidget {
@@ -73,7 +74,6 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
 
   Future<void> _shareCurrentPage() async {
     final notifier = ref.read(quranProvider(widget.currentPage).notifier);
-    final state = ref.read(quranProvider(widget.currentPage));
 
     try {
       notifier.setCapturing(true);
@@ -163,7 +163,7 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
         textAlign: TextAlign.center,
       )..layout(maxWidth: 400);
 
-      final double calculatedHeight = textPainter.height + 250;
+      final double calculatedHeight = textPainter.height + 240;
 
       final uint8list = await _ayahScreenshotController.captureFromWidget(
         AyahShareTemplate(
@@ -220,37 +220,11 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
     final isDarkMode = quranState.isDarkMode;
     final isCapturing = quranState.isCapturing;
 
-    Color backgroundColor;
-    Color textColor;
-    Color ayahIconColor;
-
-    switch (readingTheme) {
-      case QuranTheme.light:
-        backgroundColor = const Color(0xFFFFFDF5);
-        textColor = Colors.black87;
-        ayahIconColor = context.colors.primary;
-        break;
-      case QuranTheme.dark:
-        backgroundColor = const Color(0xFF1F2125);
-        textColor = Colors.white.withValues(alpha: 0.9);
-        ayahIconColor = Colors.white;
-        break;
-      case QuranTheme.sepia:
-        backgroundColor = const Color(0xFFF4ECD8);
-        textColor = const Color(0xFF5B4636);
-        ayahIconColor = const Color(0xFF8D6E63);
-        break;
-      case QuranTheme.green:
-        backgroundColor = const Color(0xFFE8F5E9);
-        textColor = const Color(0xFF1B5E20);
-        ayahIconColor = const Color(0xFF2E7D32);
-        break;
-      case QuranTheme.blueGrey:
-        backgroundColor = const Color(0xFF343A41);
-        textColor = const Color(0xFFECEFF1);
-        ayahIconColor = const Color(0xFFB0BEC5);
-        break;
-    }
+    final palette = QuranReaderPalette.of(
+      readingTheme,
+      primary: context.colors.primary,
+      accent: context.colors.secondary,
+    );
 
     return Stack(
       children: [
@@ -260,39 +234,11 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
             parentContext: context,
             isDark: isDarkMode,
             showAyahBookmarkedIcon: true,
-            useDefaultAppBar: !isCapturing,
+            useDefaultAppBar: false,
             appLanguageCode: 'ar',
-            isShowTabBar: !isCapturing,
+            isShowTabBar: false,
             enableWordSelection: true,
             isShowAudioSlider: !isCapturing,
-            topBarStyle:
-                QuranTopBarStyle.defaults(
-                  isDark: isDarkMode,
-                  context: context,
-                ).copyWith(
-                  backgroundColor: context.colors.surface,
-                  customTopBarWidgets: [
-                    IconButton(
-                      onPressed: () =>
-                          setState(() => _showThemes = !_showThemes),
-                      icon: Icon(
-                        Icons.palette_rounded,
-                        color: _showThemes
-                            ? context.colors.secondary
-                            : context.colors.primary,
-                      ),
-                      tooltip: 'تغيير نمط القراءة',
-                    ),
-                    IconButton(
-                      onPressed: _shareCurrentPage,
-                      icon: Icon(
-                        Icons.share_rounded,
-                        color: context.colors.primary,
-                      ),
-                      tooltip: 'مشاركة الصفحة',
-                    ),
-                  ],
-                ),
             onPageChanged: (page) {
               int realPage = page + 1;
               _lastPage = realPage;
@@ -302,9 +248,9 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
                     .updatePage(realPage);
               }
             },
-            backgroundColor: backgroundColor,
-            textColor: textColor,
-            ayahIconColor: ayahIconColor,
+            backgroundColor: palette.background,
+            textColor: palette.text,
+            ayahIconColor: palette.icon,
             ayahSelectedBackgroundColor: context.colors.primary.withValues(
               alpha: 0.15,
             ),
@@ -318,12 +264,26 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
                   customMenuItems: [
                     GestureDetector(
                       onTap: _onShareAyah,
-                      child: Icon(Icons.share, color: context.colors.primary),
+                      child: AppIcon(AppIcons.share, color: context.colors.primary),
                     ),
                   ],
                 ),
           ),
         ),
+        if (!isCapturing)
+          Positioned(
+            top: 0,
+            left: context.insets.sm,
+            right: context.insets.sm,
+            child: QuranTopBar(
+              providerPage: widget.currentPage,
+              palette: palette,
+              themesOpen: _showThemes,
+              onBack: () => context.maybePop(),
+              onToggleThemes: () => setState(() => _showThemes = !_showThemes),
+              onSharePage: _shareCurrentPage,
+            ),
+          ),
         if (_showThemes && !isCapturing) ...[
           GestureDetector(
             onTap: () => setState(() => _showThemes = false),

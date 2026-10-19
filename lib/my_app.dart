@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/theme/app_theme.dart';
+import 'package:thekr_app/core/utils/app_scroll_behavior.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:thekr_app/core/localization/app_localizations.dart';
 import 'package:thekr_app/main.dart';
@@ -74,6 +75,7 @@ class _MyAppState extends ConsumerState<MyApp> {
           theme: AppTheme.light(settings.appTheme),
           darkTheme: AppTheme.dark(settings.appTheme),
           themeMode: themeMode,
+          scrollBehavior: const AppScrollBehavior(),
           locale: const Locale('ar'),
           supportedLocales: const [Locale('ar'), Locale('en')],
           localizationsDelegates: const [

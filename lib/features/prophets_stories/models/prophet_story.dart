@@ -1,12 +1,39 @@
+/// Where a story's text comes from.
+class StorySource {
+  final String book;
+  final String author;
+
+  /// Edition / library, e.g. "المكتبة الشاملة - تحقيق ...".
+  final String edition;
+
+  /// How the text was used, shown to the reader.
+  final String note;
+
+  const StorySource({
+    required this.book,
+    required this.author,
+    required this.edition,
+    required this.note,
+  });
+}
+
 class ProphetStory {
   final String id;
   final String name;
   final String title;
   final String brief;
+
+  /// Legacy text of the story (not yet documented). For documented stories this
+  /// is empty and [paragraphs] is used instead.
   final String fullStory;
   final List<String> lessons;
   final List<String> quranVerses;
   final String emoji;
+
+  /// Documented text: paragraphs taken from [source]. Quranic passages inside a
+  /// paragraph are wrapped in « » so the reader can highlight them.
+  final List<String> paragraphs;
+  final StorySource? source;
 
   const ProphetStory({
     required this.id,
@@ -17,7 +44,42 @@ class ProphetStory {
     required this.lessons,
     required this.quranVerses,
     required this.emoji,
+    this.paragraphs = const [],
+    this.source,
   });
+
+  /// True when the story text comes from a named source.
+  bool get isDocumented => source != null && paragraphs.isNotEmpty;
+
+  /// Story as plain text (for copy and share).
+  String get plainText => isDocumented
+      ? paragraphs.join('\n\n').replaceAll('«', '﴿').replaceAll('»', '﴾')
+      : fullStory;
+
+  /// Words of the story, for the reading time.
+  int get wordCount =>
+      plainText.trim().split(RegExp(r'\s+')).where((w) => w.isNotEmpty).length;
+
+  ProphetStory copyWith({
+    String? title,
+    String? brief,
+    List<String>? lessons,
+    List<String>? paragraphs,
+    StorySource? source,
+  }) {
+    return ProphetStory(
+      id: id,
+      name: name,
+      title: title ?? this.title,
+      brief: brief ?? this.brief,
+      fullStory: fullStory,
+      lessons: lessons ?? this.lessons,
+      quranVerses: quranVerses,
+      emoji: emoji,
+      paragraphs: paragraphs ?? this.paragraphs,
+      source: source ?? this.source,
+    );
+  }
 
   factory ProphetStory.fromJson(Map<String, dynamic> json) {
     return ProphetStory(
@@ -25,10 +87,11 @@ class ProphetStory {
       name: json['name'],
       title: json['title'],
       brief: json['brief'],
-      fullStory: json['fullStory'],
-      lessons: List<String>.from(json['lessons']),
-      quranVerses: List<String>.from(json['quranVerses']),
+      fullStory: json['fullStory'] ?? '',
+      lessons: List<String>.from(json['lessons'] ?? const []),
+      quranVerses: List<String>.from(json['quranVerses'] ?? const []),
       emoji: json['emoji'] ?? '📜',
+      paragraphs: List<String>.from(json['paragraphs'] ?? const []),
     );
   }
 
@@ -42,6 +105,7 @@ class ProphetStory {
       'lessons': lessons,
       'quranVerses': quranVerses,
       'emoji': emoji,
+      'paragraphs': paragraphs,
     };
   }
 }

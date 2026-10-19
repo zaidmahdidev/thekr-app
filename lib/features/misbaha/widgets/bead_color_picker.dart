@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import '../models/misbaha_models.dart';
+import 'bead_renderer.dart';
 
 class BeadColorPicker extends StatefulWidget {
   final BeadType currentType;
@@ -61,39 +62,54 @@ class _BeadOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = 46.r;
+
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: 44.r,
-        height: 44.r,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: type.colors,
-            center: const Alignment(-0.3, -0.3),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Ring that marks the bead in use.
             if (isMain)
-              BoxShadow(
-                color: type.colors.first.withValues(alpha: 0.3),
-                blurRadius: 12,
-                spreadRadius: 2,
+              Container(
+                width: size,
+                height: size,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: context.colors.secondary.withValues(alpha: 0.7),
+                    width: 1.5,
+                  ),
+                ),
               ),
+            // The same bead as on the string.
+            CustomPaint(
+              size: Size.square(size - 10.r),
+              painter: _BeadPreviewPainter(type),
+            ),
           ],
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.4),
-            width: 0.5,
-          ),
         ),
-        // child: isMain && type == BeadType.wood
-        //     ? Icon(Icons.palette_rounded, color: Colors.red, size: 20.r)
-        //     : null,
       ),
     );
   }
+}
+
+class _BeadPreviewPainter extends CustomPainter {
+  _BeadPreviewPainter(this.type);
+
+  final BeadType type;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = size.center(Offset.zero);
+    final radius = size.width / 2;
+    BeadRenderer.paint(canvas, center: center, radius: radius, type: type);
+  }
+
+  @override
+  bool shouldRepaint(covariant _BeadPreviewPainter old) => old.type != type;
 }

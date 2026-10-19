@@ -29,7 +29,10 @@ enum HomeSection {
 enum ShareTemplate {
   classic,
   luxury,
-  spiritual;
+  spiritual,
+  emerald,
+  dawn,
+  minimal;
 
   String get title {
     switch (this) {
@@ -39,6 +42,12 @@ enum ShareTemplate {
         return 'الداكن الفاخر';
       case ShareTemplate.spiritual:
         return 'الروحاني الحديث';
+      case ShareTemplate.emerald:
+        return 'الزمردي';
+      case ShareTemplate.dawn:
+        return 'الفجر';
+      case ShareTemplate.minimal:
+        return 'البسيط';
     }
   }
 }

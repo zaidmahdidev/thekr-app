@@ -9,6 +9,7 @@ import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/core/providers/feature_badge_provider.dart';
 import 'package:thekr_app/core/widgets/new_feature_badge.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class HomeFeaturesGrid extends StatelessWidget {
   const HomeFeaturesGrid({super.key});
@@ -91,7 +92,7 @@ class HomeFeaturesGrid extends StatelessWidget {
             color: const Color(0xff009688),
             route: const CalendarRoute(),
             featureId: 'calendar',
-            addedInVersion: '1.3.0',
+            addedInVersion: '1.3.1',
           ),
           _FeatureItem(
             title: "متتبع العبادات",
@@ -99,7 +100,7 @@ class HomeFeaturesGrid extends StatelessWidget {
             color: const Color(0xff3498db),
             route: const HabitTrackerRoute(),
             featureId: 'habit_tracker',
-            addedInVersion: '1.3.0',
+            addedInVersion: '1.3.1',
           ),
           _FeatureItem(
             title: "الإعدادات",
@@ -116,7 +117,7 @@ class HomeFeaturesGrid extends StatelessWidget {
 class _FeatureItem extends ConsumerWidget {
   final String title;
   final String? imagePath;
-  final IconData? icon;
+  final AppIconData? icon;
   final Color color;
   final PageRouteInfo? route;
   final VoidCallback? onTap;
@@ -145,7 +146,9 @@ class _FeatureItem extends ConsumerWidget {
       color: color,
       onTap: () {
         if (hasBadge) {
-          ref.read(featureBadgeProvider.notifier).recordFeatureClick(featureId!);
+          ref
+              .read(featureBadgeProvider.notifier)
+              .recordFeatureClick(featureId!);
         }
 
         if (onTap != null) {

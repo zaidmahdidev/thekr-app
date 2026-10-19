@@ -10,6 +10,7 @@ import 'package:thekr_app/features/settings/widgets/settings_section.dart';
 import 'package:thekr_app/features/settings/widgets/settings_tile.dart';
 import 'package:thekr_app/core/services/notification_service.dart';
 import 'package:thekr_app/features/home/providers/prayer_provider.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 @RoutePage()
 class AthanSettingsScreen extends ConsumerWidget {
@@ -44,7 +45,7 @@ class AthanSettingsScreen extends ConsumerWidget {
             children: [
               SettingsTile(
                 title: 'صلاة الفجر',
-                icon: Icons.brightness_3_rounded,
+                icon: HugeIcons.strokeRoundedMoon02,
                 iconColor: Colors.indigo,
                 trailing: Switch.adaptive(
                   value: settings.fajrAthanEnabled,
@@ -56,7 +57,7 @@ class AthanSettingsScreen extends ConsumerWidget {
               ),
               SettingsTile(
                 title: 'صلاة الظهر',
-                icon: Icons.wb_sunny_rounded,
+                icon: HugeIcons.strokeRoundedSun03,
                 iconColor: Colors.orange,
                 trailing: Switch.adaptive(
                   value: settings.dhuhrAthanEnabled,
@@ -68,7 +69,7 @@ class AthanSettingsScreen extends ConsumerWidget {
               ),
               SettingsTile(
                 title: 'صلاة العصر',
-                icon: Icons.brightness_low_rounded,
+                icon: HugeIcons.strokeRoundedSun01,
                 iconColor: Colors.amber,
                 trailing: Switch.adaptive(
                   value: settings.asrAthanEnabled,
@@ -80,7 +81,7 @@ class AthanSettingsScreen extends ConsumerWidget {
               ),
               SettingsTile(
                 title: 'صلاة المغرب',
-                icon: Icons.nights_stay_rounded,
+                icon: HugeIcons.strokeRoundedMoon02,
                 iconColor: Colors.deepOrange,
                 trailing: Switch.adaptive(
                   value: settings.maghribAthanEnabled,
@@ -92,7 +93,7 @@ class AthanSettingsScreen extends ConsumerWidget {
               ),
               SettingsTile(
                 title: 'صلاة العشاء',
-                icon: Icons.star_rounded,
+                icon: HugeIcons.strokeRoundedStar,
                 iconColor: Colors.deepPurple,
                 trailing: Switch.adaptive(
                   value: settings.ishaAthanEnabled,

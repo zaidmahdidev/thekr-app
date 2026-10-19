@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/utils/quran_text.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
+/// A group of habits (e.g. the five prayers) with its own progress.
 class HabitCategoryCard extends StatelessWidget {
   final String title;
-  final IconData icon;
+  final AppIconData icon;
   final Color color;
   final List<HabitItemData> items;
 
@@ -18,73 +23,113 @@ class HabitCategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final done = items.where((i) => i.isDone).length;
+    final progress = items.isEmpty ? 0.0 : done / items.length;
+
     return Container(
-      margin: EdgeInsets.only(bottom: context.insets.lg),
+      margin: EdgeInsets.only(bottom: context.insets.md),
       decoration: BoxDecoration(
         color: context.colors.surface,
         borderRadius: BorderRadius.circular(context.corners.xl),
-        border: Border.all(
-          color: color.withValues(alpha: 0.15),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 15.r,
-            offset: Offset(0, 5.h),
-          ),
-        ],
+        border: Border.all(color: color.withValues(alpha: 0.15)),
+        boxShadow: context.shadows.low,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: context.insets.md,
-              vertical: context.insets.sm,
-            ),
-            decoration: BoxDecoration(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(context.corners.xl),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.insets.md,
+                vertical: context.insets.sm + 2.h,
+              ),
               color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(context.corners.xl),
-                topRight: Radius.circular(context.corners.xl),
+              child: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(6.r),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.18),
+                      shape: BoxShape.circle,
+                    ),
+                    child: AppIcon(icon, color: color, size: 18.sp),
+                  ),
+                  SizedBox(width: context.insets.sm + 2.w),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: context.textStyles.titleMedium?.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.bold,
+                        height: 1.3,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.insets.sm + 2.w,
+                      vertical: 3.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.16),
+                      borderRadius: BorderRadius.circular(context.corners.xl),
+                    ),
+                    child: Text(
+                      '${QuranText.digits(done)} / ${QuranText.digits(items.length)}',
+                      style: context.textStyles.labelMedium?.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.bold,
+                        height: 1.2,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            child: Row(
-              children: [
-                Icon(icon, color: color, size: 24.sp),
-                SizedBox(width: 10.w),
-                Text(
-                  title,
-                  style: context.textStyles.titleMedium?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: progress),
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeOutCubic,
+              builder: (context, value, _) => LinearProgressIndicator(
+                value: value,
+                minHeight: 3,
+                backgroundColor: color.withValues(alpha: 0.08),
+                color: color,
+              ),
             ),
-          ),
-          
-          // Items
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: context.insets.sm),
-            child: Column(
-              children: items.map((item) => _buildHabitItem(context, item)).toList(),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: context.insets.sm / 2),
+              child: Column(
+                children: [
+                  for (final item in items) _HabitRow(item: item, color: color),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+}
 
-  Widget _buildHabitItem(BuildContext context, HabitItemData item) {
+class _HabitRow extends StatelessWidget {
+  const _HabitRow({required this.item, required this.color});
+
+  final HabitItemData item;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
     return InkWell(
-      onTap: item.onToggle,
+      onTap: () {
+        HapticFeedback.selectionClick();
+        item.onToggle();
+      },
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: context.insets.md,
-          vertical: context.insets.sm,
+          vertical: context.insets.sm + 1.h,
         ),
         child: Row(
           children: [
@@ -92,27 +137,53 @@ class HabitCategoryCard extends StatelessWidget {
               child: Text(
                 item.title,
                 style: context.textStyles.bodyLarge?.copyWith(
-                  color: item.isDone ? context.colors.textPrimary.withValues(alpha: 0.6) : context.colors.textPrimary,
+                  color: item.isDone
+                      ? context.colors.textSecondary
+                      : context.colors.textPrimary,
                   decoration: item.isDone ? TextDecoration.lineThrough : null,
+                  decorationColor: context.colors.textSecondary,
                   fontWeight: item.isDone ? FontWeight.normal : FontWeight.w600,
                 ),
               ),
             ),
+            if (item.points != null) ...[
+              Text(
+                '+${QuranText.digits(item.points!)}',
+                style: context.textStyles.labelMedium?.copyWith(
+                  color: item.isDone ? color : context.colors.textSecondary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(width: context.insets.sm + 2.w),
+            ],
             AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeOutBack,
               width: 28.w,
               height: 28.w,
               decoration: BoxDecoration(
                 color: item.isDone ? color : Colors.transparent,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: item.isDone ? color : context.colors.primary.withValues(alpha: 0.3),
+                  color: item.isDone
+                      ? color
+                      : context.colors.textSecondary.withValues(alpha: 0.35),
                   width: 2,
                 ),
               ),
-              child: item.isDone
-                  ? Icon(Icons.check, color: Colors.white, size: 18.sp)
-                  : null,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (child, animation) =>
+                    ScaleTransition(scale: animation, child: child),
+                child: item.isDone
+                    ? AppIcon(
+                        HugeIcons.strokeRoundedTick02,
+                        key: const ValueKey('done'),
+                        color: Colors.white,
+                        size: 18.sp,
+                      )
+                    : const SizedBox.shrink(key: ValueKey('todo')),
+              ),
             ),
           ],
         ),
@@ -126,9 +197,13 @@ class HabitItemData {
   final bool isDone;
   final VoidCallback onToggle;
 
+  /// Points earned when done, shown next to the check (optional).
+  final int? points;
+
   HabitItemData({
     required this.title,
     required this.isDone,
     required this.onToggle,
+    this.points,
   });
 }

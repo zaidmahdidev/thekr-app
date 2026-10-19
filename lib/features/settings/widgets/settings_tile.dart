@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 
 class SettingsTile extends StatelessWidget {
   final String title;
   final String? subtitle;
-  final IconData icon;
+  final AppIconData icon;
   final Color iconColor;
   final Widget? trailing;
   final VoidCallback? onTap;
@@ -39,7 +41,7 @@ class SettingsTile extends StatelessWidget {
                 color: iconColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(context.corners.md),
               ),
-              child: Icon(icon, color: iconColor, size: 20.sp),
+              child: AppIcon(icon, color: iconColor, size: 20.sp),
             ),
             SizedBox(width: context.insets.md),
             Expanded(
@@ -51,7 +53,7 @@ class SettingsTile extends StatelessWidget {
                     title,
                     style: (context.textStyles.bodyLarge ?? const TextStyle())
                         .copyWith(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.bold,
                           color: context.colors.textPrimary,
                           fontSize: 13.sp,
                         ),
@@ -82,8 +84,8 @@ class SettingsTile extends StatelessWidget {
                     color: context.colors.textSecondary.withValues(alpha: 0.05),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    Icons.chevron_right_rounded,
+                  child: AppIcon(
+                    HugeIcons.strokeRoundedArrowRight01,
                     size: 16.sp,
                     color: context.colors.textSecondary.withValues(alpha: 0.4),
                   ),
