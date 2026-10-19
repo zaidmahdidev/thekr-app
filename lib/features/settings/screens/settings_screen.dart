@@ -553,6 +553,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               AppConstants.developerNumber,
                             ),
                           ),
+                          SizedBox(width: context.insets.md),
+                          DeveloperSocialCard(
+                            icon: HugeIcons.strokeRoundedGithub,
+                            color: context.colors.textPrimary,
+                            onTap: () =>
+                                UrlHelper.launchURL(AppConstants.githubUrl),
+                          ),
                         ],
                       ),
                       SizedBox(height: context.insets.lg),

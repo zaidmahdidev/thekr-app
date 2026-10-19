@@ -193,26 +193,30 @@ class _ThikrCardState extends ConsumerState<ThikrCard> {
 
   Widget _buildFootnote(BuildContext context, double fontSize) {
     final colors = context.colors;
+    final small = fontSize * 0.76;
     final link = context.textStyles.bodyMedium?.copyWith(
       color: colors.secondary,
       fontWeight: FontWeight.bold,
-      fontSize: fontSize * 0.8,
+      fontSize: small,
     );
 
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: context.insets.md,
-        vertical: context.insets.sm,
+        vertical: context.insets.sm - 2.h,
       ),
       decoration: BoxDecoration(
         color: colors.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(context.corners.lg),
         border: Border(
-          right: BorderSide(color: colors.secondary.withValues(alpha: 0.7), width: 3),
+          right: BorderSide(
+            color: colors.secondary.withValues(alpha: 0.7),
+            width: 3,
+          ),
         ),
       ),
       child: ReadMoreText(
-        widget.footnote!,
+        widget.footnote!.trim(),
         trimLines: 2,
         textAlign: TextAlign.justify,
         trimMode: TrimMode.Line,
@@ -222,8 +226,8 @@ class _ThikrCardState extends ConsumerState<ThikrCard> {
         moreStyle: link,
         style: context.textStyles.bodyMedium?.copyWith(
           color: colors.textSecondary,
-          height: 1.7,
-          fontSize: fontSize * 0.8,
+          height: 1.6,
+          fontSize: small,
         ),
       ),
     );

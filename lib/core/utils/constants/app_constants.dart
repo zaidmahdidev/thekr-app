@@ -34,6 +34,7 @@ class AppConstants {
 
   // Social Links
   static const String websiteUrl = 'https://zaidmahdi.vercel.app';
+  static const String githubUrl = 'https://github.com/zaidmahdidev/thekr-app';
   static const String developerName = 'م.زيد مهدي';
   static const String privacyPolicyUrl =
       'https://zaidmahdidev.github.io/privacy-policy-thekr/';
