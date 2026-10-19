@@ -17,6 +17,7 @@ import 'package:thekr_app/core/providers/feature_badge_provider.dart';
 import 'package:thekr_app/core/widgets/new_feature_badge.dart';
 import 'package:thekr_app/features/settings/widgets/durood_settings_sheet.dart';
 import 'package:thekr_app/features/settings/widgets/font_size_settings_sheet.dart';
+import 'package:thekr_app/features/settings/widgets/theme_settings_sheet.dart';
 import 'package:thekr_app/core/theme/tokens/design_tokens.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
 import 'package:thekr_app/core/utils/constants/app_icons.dart';
@@ -54,17 +55,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return 'الصحراوي الدافئ';
       case AppThemeType.forest:
         return 'الزيتي الهادئ';
-    }
-  }
-
-  Color _getThemeColor(AppThemeType type) {
-    switch (type) {
-      case AppThemeType.defaultTheme:
-        return AppColors.light.primary;
-      case AppThemeType.desert:
-        return AppColors.desertLight.primary;
-      case AppThemeType.forest:
-        return AppColors.forestLight.primary;
     }
   }
 
@@ -188,52 +178,60 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         iconColor: context.colors.secondary,
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: AppThemeType.values.map((theme) {
-                            final isSelected = settings.appTheme == theme;
-                            final themeColor = _getThemeColor(theme);
-                            return GestureDetector(
-                              onTap: () => ref
-                                  .read(settingsProvider.notifier)
-                                  .updateAppTheme(theme),
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                margin: EdgeInsets.symmetric(horizontal: 3.w),
-                                width: 22.w,
-                                height: 22.w,
-                                decoration: BoxDecoration(
-                                  color: themeColor,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? context.colors.textPrimary
-                                        : Colors.transparent,
-                                    width: 2,
-                                  ),
-                                  boxShadow: isSelected
-                                      ? [
-                                          BoxShadow(
-                                            color: themeColor.withValues(
-                                              alpha: 0.35,
-                                            ),
-                                            blurRadius: 4,
-                                            offset: const Offset(0, 1),
-                                          ),
-                                        ]
-                                      : null,
-                                ),
-                                child: isSelected
-                                    ? Center(
-                                        child: AppIcon(
-                                          HugeIcons.strokeRoundedTick02,
-                                          size: 11.sp,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : null,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 6.w,
+                                vertical: 3.h,
                               ),
-                            );
-                          }).toList(),
+                              decoration: BoxDecoration(
+                                color: context.colors.background,
+                                borderRadius:
+                                    BorderRadius.circular(context.corners.rc360),
+                                border: Border.all(
+                                  color: context.colors.textSecondary
+                                      .withValues(alpha: 0.15),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 11.w,
+                                    height: 11.w,
+                                    decoration: BoxDecoration(
+                                      color: context.colors.primary,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  SizedBox(width: 4.w),
+                                  Container(
+                                    width: 11.w,
+                                    height: 11.w,
+                                    decoration: BoxDecoration(
+                                      color: context.colors.secondary,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: context.insets.sm),
+                            AppIcon(
+                              HugeIcons.strokeRoundedArrowRight01,
+                              size: 16.sp,
+                              color: context.colors.textSecondary,
+                            ),
+                          ],
                         ),
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            backgroundColor: Colors.transparent,
+                            isScrollControlled: true,
+                            builder: (context) => const ThemeSettingsSheet(),
+                          );
+                        },
                       ),
                       SettingsTile(
                         title: 'حجم الخط في القراءة',

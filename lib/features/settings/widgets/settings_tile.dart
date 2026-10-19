@@ -53,7 +53,7 @@ class SettingsTile extends StatelessWidget {
                     title,
                     style: (context.textStyles.bodyLarge ?? const TextStyle())
                         .copyWith(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.bold,
                           color: context.colors.textPrimary,
                           fontSize: 13.sp,
                         ),
