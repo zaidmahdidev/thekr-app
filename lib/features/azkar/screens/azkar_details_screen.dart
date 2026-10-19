@@ -1,10 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:readmore/readmore.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/services/share_service.dart';
-import 'package:thekr_app/core/widgets/my_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/features/azkar/widgets/azkar_item_widget.dart';
 import 'package:thekr_app/core/services/analytics_service.dart';

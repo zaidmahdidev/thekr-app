@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:thekr_app/core/widgets/app_icon.dart';
 import 'package:thekr_app/core/widgets/my_card.dart';
 
 class CustomCard extends StatefulWidget {
@@ -26,32 +28,11 @@ class CustomCard extends StatefulWidget {
   State<CustomCard> createState() => _CustomCardState();
 }
 
-class _CustomCardState extends State<CustomCard>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 100),
-    );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.98,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
+class _CustomCardState extends State<CustomCard> {
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return MyCard(
       isHighlighted: widget.isHighlighted,
       onTap: widget.fun,
@@ -70,10 +51,10 @@ class _CustomCardState extends State<CustomCard>
                   widget.title,
                   style: context.textStyles.titleLarge?.copyWith(
                     color: widget.isHighlighted
-                        ? context.colors.primary
-                        : context.colors.textPrimary,
+                        ? colors.primary
+                        : colors.textPrimary,
                     fontWeight: FontWeight.bold,
-                    height: 1.2,
+                    height: 1.35,
                   ),
                 ),
                 if (widget.subTitle != null) ...[
@@ -81,7 +62,8 @@ class _CustomCardState extends State<CustomCard>
                   Text(
                     widget.subTitle!,
                     style: context.textStyles.bodyMedium?.copyWith(
-                      color: context.colors.textSecondary,
+                      color: colors.textSecondary,
+                      height: 1.5,
                     ),
                   ),
                 ],
@@ -93,8 +75,26 @@ class _CustomCardState extends State<CustomCard>
             Text(
               widget.trailing!,
               style: context.textStyles.bodyMedium?.copyWith(
-                color: context.colors.primary,
+                color: colors.primary,
                 fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+          if (widget.fun != null) ...[
+            SizedBox(width: context.insets.sm),
+            Container(
+              width: 30.w,
+              height: 30.w,
+              decoration: BoxDecoration(
+                color: colors.primary.withValues(alpha: 0.08),
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: AppIcon(
+                  HugeIcons.strokeRoundedArrowRight01,
+                  color: colors.primary,
+                  size: 18.sp,
+                ),
               ),
             ),
           ],
@@ -105,8 +105,8 @@ class _CustomCardState extends State<CustomCard>
 
   Widget _buildLeading(BuildContext context) {
     return Container(
-      width: 42.w,
-      height: 42.w,
+      width: 44.w,
+      height: 44.w,
       alignment: Alignment.center,
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -114,14 +114,12 @@ class _CustomCardState extends State<CustomCard>
           fit: BoxFit.contain,
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 5),
-        child: Text(
-          widget.leading!,
-          style: context.textStyles.bodyMedium?.copyWith(
-            color: context.colors.primary,
-            fontWeight: FontWeight.bold,
-          ),
+      child: Text(
+        widget.leading!,
+        style: context.textStyles.bodyMedium?.copyWith(
+          color: context.colors.primary,
+          fontWeight: FontWeight.bold,
+          height: 1,
         ),
       ),
     );
