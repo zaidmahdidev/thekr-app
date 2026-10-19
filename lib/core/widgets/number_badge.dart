@@ -69,12 +69,24 @@ class NumberBadge extends StatelessWidget {
             width: size,
             height: size,
           ),
-          Text(
-            number,
-            style: context.textStyles.bodyMedium?.copyWith(
-              color: colors.primary,
-              fontWeight: FontWeight.bold,
-              height: 1,
+          // The font adds space above and below the digits; evening it out puts
+          // the number exactly in the middle of the circle.
+          Center(
+            child: Text(
+              number,
+              textAlign: TextAlign.center,
+              textWidthBasis: TextWidthBasis.longestLine,
+              textHeightBehavior: const TextHeightBehavior(
+                applyHeightToFirstAscent: false,
+                applyHeightToLastDescent: false,
+                leadingDistribution: TextLeadingDistribution.even,
+              ),
+              strutStyle: const StrutStyle(forceStrutHeight: true, height: 1),
+              style: context.textStyles.bodyMedium?.copyWith(
+                color: colors.primary,
+                fontWeight: FontWeight.bold,
+                height: 1,
+              ),
             ),
           ),
         ],
