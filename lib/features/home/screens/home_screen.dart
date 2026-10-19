@@ -120,7 +120,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       tomorrowTimes,
       currentTime,
     );
-    final todayDate = intl.DateFormat('EEEE, d MMMM', 'ar').format(currentTime);
+    // Arabic day and month names, Western digits (same as the clock and the prayer times).
+    final todayDate =
+        '${intl.DateFormat('EEEE', 'ar').format(currentTime)}، '
+        '${currentTime.day} ${intl.DateFormat('MMMM', 'ar').format(currentTime)}';
 
     // Hijri Date Calculation
     final hijriNow = HijriCalendar.fromDate(currentTime);

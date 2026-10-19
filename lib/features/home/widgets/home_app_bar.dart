@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:thekr_app/core/router/app_router.dart';
 
 import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
+import 'package:thekr_app/core/widgets/hero_pattern.dart';
 
 class HomeAppBar extends StatelessWidget {
   final DateTime currentTime;
@@ -145,16 +145,17 @@ class HomeAppBar extends StatelessWidget {
               duration: const Duration(seconds: 1),
               decoration: BoxDecoration(gradient: theme.gradient),
             ),
-            // Subtle Islamic Pattern
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Opacity(
-                opacity: 0.2,
-                child: Image.asset(
-                  AppAssets.hero,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
+            // Islamic lattice and a soft glow behind the clock.
+            const HeroPattern(),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  center: const Alignment(0, 0.1),
+                  radius: 0.75,
+                  colors: [
+                    Colors.white.withValues(alpha: 0.2),
+                    Colors.white.withValues(alpha: 0),
+                  ],
                 ),
               ),
             ),
@@ -178,20 +179,26 @@ class HomeAppBar extends StatelessWidget {
                     Text(
                       todayDate,
                       style: context.textStyles.titleLarge?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.7),
+                        color: Colors.white.withValues(alpha: 0.92),
                         fontSize: 13.sp,
                         height: 1.3,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withValues(alpha: 0.18),
+                            blurRadius: 6,
+                          ),
+                        ],
                       ),
                     ),
                     SizedBox(height: 8.h),
                     Text(
-                      intl.DateFormat('h:mm', 'ar').format(currentTime),
+                      intl.DateFormat('h:mm', 'en').format(currentTime),
                       style: context.textStyles.displayLarge?.copyWith(
-                        fontSize: 64.sp,
+                        fontSize: 60.sp,
                         // The big clock needs no extra leading (it overflowed with Amiri).
                         height: 1.0,
                         color: Colors.white,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         shadows: [
                           Shadow(
                             color: Colors.black.withValues(alpha: 0.2),
@@ -227,13 +234,13 @@ class HomeAppBar extends StatelessWidget {
                             AppIcon(
                               theme.icon,
                               color: context.colors.secondary,
-                              size: 14.sp,
+                              size: 20.sp,
                             ),
                             SizedBox(width: 8.w),
                             Text(
                               remainingTime,
                               style: context.textStyles.labelLarge?.copyWith(
-                                fontSize: 11.sp,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -250,22 +257,36 @@ class HomeAppBar extends StatelessWidget {
       ),
       actions: [
         Padding(
-          padding: EdgeInsets.only(left: context.insets.sm),
-          child: ClipOval(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: context.colors.background.withValues(alpha: 0.2),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: context.colors.secondary,
-                    width: .2,
+          padding: EdgeInsetsDirectional.only(end: context.insets.sm),
+          child: Center(
+            child: Tooltip(
+              message: 'الإعدادات',
+              child: ClipOval(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                  child: Material(
+                    color: Colors.white.withValues(alpha: 0.18),
+                    shape: CircleBorder(
+                      side: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.35),
+                      ),
+                    ),
+                    child: InkWell(
+                      customBorder: const CircleBorder(),
+                      onTap: () => context.router.push(const SettingsRoute()),
+                      child: SizedBox(
+                        width: 40.w,
+                        height: 40.w,
+                        child: Center(
+                          child: AppIcon(
+                            HugeIcons.strokeRoundedSettings02,
+                            color: Colors.white,
+                            size: 24.sp,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                child: IconButton(
-                  onPressed: () => context.router.push(const SettingsRoute()),
-                  icon: Image.asset(AppAssets.notification, width: 23.w),
                 ),
               ),
             ),

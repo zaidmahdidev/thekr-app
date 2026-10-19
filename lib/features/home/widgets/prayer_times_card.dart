@@ -23,48 +23,52 @@ class PrayerTimesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isLoading = prayerTimes == null;
     final bool isLocationOff = prayerTimes?.isLocationOff ?? false;
+    final now = DateTime.now();
 
-    // Calculate next prayer using our own model logic
     final AppPrayer nextPrayer = isLoading
         ? AppPrayer.fajr
-        : (prayerTimes!.nextPrayer(DateTime.now()) ?? AppPrayer.fajr);
+        : (prayerTimes!.nextPrayer(now) ?? AppPrayer.fajr);
 
-    final List<_PrayerTimeDisplay> items = AppPrayer.values.map((p) {
-      final time = isLoading
-          ? '--:--'
-          : intl.DateFormat('h:mm').format(prayerTimes!.getTimeFor(p));
+    final items = AppPrayer.values.map((p) {
+      final moment = isLoading ? null : prayerTimes!.getTimeFor(p);
+      final isNext = !isLoading && nextPrayer == p;
 
       return _PrayerTimeDisplay(
-        name: p.nameArabic,
-        time: time,
-        isNext: !isLoading && nextPrayer == p,
+        prayer: p,
+        time: moment == null
+            ? '--:--'
+            : intl.DateFormat('h:mm', 'en').format(moment),
+        period: moment == null ? null : (moment.hour < 12 ? 'ص' : 'م'),
+        isNext: isNext,
+        isPast: !isLoading && !isNext && moment!.isBefore(now),
       );
     }).toList();
 
+    final colors = context.colors;
+
     return GestureDetector(
-      onTap: () {
-        context.pushRoute(const AthanSettingsRoute());
-      },
+      onTap: () => context.pushRoute(const AthanSettingsRoute()),
       child: Container(
         margin: EdgeInsets.all(context.insets.sm),
         padding: EdgeInsets.symmetric(
-          vertical: context.insets.sm,
-          horizontal: context.insets.sm / 4,
+          vertical: context.insets.sm / 2,
+          horizontal: context.insets.sm / 2,
         ),
         decoration: BoxDecoration(
-          color: context.colors.surface,
-          borderRadius: BorderRadius.circular(context.corners.lg),
-          border: Border.all(
-            color: context.colors.secondary.withValues(alpha: 0.1),
-            width: 1,
+          borderRadius: BorderRadius.circular(context.corners.xl),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              colors.surface,
+              Color.alphaBlend(
+                colors.secondary.withValues(alpha: 0.05),
+                colors.surface,
+              ),
+            ],
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
-              blurRadius: 10.r,
-              offset: Offset(0, 4.h),
-            ),
-          ],
+          border: Border.all(color: colors.secondary.withValues(alpha: 0.18)),
+          boxShadow: context.shadows.low,
         ),
         child: Column(
           children: [
@@ -79,84 +83,111 @@ class PrayerTimesCard extends StatelessWidget {
                   onTap: onRequestLocation,
                 ),
               ),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: items
-                    .map((t) => _buildPrayerItem(context, t))
-                    .toList(),
-              ),
+            Row(
+              children: [
+                for (final item in items)
+                  Expanded(child: _PrayerCell(item: item)),
+              ],
             ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildPrayerItem(BuildContext context, _PrayerTimeDisplay item) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 500),
-      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-      decoration: BoxDecoration(
-        color: item.isNext
-            ? context.colors.secondary.withValues(alpha: 0.1)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(context.corners.md),
-        border: Border.all(
-          color: item.isNext
-              ? context.colors.secondary.withValues(alpha: 0.3)
-              : Colors.transparent,
-          width: 1,
+/// One prayer: its name and time. The next prayer is filled with gold and
+/// the ones already prayed today are dimmed.
+class _PrayerCell extends StatelessWidget {
+  const _PrayerCell({required this.item});
+
+  final _PrayerTimeDisplay item;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final accent = item.isNext ? colors.secondary : colors.primary;
+
+    return Opacity(
+      opacity: item.isPast ? 0.55 : 1,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 500),
+        margin: EdgeInsets.symmetric(horizontal: 2.w),
+        padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 2.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(context.corners.lg),
+          gradient: item.isNext
+              ? LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    colors.secondary.withValues(alpha: 0.22),
+                    colors.secondary.withValues(alpha: 0.08),
+                  ],
+                )
+              : null,
+          border: Border.all(
+            color: item.isNext
+                ? colors.secondary.withValues(alpha: 0.55)
+                : Colors.transparent,
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            item.name,
-            style: context.textStyles.labelLarge?.copyWith(
-              color: item.isNext
-                  ? context.colors.secondary
-                  : context.textStyles.bodyMedium?.color,
-              fontSize: 12.5.sp,
-              fontWeight: item.isNext ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            item.time,
-            style: context.textStyles.bodySmall?.copyWith(
-              color: item.isNext
-                  ? context.colors.secondary
-                  : context.colors.primary,
-              fontSize: 14.5.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          if (item.isNext)
-            Container(
-              margin: EdgeInsets.only(top: 2.h),
-              width: 4.w,
-              height: 4.h,
-              decoration: BoxDecoration(
-                color: context.colors.secondary,
-                shape: BoxShape.circle,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                item.prayer.nameArabic,
+                style: context.textStyles.labelLarge?.copyWith(
+                  color: item.isNext
+                      ? colors.secondary
+                      : context.textStyles.bodyMedium?.color,
+                  fontSize: 12.sp,
+                  fontWeight: item.isNext ? FontWeight.bold : FontWeight.w500,
+                ),
               ),
-            ),
-        ],
+              SizedBox(height: 5.h),
+              Text.rich(
+                TextSpan(
+                  text: item.time,
+                  children: [
+                    if (item.period != null)
+                      TextSpan(
+                        text: ' ${item.period}',
+                        style: TextStyle(
+                          fontSize: 9.5.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                  ],
+                ),
+                style: context.textStyles.bodySmall?.copyWith(
+                  color: accent,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
 class _PrayerTimeDisplay {
-  final String name;
+  final AppPrayer prayer;
   final String time;
+  final String? period;
   final bool isNext;
+  final bool isPast;
+
   _PrayerTimeDisplay({
-    required this.name,
+    required this.prayer,
     required this.time,
+    required this.period,
     required this.isNext,
+    required this.isPast,
   });
 }
