@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:auto_route/auto_route.dart';
@@ -9,10 +8,7 @@ import '../models/prophet_story.dart';
 class ProphetGridItem extends StatelessWidget {
   final ProphetStory prophet;
 
-  const ProphetGridItem({
-    super.key,
-    required this.prophet,
-  });
+  const ProphetGridItem({super.key, required this.prophet});
 
   @override
   Widget build(BuildContext context) {
@@ -34,81 +30,82 @@ class ProphetGridItem extends StatelessWidget {
         ),
       ),
       child: InkWell(
+        borderRadius: BorderRadius.circular(context.corners.lg),
         onTap: () => context.pushRoute(ProphetDetailsRoute(prophet: prophet)),
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: context.insets.sm,
-            vertical: context.insets.sm,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Icon Container with Glassy Gradient
-              Container(
-                width: 48.w,
-                height: 48.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      context.colors.primary.withValues(alpha: 0.1),
-                      context.colors.primary.withValues(alpha: 0.05),
-                    ],
-                  ),
-                  border: Border.all(
-                    color: context.colors.primary.withValues(alpha: 0.2),
-                    width: 1,
-                  ),
-                ),
-                child: Center(
-                  child: Hero(
-                    tag: 'prophet_emoji_${prophet.id}',
-                    child: Material(
-                      color: Colors.transparent,
-                      child: Text(
-                        prophet.emoji,
-                        style: TextStyle(
-                          fontSize: 32.sp,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Padding(
+                padding: EdgeInsets.all(context.insets.sm),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 48.w,
+                      height: 48.w,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            context.colors.primary.withValues(alpha: 0.1),
+                            context.colors.primary.withValues(alpha: 0.05),
+                          ],
+                        ),
+                        border: Border.all(
+                          color: context.colors.primary.withValues(alpha: 0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: Center(
+                        child: Hero(
+                          tag: 'prophet_emoji_${prophet.id}',
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Text(
+                              prophet.emoji,
+                              style: TextStyle(fontSize: 32.sp),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-              SizedBox(height: context.insets.sm),
-              Hero(
-                tag: 'prophet_name_${prophet.id}',
-                child: Material(
-                  color: Colors.transparent,
-                  child: Text(
-                    prophet.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: context.textStyles.titleLarge?.copyWith(
-                      color: context.colors.textPrimary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 11.sp,
+                    SizedBox(height: context.insets.sm),
+                    Hero(
+                      tag: 'prophet_name_${prophet.id}',
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Text(
+                          prophet.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: context.textStyles.titleLarge?.copyWith(
+                            color: context.colors.textPrimary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11.sp,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      prophet.title,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textStyles.labelLarge?.copyWith(
+                        color: context.colors.textSecondary,
+                        fontSize: 8.sp,
+                        height: 1.2,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 2.h),
-              Text(
-                prophet.title,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: context.textStyles.labelLarge?.copyWith(
-                  color: context.colors.textSecondary,
-                  fontSize: 8.sp,
-                  height: 1.2,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

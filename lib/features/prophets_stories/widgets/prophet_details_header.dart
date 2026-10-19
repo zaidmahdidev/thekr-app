@@ -2,12 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/extensions/theme_extension.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils/constants/app_assets.dart';
 import '../models/prophet_story.dart';
-import '../../settings/providers/settings_provider.dart';
 
-class ProphetDetailsHeader extends ConsumerWidget {
+/// Header of the story screen: a rounded banner with the prophet's name and
+/// title that folds into a slim bar with the name when the story is scrolled.
+class ProphetDetailsHeader extends StatelessWidget {
   final ProphetStory prophet;
   final VoidCallback onCopyAll;
   final VoidCallback onShare;
@@ -20,120 +20,227 @@ class ProphetDetailsHeader extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final double expandedHeight = 150.h;
-    final double collapsedHeight = 50.h;
+  Widget build(BuildContext context) {
+    final topInset = MediaQuery.paddingOf(context).top;
+    final expandedHeight = 168.h + topInset;
+    final collapsedHeight = kToolbarHeight + topInset;
+    final radius = Radius.circular(context.corners.xl);
 
     return SliverAppBar(
-      expandedHeight: expandedHeight,
-      collapsedHeight: collapsedHeight,
       pinned: true,
-      backgroundColor: context.colors.primary,
+      automaticallyImplyLeading: false,
+      expandedHeight: expandedHeight,
+      collapsedHeight: kToolbarHeight,
+      toolbarHeight: kToolbarHeight,
       elevation: 0,
-      leading: IconButton(
-        onPressed: () => context.maybePop(),
-        icon: Icon(
-          Icons.arrow_back_ios_new_rounded,
-          color: Colors.white,
-          size: 20.w,
-        ),
+      scrolledUnderElevation: 0,
+      backgroundColor: context.colors.primary,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(bottom: radius),
       ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.share_outlined, color: Colors.white),
-          onPressed: onShare,
-        ),
-        IconButton(
-          icon: const Icon(Icons.copy_all_outlined, color: Colors.white),
-          onPressed: onCopyAll,
-        ),
-      ],
-      flexibleSpace: FlexibleSpaceBar(
-        centerTitle: true,
-        titlePadding: EdgeInsets.only(bottom: context.insets.md),
-        title: LayoutBuilder(
-          builder: (context, constraints) {
-            final double appBarHeight = constraints.maxHeight;
-            final double t = ((expandedHeight + collapsedHeight/2) - appBarHeight) / (expandedHeight - collapsedHeight);
-            final double opacity = (1.0 - t).clamp(0.0, 1.0);
+      clipBehavior: Clip.antiAlias,
+      flexibleSpace: LayoutBuilder(
+        builder: (context, constraints) {
+          final t =
+              ((constraints.maxHeight - collapsedHeight) /
+                      (expandedHeight - collapsedHeight))
+                  .clamp(0.0, 1.0);
 
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Emoji Medallion - Fades out as we scroll up
-                if (opacity > 0.1)
-                  Opacity(
-                    opacity: opacity,
-                    child: Container(
-                      width: 54.w,
-                      height: 54.w,
-                      margin: EdgeInsets.only(bottom: context.insets.sm),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.3),
-                          width: 1.5,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Hero(
-                          tag: 'prophet_emoji_${prophet.id}',
-                          child: Material(
-                            color: Colors.transparent,
-                            child: Text(
-                              prophet.emoji,
-                              style: TextStyle(fontSize: 28.sp),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                // Prophet Name
-                Hero(
-                  tag: 'prophet_name_${prophet.id}',
-                  child: Material(
-                    color: Colors.transparent,
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              _Backdrop(color: context.colors.primary),
+              // Expanded content: fades out while the header folds.
+              Positioned(
+                left: context.insets.lg,
+                right: context.insets.lg,
+                bottom: context.insets.md,
+                child: Opacity(
+                  opacity: Curves.easeIn.transform(t),
+                  child: _Identity(prophet: prophet),
+                ),
+              ),
+              // Folded content: the name, shown once the banner is folded.
+              Positioned(
+                left: 0,
+                right: 0,
+                top: topInset,
+                height: kToolbarHeight,
+                child: Opacity(
+                  opacity: Curves.easeIn.transform(1 - t),
+                  child: Center(
                     child: Text(
                       prophet.name,
                       style: context.textStyles.titleLarge?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: (20 - (4 * t)).sp,
                       ),
                     ),
                   ),
                 ),
-              ],
-            );
-          },
-        ),
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset(AppAssets.bg, fit: BoxFit.cover),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    context.colors.primary.withValues(alpha: 0.6),
-                    context.colors.primary.withValues(alpha: 0.9),
+              ),
+              // Buttons stay on top in both states.
+              Positioned(
+                left: context.insets.sm,
+                right: context.insets.sm,
+                top: topInset,
+                height: kToolbarHeight,
+                child: Row(
+                  children: [
+                    _GlassButton(
+                      icon: Icons.arrow_back_ios_new_rounded,
+                      tooltip: 'رجوع',
+                      onPressed: () => context.maybePop(),
+                    ),
+                    const Spacer(),
+                    _GlassButton(
+                      icon: Icons.share_outlined,
+                      tooltip: 'مشاركة',
+                      onPressed: onShare,
+                    ),
+                    SizedBox(width: context.insets.sm),
+                    _GlassButton(
+                      icon: Icons.copy_all_outlined,
+                      tooltip: 'نسخ القصة',
+                      onPressed: onCopyAll,
+                    ),
                   ],
                 ),
               ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _Backdrop extends StatelessWidget {
+  const _Backdrop({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Image.asset(AppAssets.bg, fit: BoxFit.cover),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                color.withValues(alpha: 0.78),
+                color.withValues(alpha: 0.96),
+              ],
             ),
-          ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Identity extends StatelessWidget {
+  const _Identity({required this.prophet});
+
+  final ProphetStory prophet;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 46.w,
+          height: 46.w,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white.withValues(alpha: 0.14),
+            border: Border.all(
+              color: context.colors.secondary.withValues(alpha: 0.9),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.18),
+                blurRadius: 10,
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: Center(
+            child: Hero(
+              tag: 'prophet_emoji_${prophet.id}',
+              child: Material(
+                color: Colors.transparent,
+                child: Text(prophet.emoji, style: TextStyle(fontSize: 24.sp)),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 4.h),
+        Hero(
+          tag: 'prophet_name_${prophet.id}',
+          child: Material(
+            color: Colors.transparent,
+            child: Text(
+              prophet.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.textStyles.titleLarge?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 2.h),
+        Text(
+          prophet.title,
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: context.textStyles.bodySmall?.copyWith(
+            color: context.colors.secondary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _GlassButton extends StatelessWidget {
+  const _GlassButton({
+    required this.icon,
+    required this.tooltip,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: Colors.white.withValues(alpha: 0.16),
+        shape: CircleBorder(
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.28)),
+        ),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onPressed,
+          child: SizedBox(
+            width: 38.w,
+            height: 38.w,
+            child: Icon(icon, color: Colors.white, size: 19.sp),
+          ),
         ),
       ),
     );
