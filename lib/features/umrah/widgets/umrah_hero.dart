@@ -8,7 +8,17 @@ import 'package:thekr_app/core/widgets/hero_pattern.dart';
 /// Banner at the top of the guide. It says what the guide is for: learning at
 /// home, so the pilgrim can give the rites their full attention.
 class UmrahHero extends StatelessWidget {
-  const UmrahHero({super.key});
+  const UmrahHero({
+    super.key,
+    this.title = 'تعلّم العمرة قبل أن تسافر',
+    this.subtitle = 'مرجع مبسّط لكل الأعمار، يشرح المناسك بالترتيب بأدلتها.',
+    this.tip =
+        'اقرأه في بيتك وأنت مرتاح، وأثناء العمرة اترك هاتفك في جيبك وتفرّغ للعبادة.',
+  });
+
+  final String title;
+  final String subtitle;
+  final String tip;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +51,7 @@ class UmrahHero extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'تعلّم العمرة قبل أن تسافر',
+                    title,
                     style: context.textStyles.titleLarge?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -50,7 +60,7 @@ class UmrahHero extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    'مرجع مبسّط لكل الأعمار، يشرح المناسك بالترتيب بأدلتها.',
+                    subtitle,
                     style: context.textStyles.bodyMedium?.copyWith(
                       color: Colors.white.withValues(alpha: 0.85),
                       height: 1.7,
@@ -80,8 +90,7 @@ class UmrahHero extends StatelessWidget {
                         SizedBox(width: context.insets.sm),
                         Expanded(
                           child: Text(
-                            'اقرأه في بيتك وأنت مرتاح، وأثناء العمرة اترك '
-                            'هاتفك في جيبك وتفرّغ للعبادة.',
+                            tip,
                             style: context.textStyles.bodyMedium?.copyWith(
                               color: Colors.white,
                               height: 1.7,

@@ -1,32 +1,32 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
 
-/// Ticks on the packing list, saved on the device. The list is for getting
-/// ready at home, before the trip.
-class UmrahChecklistNotifier extends StateNotifier<Set<String>> {
-  UmrahChecklistNotifier()
+/// Ticks on a packing list, saved on the device under [storageKey]. Used by
+/// both the Umrah and the Hajj lists, which are for getting ready at home.
+class ChecklistNotifier extends StateNotifier<Set<String>> {
+  ChecklistNotifier(this.storageKey)
     : super(
-        ((CacheHelper.getData(key: _key) as List<dynamic>?) ?? const [])
+        ((CacheHelper.getData(key: storageKey) as List<dynamic>?) ?? const [])
             .cast<String>()
             .toSet(),
       );
 
-  static const String _key = 'umrah_checklist';
+  final String storageKey;
 
   void toggle(String id) {
     final next = {...state};
     if (!next.add(id)) next.remove(id);
     state = next;
-    CacheHelper.saveData(key: _key, value: next.toList());
+    CacheHelper.saveData(key: storageKey, value: next.toList());
   }
 
   void clear() {
     state = const {};
-    CacheHelper.saveData(key: _key, value: <String>[]);
+    CacheHelper.saveData(key: storageKey, value: <String>[]);
   }
 }
 
 final umrahChecklistProvider =
-    StateNotifierProvider<UmrahChecklistNotifier, Set<String>>(
-      (ref) => UmrahChecklistNotifier(),
+    StateNotifierProvider<ChecklistNotifier, Set<String>>(
+      (ref) => ChecklistNotifier('umrah_checklist'),
     );

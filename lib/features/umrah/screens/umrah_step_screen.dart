@@ -2,12 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/router/app_router.dart';
 import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
-import 'package:thekr_app/core/widgets/thikr_card.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import '../data/umrah_steps_data.dart';
 import '../models/umrah_models.dart';
@@ -16,6 +14,8 @@ import '../widgets/illustrations/ihram_illustration.dart';
 import '../widgets/illustrations/sai_illustration.dart';
 import '../widgets/illustrations/tawaf_illustration.dart';
 import '../widgets/umrah_disclaimer.dart';
+import '../widgets/umrah_dua_block.dart';
+import '../widgets/umrah_lesson_nav.dart';
 import '../widgets/umrah_font_actions.dart';
 import '../widgets/umrah_notes_card.dart';
 import '../widgets/umrah_numbered_list.dart';
@@ -42,9 +42,9 @@ class UmrahStepScreen extends ConsumerWidget {
 
     return AppScaffold(
       appBar: BaseAppBar(title: step.title, actions: umrahFontActions(ref)),
-      bottomNavigationBar: _LessonNav(
-        previous: previous,
-        next: next,
+      bottomNavigationBar: UmrahLessonNav(
+        hasPrevious: previous != null,
+        nextTitle: next?.title,
         onPrevious: previous == null ? null : () => goTo(previous),
         onNext: next == null ? null : () => goTo(next),
         onFinish: () => context.router.maybePop(),
@@ -73,7 +73,7 @@ class UmrahStepScreen extends ConsumerWidget {
             SizedBox(height: context.insets.lg),
             const UmrahSectionTitle('الأدعية والأذكار'),
             SizedBox(height: context.insets.sm),
-            for (final dua in step.duas) _DuaBlock(dua: dua),
+            for (final dua in step.duas) UmrahDuaBlock(dua: dua),
           ],
           if (step.notes.isNotEmpty) ...[
             SizedBox(height: context.insets.lg),
@@ -135,133 +135,6 @@ class _Header extends ConsumerWidget {
                   style: text.title(context, color: colors.primary),
                 ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DuaBlock extends ConsumerWidget {
-  const _DuaBlock({required this.dua});
-
-  final UmrahDua dua;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final text = ref.watch(umrahTextProvider);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(
-            top: context.insets.sm,
-            right: context.insets.sm,
-            left: context.insets.sm,
-          ),
-          child: Text(
-            dua.title,
-            style: text.title(context, color: context.colors.primary),
-          ),
-        ),
-        ThikrCard(
-          text: dua.text,
-          footnote: dua.source,
-          actions: ThikrAction.copyAndShare(
-            context,
-            ref,
-            text: dua.text,
-            footnote: dua.source,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Previous and next lesson, with their names so the reader knows where each
-/// button leads.
-class _LessonNav extends StatelessWidget {
-  const _LessonNav({
-    required this.previous,
-    required this.next,
-    required this.onPrevious,
-    required this.onNext,
-    required this.onFinish,
-  });
-
-  final UmrahStep? previous;
-  final UmrahStep? next;
-  final VoidCallback? onPrevious;
-  final VoidCallback? onNext;
-  final VoidCallback onFinish;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(context.corners.xl),
-    );
-
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-        context.insets.md,
-        context.insets.sm + 2.w,
-        context.insets.md,
-        context.insets.sm + 2.w + MediaQuery.paddingOf(context).bottom,
-      ),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        boxShadow: context.shadows.medium,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(context.corners.xl),
-        ),
-      ),
-      child: Row(
-        children: [
-          if (previous != null) ...[
-            Expanded(
-              child: SizedBox(
-                height: 52.h,
-                child: OutlinedButton(
-                  onPressed: onPrevious,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: colors.textPrimary,
-                    side: BorderSide(
-                      color: colors.textSecondary.withValues(alpha: 0.35),
-                    ),
-                    shape: shape,
-                  ),
-                  child: const Text('السابق'),
-                ),
-              ),
-            ),
-            SizedBox(width: context.insets.sm + 2.w),
-          ],
-          Expanded(
-            flex: 2,
-            child: SizedBox(
-              height: 52.h,
-              child: FilledButton.icon(
-                onPressed: next == null ? onFinish : onNext,
-                icon: AppIcon(
-                  next == null
-                      ? HugeIcons.strokeRoundedCheckmarkCircle02
-                      : HugeIcons.strokeRoundedArrowRight01,
-                ),
-                iconAlignment: IconAlignment.end,
-                label: Text(
-                  next == null ? 'انتهيت من الدليل' : 'التالي: ${next!.title}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                style: FilledButton.styleFrom(
-                  backgroundColor: colors.primary,
-                  foregroundColor: Colors.white,
-                  shape: shape,
-                ),
-              ),
             ),
           ),
         ],
