@@ -54,6 +54,7 @@ class _CustomCardState extends State<CustomCard> {
                         ? colors.primary
                         : colors.textPrimary,
                     fontWeight: FontWeight.bold,
+                    fontSize: 16.sp,
                     height: 1.35,
                   ),
                 ),
@@ -63,6 +64,7 @@ class _CustomCardState extends State<CustomCard> {
                     widget.subTitle!,
                     style: context.textStyles.bodyMedium?.copyWith(
                       color: colors.textSecondary,
+                      fontSize: 13.sp,
                       height: 1.5,
                     ),
                   ),

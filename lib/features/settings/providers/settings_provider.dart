@@ -94,7 +94,7 @@ class SettingsState {
     this.maghribAthanEnabled = true,
     this.ishaAthanEnabled = true,
     this.languageCode = 'ar',
-    this.fontSize = 16.0,
+    this.fontSize = 18.0,
     this.duroodInterval = 0,
     required this.homeSections,
     this.shareTemplate = ShareTemplate.classic,
@@ -166,7 +166,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         SettingsState(
           themeMode: _getInitialTheme(),
           appTheme: _getInitialAppTheme(),
-          fontSize: CacheHelper.getData(key: 'fontSize') ?? 16.0,
+          fontSize: CacheHelper.getData(key: 'fontSize') ?? 18.0,
           homeSections: _getInitialHomeSections(),
           notificationsEnabled:
               CacheHelper.getData(key: 'notificationsEnabled') ?? true,

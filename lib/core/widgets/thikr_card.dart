@@ -152,7 +152,7 @@ class _ThikrCardState extends ConsumerState<ThikrCard> {
                     style: QuranText.style(
                       context.textStyles.bodyLarge!.copyWith(
                         fontWeight: FontWeight.bold,
-                        height: 1.8,
+                        height: 2.2,
                         fontSize: fontSize,
                         color: colors.textPrimary,
                       ),

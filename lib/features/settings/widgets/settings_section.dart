@@ -52,7 +52,7 @@ class SectionHeader extends StatelessWidget {
         style: (context.textStyles.bodyMedium ?? const TextStyle()).copyWith(
           fontWeight: FontWeight.bold,
           color: context.colors.primary,
-          fontSize: 13.sp,
+          fontSize: 15.sp,
         ),
       ),
     );

@@ -18,7 +18,6 @@ import 'package:thekr_app/core/widgets/new_feature_badge.dart';
 import 'package:thekr_app/features/settings/widgets/durood_settings_sheet.dart';
 import 'package:thekr_app/features/settings/widgets/font_size_settings_sheet.dart';
 import 'package:thekr_app/features/settings/widgets/theme_settings_sheet.dart';
-import 'package:thekr_app/core/theme/tokens/design_tokens.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
 import 'package:thekr_app/core/utils/constants/app_icons.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -236,7 +235,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       SettingsTile(
                         title: 'حجم الخط في القراءة',
                         subtitle:
-                            '${settings.fontSize.toInt()} نقطة (معاينة حية)',
+                            '${settings.fontSize.toInt()} نقطة ',
                         icon: HugeIcons.strokeRoundedTextFont,
                         iconColor: context.colors.primary,
                         onTap: () {

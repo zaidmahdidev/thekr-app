@@ -24,7 +24,7 @@ class HomeFeaturesGrid extends StatelessWidget {
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
-          childAspectRatio: 0.75,
+          childAspectRatio: 0.68,
           crossAxisSpacing: context.insets.sm * 0.8,
           mainAxisSpacing: context.insets.sm * 0.8,
         ),

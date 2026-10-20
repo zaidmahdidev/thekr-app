@@ -84,7 +84,7 @@ class ProphetGridItem extends StatelessWidget {
                           style: context.textStyles.titleLarge?.copyWith(
                             color: context.colors.textPrimary,
                             fontWeight: FontWeight.bold,
-                            fontSize: 11.sp,
+                            fontSize: 13.sp,
                           ),
                         ),
                       ),
@@ -97,7 +97,7 @@ class ProphetGridItem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: context.textStyles.labelLarge?.copyWith(
                         color: context.colors.textSecondary,
-                        fontSize: 8.sp,
+                        fontSize: 10.sp,
                         height: 1.2,
                       ),
                     ),

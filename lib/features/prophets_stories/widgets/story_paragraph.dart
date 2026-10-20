@@ -16,7 +16,7 @@ class StoryParagraph extends StatelessWidget {
     final base = context.textStyles.bodyLarge!.copyWith(
       color: context.colors.textPrimary,
       fontSize: fontSize,
-      height: 1.95,
+      height: 2.2,
     );
     final quoted = base.copyWith(
       color: context.colors.primary,

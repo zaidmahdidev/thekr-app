@@ -6,5 +6,5 @@ class AppFonts {
   static const String family = 'Amiri';
 
   /// Amiri has tall built-in line metrics; this keeps text blocks compact.
-  static const double lineHeight = 1.5;
+  static const double lineHeight = 1.65;
 }
