@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/features/azkar/widgets/azkar_item_widget.dart';
+import 'package:thekr_app/features/azkar/widgets/azkar_paged_view.dart';
 import 'package:thekr_app/core/services/analytics_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
@@ -25,6 +26,13 @@ class AzkarListScreen extends ConsumerStatefulWidget {
 class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
   late List<Map<String, dynamic>> azkarWithCounters;
   bool allCompleted = false;
+  final PageController _pageController = PageController();
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -59,11 +67,31 @@ class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
                 azkarWithCounters[index]['isCompleted'] = true;
               });
               _checkAllCompleted();
+              _advanceFrom(index);
             }
           });
         }
       }
     });
+  }
+
+  /// In the horizontal layout, moves on to the next unfinished thikr once one
+  /// is completed.
+  void _advanceFrom(int index) {
+    if (ref.read(settingsProvider).azkarLayout != AzkarLayout.horizontal ||
+        !_pageController.hasClients) {
+      return;
+    }
+    final next = azkarWithCounters.indexWhere(
+      (azkar) => !azkar['isCompleted'],
+      index + 1,
+    );
+    if (next == -1) return;
+    _pageController.animateToPage(
+      next,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOutCubic,
+    );
   }
 
   void _checkAllCompleted() {
@@ -93,10 +121,33 @@ class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final layout = ref.watch(settingsProvider.select((s) => s.azkarLayout));
+    final isHorizontal = layout == AzkarLayout.horizontal;
+
     return AppScaffold(
       appBar: BaseAppBar(
         title: widget.type,
         actions: [
+          IconButton(
+            tooltip: isHorizontal ? 'عرض كقائمة' : 'عرض بالتمرير الأفقي',
+            icon: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: AppIcon(
+                isHorizontal
+                    ? HugeIcons.strokeRoundedLayout2Row
+                    : HugeIcons.strokeRoundedLayout2Column,
+                key: ValueKey(isHorizontal),
+              ),
+            ),
+            onPressed: () {
+              HapticFeedback.selectionClick();
+              ref
+                  .read(settingsProvider.notifier)
+                  .setAzkarLayout(
+                    isHorizontal ? AzkarLayout.vertical : AzkarLayout.horizontal,
+                  );
+            },
+          ),
           IconButton(
             icon: const AppIcon(HugeIcons.strokeRoundedZoomIn),
             onPressed: () {
@@ -162,6 +213,12 @@ class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
                   ),
                 ],
               ),
+            )
+          : isHorizontal
+          ? AzkarPagedView(
+              items: azkarWithCounters,
+              controller: _pageController,
+              onTapItem: _decrementCounter,
             )
           : ListView.builder(
               padding: const EdgeInsets.only(top: 10),
