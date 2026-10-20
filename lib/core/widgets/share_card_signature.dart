@@ -9,19 +9,22 @@ class ShareCardSignature extends StatelessWidget {
   const ShareCardSignature({
     super.key,
     required this.color,
-    required this.accent,
-    this.tagline = 'الأذكار والقرآن',
+    this.isCustomText = false,
   });
 
   final Color color;
-  final Color accent;
-  final String tagline;
+
+  /// True when the text was written by the user in the custom share card.
+  final bool isCustomText;
 
   @override
   Widget build(BuildContext context) {
+    final label = isCustomText
+        ? 'نص مخصص بواسطة تطبيق ${AppConstants.appName}'
+        : 'بواسطة تطبيق ${AppConstants.appName}';
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Row(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -30,33 +33,17 @@ class ShareCardSignature extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             child: Image.asset(AppAssets.logo, width: 22, height: 22),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'تطبيق ${AppConstants.appName}',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: AppFonts.family,
-                  color: color.withValues(alpha: 0.85),
-                  fontSize: 7.5,
-                  fontWeight: FontWeight.w700,
-                  height: 1.1,
-                ),
-              ),
-              Text(
-                tagline,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: AppFonts.family,
-                  color: accent,
-                  fontSize: 5.5,
-                  height: 1.3,
-                ),
-              ),
-            ],
+          const SizedBox(height: 3),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: AppFonts.family,
+              color: color.withValues(alpha: 0.85),
+              fontSize: 8,
+              fontWeight: FontWeight.w700,
+              height: 1.2,
+            ),
           ),
         ],
       ),
