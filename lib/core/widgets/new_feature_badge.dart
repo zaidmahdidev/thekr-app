@@ -28,7 +28,9 @@ class NewFeatureBadge extends ConsumerWidget {
 
     if (!shouldShow) return child;
 
+    // expand: a loose Stack would shrink the card inside a grid cell.
     return Stack(
+      fit: StackFit.expand,
       clipBehavior: Clip.none,
       children: [
         child,
@@ -53,10 +55,9 @@ class NewFeatureBadge extends ConsumerWidget {
               children: [
                 Text(
                   'جديد',
-                  style: context.textStyles.bodySmall?.copyWith(
+                  style: context.textStyles.labelMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 10.sp,
                   ),
                 ),
               ],

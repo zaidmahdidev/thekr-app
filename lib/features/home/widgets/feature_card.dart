@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
@@ -64,6 +65,13 @@ class FeatureCard extends StatelessWidget {
                         size: 28.w,
                         color: color ?? context.colors.secondary,
                       )
+                    : (imgUrl ?? '').endsWith('.svg')
+                    ? SvgPicture.asset(
+                        imgUrl!,
+                        width: 40.w,
+                        height: 40.w,
+                        fit: BoxFit.contain,
+                      )
                     : Image.asset(
                         imgUrl ?? "",
                         width: 40.w,
@@ -80,7 +88,6 @@ class FeatureCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: context.textStyles.bodySmall?.copyWith(
-                    fontSize: 10.sp,
                     fontWeight: FontWeight.bold,
                     color: context.colors.textPrimary,
                   ),

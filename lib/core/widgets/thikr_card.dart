@@ -152,8 +152,10 @@ class _ThikrCardState extends ConsumerState<ThikrCard> {
                     style: QuranText.style(
                       context.textStyles.bodyLarge!.copyWith(
                         fontWeight: FontWeight.bold,
-                        height: 1.8,
-                        fontSize: fontSize,
+                        height: 2.2,
+                        fontSize: QuranText.isUthmani(widget.text)
+                            ? fontSize * QuranText.fontScale
+                            : fontSize,
                         color: colors.textPrimary,
                       ),
                       widget.text,

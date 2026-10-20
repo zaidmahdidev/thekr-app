@@ -23,10 +23,18 @@ class AppTypography {
     fontWeight: FontWeight.bold,
   );
 
+  /// Screen titles (app bar).
+  static TextStyle get title => TextStyle(
+    fontFamily: _fontFamily,
+    height: _height,
+    fontSize: 18.sp,
+    fontWeight: FontWeight.bold,
+  );
+
   static TextStyle get h3 => TextStyle(
     fontFamily: _fontFamily,
     height: _height,
-    fontSize: 15.sp,
+    fontSize: 16.sp,
     fontWeight: FontWeight.bold,
   );
 
@@ -38,9 +46,13 @@ class AppTypography {
       TextStyle(fontFamily: _fontFamily, height: _height, fontSize: 13.sp);
 
   static TextStyle get bodySmall =>
-      TextStyle(fontFamily: _fontFamily, height: _height, fontSize: 11.sp);
+      TextStyle(fontFamily: _fontFamily, height: _height, fontSize: 12.sp);
 
   static TextStyle get label =>
+      TextStyle(fontFamily: _fontFamily, height: _height, fontSize: 11.sp);
+
+  /// Smallest text: badges, captions, tiny hints.
+  static TextStyle get caption =>
       TextStyle(fontFamily: _fontFamily, height: _height, fontSize: 10.sp);
 
   static TextStyle get button => TextStyle(

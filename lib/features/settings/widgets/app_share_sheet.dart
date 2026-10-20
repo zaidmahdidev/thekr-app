@@ -81,9 +81,8 @@ class AppShareSheet extends StatelessWidget {
                         SizedBox(height: context.insets.sm),
                         Text(
                           'امسح الكود لتحميل التطبيق',
-                          style: context.textStyles.bodySmall?.copyWith(
+                          style: context.textStyles.labelMedium?.copyWith(
                             color: context.colors.textSecondary,
-                            fontSize: 10.sp,
                           ),
                         ),
                       ],

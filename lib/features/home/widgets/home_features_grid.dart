@@ -24,7 +24,7 @@ class HomeFeaturesGrid extends StatelessWidget {
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
-          childAspectRatio: 0.75,
+          childAspectRatio: 0.68,
           crossAxisSpacing: context.insets.sm * 0.8,
           mainAxisSpacing: context.insets.sm * 0.8,
         ),
@@ -85,6 +85,22 @@ class HomeFeaturesGrid extends StatelessWidget {
             imagePath: AppAssets.fLive,
             color: const Color(0xffe74c3c),
             route: const LiveStreamRoute(),
+          ),
+          _FeatureItem(
+            title: "الإذاعة",
+            imagePath: AppAssets.fRadio,
+            color: const Color(0xff1abc9c),
+            route: const RadioRoute(),
+            featureId: 'radio',
+            addedInVersion: '1.3.3',
+          ),
+          _FeatureItem(
+            title: "دليل المعتمر",
+            imagePath: AppAssets.fUmrah,
+            color: const Color(0xffd4a017),
+            route: const UmrahRoute(),
+            featureId: 'umrah',
+            addedInVersion: '1.3.3',
           ),
           _FeatureItem(
             title: "التقويم الإسلامي",

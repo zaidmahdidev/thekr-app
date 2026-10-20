@@ -32,9 +32,8 @@ class AsmaAllahGridItem extends ConsumerWidget {
           child: Text(
             item.name,
             textAlign: TextAlign.center,
-            style: context.textStyles.bodyMedium?.copyWith(
+            style: context.textStyles.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              fontSize: 14.sp,
             ),
           ),
         ),
@@ -86,7 +85,7 @@ class AsmaAllahGridItem extends ConsumerWidget {
                   item.name,
                   style: context.textStyles.displayLarge?.copyWith(
                     color: context.colors.primary,
-                    fontSize: (fontSize + 4).sp,
+                    fontSize: fontSize + 4,
                   ),
                 ),
                 SizedBox(height: context.insets.sm),
@@ -97,7 +96,7 @@ class AsmaAllahGridItem extends ConsumerWidget {
                   style: context.textStyles.bodyLarge?.copyWith(
                     height: 1.6,
                     color: context.colors.textPrimary,
-                    fontSize: fontSize.sp,
+                    fontSize: fontSize,
                   ),
                 ),
                 SizedBox(height: context.insets.xl),

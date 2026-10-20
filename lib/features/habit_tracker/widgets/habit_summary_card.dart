@@ -181,9 +181,8 @@ class _Stat extends StatelessWidget {
             Text(
               label,
               maxLines: 1,
-              style: context.textStyles.labelSmall?.copyWith(
+              style: context.textStyles.labelMedium?.copyWith(
                 color: style.textMuted,
-                fontSize: 9.5.sp,
                 height: 1.2,
               ),
             ),

@@ -172,9 +172,8 @@ class LiveBadge extends StatelessWidget {
           SizedBox(width: 4.w),
           Text(
             'مباشر',
-            style: context.textStyles.labelSmall?.copyWith(
+            style: context.textStyles.labelMedium?.copyWith(
               color: Colors.white,
-              fontSize: 9.sp,
               fontWeight: FontWeight.bold,
               height: 1.2,
             ),

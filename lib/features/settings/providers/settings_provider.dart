@@ -3,6 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
 import 'package:thekr_app/core/services/notification_service.dart';
 
+/// How the adhkar of a list are laid out: all in one scrolling list, or one
+/// thikr per page swiped sideways.
+enum AzkarLayout { vertical, horizontal }
+
 enum HomeSection {
   prayerTimes,
   inspiration,
@@ -73,6 +77,7 @@ class SettingsState {
   final bool ishaAthanEnabled;
   final String languageCode;
   final double fontSize;
+  final AzkarLayout azkarLayout;
   final int duroodInterval;
   final List<HomeSection> homeSections;
   final ShareTemplate shareTemplate;
@@ -94,7 +99,8 @@ class SettingsState {
     this.maghribAthanEnabled = true,
     this.ishaAthanEnabled = true,
     this.languageCode = 'ar',
-    this.fontSize = 16.0,
+    this.fontSize = 18.0,
+    this.azkarLayout = AzkarLayout.vertical,
     this.duroodInterval = 0,
     required this.homeSections,
     this.shareTemplate = ShareTemplate.classic,
@@ -118,6 +124,7 @@ class SettingsState {
     bool? ishaAthanEnabled,
     String? languageCode,
     double? fontSize,
+    AzkarLayout? azkarLayout,
     int? duroodInterval,
     List<HomeSection>? homeSections,
     ShareTemplate? shareTemplate,
@@ -146,6 +153,7 @@ class SettingsState {
       ishaAthanEnabled: ishaAthanEnabled ?? this.ishaAthanEnabled,
       languageCode: languageCode ?? this.languageCode,
       fontSize: fontSize ?? this.fontSize,
+      azkarLayout: azkarLayout ?? this.azkarLayout,
       duroodInterval: duroodInterval ?? this.duroodInterval,
       homeSections: homeSections ?? this.homeSections,
       shareTemplate: shareTemplate ?? this.shareTemplate,
@@ -166,7 +174,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         SettingsState(
           themeMode: _getInitialTheme(),
           appTheme: _getInitialAppTheme(),
-          fontSize: CacheHelper.getData(key: 'fontSize') ?? 16.0,
+          fontSize: CacheHelper.getData(key: 'fontSize') ?? 18.0,
+          azkarLayout: CacheHelper.getData(key: 'azkarLayout') == 'horizontal'
+              ? AzkarLayout.horizontal
+              : AzkarLayout.vertical,
           homeSections: _getInitialHomeSections(),
           notificationsEnabled:
               CacheHelper.getData(key: 'notificationsEnabled') ?? true,
@@ -375,6 +386,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   void toggleIshaAthan(bool enabled) {
     state = state.copyWith(ishaAthanEnabled: enabled);
     CacheHelper.saveData(key: 'isha_athan_enabled', value: enabled);
+  }
+
+  void setAzkarLayout(AzkarLayout layout) {
+    state = state.copyWith(azkarLayout: layout);
+    CacheHelper.saveData(key: 'azkarLayout', value: layout.name);
   }
 
   void updateFontSize(double size) {

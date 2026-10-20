@@ -171,16 +171,14 @@ class HomeAppBar extends StatelessWidget {
                       style: context.textStyles.titleLarge?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 15.sp,
                         height: 1.3,
                       ),
                     ),
                     SizedBox(height: 6.h),
                     Text(
                       todayDate,
-                      style: context.textStyles.titleLarge?.copyWith(
+                      style: context.textStyles.bodyMedium?.copyWith(
                         color: Colors.white.withValues(alpha: 0.92),
-                        fontSize: 13.sp,
                         height: 1.3,
                         shadows: [
                           Shadow(
@@ -239,8 +237,7 @@ class HomeAppBar extends StatelessWidget {
                             SizedBox(width: 8.w),
                             Text(
                               remainingTime,
-                              style: context.textStyles.labelLarge?.copyWith(
-                                fontSize: 12.sp,
+                              style: context.textStyles.bodySmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

@@ -31,7 +31,7 @@ class ProphetLessonItem extends StatelessWidget {
               style: context.textStyles.bodyMedium?.copyWith(
                 color: context.colors.textPrimary,
                 height: 1.5,
-                fontSize: fontSize.sp,
+                fontSize: fontSize,
               ),
             ),
           ),

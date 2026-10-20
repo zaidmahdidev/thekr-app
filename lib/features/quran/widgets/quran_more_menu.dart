@@ -186,10 +186,9 @@ class _MenuTile extends StatelessWidget {
             maxLines: 2,
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
-            style: context.textStyles.labelMedium?.copyWith(
+            style: context.textStyles.labelLarge?.copyWith(
               color: palette.text,
               fontWeight: FontWeight.w600,
-              fontSize: 11.5.sp,
               height: 1.3,
             ),
           ),

@@ -463,6 +463,22 @@ class QuranRouteArgs {
 }
 
 /// generated route for
+/// [RadioScreen]
+class RadioRoute extends PageRouteInfo<void> {
+  const RadioRoute({List<PageRouteInfo>? children})
+    : super(RadioRoute.name, initialChildren: children);
+
+  static const String name = 'RadioRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const RadioScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [SettingsScreen]
 class SettingsRoute extends PageRouteInfo<void> {
   const SettingsRoute({List<PageRouteInfo>? children})
@@ -476,6 +492,149 @@ class SettingsRoute extends PageRouteInfo<void> {
       return const SettingsScreen();
     },
   );
+}
+
+/// generated route for
+/// [UmrahChecklistScreen]
+class UmrahChecklistRoute extends PageRouteInfo<void> {
+  const UmrahChecklistRoute({List<PageRouteInfo>? children})
+    : super(UmrahChecklistRoute.name, initialChildren: children);
+
+  static const String name = 'UmrahChecklistRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const UmrahChecklistScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [UmrahIntroScreen]
+class UmrahIntroRoute extends PageRouteInfo<void> {
+  const UmrahIntroRoute({List<PageRouteInfo>? children})
+    : super(UmrahIntroRoute.name, initialChildren: children);
+
+  static const String name = 'UmrahIntroRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const UmrahIntroScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [UmrahMiqatScreen]
+class UmrahMiqatRoute extends PageRouteInfo<void> {
+  const UmrahMiqatRoute({List<PageRouteInfo>? children})
+    : super(UmrahMiqatRoute.name, initialChildren: children);
+
+  static const String name = 'UmrahMiqatRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const UmrahMiqatScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [UmrahMistakesScreen]
+class UmrahMistakesRoute extends PageRouteInfo<void> {
+  const UmrahMistakesRoute({List<PageRouteInfo>? children})
+    : super(UmrahMistakesRoute.name, initialChildren: children);
+
+  static const String name = 'UmrahMistakesRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const UmrahMistakesScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [UmrahProhibitionsScreen]
+class UmrahProhibitionsRoute extends PageRouteInfo<void> {
+  const UmrahProhibitionsRoute({List<PageRouteInfo>? children})
+    : super(UmrahProhibitionsRoute.name, initialChildren: children);
+
+  static const String name = 'UmrahProhibitionsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const UmrahProhibitionsScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [UmrahScreen]
+class UmrahRoute extends PageRouteInfo<void> {
+  const UmrahRoute({List<PageRouteInfo>? children})
+    : super(UmrahRoute.name, initialChildren: children);
+
+  static const String name = 'UmrahRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const UmrahScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [UmrahStepScreen]
+class UmrahStepRoute extends PageRouteInfo<UmrahStepRouteArgs> {
+  UmrahStepRoute({
+    Key? key,
+    required int stepNumber,
+    List<PageRouteInfo>? children,
+  }) : super(
+         UmrahStepRoute.name,
+         args: UmrahStepRouteArgs(key: key, stepNumber: stepNumber),
+         initialChildren: children,
+       );
+
+  static const String name = 'UmrahStepRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<UmrahStepRouteArgs>();
+      return UmrahStepScreen(key: args.key, stepNumber: args.stepNumber);
+    },
+  );
+}
+
+class UmrahStepRouteArgs {
+  const UmrahStepRouteArgs({this.key, required this.stepNumber});
+
+  final Key? key;
+
+  final int stepNumber;
+
+  @override
+  String toString() {
+    return 'UmrahStepRouteArgs{key: $key, stepNumber: $stepNumber}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! UmrahStepRouteArgs) return false;
+    return key == other.key && stepNumber == other.stepNumber;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ stepNumber.hashCode;
 }
 
 /// generated route for

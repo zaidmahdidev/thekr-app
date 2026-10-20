@@ -104,7 +104,7 @@ class AyahShareTemplate extends StatelessWidget {
               // Footer: same divider + signature as every other share card
               ShareCardDivider(color: primaryColor),
               const SizedBox(height: 10),
-              ShareCardSignature(color: textColor, accent: primaryColor),
+              ShareCardSignature(color: textColor),
             ],
           ),
         ),

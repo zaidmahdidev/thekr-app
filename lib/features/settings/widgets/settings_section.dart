@@ -49,10 +49,9 @@ class SectionHeader extends StatelessWidget {
       ),
       child: Text(
         title,
-        style: (context.textStyles.bodyMedium ?? const TextStyle()).copyWith(
+        style: (context.textStyles.titleLarge ?? const TextStyle()).copyWith(
           fontWeight: FontWeight.bold,
           color: context.colors.primary,
-          fontSize: 13.sp,
         ),
       ),
     );

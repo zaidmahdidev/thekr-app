@@ -174,10 +174,7 @@ class ShareCardView extends StatelessWidget {
                       if (style.showSignature)
                         ShareCardSignature(
                           color: palette.text,
-                          accent: palette.accent,
-                          tagline: isCustomText
-                              ? 'بطاقة مخصصة'
-                              : 'الأذكار والقرآن',
+                          isCustomText: isCustomText,
                         )
                       else
                         ShareCardDivider(color: palette.accent),

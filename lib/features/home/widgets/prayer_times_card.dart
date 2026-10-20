@@ -139,11 +139,10 @@ class _PrayerCell extends StatelessWidget {
             children: [
               Text(
                 item.prayer.nameArabic,
-                style: context.textStyles.labelLarge?.copyWith(
+                style: context.textStyles.bodySmall?.copyWith(
                   color: item.isNext
                       ? colors.secondary
                       : context.textStyles.bodyMedium?.color,
-                  fontSize: 12.sp,
                   fontWeight: item.isNext ? FontWeight.bold : FontWeight.w500,
                 ),
               ),
@@ -155,16 +154,14 @@ class _PrayerCell extends StatelessWidget {
                     if (item.period != null)
                       TextSpan(
                         text: ' ${item.period}',
-                        style: TextStyle(
-                          fontSize: 9.5.sp,
+                        style: context.textStyles.labelMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                   ],
                 ),
-                style: context.textStyles.bodySmall?.copyWith(
+                style: context.textStyles.bodyLarge?.copyWith(
                   color: accent,
-                  fontSize: 14.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
