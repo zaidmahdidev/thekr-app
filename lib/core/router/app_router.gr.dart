@@ -463,6 +463,22 @@ class QuranRouteArgs {
 }
 
 /// generated route for
+/// [RadioScreen]
+class RadioRoute extends PageRouteInfo<void> {
+  const RadioRoute({List<PageRouteInfo>? children})
+    : super(RadioRoute.name, initialChildren: children);
+
+  static const String name = 'RadioRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const RadioScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [SettingsScreen]
 class SettingsRoute extends PageRouteInfo<void> {
   const SettingsRoute({List<PageRouteInfo>? children})

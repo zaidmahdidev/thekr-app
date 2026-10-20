@@ -28,7 +28,9 @@ class NewFeatureBadge extends ConsumerWidget {
 
     if (!shouldShow) return child;
 
+    // expand: a loose Stack would shrink the card inside a grid cell.
     return Stack(
+      fit: StackFit.expand,
       clipBehavior: Clip.none,
       children: [
         child,

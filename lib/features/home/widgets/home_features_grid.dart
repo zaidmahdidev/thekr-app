@@ -87,6 +87,14 @@ class HomeFeaturesGrid extends StatelessWidget {
             route: const LiveStreamRoute(),
           ),
           _FeatureItem(
+            title: "الإذاعة",
+            imagePath: AppAssets.fRadio,
+            color: const Color(0xff1abc9c),
+            route: const RadioRoute(),
+            featureId: 'radio',
+            addedInVersion: '1.3.3',
+          ),
+          _FeatureItem(
             title: "التقويم الإسلامي",
             imagePath: AppAssets.fCalendar,
             color: const Color(0xff009688),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
@@ -63,6 +64,13 @@ class FeatureCard extends StatelessWidget {
                         icon!,
                         size: 28.w,
                         color: color ?? context.colors.secondary,
+                      )
+                    : (imgUrl ?? '').endsWith('.svg')
+                    ? SvgPicture.asset(
+                        imgUrl!,
+                        width: 40.w,
+                        height: 40.w,
+                        fit: BoxFit.contain,
                       )
                     : Image.asset(
                         imgUrl ?? "",

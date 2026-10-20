@@ -13,6 +13,7 @@ import 'package:thekr_app/features/qiblah/screens/qiblah_screen.dart';
 import 'package:thekr_app/features/quran/screens/quran_screen.dart';
 import 'package:thekr_app/features/settings/screens/settings_screen.dart';
 import 'package:thekr_app/features/live_stream/screens/live_stream_screen.dart';
+import 'package:thekr_app/features/radio/screens/radio_screen.dart';
 import 'package:thekr_app/features/prophets_stories/screens/prophets_list_screen.dart';
 import 'package:thekr_app/features/prophets_stories/screens/prophet_details_screen.dart';
 import 'package:thekr_app/features/misbaha/screens/misbaha_screen.dart';
@@ -40,6 +41,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: QuranRoute.page),
     AutoRoute(page: SettingsRoute.page),
     AutoRoute(page: LiveStreamRoute.page),
+    AutoRoute(page: RadioRoute.page),
     AutoRoute(page: ProphetsListRoute.page),
     AutoRoute(page: ProphetDetailsRoute.page),
     AutoRoute(page: MisbahaRoute.page),
