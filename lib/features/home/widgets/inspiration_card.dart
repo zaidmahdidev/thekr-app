@@ -151,9 +151,8 @@ class _Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = context.textStyles.labelSmall?.copyWith(
+    final label = context.textStyles.labelMedium?.copyWith(
       color: style.textMuted,
-      fontSize: 10.sp,
       fontWeight: FontWeight.w500,
     );
 

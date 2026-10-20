@@ -54,10 +54,9 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
                     (title != null
                         ? Text(
                             title!,
-                            style: context.textStyles.titleLarge?.copyWith(
+                            style: context.textStyles.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: context.colors.textPrimary,
-                              fontSize: 18.sp,
                               letterSpacing: 0.5,
                             ),
                           )

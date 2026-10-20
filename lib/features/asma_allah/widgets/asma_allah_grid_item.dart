@@ -32,9 +32,8 @@ class AsmaAllahGridItem extends ConsumerWidget {
           child: Text(
             item.name,
             textAlign: TextAlign.center,
-            style: context.textStyles.bodyMedium?.copyWith(
+            style: context.textStyles.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              fontSize: 14.sp,
             ),
           ),
         ),

@@ -80,7 +80,6 @@ class FeatureCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: context.textStyles.bodySmall?.copyWith(
-                    fontSize: 12.sp,
                     fontWeight: FontWeight.bold,
                     color: context.colors.textPrimary,
                   ),

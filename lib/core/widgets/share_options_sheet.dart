@@ -97,9 +97,8 @@ class ShareOptionsSheet extends StatelessWidget {
                   SizedBox(height: 2.h),
                   Text(
                     subtitle,
-                    style: context.textStyles.bodySmall?.copyWith(
+                    style: context.textStyles.labelMedium?.copyWith(
                       color: context.colors.textSecondary,
-                      fontSize: 10.sp,
                     ),
                   ),
                 ],

@@ -130,16 +130,14 @@ class ThemeSettingsSheet extends ConsumerWidget {
                             .copyWith(
                           fontWeight: FontWeight.bold,
                           color: context.colors.textPrimary,
-                          fontSize: 14.sp,
                         ),
                       ),
                       Text(
                         'اختر الطابع اللوني المفضل لواجهة التطبيق',
-                        style: (context.textStyles.bodySmall ??
+                        style: (context.textStyles.labelLarge ??
                                 const TextStyle())
                             .copyWith(
                           color: context.colors.textSecondary,
-                          fontSize: 11.sp,
                         ),
                       ),
                     ],
@@ -260,17 +258,15 @@ class ThemeSettingsSheet extends ConsumerWidget {
                                   color: isSelected
                                       ? context.colors.primary
                                       : context.colors.textPrimary,
-                                  fontSize: 13.sp,
                                 ),
                               ),
                               SizedBox(height: 2.h),
                               Text(
                                 _getThemeDescription(theme),
-                                style: (context.textStyles.bodySmall ??
+                                style: (context.textStyles.labelLarge ??
                                         const TextStyle())
                                     .copyWith(
                                   color: context.colors.textSecondary,
-                                  fontSize: 10.5.sp,
                                 ),
                               ),
                             ],

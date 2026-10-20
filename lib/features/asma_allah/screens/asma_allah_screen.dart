@@ -38,10 +38,9 @@ class AsmaAllahScreen extends ConsumerWidget {
                   Text(
                     'وَلِلَّهِ الْأَسْمَاءُ الْحُسْنَىٰ فَادْعُوهُ بِهَا',
                     textAlign: TextAlign.center,
-                    style: context.textStyles.headlineMedium?.copyWith(
+                    style: context.textStyles.titleLarge?.copyWith(
                       color: context.colors.primary,
                       height: 1.5,
-                      fontSize: 16.sp,
                     ),
                   ),
                   SizedBox(height: context.insets.sm),

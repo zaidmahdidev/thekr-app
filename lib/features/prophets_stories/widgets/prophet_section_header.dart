@@ -29,7 +29,6 @@ class ProphetSectionHeader extends StatelessWidget {
             style: context.textStyles.titleLarge?.copyWith(
               color: context.colors.primary,
               fontWeight: FontWeight.bold,
-              fontSize: 16.sp,
             ),
           ),
         ],

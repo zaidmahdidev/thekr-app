@@ -12,6 +12,10 @@ class QuranText {
 
   static bool isUthmani(String text) => _uthmaniMarks.hasMatch(text);
 
+  /// The Quran font draws smaller than the UI font at the same size; scale it
+  /// up so Quran text matches the surrounding adhkar.
+  static const double fontScale = 1;
+
   /// Number written with Arabic-Indic digits.
   static String digits(int number) {
     const map = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];

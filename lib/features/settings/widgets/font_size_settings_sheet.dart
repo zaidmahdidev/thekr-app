@@ -63,7 +63,6 @@ class FontSizeSettingsSheet extends ConsumerWidget {
                       .copyWith(
                         fontWeight: FontWeight.bold,
                         color: context.colors.textPrimary,
-                        fontSize: 14.sp,
                       ),
                 ),
                 const Spacer(),
@@ -82,7 +81,6 @@ class FontSizeSettingsSheet extends ConsumerWidget {
                         .copyWith(
                           color: context.colors.primary,
                           fontWeight: FontWeight.bold,
-                          fontSize: 12.sp,
                         ),
                   ),
                 ),

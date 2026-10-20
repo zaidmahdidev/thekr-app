@@ -55,7 +55,6 @@ class SettingsTile extends StatelessWidget {
                         .copyWith(
                           fontWeight: FontWeight.bold,
                           color: context.colors.textPrimary,
-                          fontSize: 14.sp,
                         ),
                   ),
                   if (subtitle != null) ...[
@@ -70,7 +69,6 @@ class SettingsTile extends StatelessWidget {
                             fontWeight: onTap != null
                                 ? FontWeight.bold
                                 : FontWeight.normal,
-                            fontSize: 12.sp,
                           ),
                     ),
                   ],

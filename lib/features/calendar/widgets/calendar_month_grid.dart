@@ -152,18 +152,16 @@ class _DayCell extends StatelessWidget {
               children: [
                 Text(
                   '$big',
-                  style: context.textStyles.bodyLarge?.copyWith(
+                  style: context.textStyles.titleLarge?.copyWith(
                     color: numberColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16.sp,
                     height: 1.1,
                   ),
                 ),
                 Text(
                   '$small',
-                  style: context.textStyles.bodySmall?.copyWith(
+                  style: context.textStyles.labelMedium?.copyWith(
                     color: smallColor,
-                    fontSize: 9.5.sp,
                     height: 1.1,
                   ),
                 ),

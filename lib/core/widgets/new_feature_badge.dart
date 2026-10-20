@@ -53,10 +53,9 @@ class NewFeatureBadge extends ConsumerWidget {
               children: [
                 Text(
                   'جديد',
-                  style: context.textStyles.bodySmall?.copyWith(
+                  style: context.textStyles.labelMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 10.sp,
                   ),
                 ),
               ],

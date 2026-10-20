@@ -434,9 +434,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       Text(
                         'تم التطوير بكل ❤️ بواسطة',
-                        style: context.textStyles.bodySmall?.copyWith(
+                        style: context.textStyles.labelMedium?.copyWith(
                           color: context.colors.textSecondary,
-                          fontSize: 10.sp,
                         ),
                       ),
                       SizedBox(height: context.insets.sm),
@@ -494,11 +493,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       SizedBox(height: context.insets.lg),
                       Text(
                         'إصدار ${AppConstants.appVersion}',
-                        style: context.textStyles.bodySmall?.copyWith(
+                        style: context.textStyles.labelMedium?.copyWith(
                           color: context.colors.textPrimary.withValues(
                             alpha: 0.5,
                           ),
-                          fontSize: 10.sp,
                         ),
                       ),
                       SizedBox(height: context.insets.sm),
