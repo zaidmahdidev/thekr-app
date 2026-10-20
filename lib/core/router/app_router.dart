@@ -14,6 +14,13 @@ import 'package:thekr_app/features/quran/screens/quran_screen.dart';
 import 'package:thekr_app/features/settings/screens/settings_screen.dart';
 import 'package:thekr_app/features/live_stream/screens/live_stream_screen.dart';
 import 'package:thekr_app/features/radio/screens/radio_screen.dart';
+import 'package:thekr_app/features/umrah/screens/umrah_screen.dart';
+import 'package:thekr_app/features/umrah/screens/umrah_step_screen.dart';
+import 'package:thekr_app/features/umrah/screens/umrah_intro_screen.dart';
+import 'package:thekr_app/features/umrah/screens/umrah_mistakes_screen.dart';
+import 'package:thekr_app/features/umrah/screens/umrah_miqat_screen.dart';
+import 'package:thekr_app/features/umrah/screens/umrah_prohibitions_screen.dart';
+import 'package:thekr_app/features/umrah/screens/umrah_checklist_screen.dart';
 import 'package:thekr_app/features/prophets_stories/screens/prophets_list_screen.dart';
 import 'package:thekr_app/features/prophets_stories/screens/prophet_details_screen.dart';
 import 'package:thekr_app/features/misbaha/screens/misbaha_screen.dart';
@@ -42,6 +49,13 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: SettingsRoute.page),
     AutoRoute(page: LiveStreamRoute.page),
     AutoRoute(page: RadioRoute.page),
+    AutoRoute(page: UmrahRoute.page),
+    AutoRoute(page: UmrahStepRoute.page),
+    AutoRoute(page: UmrahIntroRoute.page),
+    AutoRoute(page: UmrahMistakesRoute.page),
+    AutoRoute(page: UmrahMiqatRoute.page),
+    AutoRoute(page: UmrahProhibitionsRoute.page),
+    AutoRoute(page: UmrahChecklistRoute.page),
     AutoRoute(page: ProphetsListRoute.page),
     AutoRoute(page: ProphetDetailsRoute.page),
     AutoRoute(page: MisbahaRoute.page),

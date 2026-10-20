@@ -100,7 +100,7 @@ class _ProphetDetailsScreenState extends ConsumerState<ProphetDetailsScreen> {
                       style: context.textStyles.bodyMedium?.copyWith(
                         color: context.colors.textSecondary,
                         height: 1.7,
-                        fontSize: (fontSize - 2).sp,
+                        fontSize: fontSize - 2,
                       ),
                     ),
                   ),
@@ -112,7 +112,7 @@ class _ProphetDetailsScreenState extends ConsumerState<ProphetDetailsScreen> {
                         padding: EdgeInsets.only(bottom: context.insets.md),
                         child: StoryParagraph(
                           text: text,
-                          fontSize: fontSize.sp,
+                          fontSize: fontSize,
                         ),
                       ),
                     )
@@ -121,7 +121,7 @@ class _ProphetDetailsScreenState extends ConsumerState<ProphetDetailsScreen> {
                       prophet.fullStory,
                       style: context.textStyles.bodyLarge?.copyWith(
                         color: context.colors.textPrimary,
-                        fontSize: fontSize.sp,
+                        fontSize: fontSize,
                         height: 1.6,
                       ),
                     ),
