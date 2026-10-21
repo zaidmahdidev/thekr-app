@@ -5,7 +5,6 @@ import 'package:thekr_app/core/theme/tokens/app_fonts.dart';
 import 'package:thekr_app/core/theme/tokens/share_card_palette.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/utils/quran_text.dart';
-import 'package:thekr_app/core/widgets/share_card_divider.dart';
 import 'package:thekr_app/core/widgets/share_card_signature.dart';
 import 'package:thekr_app/features/settings/models/share_card_style.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
@@ -125,8 +124,6 @@ class ShareCardView extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      ShareCardDivider(color: palette.accent),
-                      const SizedBox(height: 10),
                       Expanded(
                         child: Center(
                           child: FittedBox(
@@ -170,14 +167,13 @@ class ShareCardView extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      if (style.showSignature)
+                      if (style.showSignature) ...[
+                        const SizedBox(height: 10),
                         ShareCardSignature(
                           color: palette.text,
                           isCustomText: isCustomText,
-                        )
-                      else
-                        ShareCardDivider(color: palette.accent),
+                        ),
+                      ],
                     ],
                   ),
                 ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_library/quran_library.dart';
-import 'package:thekr_app/core/widgets/share_card_divider.dart';
 import 'package:thekr_app/core/widgets/share_card_signature.dart';
 
 class AyahShareTemplate extends StatelessWidget {
@@ -101,9 +100,6 @@ class AyahShareTemplate extends StatelessWidget {
                 textDirection: TextDirection.rtl,
               ),
               const SizedBox(height: 15),
-              // Footer: same divider + signature as every other share card
-              ShareCardDivider(color: primaryColor),
-              const SizedBox(height: 10),
               ShareCardSignature(color: textColor),
             ],
           ),
