@@ -30,7 +30,7 @@ class ShareTemplatePanel extends StatelessWidget {
     final thumbHeight = thumbWidth / ShareCardRatio.portrait.aspect;
 
     return SizedBox(
-      height: thumbHeight + 30.h,
+      height: thumbHeight + 8.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -98,20 +98,6 @@ class ShareTemplatePanel extends StatelessWidget {
                             ),
                           ),
                       ],
-                    ),
-                  ),
-                  SizedBox(height: 6.h),
-                  Text(
-                    template.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: context.textStyles.labelSmall?.copyWith(
-                      color: isSelected
-                          ? context.colors.primary
-                          : context.colors.textSecondary,
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
                     ),
                   ),
                 ],
