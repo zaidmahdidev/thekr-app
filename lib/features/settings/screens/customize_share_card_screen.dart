@@ -198,8 +198,6 @@ class _Preview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pixelHeight = (1080 / style.ratio.aspect).round();
-
     return Padding(
       padding: EdgeInsets.fromLTRB(
         context.insets.lg,
@@ -246,13 +244,6 @@ class _Preview extends StatelessWidget {
                   );
                 },
               ),
-            ),
-          ),
-          SizedBox(height: context.insets.sm),
-          Text(
-            '${style.ratio.label} · 1080×$pixelHeight',
-            style: context.textStyles.labelSmall?.copyWith(
-              color: context.colors.textSecondary,
             ),
           ),
         ],

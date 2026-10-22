@@ -26,7 +26,13 @@ class ShareCardView extends StatelessWidget {
 
   static const double width = 360;
   static const double _radius = 24;
-  static const double _textPadding = 34;
+  static const double _textPadding = 24;
+  static const double _verticalPadding = 30;
+  static const double _signatureHeight = 48;
+  static const double _subtitleGap = 14;
+  static const double _minFontSize = 11;
+  static const double _maxFontSize = 44;
+  static const double _defaultMaxFontSize = 32;
 
   final ShareTemplate template;
   final String content;
@@ -36,19 +42,83 @@ class ShareCardView extends StatelessWidget {
 
   static double heightFor(ShareCardRatio ratio) => width / ratio.aspect;
 
-  double _baseFontSize(int length) {
-    if (length < 60) return 30;
-    if (length < 120) return 26;
-    if (length < 220) return 21;
-    if (length < 400) return 17;
-    return 14;
+  double _lineHeight() => content.length < 120 ? 1.75 : 1.6;
+
+  TextStyle _contentStyle(double size, Color color) => QuranText.style(
+    TextStyle(
+      fontFamily: AppFonts.family,
+      color: color,
+      fontSize: size,
+      fontWeight: FontWeight.w700,
+      height: _lineHeight(),
+    ),
+    content,
+  );
+
+  TextStyle _subtitleStyle(double size, Color color) => TextStyle(
+    fontFamily: AppFonts.family,
+    color: color,
+    fontSize: math.max(12, size * 0.55),
+    fontWeight: FontWeight.w500,
+    height: 1.5,
+  );
+
+  /// Height the text block takes at [size] inside [maxWidth].
+  double _measure(double size, double maxWidth, String? subtitleText) {
+    double layout(String text, TextStyle style) {
+      final painter = TextPainter(
+        text: TextSpan(text: text, style: style),
+        textDirection: TextDirection.rtl,
+        textAlign: TextAlign.center,
+      )..layout(maxWidth: maxWidth);
+      final height = painter.height;
+      painter.dispose();
+      return height;
+    }
+
+    var total = layout(content, _contentStyle(size, Colors.black));
+    if (subtitleText != null) {
+      total +=
+          _subtitleGap +
+          layout('— $subtitleText —', _subtitleStyle(size, Colors.black));
+    }
+    return total;
+  }
+
+  /// Largest font size whose text block fits the card, found by measuring the
+  /// real layout (so it works for any length, ratio and font).
+  double _fitFontSize(double maxWidth, double maxHeight, String? subtitleText) {
+    var low = _minFontSize;
+    var high = _maxFontSize;
+    if (_measure(high, maxWidth, subtitleText) <= maxHeight) return high;
+    for (var i = 0; i < 9; i++) {
+      final mid = (low + high) / 2;
+      if (_measure(mid, maxWidth, subtitleText) <= maxHeight) {
+        low = mid;
+      } else {
+        high = mid;
+      }
+    }
+    return low;
   }
 
   @override
   Widget build(BuildContext context) {
     final palette = ShareCardPalette.of(template);
-    final fontSize = _baseFontSize(content.length) * style.fontScale;
     final hasSubtitle = subtitle != null && subtitle!.trim().isNotEmpty;
+    final subtitleText = hasSubtitle ? subtitle!.trim() : null;
+    final textWidth = width - _textPadding * 2;
+    final textHeight =
+        heightFor(style.ratio) -
+        _verticalPadding * 2 -
+        (style.showSignature ? _signatureHeight : 0);
+    // [fit] is the biggest size that fills the card; the slider scales the
+    // default size but can never push the text past the card.
+    final fit = _fitFontSize(textWidth, textHeight, subtitleText);
+    final fontSize = math.min(
+      fit,
+      math.min(fit, _defaultMaxFontSize) * style.fontScale,
+    );
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -120,7 +190,7 @@ class ShareCardView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: _textPadding,
-                    vertical: 36,
+                    vertical: _verticalPadding,
                   ),
                   child: Column(
                     children: [
@@ -129,35 +199,28 @@ class ShareCardView extends StatelessWidget {
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
                             child: SizedBox(
-                              width: width - _textPadding * 2,
+                              width: textWidth,
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
                                     content,
                                     textAlign: TextAlign.center,
-                                    style: QuranText.style(
-                                      TextStyle(
-                                        fontFamily: AppFonts.family,
-                                        color: palette.text,
-                                        fontSize: fontSize,
-                                        fontWeight: FontWeight.w700,
-                                        height: 1.75,
-                                      ),
-                                      content,
+                                    textScaler: TextScaler.noScaling,
+                                    style: _contentStyle(
+                                      fontSize,
+                                      palette.text,
                                     ),
                                   ),
-                                  if (hasSubtitle) ...[
-                                    const SizedBox(height: 16),
+                                  if (subtitleText != null) ...[
+                                    const SizedBox(height: _subtitleGap),
                                     Text(
-                                      '— ${subtitle!.trim()} —',
+                                      '— $subtitleText —',
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: AppFonts.family,
-                                        color: palette.accent,
-                                        fontSize: math.max(12, fontSize * 0.55),
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.5,
+                                      textScaler: TextScaler.noScaling,
+                                      style: _subtitleStyle(
+                                        fontSize,
+                                        palette.accent,
                                       ),
                                     ),
                                   ],
