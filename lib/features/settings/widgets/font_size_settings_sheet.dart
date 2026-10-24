@@ -143,11 +143,11 @@ class FontSizeSettingsSheet extends ConsumerWidget {
               children: [
                 Expanded(
                   child: AppButton(
-                    text: 'الافتراضي (16)',
+                    text: 'الافتراضي (${SettingsState.defaultFontSize.toInt()})',
                     variant: AppButtonVariant.secondary,
                     onTap: () => ref
                         .read(settingsProvider.notifier)
-                        .updateFontSize(16.0),
+                        .updateFontSize(SettingsState.defaultFontSize),
                   ),
                 ),
                 SizedBox(width: context.insets.md),

@@ -76,6 +76,10 @@ class SettingsState {
   final bool maghribAthanEnabled;
   final bool ishaAthanEnabled;
   final String languageCode;
+  /// The reading font size a fresh install starts with, and the one the
+  /// "default" button in the font size sheet restores.
+  static const double defaultFontSize = 18.0;
+
   final double fontSize;
   final AzkarLayout azkarLayout;
   final int duroodInterval;
@@ -99,7 +103,7 @@ class SettingsState {
     this.maghribAthanEnabled = true,
     this.ishaAthanEnabled = true,
     this.languageCode = 'ar',
-    this.fontSize = 18.0,
+    this.fontSize = defaultFontSize,
     this.azkarLayout = AzkarLayout.vertical,
     this.duroodInterval = 0,
     required this.homeSections,
@@ -174,7 +178,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         SettingsState(
           themeMode: _getInitialTheme(),
           appTheme: _getInitialAppTheme(),
-          fontSize: CacheHelper.getData(key: 'fontSize') ?? 18.0,
+          fontSize:
+              CacheHelper.getData(key: 'fontSize') ?? SettingsState.defaultFontSize,
           azkarLayout: CacheHelper.getData(key: 'azkarLayout') == 'horizontal'
               ? AzkarLayout.horizontal
               : AzkarLayout.vertical,

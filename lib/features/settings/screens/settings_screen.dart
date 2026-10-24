@@ -387,7 +387,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                       SettingsTile(
                         title: 'تواصل معنا',
-                        icon: HugeIcons.strokeRoundedMessage01,
+                        icon: HugeIcons.strokeRoundedWhatsapp,
                         iconColor: Colors.teal,
                         onTap: () => UrlHelper.launchWhatsApp(
                           phone: AppConstants.whatsappNumber,
@@ -454,7 +454,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ),
                           SizedBox(width: context.insets.md),
                           DeveloperSocialCard(
-                            icon: HugeIcons.strokeRoundedMessage01,
+                            icon: HugeIcons.strokeRoundedWhatsapp,
                             color: Colors.green,
                             onTap: () => UrlHelper.launchWhatsApp(
                               phone: AppConstants.developerNumber,
