@@ -8,6 +8,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
 import 'package:thekr_app/core/services/share_service.dart';
+import 'package:thekr_app/core/theme/app_theme.dart';
+import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'dart:io';
 import 'package:thekr_app/core/widgets/widgets.dart';
@@ -225,49 +227,66 @@ class _QuranScreenState extends ConsumerState<QuranScreen>
       primary: context.colors.primary,
       accent: context.colors.secondary,
     );
+    final appThemeType = ref.watch(settingsProvider.select((s) => s.appTheme));
+    final readerTheme = isDarkMode
+        ? AppTheme.dark(appThemeType)
+        : AppTheme.light(appThemeType);
 
     return Stack(
       children: [
         Screenshot(
           controller: _screenshotController,
-          child: QuranLibraryScreen(
-            parentContext: context,
-            isDark: isDarkMode,
-            showAyahBookmarkedIcon: true,
-            useDefaultAppBar: false,
-            appLanguageCode: 'ar',
-            isShowTabBar: false,
-            enableWordSelection: true,
-            isShowAudioSlider: !isCapturing,
-            onPageChanged: (page) {
-              int realPage = page + 1;
-              _lastPage = realPage;
-              if (_isInitialized) {
-                ref
-                    .read(quranProvider(widget.currentPage).notifier)
-                    .updatePage(realPage);
-              }
-            },
-            backgroundColor: palette.background,
-            textColor: palette.text,
-            ayahIconColor: palette.icon,
-            ayahSelectedBackgroundColor: context.colors.primary.withValues(
-              alpha: 0.15,
-            ),
-            appIconPathForPlayAudioInBackground: AppAssets.logo,
-            ayahMenuStyle:
-                AyahMenuStyle.defaults(
-                  isDark: isDarkMode,
-                  context: context,
-                ).copyWith(
-                  showPlayAllButton: false,
-                  customMenuItems: [
-                    GestureDetector(
-                      onTap: _onShareAyah,
-                      child: AppIcon(AppIcons.share, color: context.colors.primary),
-                    ),
-                  ],
+          // The reader has its own reading theme, separate from the app's. The
+          // package draws some text (for example in the recitation results
+          // sheet) in the colors of the surrounding Theme, so give it a Theme
+          // of the same brightness as the reader. Otherwise a dark reader in a
+          // light app shows black text on a dark sheet, and the reverse.
+          child: Theme(
+            data: readerTheme,
+            child: Builder(
+              builder: (readerContext) => QuranLibraryScreen(
+                parentContext: readerContext,
+                isDark: isDarkMode,
+                showAyahBookmarkedIcon: true,
+                useDefaultAppBar: false,
+                appLanguageCode: 'ar',
+                isShowTabBar: false,
+                enableWordSelection: true,
+                isShowAudioSlider: !isCapturing,
+                onPageChanged: (page) {
+                  int realPage = page + 1;
+                  _lastPage = realPage;
+                  if (_isInitialized) {
+                    ref
+                        .read(quranProvider(widget.currentPage).notifier)
+                        .updatePage(realPage);
+                  }
+                },
+                backgroundColor: palette.background,
+                textColor: palette.text,
+                ayahIconColor: palette.icon,
+                ayahSelectedBackgroundColor: context.colors.primary.withValues(
+                  alpha: 0.15,
                 ),
+                appIconPathForPlayAudioInBackground: AppAssets.logo,
+                ayahMenuStyle:
+                    AyahMenuStyle.defaults(
+                      isDark: isDarkMode,
+                      context: readerContext,
+                    ).copyWith(
+                      showPlayAllButton: false,
+                      customMenuItems: [
+                        GestureDetector(
+                          onTap: _onShareAyah,
+                          child: AppIcon(
+                            AppIcons.share,
+                            color: context.colors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+              ),
+            ),
           ),
         ),
         if (!isCapturing)
