@@ -10,6 +10,9 @@ class AppPrayerTimes {
 
   final bool isLocationOff;
 
+  /// True when Mecca is used because no real location is known yet.
+  final bool isDefaultLocation;
+
   AppPrayerTimes({
     required this.fajr,
     required this.sunrise,
@@ -18,6 +21,7 @@ class AppPrayerTimes {
     required this.maghrib,
     required this.isha,
     this.isLocationOff = false,
+    this.isDefaultLocation = false,
   });
 
   DateTime getTimeFor(AppPrayer prayer) {

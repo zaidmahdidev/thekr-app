@@ -495,6 +495,22 @@ class SettingsRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// generated route for
+/// [PrayerTimesScreen]
+class PrayerTimesRoute extends PageRouteInfo<void> {
+  const PrayerTimesRoute({List<PageRouteInfo>? children})
+    : super(PrayerTimesRoute.name, initialChildren: children);
+
+  static const String name = 'PrayerTimesRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const PrayerTimesScreen();
+    },
+  );
+}
+
 /// [UmrahChecklistScreen]
 class UmrahChecklistRoute extends PageRouteInfo<void> {
   const UmrahChecklistRoute({List<PageRouteInfo>? children})

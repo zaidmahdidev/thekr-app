@@ -37,6 +37,7 @@ part 'app_router.gr.dart';
 class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
+import 'package:thekr_app/features/prayer_times/screens/prayer_times_screen.dart';
     AutoRoute(page: HomeRoute.page, initial: true),
     AutoRoute(page: AzkarRoute.page),
     AutoRoute(page: AzkarListRoute.page),
@@ -67,3 +68,4 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: HabitTrackerRoute.page),
   ];
 }
+    AutoRoute(page: PrayerTimesRoute.page),
