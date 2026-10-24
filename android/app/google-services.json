@@ -12,7 +12,12 @@
           "package_name": "com.example.firebase"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "620286182402-db2v7u7ltpnau9e9kfj5o96chlf7jcpc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAynMElq_wHif3rJCOzjbFD18NIbLwwRVQ"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "620286182402-db2v7u7ltpnau9e9kfj5o96chlf7jcpc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "620286182402-5ncd54ltpeqbc412hdi2ku18k9h9k5g7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.thekrApp"
+              }
+            }
+          ]
         }
       }
     },
@@ -31,7 +48,12 @@
           "package_name": "com.example.studen_portal_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "620286182402-db2v7u7ltpnau9e9kfj5o96chlf7jcpc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAynMElq_wHif3rJCOzjbFD18NIbLwwRVQ"
@@ -39,7 +61,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "620286182402-db2v7u7ltpnau9e9kfj5o96chlf7jcpc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "620286182402-5ncd54ltpeqbc412hdi2ku18k9h9k5g7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.thekrApp"
+              }
+            }
+          ]
         }
       }
     },
@@ -50,7 +84,12 @@
           "package_name": "com.example.travelapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "620286182402-db2v7u7ltpnau9e9kfj5o96chlf7jcpc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAynMElq_wHif3rJCOzjbFD18NIbLwwRVQ"
@@ -58,7 +97,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "620286182402-db2v7u7ltpnau9e9kfj5o96chlf7jcpc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "620286182402-5ncd54ltpeqbc412hdi2ku18k9h9k5g7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.thekrApp"
+              }
+            }
+          ]
         }
       }
     },
@@ -69,7 +120,36 @@
           "package_name": "com.zaid.thekr_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "620286182402-3cnoamlepfa9s8rga25igiqv8o2dceqc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zaid.thekr_app",
+            "certificate_hash": "7e6131440e8e79d17c519f723841bee601ce7441"
+          }
+        },
+        {
+          "client_id": "620286182402-cdegvscff6big5bi6fliiu8vmlbtdf2g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zaid.thekr_app",
+            "certificate_hash": "07e767c6d6c63593695be57510ae194646a23944"
+          }
+        },
+        {
+          "client_id": "620286182402-g7pc86put83jjvqt8curtn3gnj0p4r9j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zaid.thekr_app",
+            "certificate_hash": "e747014573df6654c92baefae54eeaf43635c085"
+          }
+        },
+        {
+          "client_id": "620286182402-db2v7u7ltpnau9e9kfj5o96chlf7jcpc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAynMElq_wHif3rJCOzjbFD18NIbLwwRVQ"
@@ -77,7 +157,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "620286182402-db2v7u7ltpnau9e9kfj5o96chlf7jcpc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "620286182402-5ncd54ltpeqbc412hdi2ku18k9h9k5g7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.thekrApp"
+              }
+            }
+          ]
         }
       }
     }

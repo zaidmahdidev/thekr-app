@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quran_library/quran.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
 import 'package:thekr_app/core/services/notification_service.dart';
+import 'package:thekr_app/features/sync/services/sync_rules.dart';
+import 'package:thekr_app/features/sync/services/sync_store.dart';
 import 'package:thekr_app/my_app.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -44,6 +46,12 @@ void main() async {
     await initializeDateFormatting('ar', null);
 
     await CacheHelper.init();
+    // Records when each backed-up key changes, so a later sync can tell which
+    // device has the newer value. Does nothing visible.
+    await SyncMeta.install(
+      SyncMeta(const CacheSyncStore()),
+      SyncRules.needsStamp,
+    );
     await NotificationService.initialize();
     
     // طلب الصلاحيات وجدولة الإشعارات لا ينبغي أن توقف التطبيق

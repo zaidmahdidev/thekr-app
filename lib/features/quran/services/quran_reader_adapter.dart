@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:quran_library/quran_library.dart';
 import 'package:thekr_app/features/quran/models/quran_reader_palette.dart';
+import 'package:thekr_app/features/sync/models/sync_snapshot.dart';
+import 'package:thekr_app/features/sync/services/sync_store.dart';
 
 /// Single point of contact between the app's reader UI and the `quran_library`
 /// package.
@@ -260,6 +262,74 @@ class QuranReaderAdapter {
   static void removeBookmark(QuranBookmarkInfo bookmark) {
     try {
       _library.removeBookmark(bookmarkId: bookmark.id);
+      // Remembered so a backup does not bring the bookmark back.
+      final raw = bookmark._raw;
+      SyncMeta(const CacheSyncStore()).recordBookmarkDeleted(
+        SyncBookmark(
+          id: raw.id,
+          colorCode: raw.colorCode,
+          name: raw.name,
+          ayahId: raw.ayahId,
+          ayahNumber: raw.ayahNumber,
+          page: raw.page,
+        ).key,
+      );
+    } catch (_) {}
+  }
+
+  // ------------------------------------------------------------ backup sync
+
+  /// The user's bookmarks in the form the account stores.
+  static List<SyncBookmark> bookmarksForSync() {
+    try {
+      return BookmarksCtrl.instance.bookmarks.values
+          .expand((list) => list)
+          .where((b) => b.page != -1)
+          .map(
+            (b) => SyncBookmark(
+              id: b.id,
+              colorCode: b.colorCode,
+              name: b.name,
+              ayahId: b.ayahId,
+              ayahNumber: b.ayahNumber,
+              page: b.page,
+            ),
+          )
+          .toList();
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Replaces the reader's bookmarks with [bookmarks] and refreshes the
+  /// screens that show them.
+  static void loadSyncedBookmarks(Iterable<SyncBookmark> bookmarks) {
+    try {
+      // The three default colours stay present even when empty, as the
+      // library creates them on its own first run.
+      final byColor = <int, List<BookmarkModel>>{
+        0xAAFFD354: [],
+        0xAAF36077: [],
+        0xAA00CD00: [],
+      };
+      for (final b in bookmarks) {
+        byColor
+            .putIfAbsent(b.colorCode, () => [])
+            .add(
+              BookmarkModel(
+                id: b.id,
+                colorCode: b.colorCode,
+                name: b.name,
+                ayahId: b.ayahId,
+                ayahNumber: b.ayahNumber,
+                page: b.page,
+              ),
+            );
+      }
+      BookmarksCtrl.instance.initBookmarks(
+        userBookmarks: byColor,
+        overwrite: true,
+      );
     } catch (_) {}
   }
 

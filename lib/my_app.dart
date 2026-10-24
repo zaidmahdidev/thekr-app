@@ -15,6 +15,7 @@ import 'package:thekr_app/core/services/notification_service.dart';
 import 'package:thekr_app/core/services/review_service.dart';
 import 'package:thekr_app/features/azkar/data/azkar_model.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:thekr_app/features/sync/providers/sync_controller.dart';
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -23,14 +24,32 @@ class MyApp extends ConsumerStatefulWidget {
   ConsumerState<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends ConsumerState<MyApp> {
+class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   final _appRouter = AppRouter();
 
   @override
   void initState() {
     super.initState();
+    // Creates the sync controller so it syncs once at start when the user is
+    // signed in, then again when the app is left or reopened.
+    ref.read(syncControllerProvider);
+    WidgetsBinding.instance.addObserver(this);
     _setupNotificationHandling();
     ReviewService.requestAutoReview();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.resumed) {
+      ref.read(syncControllerProvider.notifier).syncIfDue();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   void _setupNotificationHandling() {

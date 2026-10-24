@@ -2,6 +2,7 @@ import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
+import 'package:thekr_app/core/services/location_name_service.dart';
 import 'package:thekr_app/features/home/models/app_prayer_times.dart';
 
 /// The place prayer times are calculated for.
@@ -135,6 +136,8 @@ class PrayerService {
   static void _saveLocationToCache(double lat, double lng) {
     CacheHelper.saveData(key: _latKey, value: lat);
     CacheHelper.saveData(key: _lngKey, value: lng);
+    // Names are looked up in the background; prayer times never wait for them.
+    LocationNameService.refresh(lat, lng);
   }
 
   static AppPrayerTimes _convertToAppModel(
