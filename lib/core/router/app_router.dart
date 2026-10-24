@@ -14,6 +14,14 @@ import 'package:thekr_app/features/quran/screens/quran_screen.dart';
 import 'package:thekr_app/features/settings/screens/settings_screen.dart';
 import 'package:thekr_app/features/live_stream/screens/live_stream_screen.dart';
 import 'package:thekr_app/features/radio/screens/radio_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_intro_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_types_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_day_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_special_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_mistakes_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_checklist_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_permit_screen.dart';
 import 'package:thekr_app/features/umrah/screens/umrah_screen.dart';
 import 'package:thekr_app/features/umrah/screens/umrah_step_screen.dart';
 import 'package:thekr_app/features/umrah/screens/umrah_intro_screen.dart';
@@ -50,6 +58,14 @@ import 'package:thekr_app/features/prayer_times/screens/prayer_times_screen.dart
     AutoRoute(page: SettingsRoute.page),
     AutoRoute(page: LiveStreamRoute.page),
     AutoRoute(page: RadioRoute.page),
+    AutoRoute(page: HajjRoute.page),
+    AutoRoute(page: HajjIntroRoute.page),
+    AutoRoute(page: HajjTypesRoute.page),
+    AutoRoute(page: HajjDayRoute.page),
+    AutoRoute(page: HajjSpecialRoute.page),
+    AutoRoute(page: HajjMistakesRoute.page),
+    AutoRoute(page: HajjChecklistRoute.page),
+    AutoRoute(page: HajjPermitRoute.page),
     AutoRoute(page: UmrahRoute.page),
     AutoRoute(page: UmrahStepRoute.page),
     AutoRoute(page: UmrahIntroRoute.page),

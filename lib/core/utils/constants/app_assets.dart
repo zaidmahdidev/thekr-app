@@ -27,6 +27,7 @@ class AppAssets {
   static const String fLive = '$_imagesPath/live-stream.png';
   static const String fRadio = '$_imagesPath/radio.svg';
   static const String fUmrah = '$_imagesPath/umrah.svg';
+  static const String fHajj = '$_imagesPath/hajj.svg';
   static const String fSettings = '$_imagesPath/setting.png';
   static const String fAsmaAllah = '$_imagesPath/bismillah.png';
   static const String fProphets = '$_imagesPath/muhammad.png';
