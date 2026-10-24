@@ -73,22 +73,26 @@ class ShareFormatPanel extends StatelessWidget {
             ),
           ],
         ),
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                'إظهار توقيع التطبيق',
-                style: context.textStyles.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
+        InkWell(
+          onTap: () => onSignatureChanged(!style.showSignature),
+          borderRadius: BorderRadius.circular(context.corners.md),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'إظهار توقيع التطبيق',
+                  style: context.textStyles.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-            ),
-            Switch.adaptive(
-              value: style.showSignature,
-              activeThumbColor: context.colors.primary,
-              onChanged: onSignatureChanged,
-            ),
-          ],
+              Switch.adaptive(
+                value: style.showSignature,
+                activeThumbColor: context.colors.primary,
+                onChanged: onSignatureChanged,
+              ),
+            ],
+          ),
         ),
       ],
     );
