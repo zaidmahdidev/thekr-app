@@ -129,10 +129,16 @@ class FontSizeSettingsSheet extends ConsumerWidget {
                 trackHeight: 4.h,
               ),
               child: Slider.adaptive(
-                value: fontSize.clamp(14.0, 24.0),
-                min: 14.0,
-                max: 24.0,
-                divisions: 5,
+                value: fontSize.clamp(
+                  SettingsState.minFontSize,
+                  SettingsState.maxFontSize,
+                ),
+                min: SettingsState.minFontSize,
+                max: SettingsState.maxFontSize,
+                divisions:
+                    ((SettingsState.maxFontSize - SettingsState.minFontSize) /
+                            SettingsState.fontSizeStep)
+                        .round(),
                 onChanged: (val) =>
                     ref.read(settingsProvider.notifier).updateFontSize(val),
               ),

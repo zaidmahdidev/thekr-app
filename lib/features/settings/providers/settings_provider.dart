@@ -80,6 +80,12 @@ class SettingsState {
   /// "default" button in the font size sheet restores.
   static const double defaultFontSize = 18.0;
 
+  /// Range of the reading font size, shared by the settings sheet and by the
+  /// zoom buttons of every reading screen.
+  static const double minFontSize = 14.0;
+  static const double maxFontSize = 26.0;
+  static const double fontSizeStep = 2.0;
+
   final double fontSize;
   final AzkarLayout azkarLayout;
   final int duroodInterval;
