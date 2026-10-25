@@ -53,7 +53,16 @@
             </intent-filter>
         </receiver>
         
-        <!-- Keeps the radio playing when the app is left (media playback only). -->
+        <!-- The radio's own media session and notification. -->
+        <service
+            android:name=".radio.RadioPlaybackService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+        <receiver
+            android:name=".radio.RadioActionReceiver"
+            android:exported="false" />
+
+        <!-- Fallback notification of the radio, used only if the media session above cannot start. -->
         <service
             android:name="com.dexterous.flutterlocalnotifications.ForegroundService"
             android:exported="false"

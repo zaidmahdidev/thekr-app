@@ -100,10 +100,19 @@ class RadioController extends StateNotifier<RadioState> {
   bool _wantsPlaying = false;
   bool _resumeAfterInterruption = false;
 
+  /// The stations the next / previous buttons of the notification walk through:
+  /// the list the screen last used.
+  List<RadioStation> _queue = RadioStation.all;
+
+  /// Set when the notification was stopped or dismissed: a paused radio then
+  /// stays without a notification until it plays again.
+  bool _notificationDismissed = false;
+  String? _lastNotified;
+
   Future<void> _init() async {
     // The notification (and the foreground service behind it) follows what
-    // the screen shows, and its stop button stops the radio.
-    RadioNotificationService.onStop = pause;
+    // the screen shows, and its buttons drive the radio.
+    RadioNotificationService.onCommand = _onNotificationCommand;
     addListener(_syncNotification, fireImmediately: false);
     _subscriptions.add(
       _player.playerStateStream.listen(_onPlayerState, onError: (_) {}),
@@ -157,6 +166,7 @@ class RadioController extends StateNotifier<RadioState> {
 
   /// Main button: pause when audio is on, otherwise (re)start the station.
   Future<void> toggle(List<RadioStation> fallbackQueue) async {
+    _rememberQueue(fallbackQueue);
     if (state.isActive) {
       await pause();
       return;
@@ -170,8 +180,13 @@ class RadioController extends StateNotifier<RadioState> {
 
   Future<void> previous(List<RadioStation> queue) => _step(queue, -1);
 
+  void _rememberQueue(List<RadioStation> queue) {
+    if (queue.isNotEmpty) _queue = queue;
+  }
+
   Future<void> _step(List<RadioStation> queue, int delta) async {
     if (queue.isEmpty) return;
+    _rememberQueue(queue);
     final current = queue.indexWhere((s) => s.id == state.station?.id);
     final index = current == -1
         ? 0
@@ -306,16 +321,59 @@ class RadioController extends StateNotifier<RadioState> {
   void _syncNotification(RadioState s) {
     final station = s.station;
     if (station != null && s.isActive) {
-      RadioNotificationService.show(station.name, playing: s.isPlaying);
+      _notificationDismissed = false;
+      _notify(
+        station,
+        s.isPlaying
+            ? RadioNotificationState.playing
+            : RadioNotificationState.loading,
+      );
+    } else if (station != null &&
+        s.status == RadioStatus.paused &&
+        !_notificationDismissed) {
+      _notify(station, RadioNotificationState.paused);
     } else {
+      _lastNotified = null;
       RadioNotificationService.hide();
+    }
+  }
+
+  /// Sends a notification update only when something changed.
+  void _notify(RadioStation station, RadioNotificationState state) {
+    final signature = '${station.id}/${state.name}';
+    if (signature == _lastNotified) return;
+    _lastNotified = signature;
+    RadioNotificationService.show(
+      title: station.name,
+      subtitle: station.subtitle,
+      state: state,
+    );
+  }
+
+  Future<void> _onNotificationCommand(RadioCommand command) async {
+    if (!mounted) return;
+    switch (command) {
+      case RadioCommand.play:
+        final station = state.station;
+        if (station != null) await play(station);
+      case RadioCommand.pause:
+        await pause();
+      case RadioCommand.next:
+        await next(_queue);
+      case RadioCommand.previous:
+        await previous(_queue);
+      case RadioCommand.stop:
+        _notificationDismissed = true;
+        await pause();
+        _lastNotified = null;
+        await RadioNotificationService.hide();
     }
   }
 
   @override
   void dispose() {
     RadioNotificationService.hide();
-    RadioNotificationService.onStop = null;
+    RadioNotificationService.onCommand = null;
     _retryTimer?.cancel();
     _sleepTimer?.cancel();
     for (final subscription in _subscriptions) {
