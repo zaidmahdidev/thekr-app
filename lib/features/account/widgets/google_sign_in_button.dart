@@ -33,7 +33,7 @@ class GoogleSignInButton extends StatelessWidget {
         onTap: enabled ? onTap : null,
         borderRadius: radius,
         child: SizedBox(
-          height: 48.h,
+          height: 40.h,
           width: double.infinity,
           child: FittedBox(
             fit: BoxFit.scaleDown,
