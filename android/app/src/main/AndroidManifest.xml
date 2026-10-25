@@ -53,6 +53,13 @@
             </intent-filter>
         </receiver>
         
+        <!-- Keeps the radio playing when the app is left (media playback only). -->
+        <service
+            android:name="com.dexterous.flutterlocalnotifications.ForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback"
+            android:stopWithTask="true" />
+
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

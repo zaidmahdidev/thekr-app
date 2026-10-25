@@ -70,6 +70,8 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
             type: 'أذكار المساء',
           ),
         );
+      } else if (payload == 'radio') {
+        _appRouter.push(const RadioRoute());
       } else if (payload == 'surah_kahf') {
         _appRouter.push(QuranRoute(currentPage: 293));
       }

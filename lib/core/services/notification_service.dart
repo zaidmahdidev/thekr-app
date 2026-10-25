@@ -26,6 +26,10 @@ class NotificationService {
 
   static Function(String?)? onNotificationClick;
 
+  /// Called with the id of a button pressed on a notification (for example the
+  /// stop button of the radio).
+  static void Function(String actionId)? onNotificationAction;
+
   static Future<void> initialize() async {
     // Initialize timezone data
     tz_data.initializeTimeZones();
@@ -56,6 +60,11 @@ class NotificationService {
     await _notifications.initialize(
       settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
+        final action = response.actionId;
+        if (action != null && action.isNotEmpty) {
+          onNotificationAction?.call(action);
+          return;
+        }
         onNotificationClick?.call(response.payload);
       },
     );

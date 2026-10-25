@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
@@ -9,7 +8,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
 import 'package:thekr_app/core/utils/connectivity_utils.dart';
 import '../models/radio_station.dart';
-import '../services/radio_audio_handler.dart';
+import '../services/radio_notification_service.dart';
 
 enum RadioStatus {
   /// Nothing has been started yet.
@@ -92,10 +91,6 @@ class RadioController extends StateNotifier<RadioState> {
   Timer? _retryTimer;
   Timer? _sleepTimer;
 
-  /// One for the whole app run: [AudioService] allows a single handler.
-  static RadioAudioHandler? _sharedHandler;
-  RadioAudioHandler? _handler;
-
   /// Bumped on every user-initiated start so late results of an older attempt
   /// are ignored.
   int _generation = 0;
@@ -106,11 +101,10 @@ class RadioController extends StateNotifier<RadioState> {
   bool _resumeAfterInterruption = false;
 
   Future<void> _init() async {
-    // Keeps the system notification in step with what the screen shows.
-    addListener(
-      (s) => _handler?.show(s.station, s.status),
-      fireImmediately: false,
-    );
+    // The notification (and the foreground service behind it) follows what
+    // the screen shows, and its stop button stops the radio.
+    RadioNotificationService.onStop = pause;
+    addListener(_syncNotification, fireImmediately: false);
     _subscriptions.add(
       _player.playerStateStream.listen(_onPlayerState, onError: (_) {}),
     );
@@ -146,38 +140,9 @@ class RadioController extends StateNotifier<RadioState> {
     _wantsPlaying = true;
     CacheHelper.saveData(key: _lastStationKey, value: station.id);
     state = state.copyWith(station: station, status: RadioStatus.connecting);
-    await _attachNotification();
-    if (!mounted || generation != _generation) return;
     await _start(station, generation);
   }
 
-  /// Starts the media notification (and with it the foreground service). When
-  /// that is not possible, the radio simply plays without one, as before.
-  Future<void> _attachNotification() async {
-    try {
-      var handler = _sharedHandler;
-      if (handler == null) {
-        if (RadioAudioHandler.isAudioServiceTaken) return;
-        handler = await AudioService.init(
-          builder: RadioAudioHandler.new,
-          config: RadioAudioHandler.config,
-        );
-        _sharedHandler = handler;
-      }
-      handler.bind(
-        onPlay: () async {
-          final station = state.station;
-          if (station != null) await play(station);
-        },
-        onPause: pause,
-        onStop: pause,
-      );
-      _handler = handler;
-      handler.show(state.station, state.status);
-    } catch (e) {
-      debugPrint('Radio: media notification unavailable: $e');
-    }
-  }
 
   Future<void> pause() async {
     _retryTimer?.cancel();
@@ -338,9 +303,19 @@ class RadioController extends StateNotifier<RadioState> {
     if (mounted) state = state.copyWith(clearSleep: true);
   }
 
+  void _syncNotification(RadioState s) {
+    final station = s.station;
+    if (station != null && s.isActive) {
+      RadioNotificationService.show(station.name, playing: s.isPlaying);
+    } else {
+      RadioNotificationService.hide();
+    }
+  }
+
   @override
   void dispose() {
-    _handler?.hide();
+    RadioNotificationService.hide();
+    RadioNotificationService.onStop = null;
     _retryTimer?.cancel();
     _sleepTimer?.cancel();
     for (final subscription in _subscriptions) {
