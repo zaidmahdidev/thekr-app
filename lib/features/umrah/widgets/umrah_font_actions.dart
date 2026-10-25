@@ -9,7 +9,10 @@ import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 List<Widget> umrahFontActions(WidgetRef ref) {
   void change(double delta) {
     final current = ref.read(settingsProvider).fontSize;
-    final next = (current + delta).clamp(14.0, 26.0);
+    final next = (current + delta).clamp(
+      SettingsState.minFontSize,
+      SettingsState.maxFontSize,
+    );
     if (next != current) {
       ref.read(settingsProvider.notifier).updateFontSize(next);
     }
@@ -19,12 +22,12 @@ List<Widget> umrahFontActions(WidgetRef ref) {
     IconButton(
       tooltip: 'تكبير الخط',
       icon: const AppIcon(HugeIcons.strokeRoundedZoomIn),
-      onPressed: () => change(2),
+      onPressed: () => change(SettingsState.fontSizeStep),
     ),
     IconButton(
       tooltip: 'تصغير الخط',
       icon: const AppIcon(HugeIcons.strokeRoundedZoomOut),
-      onPressed: () => change(-2),
+      onPressed: () => change(-SettingsState.fontSizeStep),
     ),
   ];
 }

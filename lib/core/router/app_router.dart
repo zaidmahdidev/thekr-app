@@ -14,6 +14,14 @@ import 'package:thekr_app/features/quran/screens/quran_screen.dart';
 import 'package:thekr_app/features/settings/screens/settings_screen.dart';
 import 'package:thekr_app/features/live_stream/screens/live_stream_screen.dart';
 import 'package:thekr_app/features/radio/screens/radio_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_intro_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_types_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_day_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_special_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_mistakes_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_checklist_screen.dart';
+import 'package:thekr_app/features/hajj/screens/hajj_permit_screen.dart';
 import 'package:thekr_app/features/umrah/screens/umrah_screen.dart';
 import 'package:thekr_app/features/umrah/screens/umrah_step_screen.dart';
 import 'package:thekr_app/features/umrah/screens/umrah_intro_screen.dart';
@@ -30,6 +38,7 @@ import 'package:thekr_app/features/azkar/screens/user_azkar_screen.dart';
 import 'package:thekr_app/features/settings/screens/athan_settings_screen.dart';
 import 'package:thekr_app/features/calendar/screens/calendar_screen.dart';
 import 'package:thekr_app/features/habit_tracker/screens/habit_tracker_screen.dart';
+import 'package:thekr_app/features/prayer_times/screens/prayer_times_screen.dart';
 
 part 'app_router.gr.dart';
 
@@ -49,6 +58,14 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: SettingsRoute.page),
     AutoRoute(page: LiveStreamRoute.page),
     AutoRoute(page: RadioRoute.page),
+    AutoRoute(page: HajjRoute.page),
+    AutoRoute(page: HajjIntroRoute.page),
+    AutoRoute(page: HajjTypesRoute.page),
+    AutoRoute(page: HajjDayRoute.page),
+    AutoRoute(page: HajjSpecialRoute.page),
+    AutoRoute(page: HajjMistakesRoute.page),
+    AutoRoute(page: HajjChecklistRoute.page),
+    AutoRoute(page: HajjPermitRoute.page),
     AutoRoute(page: UmrahRoute.page),
     AutoRoute(page: UmrahStepRoute.page),
     AutoRoute(page: UmrahIntroRoute.page),
@@ -65,5 +82,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: AthanSettingsRoute.page),
     AutoRoute(page: CalendarRoute.page),
     AutoRoute(page: HabitTrackerRoute.page),
+    AutoRoute(page: PrayerTimesRoute.page),
   ];
 }

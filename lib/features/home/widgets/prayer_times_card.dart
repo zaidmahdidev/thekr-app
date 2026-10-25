@@ -47,7 +47,7 @@ class PrayerTimesCard extends StatelessWidget {
     final colors = context.colors;
 
     return GestureDetector(
-      onTap: () => context.pushRoute(const AthanSettingsRoute()),
+      onTap: () => context.pushRoute(const PrayerTimesRoute()),
       child: Container(
         margin: EdgeInsets.all(context.insets.sm),
         padding: EdgeInsets.symmetric(

@@ -9,6 +9,7 @@ class AppAssets {
   // static const String quranLogo = '$_imagesPath/quran_logo.png';
   static const String bg = '$_imagesPath/bg.png';
   static const String qrCode = '$_imagesPath/qrcode.png';
+  static const String googleG = '$_imagesPath/google_g.svg';
 
   // UI Elements
   static const String around = '$_imagesPath/around.png';
@@ -27,6 +28,7 @@ class AppAssets {
   static const String fLive = '$_imagesPath/live-stream.png';
   static const String fRadio = '$_imagesPath/radio.svg';
   static const String fUmrah = '$_imagesPath/umrah.svg';
+  static const String fHajj = '$_imagesPath/hajj.svg';
   static const String fSettings = '$_imagesPath/setting.png';
   static const String fAsmaAllah = '$_imagesPath/bismillah.png';
   static const String fProphets = '$_imagesPath/muhammad.png';

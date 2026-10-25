@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
+import 'package:thekr_app/features/account/widgets/account_card.dart';
 import 'package:thekr_app/features/settings/widgets/developer_social_card.dart';
 import 'package:thekr_app/features/settings/widgets/settings_section.dart';
 import 'package:thekr_app/features/settings/widgets/settings_tile.dart';
@@ -148,6 +149,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const AccountCard(),
                   const SectionHeader(title: 'المظهر والتخصيص'),
                   SettingsSection(
                     children: [
@@ -158,17 +160,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             : 'متوقف',
                         icon: HugeIcons.strokeRoundedMoon02,
                         iconColor: context.colors.primary,
-                        trailing: Switch.adaptive(
-                          value: Theme.of(context).brightness == Brightness.dark,
-                          activeThumbColor: context.colors.primary,
-                          activeTrackColor:
-                              context.colors.primary.withValues(alpha: 0.5),
-                          onChanged: (val) => ref
-                              .read(settingsProvider.notifier)
-                              .toggleTheme(
-                                val ? ThemeMode.dark : ThemeMode.light,
-                              ),
-                        ),
+                        switchValue:
+                            Theme.of(context).brightness == Brightness.dark,
+                        onSwitchChanged: (val) => ref
+                            .read(settingsProvider.notifier)
+                            .toggleTheme(val ? ThemeMode.dark : ThemeMode.light),
                       ),
                       SettingsTile(
                         title: 'ألوان التطبيق',
@@ -327,52 +323,47 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       SettingsTile(
                         title: 'أذكار الصباح',
                         subtitle: settings.morningNotificationEnabled
-                            ? 'تذكير عند ${_formatTime(settings.morningNotificationTime)}'
+                            ? 'تذكير يومي'
                             : 'التذكير متوقف',
                         icon: HugeIcons.strokeRoundedSun03,
                         iconColor: Colors.orange,
-                        trailing: Switch.adaptive(
-                          value: settings.morningNotificationEnabled,
-                          onChanged: _updateMorningNotification,
+                        switchValue: settings.morningNotificationEnabled,
+                        onSwitchChanged: _updateMorningNotification,
+                        switchValueLabel: _formatTime(
+                          settings.morningNotificationTime,
                         ),
-                        onTap: settings.morningNotificationEnabled
-                            ? () => _selectMorningTime(
-                                settings.morningNotificationTime,
-                              )
-                            : null,
+                        onValueTap: () =>
+                            _selectMorningTime(settings.morningNotificationTime),
                       ),
                       SettingsTile(
                         title: 'أذكار المساء',
                         subtitle: settings.eveningNotificationEnabled
-                            ? 'تذكير عند ${_formatTime(settings.eveningNotificationTime)}'
+                            ? 'تذكير يومي'
                             : 'التذكير متوقف',
                         icon: HugeIcons.strokeRoundedMoon02,
                         iconColor: Colors.blueAccent,
-                        trailing: Switch.adaptive(
-                          value: settings.eveningNotificationEnabled,
-                          onChanged: _updateEveningNotification,
+                        switchValue: settings.eveningNotificationEnabled,
+                        onSwitchChanged: _updateEveningNotification,
+                        switchValueLabel: _formatTime(
+                          settings.eveningNotificationTime,
                         ),
-                        onTap: settings.eveningNotificationEnabled
-                            ? () => _selectEveningTime(
-                                settings.eveningNotificationTime,
-                              )
-                            : null,
+                        onValueTap: () =>
+                            _selectEveningTime(settings.eveningNotificationTime),
                       ),
                       SettingsTile(
                         title: 'تذكير الورد اليومي',
                         subtitle: settings.wirdNotificationEnabled
-                            ? 'تذكير عند ${_formatTime(settings.wirdNotificationTime)}'
+                            ? 'تذكير يومي'
                             : 'التذكير متوقف',
                         icon: HugeIcons.strokeRoundedBookOpen01,
                         iconColor: context.colors.primary,
-                        trailing: Switch.adaptive(
-                          value: settings.wirdNotificationEnabled,
-                          onChanged: _updateWirdNotification,
+                        switchValue: settings.wirdNotificationEnabled,
+                        onSwitchChanged: _updateWirdNotification,
+                        switchValueLabel: _formatTime(
+                          settings.wirdNotificationTime,
                         ),
-                        onTap: settings.wirdNotificationEnabled
-                            ? () =>
-                                  _selectWirdTime(settings.wirdNotificationTime)
-                            : null,
+                        onValueTap: () =>
+                            _selectWirdTime(settings.wirdNotificationTime),
                       ),
                       SettingsTile(
                         title: 'تذكير سورة الكهف',
@@ -381,10 +372,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             : 'التذكير متوقف',
                         icon: HugeIcons.strokeRoundedBookOpenText,
                         iconColor: Colors.green,
-                        trailing: Switch.adaptive(
-                          value: settings.fridayNotificationEnabled,
-                          onChanged: _updateFridayNotification,
-                        ),
+                        switchValue: settings.fridayNotificationEnabled,
+                        onSwitchChanged: _updateFridayNotification,
                       ),
                     ],
                   ),
@@ -400,7 +389,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                       SettingsTile(
                         title: 'تواصل معنا',
-                        icon: HugeIcons.strokeRoundedMessage01,
+                        icon: HugeIcons.strokeRoundedWhatsapp,
                         iconColor: Colors.teal,
                         onTap: () => UrlHelper.launchWhatsApp(
                           phone: AppConstants.whatsappNumber,
@@ -467,7 +456,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ),
                           SizedBox(width: context.insets.md),
                           DeveloperSocialCard(
-                            icon: HugeIcons.strokeRoundedMessage01,
+                            icon: HugeIcons.strokeRoundedWhatsapp,
                             color: Colors.green,
                             onTap: () => UrlHelper.launchWhatsApp(
                               phone: AppConstants.developerNumber,

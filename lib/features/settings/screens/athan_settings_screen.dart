@@ -47,61 +47,51 @@ class AthanSettingsScreen extends ConsumerWidget {
                 title: 'صلاة الفجر',
                 icon: HugeIcons.strokeRoundedMoon02,
                 iconColor: Colors.indigo,
-                trailing: Switch.adaptive(
-                  value: settings.fajrAthanEnabled,
-                  onChanged: (val) {
-                    ref.read(settingsProvider.notifier).toggleFajrAthan(val);
-                    _triggerRefresh(ref);
-                  },
-                ),
+                switchValue: settings.fajrAthanEnabled,
+                onSwitchChanged: (val) {
+                  ref.read(settingsProvider.notifier).toggleFajrAthan(val);
+                  _triggerRefresh(ref);
+                },
               ),
               SettingsTile(
                 title: 'صلاة الظهر',
                 icon: HugeIcons.strokeRoundedSun03,
                 iconColor: Colors.orange,
-                trailing: Switch.adaptive(
-                  value: settings.dhuhrAthanEnabled,
-                  onChanged: (val) {
-                    ref.read(settingsProvider.notifier).toggleDhuhrAthan(val);
-                    _triggerRefresh(ref);
-                  },
-                ),
+                switchValue: settings.dhuhrAthanEnabled,
+                onSwitchChanged: (val) {
+                  ref.read(settingsProvider.notifier).toggleDhuhrAthan(val);
+                  _triggerRefresh(ref);
+                },
               ),
               SettingsTile(
                 title: 'صلاة العصر',
                 icon: HugeIcons.strokeRoundedSun01,
                 iconColor: Colors.amber,
-                trailing: Switch.adaptive(
-                  value: settings.asrAthanEnabled,
-                  onChanged: (val) {
-                    ref.read(settingsProvider.notifier).toggleAsrAthan(val);
-                    _triggerRefresh(ref);
-                  },
-                ),
+                switchValue: settings.asrAthanEnabled,
+                onSwitchChanged: (val) {
+                  ref.read(settingsProvider.notifier).toggleAsrAthan(val);
+                  _triggerRefresh(ref);
+                },
               ),
               SettingsTile(
                 title: 'صلاة المغرب',
                 icon: HugeIcons.strokeRoundedMoon02,
                 iconColor: Colors.deepOrange,
-                trailing: Switch.adaptive(
-                  value: settings.maghribAthanEnabled,
-                  onChanged: (val) {
-                    ref.read(settingsProvider.notifier).toggleMaghribAthan(val);
-                    _triggerRefresh(ref);
-                  },
-                ),
+                switchValue: settings.maghribAthanEnabled,
+                onSwitchChanged: (val) {
+                  ref.read(settingsProvider.notifier).toggleMaghribAthan(val);
+                  _triggerRefresh(ref);
+                },
               ),
               SettingsTile(
                 title: 'صلاة العشاء',
                 icon: HugeIcons.strokeRoundedStar,
                 iconColor: Colors.deepPurple,
-                trailing: Switch.adaptive(
-                  value: settings.ishaAthanEnabled,
-                  onChanged: (val) {
-                    ref.read(settingsProvider.notifier).toggleIshaAthan(val);
-                    _triggerRefresh(ref);
-                  },
-                ),
+                switchValue: settings.ishaAthanEnabled,
+                onSwitchChanged: (val) {
+                  ref.read(settingsProvider.notifier).toggleIshaAthan(val);
+                  _triggerRefresh(ref);
+                },
               ),
             ],
           ),

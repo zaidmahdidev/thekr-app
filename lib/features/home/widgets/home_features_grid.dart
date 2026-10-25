@@ -103,6 +103,14 @@ class HomeFeaturesGrid extends StatelessWidget {
             addedInVersion: '1.3.3',
           ),
           _FeatureItem(
+            title: "دليل الحاج",
+            imagePath: AppAssets.fHajj,
+            color: const Color(0xff1f8a70),
+            route: const HajjRoute(),
+            featureId: 'hajj',
+            addedInVersion: '1.3.3',
+          ),
+          _FeatureItem(
             title: "التقويم الإسلامي",
             imagePath: AppAssets.fCalendar,
             color: const Color(0xff009688),

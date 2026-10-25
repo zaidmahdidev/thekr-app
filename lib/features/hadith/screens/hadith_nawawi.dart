@@ -23,8 +23,8 @@ class HadithNawawiScreen extends ConsumerWidget {
             icon: const AppIcon(HugeIcons.strokeRoundedZoomIn),
             onPressed: () {
               final currentSize = ref.read(settingsProvider).fontSize;
-              if (currentSize < 24) {
-                ref.read(settingsProvider.notifier).updateFontSize(currentSize + 2);
+              if (currentSize < SettingsState.maxFontSize) {
+                ref.read(settingsProvider.notifier).updateFontSize(currentSize + SettingsState.fontSizeStep);
               }
             },
           ),
@@ -32,8 +32,8 @@ class HadithNawawiScreen extends ConsumerWidget {
             icon: const AppIcon(HugeIcons.strokeRoundedZoomOut),
             onPressed: () {
               final currentSize = ref.read(settingsProvider).fontSize;
-              if (currentSize > 14) {
-                ref.read(settingsProvider.notifier).updateFontSize(currentSize - 2);
+              if (currentSize > SettingsState.minFontSize) {
+                ref.read(settingsProvider.notifier).updateFontSize(currentSize - SettingsState.fontSizeStep);
               }
             },
           ),

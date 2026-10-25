@@ -1,23 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs>
-<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE29A"/><stop offset=".55" stop-color="#E0A93B"/><stop offset="1" stop-color="#B07A12"/></linearGradient>
-<linearGradient id="front" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3A42"/><stop offset="1" stop-color="#1B1B21"/></linearGradient>
-<linearGradient id="side" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26262C"/><stop offset="1" stop-color="#0E0E12"/></linearGradient>
-</defs>
-<ellipse cx="64" cy="112" rx="46" ry="7" fill="#000000" fill-opacity=".12"/>
-<polygon points="14,40 70,40 70,108 14,108" fill="url(#front)"/>
-<polygon points="70,40 114,28 114,98 70,108" fill="url(#side)"/>
-<polygon points="14,40 58,28 114,28 70,40" fill="#55555F"/>
-<polygon points="14,52 70,52 70,62 14,62" fill="url(#gold)"/>
-<polygon points="70,52 114,41 114,50 70,62" fill="#C28F25"/>
-<g fill="#F7D98A" fill-opacity=".85">
-<rect x="20" y="53.5" width="6" height="7" rx="1.2"/>
-<rect x="31" y="53.5" width="6" height="7" rx="1.2"/>
-<rect x="42" y="53.5" width="6" height="7" rx="1.2"/>
-<rect x="53" y="53.5" width="6" height="7" rx="1.2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<!-- Flat icon in the style of the other home icons: fills the whole square. -->
+<ellipse cx="256" cy="446" rx="250" ry="62" fill="#F6E3C2"/>
+<ellipse cx="256" cy="446" rx="250" ry="62" fill="none" stroke="#EBCB93" stroke-width="10"/>
+<ellipse cx="256" cy="446" rx="196" ry="40" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-dasharray="2 30" stroke-linecap="round"/>
+<!-- Kaaba -->
+<g transform="translate(-22 -16) scale(1.1)">
+<rect x="92" y="108" width="330" height="312" rx="26" fill="#6B5F69"/>
+<path d="M342 108h54a26 26 0 0 1 26 26v260a26 26 0 0 1-26 26h-54z" fill="#554C57"/>
+<rect x="92" y="190" width="330" height="58" fill="#FFC773"/>
+<path d="M342 190h80v58h-80z" fill="#F0B04F"/>
+<g fill="#FFE2B0">
+<rect x="116" y="204" width="38" height="30" rx="6"/>
+<rect x="176" y="204" width="38" height="30" rx="6"/>
+<rect x="236" y="204" width="38" height="30" rx="6"/>
+<rect x="296" y="204" width="38" height="30" rx="6"/>
 </g>
-<rect x="28" y="72" width="26" height="36" rx="3" fill="url(#gold)"/>
-<rect x="32" y="76" width="18" height="28" rx="2" fill="#7A520E"/>
-<rect x="32" y="76" width="18" height="28" rx="2" fill="none" stroke="#FFE29A" stroke-width="1.2"/>
-<circle cx="47" cy="91" r="1.8" fill="#FFE29A"/>
+<rect x="190" y="292" width="76" height="128" rx="14" fill="#8F8595"/>
+<rect x="206" y="308" width="44" height="112" rx="8" fill="#A59CAA"/>
+<circle cx="256" cy="366" r="7" fill="#FFC773"/>
+</g>
+<!-- crescent and star -->
+<g transform="translate(10 -10) scale(.92)">
+<path d="M438 16a52 52 0 1 0 40 86a42 42 0 0 1-40-86z" fill="#FFD66B"/>
+<path d="M430 36l8 20 21 1-17 13 6 21-18-12-18 12 6-21-17-13 21-1z" fill="#FFC773" transform="translate(6 -10) scale(.8)"/>
+</g>
 </svg>

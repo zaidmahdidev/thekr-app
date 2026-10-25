@@ -12,6 +12,16 @@ class SettingsTile extends StatelessWidget {
   final Widget? trailing;
   final VoidCallback? onTap;
 
+  /// Makes the tile a switch row: tapping anywhere on the row toggles it, not
+  /// only the switch itself.
+  final bool? switchValue;
+  final ValueChanged<bool>? onSwitchChanged;
+
+  /// Optional value shown next to an enabled switch (for example a time).
+  /// Tapping it runs [onValueTap] instead of toggling the switch.
+  final String? switchValueLabel;
+  final VoidCallback? onValueTap;
+
   const SettingsTile({
     super.key,
     required this.title,
@@ -20,12 +30,22 @@ class SettingsTile extends StatelessWidget {
     required this.iconColor,
     this.trailing,
     this.onTap,
+    this.switchValue,
+    this.onSwitchChanged,
+    this.switchValueLabel,
+    this.onValueTap,
   });
+
+  bool get _isSwitch => switchValue != null && onSwitchChanged != null;
 
   @override
   Widget build(BuildContext context) {
+    final tapHandler = _isSwitch
+        ? () => onSwitchChanged!(!switchValue!)
+        : onTap;
+
     return InkWell(
-      onTap: onTap,
+      onTap: tapHandler,
       borderRadius: BorderRadius.circular(context.corners.lg),
       child: Padding(
         padding: EdgeInsets.symmetric(
@@ -66,7 +86,7 @@ class SettingsTile extends StatelessWidget {
                             color: context.colors.textSecondary.withValues(
                               alpha: 0.5,
                             ),
-                            fontWeight: onTap != null
+                            fontWeight: tapHandler != null
                                 ? FontWeight.bold
                                 : FontWeight.normal,
                           ),
@@ -75,7 +95,48 @@ class SettingsTile extends StatelessWidget {
                 ],
               ),
             ),
-            trailing ??
+            if (_isSwitch)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (switchValue! && switchValueLabel != null) ...[
+                    InkWell(
+                      onTap: onValueTap,
+                      borderRadius: BorderRadius.circular(context.corners.md),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10.w,
+                          vertical: 4.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: context.colors.primary.withValues(alpha: 0.1),
+                          borderRadius:
+                              BorderRadius.circular(context.corners.md),
+                        ),
+                        child: Text(
+                          switchValueLabel!,
+                          style: (context.textStyles.bodySmall ??
+                                  const TextStyle())
+                              .copyWith(
+                                color: context.colors.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: context.insets.sm),
+                  ],
+                  Switch.adaptive(
+                    value: switchValue!,
+                    activeThumbColor: context.colors.primary,
+                    activeTrackColor:
+                        context.colors.primary.withValues(alpha: 0.5),
+                    onChanged: onSwitchChanged,
+                  ),
+                ],
+              )
+            else
+              trailing ??
                 Container(
                   padding: EdgeInsets.all(4.r),
                   decoration: BoxDecoration(

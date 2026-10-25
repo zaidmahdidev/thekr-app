@@ -205,6 +205,165 @@ class HadithNawawiRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [HajjChecklistScreen]
+class HajjChecklistRoute extends PageRouteInfo<void> {
+  const HajjChecklistRoute({List<PageRouteInfo>? children})
+    : super(HajjChecklistRoute.name, initialChildren: children);
+
+  static const String name = 'HajjChecklistRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const HajjChecklistScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [HajjDayScreen]
+class HajjDayRoute extends PageRouteInfo<HajjDayRouteArgs> {
+  HajjDayRoute({
+    Key? key,
+    required int dayNumber,
+    List<PageRouteInfo>? children,
+  }) : super(
+         HajjDayRoute.name,
+         args: HajjDayRouteArgs(key: key, dayNumber: dayNumber),
+         initialChildren: children,
+       );
+
+  static const String name = 'HajjDayRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<HajjDayRouteArgs>();
+      return HajjDayScreen(key: args.key, dayNumber: args.dayNumber);
+    },
+  );
+}
+
+class HajjDayRouteArgs {
+  const HajjDayRouteArgs({this.key, required this.dayNumber});
+
+  final Key? key;
+
+  final int dayNumber;
+
+  @override
+  String toString() {
+    return 'HajjDayRouteArgs{key: $key, dayNumber: $dayNumber}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! HajjDayRouteArgs) return false;
+    return key == other.key && dayNumber == other.dayNumber;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ dayNumber.hashCode;
+}
+
+/// generated route for
+/// [HajjIntroScreen]
+class HajjIntroRoute extends PageRouteInfo<void> {
+  const HajjIntroRoute({List<PageRouteInfo>? children})
+    : super(HajjIntroRoute.name, initialChildren: children);
+
+  static const String name = 'HajjIntroRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const HajjIntroScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [HajjMistakesScreen]
+class HajjMistakesRoute extends PageRouteInfo<void> {
+  const HajjMistakesRoute({List<PageRouteInfo>? children})
+    : super(HajjMistakesRoute.name, initialChildren: children);
+
+  static const String name = 'HajjMistakesRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const HajjMistakesScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [HajjPermitScreen]
+class HajjPermitRoute extends PageRouteInfo<void> {
+  const HajjPermitRoute({List<PageRouteInfo>? children})
+    : super(HajjPermitRoute.name, initialChildren: children);
+
+  static const String name = 'HajjPermitRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const HajjPermitScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [HajjScreen]
+class HajjRoute extends PageRouteInfo<void> {
+  const HajjRoute({List<PageRouteInfo>? children})
+    : super(HajjRoute.name, initialChildren: children);
+
+  static const String name = 'HajjRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const HajjScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [HajjSpecialScreen]
+class HajjSpecialRoute extends PageRouteInfo<void> {
+  const HajjSpecialRoute({List<PageRouteInfo>? children})
+    : super(HajjSpecialRoute.name, initialChildren: children);
+
+  static const String name = 'HajjSpecialRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const HajjSpecialScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [HajjTypesScreen]
+class HajjTypesRoute extends PageRouteInfo<void> {
+  const HajjTypesRoute({List<PageRouteInfo>? children})
+    : super(HajjTypesRoute.name, initialChildren: children);
+
+  static const String name = 'HajjTypesRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const HajjTypesScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [HomeScreen]
 class HomeRoute extends PageRouteInfo<void> {
   const HomeRoute({List<PageRouteInfo>? children})
@@ -332,6 +491,22 @@ class MisbahaRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const MisbahaScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [PrayerTimesScreen]
+class PrayerTimesRoute extends PageRouteInfo<void> {
+  const PrayerTimesRoute({List<PageRouteInfo>? children})
+    : super(PrayerTimesRoute.name, initialChildren: children);
+
+  static const String name = 'PrayerTimesRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const PrayerTimesScreen();
     },
   );
 }
