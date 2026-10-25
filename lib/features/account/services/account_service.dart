@@ -31,13 +31,16 @@ class AccountService {
 
   bool _googleReady = false;
 
+  /// Signs in with the phone's own Google account chooser. When that cannot
+  /// work (a phone without Google Play services such as some Huawei models, or
+  /// a configuration error) it moves on by itself to Firebase's web sign-in,
+  /// where any Google account can be typed in. A cancel by the user stays a
+  /// cancel.
   Future<SignInResult> signInWithGoogle() async {
     if (!isAvailable) return SignInResult.notAvailable;
+    if (googleServerClientId.isEmpty) return _signInInBrowser();
+
     try {
-      if (googleServerClientId.isEmpty) {
-        await _auth.signInWithProvider(GoogleAuthProvider());
-        return SignInResult.success;
-      }
 
       final google = GoogleSignIn.instance;
       // Initialising twice is not needed, so it is done once per run.
@@ -47,25 +50,44 @@ class AccountService {
       }
       final account = await google.authenticate();
       final idToken = account.authentication.idToken;
-      if (idToken == null) return SignInResult.failed;
+      if (idToken == null) return await _signInInBrowser();
       await _auth.signInWithCredential(
         GoogleAuthProvider.credential(idToken: idToken),
       );
       return SignInResult.success;
     } on GoogleSignInException catch (e) {
-      return e.code == GoogleSignInExceptionCode.canceled
-          ? SignInResult.cancelled
-          : SignInResult.failed;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'canceled' ||
-          e.code == 'web-context-canceled' ||
-          e.code == 'popup-closed-by-user') {
+      if (e.code == GoogleSignInExceptionCode.canceled ||
+          e.code == GoogleSignInExceptionCode.interrupted) {
         return SignInResult.cancelled;
       }
-      return SignInResult.failed;
+      return await _signInInBrowser();
+    } on FirebaseAuthException catch (e) {
+      return _authFailure(e);
+    } catch (_) {
+      return await _signInInBrowser();
+    }
+  }
+
+  Future<SignInResult> _signInInBrowser() async {
+    try {
+      await _auth.signInWithProvider(GoogleAuthProvider());
+      return SignInResult.success;
+    } on FirebaseAuthException catch (e) {
+      return _authFailure(e);
     } catch (_) {
       return SignInResult.failed;
     }
+  }
+
+  SignInResult _authFailure(FirebaseAuthException e) {
+    const cancelled = {
+      'canceled',
+      'web-context-canceled',
+      'popup-closed-by-user',
+    };
+    return cancelled.contains(e.code)
+        ? SignInResult.cancelled
+        : SignInResult.failed;
   }
 
   /// Signs out of the account. Everything saved on the phone stays.
