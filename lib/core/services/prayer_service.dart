@@ -1,9 +1,12 @@
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:hijri/hijri_calendar.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
 import 'package:thekr_app/core/services/location_name_service.dart';
+import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
 import 'package:thekr_app/features/home/models/app_prayer_times.dart';
+import 'package:thekr_app/features/prayer_times/models/prayer_calc_settings.dart';
 
 /// The place prayer times are calculated for.
 class PrayerLocation {
@@ -59,9 +62,16 @@ class PrayerService {
       CacheHelper.getData(key: _lngKey) != null;
 
   /// Prayer times of [date] at [location]. Pure calculation (no internet).
-  static AppPrayerTimes timesFor(DateTime date, PrayerLocation location) {
-    final params = CalculationMethod.umm_al_qura.getParameters();
-    params.madhab = Madhab.shafi;
+  ///
+  /// [settings] are the user's calculation choices; without them the saved ones
+  /// are used (which are the app's original method until the user changes it).
+  static AppPrayerTimes timesFor(
+    DateTime date,
+    PrayerLocation location, {
+    PrayerCalcSettings? settings,
+  }) {
+    final calc = settings ?? PrayerCalcSettings.load();
+    final params = _parametersFor(calc, date);
 
     final adhanTimes = PrayerTimes(
       location.coordinates,
@@ -73,6 +83,78 @@ class PrayerService {
       isLocationOff: location.isPermissionOff,
       isDefaultLocation: location.isDefault,
     );
+  }
+
+  /// The `adhan` parameters for the user's choices on [date].
+  static CalculationParameters _parametersFor(
+    PrayerCalcSettings calc,
+    DateTime date,
+  ) {
+    final params = _adhanMethod(calc.method).getParameters();
+    params.madhab = calc.madhab == AsrMadhab.hanafi
+        ? Madhab.hanafi
+        : Madhab.shafi;
+    params.highLatitudeRule = switch (calc.highLatitude) {
+      HighLatitudeMode.middleOfNight => HighLatitudeRule.middle_of_the_night,
+      HighLatitudeMode.seventhOfNight => HighLatitudeRule.seventh_of_the_night,
+      HighLatitudeMode.twilightAngle => HighLatitudeRule.twilight_angle,
+    };
+
+    // Umm al-Qura: Isha is 120 minutes after Maghrib in Ramadan. The library
+    // always uses 90, so the month is checked here.
+    if (calc.method == PrayerCalcMethod.ummAlQura &&
+        calc.ramadanIsha &&
+        isRamadan(date)) {
+      params.ishaInterval = 120;
+    }
+
+    params.adjustments = PrayerAdjustments(
+      fajr: calc.adjustmentOf(AppPrayer.fajr),
+      sunrise: calc.adjustmentOf(AppPrayer.sunrise),
+      dhuhr: calc.adjustmentOf(AppPrayer.dhuhr),
+      asr: calc.adjustmentOf(AppPrayer.asr),
+      maghrib: calc.adjustmentOf(AppPrayer.maghrib),
+      isha: calc.adjustmentOf(AppPrayer.isha),
+    );
+    return params;
+  }
+
+  /// Whether [date] falls in Ramadan of the Hijri calendar.
+  static bool isRamadan(DateTime date) {
+    try {
+      return HijriCalendar.fromDate(date).hMonth == 9;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static CalculationMethod _adhanMethod(PrayerCalcMethod method) {
+    switch (method) {
+      case PrayerCalcMethod.ummAlQura:
+        return CalculationMethod.umm_al_qura;
+      case PrayerCalcMethod.muslimWorldLeague:
+        return CalculationMethod.muslim_world_league;
+      case PrayerCalcMethod.egyptian:
+        return CalculationMethod.egyptian;
+      case PrayerCalcMethod.karachi:
+        return CalculationMethod.karachi;
+      case PrayerCalcMethod.northAmerica:
+        return CalculationMethod.north_america;
+      case PrayerCalcMethod.dubai:
+        return CalculationMethod.dubai;
+      case PrayerCalcMethod.kuwait:
+        return CalculationMethod.kuwait;
+      case PrayerCalcMethod.qatar:
+        return CalculationMethod.qatar;
+      case PrayerCalcMethod.singapore:
+        return CalculationMethod.singapore;
+      case PrayerCalcMethod.turkey:
+        return CalculationMethod.turkey;
+      case PrayerCalcMethod.tehran:
+        return CalculationMethod.tehran;
+      case PrayerCalcMethod.moonSighting:
+        return CalculationMethod.moon_sighting_committee;
+    }
   }
 
   static Future<Coordinates> _getEffectiveCoordinates() async {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
+import 'package:thekr_app/core/router/app_router.dart';
 import 'package:thekr_app/core/widgets/app_scaffold.dart';
 import 'package:thekr_app/core/widgets/base_app_bar.dart';
 import 'package:thekr_app/features/settings/providers/settings_provider.dart';
@@ -10,6 +11,7 @@ import 'package:thekr_app/features/settings/widgets/settings_section.dart';
 import 'package:thekr_app/features/settings/widgets/settings_tile.dart';
 import 'package:thekr_app/core/services/notification_service.dart';
 import 'package:thekr_app/features/home/providers/prayer_provider.dart';
+import 'package:thekr_app/features/prayer_times/providers/prayer_calc_provider.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 @RoutePage()
@@ -30,6 +32,19 @@ class AthanSettingsScreen extends ConsumerWidget {
         padding: EdgeInsets.all(context.insets.lg),
         physics: const BouncingScrollPhysics(),
         children: [
+          SettingsSection(
+            children: [
+              SettingsTile(
+                title: 'حساب المواقيت',
+                subtitle: ref.watch(prayerCalcProvider).method.title,
+                icon: HugeIcons.strokeRoundedCalculator,
+                iconColor: context.colors.primary,
+                onTap: () =>
+                    context.router.push(const PrayerCalcSettingsRoute()),
+              ),
+            ],
+          ),
+          SizedBox(height: context.insets.lg),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.insets.sm),
             child: Text(

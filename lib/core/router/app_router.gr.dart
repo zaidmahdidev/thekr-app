@@ -496,6 +496,22 @@ class MisbahaRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [PrayerCalcSettingsScreen]
+class PrayerCalcSettingsRoute extends PageRouteInfo<void> {
+  const PrayerCalcSettingsRoute({List<PageRouteInfo>? children})
+    : super(PrayerCalcSettingsRoute.name, initialChildren: children);
+
+  static const String name = 'PrayerCalcSettingsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const PrayerCalcSettingsScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [PrayerTimesScreen]
 class PrayerTimesRoute extends PageRouteInfo<void> {
   const PrayerTimesRoute({List<PageRouteInfo>? children})

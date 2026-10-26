@@ -38,7 +38,6 @@ class PrayerTimesCard extends StatelessWidget {
         time: moment == null
             ? '--:--'
             : intl.DateFormat('h:mm', 'en').format(moment),
-        period: moment == null ? null : (moment.hour < 12 ? 'ص' : 'م'),
         isNext: isNext,
         isPast: !isLoading && !isNext && moment!.isBefore(now),
       );
@@ -147,19 +146,8 @@ class _PrayerCell extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 5.h),
-              Text.rich(
-                TextSpan(
-                  text: item.time,
-                  children: [
-                    if (item.period != null)
-                      TextSpan(
-                        text: ' ${item.period}',
-                        style: context.textStyles.labelMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                  ],
-                ),
+              Text(
+                item.time,
                 style: context.textStyles.bodyLarge?.copyWith(
                   color: accent,
                   fontWeight: FontWeight.bold,
@@ -176,14 +164,12 @@ class _PrayerCell extends StatelessWidget {
 class _PrayerTimeDisplay {
   final AppPrayer prayer;
   final String time;
-  final String? period;
   final bool isNext;
   final bool isPast;
 
   _PrayerTimeDisplay({
     required this.prayer,
     required this.time,
-    required this.period,
     required this.isNext,
     required this.isPast,
   });

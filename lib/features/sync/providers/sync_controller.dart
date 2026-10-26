@@ -11,6 +11,7 @@ import 'package:thekr_app/features/habit_tracker/providers/habit_tracker_provide
 import 'package:thekr_app/features/hajj/providers/hajj_providers.dart';
 import 'package:thekr_app/features/home/providers/prayer_provider.dart';
 import 'package:thekr_app/features/misbaha/providers/misbaha_provider.dart';
+import 'package:thekr_app/features/prayer_times/providers/prayer_calc_provider.dart';
 import 'package:thekr_app/features/prayer_times/providers/prayer_times_providers.dart';
 import 'package:thekr_app/features/quran/providers/quran_provider.dart';
 import 'package:thekr_app/features/quran/services/quran_reader_adapter.dart';
@@ -168,6 +169,7 @@ class SyncController extends StateNotifier<SyncState> {
     _ref.invalidate(hajjChecklistProvider);
     _ref.invalidate(shareCardStyleProvider);
     _ref.invalidate(quranProvider);
+    _ref.invalidate(prayerCalcProvider);
     _ref.invalidate(prayerTimesProvider);
     _ref.invalidate(tomorrowPrayerTimesProvider);
     _ref.invalidate(prayerLocationProvider);

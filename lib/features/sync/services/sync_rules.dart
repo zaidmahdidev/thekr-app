@@ -40,6 +40,11 @@ class SyncRules {
     'shareTemplate',
     'shareCardRatio',
     'shareCardSignature',
+    // How prayer times are calculated
+    'prayer_method',
+    'prayer_madhab',
+    'prayer_high_lat',
+    'prayer_ramadan_isha',
     // Reminders and athan
     'notificationsEnabled',
     'morning_notification_enabled',
@@ -73,7 +78,10 @@ class SyncRules {
     'hajj_checklist',
   };
 
-  static const List<String> _latestWinsPrefixes = ['misbaha_zikr_'];
+  static const List<String> _latestWinsPrefixes = [
+    'misbaha_zikr_',
+    'prayer_adj_',
+  ];
 
   /// Best streak only ever grows. (The all-time points are recomputed from
   /// the saved days on every start, so they are not stored in the account.)

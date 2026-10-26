@@ -39,6 +39,7 @@ import 'package:thekr_app/features/settings/screens/athan_settings_screen.dart';
 import 'package:thekr_app/features/calendar/screens/calendar_screen.dart';
 import 'package:thekr_app/features/habit_tracker/screens/habit_tracker_screen.dart';
 import 'package:thekr_app/features/prayer_times/screens/prayer_times_screen.dart';
+import 'package:thekr_app/features/prayer_times/screens/prayer_calc_settings_screen.dart';
 
 part 'app_router.gr.dart';
 
@@ -83,5 +84,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: CalendarRoute.page),
     AutoRoute(page: HabitTrackerRoute.page),
     AutoRoute(page: PrayerTimesRoute.page),
+    AutoRoute(page: PrayerCalcSettingsRoute.page),
   ];
 }
