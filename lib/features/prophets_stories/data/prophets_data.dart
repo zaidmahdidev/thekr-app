@@ -1,4 +1,5 @@
 import '../models/prophet_story.dart';
+import 'prophets_narrative_data.dart';
 import 'prophets_sourced_data.dart';
 
 class ProphetsData {
@@ -574,6 +575,17 @@ class ProphetsData {
   /// All prophets. Where a documented text exists (see [SourcedStories]) it
   /// replaces the older text of the entry.
   static final List<ProphetStory> stories = List.unmodifiable(
-    _base.map(SourcedStories.apply),
+    _base.map(SourcedStories.apply).map(_narrate),
   );
+
+  /// Adds the narrative version of a story when there is one.
+  static ProphetStory _narrate(ProphetStory p) {
+    final narrative = ProphetNarratives.byId[p.id];
+    if (narrative == null) return p;
+    return p.copyWith(
+      narrative: narrative,
+      narrativeRefs: ProphetNarratives.refsById[p.id] ?? '',
+      storyVerses: ProphetNarratives.versesById[p.id] ?? const [],
+    );
+  }
 }

@@ -35,6 +35,18 @@ class ProphetStory {
   final List<String> paragraphs;
   final StorySource? source;
 
+  /// The story told as one continuous narrative. Lines starting with '## ' are
+  /// headings, Quranic verses are wrapped in « ». When present it is shown
+  /// first and [paragraphs] becomes the collapsible detail from the source.
+  final List<String> narrative;
+
+  /// The references the [narrative] is built on.
+  final String narrativeRefs;
+
+  /// All the verses of the story, grouped by surah ('## ' lines are surah
+  /// headings), shown apart from the [narrative] so the story stays fluid.
+  final List<String> storyVerses;
+
   const ProphetStory({
     required this.id,
     required this.name,
@@ -46,15 +58,35 @@ class ProphetStory {
     required this.emoji,
     this.paragraphs = const [],
     this.source,
+    this.narrative = const [],
+    this.narrativeRefs = '',
+    this.storyVerses = const [],
   });
 
   /// True when the story text comes from a named source.
   bool get isDocumented => source != null && paragraphs.isNotEmpty;
 
   /// Story as plain text (for copy and share).
-  String get plainText => isDocumented
+  String get plainText => narrative.isNotEmpty
+      ? narrative
+            .map(_narrativeLineText)
+            .join('\n\n')
+            .replaceAll('«', '﴿')
+            .replaceAll('»', '﴾')
+      : isDocumented
       ? paragraphs.join('\n\n').replaceAll('«', '﴿').replaceAll('»', '﴾')
       : fullStory;
+
+  static String _narrativeLineText(String line) {
+    if (line.startsWith('## ')) return line.substring(3);
+    if (line.startsWith('@@ ')) {
+      final body = line.substring(3);
+      final split = body.indexOf(' | ');
+      if (split < 0) return body;
+      return '﴿${body.substring(split + 3)}﴾ [${body.substring(0, split)}]';
+    }
+    return line;
+  }
 
   /// Words of the story, for the reading time.
   int get wordCount =>
@@ -66,6 +98,9 @@ class ProphetStory {
     List<String>? lessons,
     List<String>? paragraphs,
     StorySource? source,
+    List<String>? narrative,
+    String? narrativeRefs,
+    List<String>? storyVerses,
   }) {
     return ProphetStory(
       id: id,
@@ -78,6 +113,9 @@ class ProphetStory {
       emoji: emoji,
       paragraphs: paragraphs ?? this.paragraphs,
       source: source ?? this.source,
+      narrative: narrative ?? this.narrative,
+      narrativeRefs: narrativeRefs ?? this.narrativeRefs,
+      storyVerses: storyVerses ?? this.storyVerses,
     );
   }
 

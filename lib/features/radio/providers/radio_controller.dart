@@ -99,6 +99,12 @@ class RadioController extends StateNotifier<RadioState> {
   /// What the user last asked for; decides whether to reconnect on failure.
   bool _wantsPlaying = false;
   bool _resumeAfterInterruption = false;
+  DateTime? _interruptedAt;
+
+  /// An interruption (a call, a notification sound) shorter than this is
+  /// followed by the radio coming back. A longer one, such as listening to the
+  /// Quran for a while, is not: the radio must not start on its own later.
+  static const Duration resumeWindow = Duration(minutes: 2);
 
   /// The stations the next / previous buttons of the notification walk through:
   /// the list the screen last used.
@@ -294,6 +300,7 @@ class RadioController extends StateNotifier<RadioState> {
         _player.setVolume(0.3);
       } else if (state.isActive) {
         _resumeAfterInterruption = true;
+        _interruptedAt = DateTime.now();
         pause();
       }
     } else {
@@ -301,7 +308,10 @@ class RadioController extends StateNotifier<RadioState> {
         _player.setVolume(1);
       } else if (_resumeAfterInterruption && state.station != null) {
         _resumeAfterInterruption = false;
-        play(state.station!);
+        final at = _interruptedAt;
+        if (at != null && DateTime.now().difference(at) <= resumeWindow) {
+          play(state.station!);
+        }
       }
     }
   }

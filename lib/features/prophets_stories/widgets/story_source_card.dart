@@ -8,9 +8,12 @@ import 'package:thekr_app/core/widgets/app_icon.dart';
 /// Shown at the end of a story: the book the text comes from, or a notice when
 /// the story is not documented yet.
 class StorySourceCard extends StatelessWidget {
-  const StorySourceCard({super.key, required this.source});
+  const StorySourceCard({super.key, required this.source, this.refs = ''});
 
   final StorySource? source;
+
+  /// What the narrative version of the story is built on, when there is one.
+  final String refs;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +51,18 @@ class StorySourceCard extends StatelessWidget {
             ],
           ),
           SizedBox(height: context.insets.sm),
+          if (refs.isNotEmpty) ...[
+            Text(
+              refs,
+              style: context.textStyles.bodySmall?.copyWith(
+                color: context.colors.textSecondary,
+                height: 1.7,
+              ),
+            ),
+            SizedBox(height: context.insets.sm),
+            Divider(color: accent.withValues(alpha: 0.2)),
+            SizedBox(height: context.insets.sm),
+          ],
           if (source != null) ...[
             Text(
               source!.book,

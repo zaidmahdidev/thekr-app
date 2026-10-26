@@ -3,9 +3,11 @@ import 'package:thekr_app/core/services/cache_helper.dart';
 import '../models/radio_station.dart';
 import 'radio_controller.dart';
 
-/// Playback state. Auto-disposed: leaving the radio screen stops the stream.
+/// Playback state. It lives as long as the app: leaving the radio screen, or
+/// the app, does not stop the stream. The user stops it from the screen or from
+/// the media notification.
 final radioControllerProvider =
-    StateNotifierProvider.autoDispose<RadioController, RadioState>(
+    StateNotifierProvider<RadioController, RadioState>(
       (ref) => RadioController(),
     );
 
