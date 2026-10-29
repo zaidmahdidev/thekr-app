@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/quran_text.dart';
 import '../providers/umrah_text.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// Instructions in order, each with its number in a circle. Plain reading:
 /// nothing to tap, so the page stays calm for every age.
@@ -45,7 +46,7 @@ class UmrahNumberedList extends ConsumerWidget {
                     ),
                     child: Center(
                       child: Text(
-                        QuranText.digits(index + 1),
+                        AppDigits.of(index + 1),
                         style: context.textStyles.bodyMedium?.copyWith(
                           color: colors.primary,
                           fontWeight: FontWeight.bold,

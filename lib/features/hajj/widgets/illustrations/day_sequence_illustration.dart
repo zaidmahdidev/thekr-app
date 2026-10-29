@@ -7,6 +7,7 @@ import 'package:thekr_app/core/widgets/app_icon.dart';
 import 'package:thekr_app/features/umrah/providers/umrah_text.dart';
 import 'package:thekr_app/features/umrah/widgets/illustrations/umrah_illustration_frame.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 enum _Act {
   stoning(
@@ -175,7 +176,7 @@ class _ActTile extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${_digit(number)}. ${act.title}',
+                      '${AppDigits.of(number)}. ${act.title}',
                       style: text.title(context, color: accent),
                     ),
                     Text(
@@ -192,5 +193,4 @@ class _ActTile extends ConsumerWidget {
     );
   }
 
-  static String _digit(int n) => const ['٠', '١', '٢', '٣', '٤', '٥'][n];
 }

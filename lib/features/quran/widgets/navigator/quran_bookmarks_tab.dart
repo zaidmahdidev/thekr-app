@@ -6,6 +6,7 @@ import 'package:thekr_app/features/quran/services/quran_reader_adapter.dart';
 import 'package:thekr_app/features/quran/widgets/quran_page_indicator.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// Bookmarks tab: the verses the user marked, with jump and delete.
 class QuranBookmarksTab extends StatefulWidget {
@@ -104,7 +105,7 @@ class _QuranBookmarksTabState extends State<QuranBookmarksTab> {
                             ),
                           ),
                           Text(
-                            'صفحة ${quranDigits(bookmark.page)} · آية ${quranDigits(bookmark.ayahNumber)}',
+                            'صفحة ${AppDigits.of(bookmark.page)} · آية ${AppDigits.of(bookmark.ayahNumber)}',
                             style: context.textStyles.labelSmall?.copyWith(
                               color: palette.textMuted,
                             ),

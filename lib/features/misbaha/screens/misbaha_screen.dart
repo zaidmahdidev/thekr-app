@@ -16,6 +16,7 @@ import '../widgets/reset_button.dart';
 import '../widgets/bead_color_picker.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// Electronic tasbih: tap anywhere to count. Beads slide along the string, the
 /// ring fills up to the round target and a strong vibration marks each round.
@@ -80,7 +81,7 @@ class _MisbahaScreenState extends ConsumerState<MisbahaScreen>
           HapticFeedback.heavyImpact,
         );
         showToast(
-          text: 'أتممت ${QuranText.digits(state.target)} تسبيحة',
+          text: 'أتممت ${AppDigits.of(state.target)} تسبيحة',
           backgroundColor: context.colors.secondary,
           textColor: Colors.white,
         );
@@ -162,7 +163,7 @@ class _MisbahaScreenState extends ConsumerState<MisbahaScreen>
                             child: _InfoChip(
                               icon: HugeIcons.strokeRoundedFlag01,
                               label: state.target > 0
-                                  ? 'الهدف ${QuranText.digits(state.target)}'
+                                  ? 'الهدف ${AppDigits.of(state.target)}'
                                   : 'بدون هدف',
                               onTap: () => _pickTarget(state.target),
                             ),
@@ -171,7 +172,7 @@ class _MisbahaScreenState extends ConsumerState<MisbahaScreen>
                             SizedBox(width: context.insets.sm),
                             _InfoChip(
                               icon: HugeIcons.strokeRoundedRepeat,
-                              label: QuranText.digits(rounds),
+                              label: AppDigits.of(rounds),
                             ),
                           ],
                         ],
@@ -295,7 +296,7 @@ class _TargetSheet extends StatelessWidget {
                   for (final value in misbahaTargets)
                     ChoiceChip(
                       label: Text(
-                        value == 0 ? 'بدون هدف' : QuranText.digits(value),
+                        value == 0 ? 'بدون هدف' : AppDigits.of(value),
                       ),
                       selected: value == current,
                       selectedColor: context.colors.primary,

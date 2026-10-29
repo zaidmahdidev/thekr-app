@@ -12,6 +12,7 @@ import '../models/umrah_models.dart';
 import '../providers/umrah_checklist_provider.dart';
 import '../providers/umrah_text.dart';
 import 'umrah_font_actions.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// A packing list with ticks that are saved on the device. Shared by the Umrah
 /// and the Hajj guides: each passes its own groups and its own saved ticks.
@@ -114,7 +115,7 @@ class _Summary extends StatelessWidget {
                 ),
               ),
               Text(
-                '${QuranText.digits(done)} / ${QuranText.digits(total)}',
+                '${AppDigits.of(done)} / ${AppDigits.of(total)}',
                 style: context.textStyles.titleSmall?.copyWith(
                   color: accent,
                   fontWeight: FontWeight.bold,
@@ -191,7 +192,7 @@ class _Group extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${QuranText.digits(done)}/${QuranText.digits(group.items.length)}',
+                  '${AppDigits.of(done)}/${AppDigits.of(group.items.length)}',
                   style: context.textStyles.bodySmall?.copyWith(
                     color: colors.textSecondary,
                   ),

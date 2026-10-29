@@ -49,17 +49,17 @@ class _Stage {
 }
 
 const List<_Stage> _stages = [
-  _Stage('٨ ذو الحجة', _Place.makkah, _Place.mina,
+  _Stage('8 ذو الحجة', _Place.makkah, _Place.mina,
       'تحرم بالحج وتتوجه إلى منى، وتصلي بها الصلوات قصراً.'),
-  _Stage('٩ ذو الحجة', _Place.mina, _Place.arafah,
+  _Stage('9 ذو الحجة', _Place.mina, _Place.arafah,
       'تتجه إلى عرفة بعد طلوع الشمس، وتقف بها حتى غروب الشمس.'),
   _Stage('غروب يوم عرفة', _Place.arafah, _Place.muzdalifah,
       'تنصرف بسكينة وتصلي المغرب والعشاء جمعاً وتبيت بمزدلفة.'),
-  _Stage('١٠ ذو الحجة', _Place.muzdalifah, _Place.mina,
+  _Stage('10 ذو الحجة', _Place.muzdalifah, _Place.mina,
       'بعد الفجر إلى منى: رمي جمرة العقبة والهدي والحلق.'),
-  _Stage('١٠ ذو الحجة', _Place.mina, _Place.makkah,
+  _Stage('10 ذو الحجة', _Place.mina, _Place.makkah,
       'طواف الإفاضة والسعي بمكة، ثم العودة إلى منى للمبيت.'),
-  _Stage('١١ و١٢ و١٣', _Place.mina, _Place.mina,
+  _Stage('11 و12 و13', _Place.mina, _Place.mina,
       'المبيت بمنى ورمي الجمرات الثلاث بعد الزوال كل يوم.'),
   _Stage('عند المغادرة', _Place.mina, _Place.makkah,
       'طواف الوداع بمكة ثم المغادرة.'),

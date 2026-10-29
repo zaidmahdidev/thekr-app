@@ -5,6 +5,7 @@ import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
 import '../data/hajj_days_data.dart';
 import '../models/hajj_models.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// Hajj on one glance: the six stages in order, each opening its lesson.
 class HajjOverviewStrip extends StatelessWidget {
@@ -83,7 +84,7 @@ class HajjOverviewStrip extends StatelessWidget {
                             ),
                             child: Center(
                               child: Text(
-                                QuranText.digits(day.number),
+                                AppDigits.of(day.number),
                                 style: context.textStyles.bodySmall?.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,

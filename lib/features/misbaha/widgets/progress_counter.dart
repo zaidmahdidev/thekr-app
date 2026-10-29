@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/quran_text.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// Big counter with a ring that fills up to the round target.
 class ProgressCounter extends StatelessWidget {
@@ -77,7 +78,7 @@ class ProgressCounter extends StatelessWidget {
                 ),
               ),
               Text(
-                target > 0 ? 'من ${QuranText.digits(target)}' : 'تسبيحة',
+                target > 0 ? 'من ${AppDigits.of(target)}' : 'تسبيحة',
                 style: context.textStyles.labelMedium?.copyWith(
                   color: context.colors.textSecondary,
                   height: 1.2,
@@ -98,7 +99,7 @@ class ProgressCounter extends StatelessWidget {
     );
     return grouped.split('').map((c) {
       final d = int.tryParse(c);
-      return d == null ? c : QuranText.digits(d);
+      return d == null ? c : AppDigits.of(d);
     }).join();
   }
 }

@@ -12,7 +12,7 @@ class HajjDaysData {
   static const List<HajjDay> all = [
     HajjDay(
       number: 1,
-      dayLabel: '٨ ذو الحجة',
+      dayLabel: '8 ذو الحجة',
       title: 'يوم التروية',
       summary: 'الإحرام بالحج والتوجه إلى منى',
       icon: HugeIcons.strokeRoundedTent,
@@ -50,7 +50,7 @@ class HajjDaysData {
     ),
     HajjDay(
       number: 2,
-      dayLabel: '٩ ذو الحجة',
+      dayLabel: '9 ذو الحجة',
       title: 'يوم عرفة',
       summary: 'الوقوف بعرفة، وهو أعظم أركان الحج',
       icon: HugeIcons.strokeRoundedMountain,
@@ -144,7 +144,7 @@ class HajjDaysData {
     ),
     HajjDay(
       number: 4,
-      dayLabel: '١٠ ذو الحجة',
+      dayLabel: '10 ذو الحجة',
       title: 'يوم النحر',
       summary: 'أعمال يوم العيد الخمسة وأول التحلل',
       icon: HugeIcons.strokeRoundedSun03,
@@ -207,7 +207,7 @@ class HajjDaysData {
     ),
     HajjDay(
       number: 5,
-      dayLabel: '١١ و١٢ و١٣ ذو الحجة',
+      dayLabel: '11 و12 و13 ذو الحجة',
       title: 'أيام التشريق',
       summary: 'المبيت بمنى ورمي الجمرات الثلاث كل يوم',
       icon: HugeIcons.strokeRoundedTarget02,

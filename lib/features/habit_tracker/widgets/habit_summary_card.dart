@@ -6,6 +6,7 @@ import 'package:thekr_app/core/widgets/brand_surface.dart';
 import 'package:thekr_app/features/habit_tracker/models/daily_habit_model.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// Hero card of the habit tracker: the day's progress ring and the key numbers.
 class HabitSummaryCard extends StatelessWidget {
@@ -54,7 +55,7 @@ class HabitSummaryCard extends StatelessWidget {
                       ),
                       Center(
                         child: Text(
-                          '${QuranText.digits((value * 100).round())}٪',
+                          '${AppDigits.of((value * 100).round())}%',
                           style: context.textStyles.titleLarge?.copyWith(
                             color: style.text,
                             fontWeight: FontWeight.bold,
@@ -83,7 +84,7 @@ class HabitSummaryCard extends StatelessWidget {
                     Text(
                       done
                           ? 'ما شاء الله! أتممت جميع الطاعات'
-                          : 'أتممت ${QuranText.digits(habit.completedCount)} من ${QuranText.digits(habit.totalHabits)} طاعات',
+                          : 'أتممت ${AppDigits.of(habit.completedCount)} من ${AppDigits.of(habit.totalHabits)} طاعات',
                       style: context.textStyles.bodySmall?.copyWith(
                         color: style.textMuted,
                         height: 1.5,
@@ -99,7 +100,7 @@ class HabitSummaryCard extends StatelessWidget {
                         ),
                         SizedBox(width: 4.w),
                         Text(
-                          '${QuranText.digits(habit.totalPoints)} نقطة اليوم',
+                          '${AppDigits.of(habit.totalPoints)} نقطة اليوم',
                           style: context.textStyles.labelMedium?.copyWith(
                             color: style.text,
                             fontWeight: FontWeight.bold,
@@ -171,7 +172,7 @@ class _Stat extends StatelessWidget {
             AppIcon(icon, size: 18.sp, color: style.gold),
             SizedBox(height: 2.h),
             Text(
-              QuranText.digits(value),
+              AppDigits.of(value),
               style: context.textStyles.titleMedium?.copyWith(
                 color: style.text,
                 fontWeight: FontWeight.bold,

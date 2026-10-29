@@ -30,7 +30,7 @@ class HajjDay {
   /// 1-based position of the lesson.
   final int number;
 
-  /// Short date name shown on the map and overview, e.g. "٩ ذو الحجة".
+  /// Short date name shown on the map and overview, e.g. "9 ذو الحجة".
   final String dayLabel;
   final String title;
   final String summary;

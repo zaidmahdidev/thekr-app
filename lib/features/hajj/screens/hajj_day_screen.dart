@@ -20,6 +20,7 @@ import '../models/hajj_models.dart';
 import '../widgets/illustrations/day_sequence_illustration.dart';
 import '../widgets/illustrations/jamarat_illustration.dart';
 import '../widgets/illustrations/mashaar_illustration.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// One stage of Hajj written as a lesson: what to do, in order, the duas and the
 /// points to watch. Previous / next buttons move along the stages.
@@ -127,7 +128,7 @@ class _Header extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${day.dayLabel} · المرحلة ${QuranText.digits(day.number)} من ${QuranText.digits(HajjDaysData.all.length)}',
+                  '${day.dayLabel} · المرحلة ${AppDigits.of(day.number)} من ${AppDigits.of(HajjDaysData.all.length)}',
                   style: text.small(context, color: colors.textSecondary),
                 ),
                 Text(

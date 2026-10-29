@@ -5,6 +5,7 @@ import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
 import '../data/umrah_steps_data.dart';
 import '../models/umrah_models.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// The whole Umrah on one glance: the six rites in order, each opening its
 /// lesson. A map of what is coming before reading the details.
@@ -85,7 +86,7 @@ class UmrahOverviewStrip extends StatelessWidget {
                             ),
                             child: Center(
                               child: Text(
-                                QuranText.digits(step.number),
+                                AppDigits.of(step.number),
                                 style: context.textStyles.bodySmall?.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,

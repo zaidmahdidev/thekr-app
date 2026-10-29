@@ -13,6 +13,7 @@ import 'package:thekr_app/features/habit_tracker/widgets/habit_summary_card.dart
 import 'package:thekr_app/features/habit_tracker/widgets/habit_week_chart.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// Worship tracker: pick a day, tick what you did, and follow your progress,
 /// streak and points.
@@ -185,7 +186,7 @@ class _HabitTrackerScreenState extends ConsumerState<HabitTrackerScreen> {
                   ],
                 ),
                 Text(
-                  'إكمال جميع الطاعات في اليوم يمنحك ${QuranText.digits(40)} نقطة إضافية.',
+                  'إكمال جميع الطاعات في اليوم يمنحك ${AppDigits.of(40)} نقطة إضافية.',
                   textAlign: TextAlign.center,
                   style: context.textStyles.labelSmall?.copyWith(
                     color: context.colors.textSecondary,
@@ -231,7 +232,7 @@ class _StreakBadge extends StatelessWidget {
               ),
               SizedBox(width: 4.w),
               Text(
-                QuranText.digits(days),
+                AppDigits.of(days),
                 style: context.textStyles.titleSmall?.copyWith(
                   color: color,
                   fontWeight: FontWeight.bold,
@@ -357,7 +358,7 @@ class _DateCard extends StatelessWidget {
               ),
             ),
             Text(
-              QuranText.digits(date.day),
+              AppDigits.of(date.day),
               style: context.textStyles.titleLarge?.copyWith(
                 color: isSelected
                     ? context.colors.surface

@@ -5,6 +5,7 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// A group of habits (e.g. the five prayers) with its own progress.
 class HabitCategoryCard extends StatelessWidget {
@@ -76,7 +77,7 @@ class HabitCategoryCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(context.corners.xl),
                     ),
                     child: Text(
-                      '${QuranText.digits(done)} / ${QuranText.digits(items.length)}',
+                      '${AppDigits.of(done)} / ${AppDigits.of(items.length)}',
                       style: context.textStyles.labelMedium?.copyWith(
                         color: color,
                         fontWeight: FontWeight.bold,
@@ -148,7 +149,7 @@ class _HabitRow extends StatelessWidget {
             ),
             if (item.points != null) ...[
               Text(
-                '+${QuranText.digits(item.points!)}',
+                '+${AppDigits.of(item.points!)}',
                 style: context.textStyles.labelMedium?.copyWith(
                   color: item.isDone ? color : context.colors.textSecondary,
                   fontWeight: FontWeight.bold,

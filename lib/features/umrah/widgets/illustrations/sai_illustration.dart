@@ -9,6 +9,7 @@ import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
 import '../umrah_segmented_control.dart';
 import 'umrah_illustration_frame.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 enum _Spot {
   safa(
@@ -171,7 +172,7 @@ class _SaiIllustrationState extends State<SaiIllustration>
                           ? 'سبعة أشواط تبدأ بالصفا'
                           : done
                           ? 'انتهى السعي عند المروة'
-                          : 'الشوط ${QuranText.digits(state.lap)} من ${QuranText.digits(_rounds)} · ${toMarwa ? 'نحو المروة' : 'نحو الصفا'}',
+                          : 'الشوط ${AppDigits.of(state.lap)} من ${AppDigits.of(_rounds)} · ${toMarwa ? 'نحو المروة' : 'نحو الصفا'}',
                       style: context.textStyles.bodySmall?.copyWith(
                         color: colors.textSecondary,
                       ),

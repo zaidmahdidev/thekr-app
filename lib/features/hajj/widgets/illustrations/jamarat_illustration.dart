@@ -7,6 +7,7 @@ import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
 import 'package:thekr_app/features/umrah/widgets/illustrations/umrah_illustration_frame.dart';
 import 'package:thekr_app/features/umrah/widgets/umrah_segmented_control.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 enum _Pillar {
   small(
@@ -85,7 +86,7 @@ class _JamaratIllustrationState extends State<JamaratIllustration> {
           ),
           SizedBox(height: 2.h),
           Text(
-            'المجموع ${QuranText.digits(70)} حصاة لمن بقي إلى الثالث عشر، و${QuranText.digits(49)} للمتعجل.',
+            'المجموع ${AppDigits.of(70)} حصاة لمن بقي إلى الثالث عشر، و${AppDigits.of(49)} للمتعجل.',
             style: context.textStyles.bodySmall?.copyWith(
               color: colors.textSecondary,
             ),
@@ -181,7 +182,7 @@ class _PillarView extends StatelessWidget {
                 color: accent,
               ),
               child: Text(
-                QuranText.digits(pillar.order),
+                AppDigits.of(pillar.order),
                 style: context.textStyles.bodySmall?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

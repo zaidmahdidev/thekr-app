@@ -20,6 +20,7 @@ import '../widgets/umrah_font_actions.dart';
 import '../widgets/umrah_notes_card.dart';
 import '../widgets/umrah_numbered_list.dart';
 import '../widgets/umrah_section_title.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// One rite of Umrah written as a lesson: what it is, how it is done, the duas
 /// to say and the points to watch. Previous / next buttons move along the
@@ -127,7 +128,7 @@ class _Header extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'المنسك ${QuranText.digits(step.number)} من ${QuranText.digits(steps.length)}',
+                  'المنسك ${AppDigits.of(step.number)} من ${AppDigits.of(steps.length)}',
                   style: text.small(context, color: colors.textSecondary),
                 ),
                 Text(

@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:thekr_app/features/sync/providers/sync_controller.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// One line saying how the backup is doing, shared by the card and the sheet.
 String accountSyncText(SyncState sync) {
@@ -7,5 +8,5 @@ String accountSyncText(SyncState sync) {
   if (sync.phase == SyncPhase.failed) return 'تعذّرت المزامنة، سنحاول لاحقاً';
   final at = sync.lastSyncAt;
   if (at == null) return 'لم تُحفظ نسخة بعد';
-  return 'آخر نسخة: ${DateFormat('d MMM، h:mm a', 'ar').format(at)}';
+  return 'آخر نسخة: ${AppDigits.latin(DateFormat('d MMM، h:mm a', 'ar').format(at))}';
 }

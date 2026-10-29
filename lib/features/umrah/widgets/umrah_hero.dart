@@ -11,7 +11,7 @@ class UmrahHero extends StatelessWidget {
   const UmrahHero({
     super.key,
     this.title = 'تعلّم العمرة قبل أن تسافر',
-    this.subtitle = 'مرجع مبسّط لكل الأعمار، يشرح المناسك بالترتيب بأدلتها.',
+    this.subtitle = 'مرجع مبسّط تفاعلي، يشرح المناسك بالترتيب بأدلتها.',
     this.tip =
         'اقرأه في بيتك وأنت مرتاح، وأثناء العمرة اترك هاتفك في جيبك وتفرّغ للعبادة.',
   });

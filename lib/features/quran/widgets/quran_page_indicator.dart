@@ -4,11 +4,7 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/features/quran/models/quran_reader_palette.dart';
 import 'package:thekr_app/features/quran/providers/quran_provider.dart';
 import 'package:thekr_app/features/quran/services/quran_reader_adapter.dart';
-
-String quranDigits(int number) {
-  const digits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-  return number.toString().split('').map((c) => digits[int.parse(c)]).join();
-}
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// Shows the current page and juz in the middle of the Quran top bar.
 class QuranPageIndicator extends ConsumerWidget {
@@ -34,7 +30,7 @@ class QuranPageIndicator extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'صفحة ${quranDigits(page)}',
+          'صفحة ${AppDigits.of(page)}',
           maxLines: 1,
           style: context.textStyles.labelLarge?.copyWith(
             color: palette.text,
@@ -43,7 +39,7 @@ class QuranPageIndicator extends ConsumerWidget {
         ),
         if (juz != null)
           Text(
-            'الجزء ${quranDigits(juz)}',
+            'الجزء ${AppDigits.of(juz)}',
             maxLines: 1,
             style: context.textStyles.labelSmall?.copyWith(
               color: palette.textMuted,

@@ -8,6 +8,7 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
 import 'umrah_illustration_frame.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 enum _Landmark {
   blackStone(
@@ -141,7 +142,7 @@ class _TawafIllustrationState extends State<TawafIllustration>
                       ? 'سبعة أشواط تبدأ من الحجر الأسود'
                       : done
                       ? 'تمّ الطواف عند الحجر الأسود'
-                      : 'الشوط ${QuranText.digits(lap)} من ${QuranText.digits(7)}${lap <= 3 ? ' · الرمل للرجال' : ''}',
+                      : 'الشوط ${AppDigits.of(lap)} من ${AppDigits.of(7)}${lap <= 3 ? ' · الرمل للرجال' : ''}',
                   style: context.textStyles.bodySmall?.copyWith(
                     color: colors.textSecondary,
                   ),

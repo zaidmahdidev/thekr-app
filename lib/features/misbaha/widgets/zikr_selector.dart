@@ -5,6 +5,7 @@ import 'package:thekr_app/core/utils/quran_text.dart';
 import '../models/misbaha_models.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// Pill showing the current dhikr. Tap to choose another one from a sheet that
 /// also shows how many times each dhikr was counted.
@@ -195,7 +196,7 @@ class _ZikrTile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  QuranText.digits(count),
+                  AppDigits.of(count),
                   style: context.textStyles.labelLarge?.copyWith(
                     color: context.colors.secondary,
                     fontWeight: FontWeight.bold,

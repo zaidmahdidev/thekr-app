@@ -5,6 +5,7 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
 import 'package:thekr_app/features/azkar/widgets/azkar_item_widget.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// The horizontal layout of an adhkar list: one thikr per page, swiped
 /// sideways, with a bar below showing the position and previous / next buttons.
@@ -121,7 +122,7 @@ class _PagerBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(context.corners.xl),
                   ),
                   child: Text(
-                    '${QuranText.digits(page + 1)} / ${QuranText.digits(total)}',
+                    '${AppDigits.of(page + 1)} / ${AppDigits.of(total)}',
                     style: context.textStyles.bodyMedium?.copyWith(
                       color: colors.primary,
                       fontWeight: FontWeight.bold,

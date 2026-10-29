@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/features/calendar/services/calendar_service.dart';
+import 'package:thekr_app/core/utils/app_digits.dart';
 
 /// The last seven days as bars. Tap a bar to open that day.
 class HabitWeekChart extends StatelessWidget {
@@ -66,7 +67,7 @@ class HabitWeekChart extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                'المعدل ${QuranText.digits((average * 100).round())}٪',
+                'المعدل ${AppDigits.of((average * 100).round())}%',
                 style: context.textStyles.labelMedium?.copyWith(
                   color: context.colors.primary,
                   fontWeight: FontWeight.bold,
