@@ -77,6 +77,13 @@ class QuranReaderAdapter {
 
   // ---------------------------------------------------------------- data
 
+  /// The library names the place of revelation in Arabic ("مكية") in some of its
+  /// data and in English ("Meccan") in the rest; both mean Meccan.
+  static bool _isMeccan(String? type) {
+    final t = (type ?? '').trim().toLowerCase();
+    return t.contains('mecc') || t.contains('مك');
+  }
+
   static List<QuranSurahInfo> surahs() {
     try {
       return QuranCtrl.instance.surahsList
@@ -85,7 +92,7 @@ class QuranReaderAdapter {
               number: s.number,
               name: s.name,
               ayahCount: s.ayahsNumber,
-              isMeccan: s.revelationType.toLowerCase().contains('mecc'),
+              isMeccan: _isMeccan(s.revelationType),
             ),
           )
           .toList();
@@ -207,7 +214,7 @@ class QuranReaderAdapter {
               number: s.surahNumber,
               name: s.arabicName,
               ayahCount: s.ayahs.length,
-              isMeccan: (s.revelationType ?? '').toLowerCase().contains('mecc'),
+              isMeccan: _isMeccan(s.revelationType),
             ),
           )
           .toList();

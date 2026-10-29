@@ -42,7 +42,7 @@ class QuranNavigatorSheet extends StatelessWidget {
   final QuranReaderPalette palette;
 
   static const _labels = ['الفهرس', 'البحث', 'الفواصل'];
-  static const double _heightFactor = 0.72;
+  static const double _heightFactor = 0.82;
 
   @override
   Widget build(BuildContext context) {

@@ -3,10 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/features/quran/models/quran_reader_palette.dart';
 import 'package:thekr_app/features/quran/services/quran_reader_adapter.dart';
-import 'package:thekr_app/features/quran/widgets/quran_page_indicator.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
-import 'package:thekr_app/core/utils/app_digits.dart';
+import 'package:thekr_app/core/utils/quran_text.dart';
 
 /// Index tab: all surahs or all juz, with the current one highlighted.
 class QuranIndexTab extends StatefulWidget {
@@ -115,7 +114,7 @@ class _QuranIndexTabState extends State<QuranIndexTab> {
           number: surah.number,
           title: surah.name,
           subtitle:
-              '${surah.isMeccan ? 'مكية' : 'مدنية'} · ${AppDigits.of(surah.ayahCount)} آية',
+              '${surah.isMeccan ? 'مكية' : 'مدنية'} · ${QuranText.digits(surah.ayahCount)} آية',
           isCurrent: surah.number == _currentSurah,
           palette: widget.palette,
           onTap: () => _goToSurah(surah.number),
@@ -134,7 +133,7 @@ class _QuranIndexTabState extends State<QuranIndexTab> {
         final juz = index + 1;
         return _IndexTile(
           number: juz,
-          title: 'الجزء ${AppDigits.of(juz)}',
+          title: 'الجزء ${QuranText.digits(juz)}',
           isCurrent: juz == _currentJuz,
           palette: widget.palette,
           onTap: () => _goToJuz(juz),
@@ -188,7 +187,7 @@ class _IndexTile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(context.corners.md + 2),
                   ),
                   child: Text(
-                    AppDigits.of(number),
+                    QuranText.digits(number),
                     style: context.textStyles.labelLarge?.copyWith(
                       color: isCurrent ? palette.surface : palette.icon,
                       fontWeight: FontWeight.bold,

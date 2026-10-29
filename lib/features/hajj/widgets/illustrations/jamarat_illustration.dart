@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
 import 'package:thekr_app/features/umrah/widgets/illustrations/umrah_illustration_frame.dart';
 import 'package:thekr_app/features/umrah/widgets/umrah_segmented_control.dart';

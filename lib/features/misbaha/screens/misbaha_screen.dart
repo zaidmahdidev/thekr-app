@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/extensions/ui_extension.dart';
-import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/core/widgets/app_scaffold.dart';
 import 'package:thekr_app/core/widgets/toast_utils.dart';
 import '../providers/misbaha_provider.dart';

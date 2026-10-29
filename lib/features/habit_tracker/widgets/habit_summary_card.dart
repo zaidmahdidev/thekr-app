@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import 'package:thekr_app/core/utils/quran_text.dart';
 import 'package:thekr_app/core/widgets/brand_surface.dart';
 import 'package:thekr_app/features/habit_tracker/models/daily_habit_model.dart';
 import 'package:hugeicons/hugeicons.dart';

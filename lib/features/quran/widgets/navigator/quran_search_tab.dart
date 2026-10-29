@@ -5,10 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/features/quran/models/quran_reader_palette.dart';
 import 'package:thekr_app/features/quran/services/quran_reader_adapter.dart';
-import 'package:thekr_app/features/quran/widgets/quran_page_indicator.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
-import 'package:thekr_app/core/utils/app_digits.dart';
+import 'package:thekr_app/core/utils/quran_text.dart';
 
 /// Search tab: matches surah names / numbers first, then verses by their text.
 class QuranSearchTab extends StatefulWidget {
@@ -134,7 +133,7 @@ class _QuranSearchTabState extends State<QuranSearchTab> {
                       return _ResultTile(
                         icon: HugeIcons.strokeRoundedBookOpen01,
                         title: 'سورة ${surah.name}',
-                        subtitle: '${AppDigits.of(surah.ayahCount)} آية',
+                        subtitle: '${QuranText.digits(surah.ayahCount)} آية',
                         palette: palette,
                         onTap: () => _goToSurah(surah),
                       );
@@ -145,7 +144,7 @@ class _QuranSearchTabState extends State<QuranSearchTab> {
                       title: ayah.text,
                       maxTitleLines: 2,
                       subtitle:
-                          'سورة ${ayah.surahName} · آية ${AppDigits.of(ayah.ayahNumber)} · صفحة ${AppDigits.of(ayah.page)}',
+                          'سورة ${ayah.surahName} · آية ${QuranText.digits(ayah.ayahNumber)} · صفحة ${QuranText.digits(ayah.page)}',
                       palette: palette,
                       onTap: () => _goToAyah(ayah),
                     );
