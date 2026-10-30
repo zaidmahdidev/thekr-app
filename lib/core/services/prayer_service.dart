@@ -1,8 +1,10 @@
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
 import 'package:geolocator/geolocator.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
+import 'package:thekr_app/core/services/location_attempt_gate.dart';
 import 'package:thekr_app/core/services/location_name_service.dart';
 import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
 import 'package:thekr_app/features/home/models/app_prayer_times.dart';
@@ -182,37 +184,66 @@ class PrayerService {
     return Coordinates(_meccaLat, _meccaLng);
   }
 
-  static Future<void> refreshLocation() async {
-    try {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.always ||
-          permission == LocationPermission.whileInUse) {
-        // High accuracy for manual refresh
-        Position position = await Geolocator.getCurrentPosition(
-          locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.high,
-          ),
-        );
-        _saveLocationToCache(position.latitude, position.longitude);
-      }
-    } catch (_) {}
+  /// One attempt at a time, and automatic ones only now and then, so that
+  /// recalculating the times never turns into a stream of location requests.
+  static final LocationAttemptGate _gate = LocationAttemptGate();
+
+  /// How the phone is asked for its position. Prayer times need the city, not
+  /// the street, so low accuracy is enough. On Android the system's own
+  /// location manager is used instead of Google Play services: the latter
+  /// opens a "Location Accuracy" dialog of its own when that setting is off,
+  /// and it came back again and again.
+  static LocationSettings get _quietSettings {
+    const limit = Duration(seconds: 20);
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return AndroidSettings(
+        accuracy: LocationAccuracy.low,
+        forceLocationManager: true,
+        timeLimit: limit,
+      );
+    }
+    return const LocationSettings(accuracy: LocationAccuracy.low, timeLimit: limit);
   }
 
-  static void _updateLocationInBackground() async {
+  /// Reads the position and saves it. Called when the user asks (pull to
+  /// refresh, the "allow location" buttons). Returns whether it worked.
+  static Future<bool> refreshLocation() async {
+    if (!_gate.tryStartManual()) return false;
     try {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.always ||
-          permission == LocationPermission.whileInUse) {
-        // Use a lower accuracy for faster results and less battery usage
-        Position position = await Geolocator.getCurrentPosition(
-          locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.low,
-            distanceFilter: 10000, // Only update if moved 10km
-          ),
-        );
-        _saveLocationToCache(position.latitude, position.longitude);
+      return await _readAndSave();
+    } finally {
+      _gate.finish();
+    }
+  }
+
+  /// The same, started by the app when no position is saved yet. It is limited
+  /// by the gate, and never shows anything to the user.
+  static Future<void> _updateLocationInBackground() async {
+    if (!_gate.tryStartAutomatic()) return;
+    try {
+      await _readAndSave();
+    } finally {
+      _gate.finish();
+    }
+  }
+
+  static Future<bool> _readAndSave() async {
+    try {
+      final permission = await Geolocator.checkPermission();
+      if (permission != LocationPermission.always &&
+          permission != LocationPermission.whileInUse) {
+        return false;
       }
-    } catch (_) {}
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: _quietSettings,
+      );
+      _saveLocationToCache(position.latitude, position.longitude);
+      return true;
+    } catch (_) {
+      // Location switched off, no signal, or too slow: the saved position (or
+      // Mecca) keeps being used and the user is not disturbed.
+      return false;
+    }
   }
 
   static void _saveLocationToCache(double lat, double lng) {

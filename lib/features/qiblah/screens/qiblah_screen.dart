@@ -7,6 +7,7 @@ import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:thekr_app/core/services/prayer_service.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/widgets/app_scaffold.dart';
@@ -120,13 +121,9 @@ class _QiblahCompassState extends State<QiblahCompass> {
 
       if (permission == LocationPermission.always ||
           permission == LocationPermission.whileInUse) {
-        try {
-          await Geolocator.getCurrentPosition(
-            locationSettings: const LocationSettings(
-              accuracy: LocationAccuracy.high,
-            ),
-          );
-        } catch (_) {}
+        // Warms the location up. It goes through the same quiet path as the
+        // prayer times, so Google's "Location Accuracy" dialog does not open.
+        await PrayerService.refreshLocation();
       }
 
       final s = await FlutterQiblah.checkLocationStatus();
