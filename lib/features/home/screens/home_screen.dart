@@ -9,6 +9,8 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/services/prayer_service.dart';
+import 'package:thekr_app/core/services/location_permission_service.dart';
+import 'package:thekr_app/core/services/notification_service.dart';
 import 'package:thekr_app/core/widgets/custom_dialog.dart';
 import 'package:thekr_app/features/home/providers/prayer_provider.dart';
 import 'package:thekr_app/features/home/providers/time_provider.dart';
@@ -43,7 +45,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     HijriCalendar.setLocal('ar');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkForUpdate();
+      _askForLocation();
     });
+  }
+
+  /// Asks for the location the first time the app is opened, after the
+  /// notification permissions. When a settings page was in front, it asks
+  /// again as soon as the app is back (see [didChangeAppLifecycleState]).
+  Future<void> _askForLocation() async {
+    final result = await LocationPermissionService.instance.askOnce(
+      after: NotificationService.startupPermissions,
+    );
+    if (!mounted || result != LocationPromptResult.granted) return;
+    ref.invalidate(prayerTimesProvider);
+    ref.invalidate(tomorrowPrayerTimesProvider);
   }
 
   @override
@@ -58,6 +73,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       // Automatic refresh when returning from permission dialog
       ref.invalidate(prayerTimesProvider);
       ref.invalidate(tomorrowPrayerTimesProvider);
+      _askForLocation();
     }
   }
 
@@ -177,6 +193,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           );
                         } else {
                           await Geolocator.requestPermission();
+                          await PrayerService.refreshLocation();
                           ref.invalidate(prayerTimesProvider);
                           ref.invalidate(tomorrowPrayerTimesProvider);
                         }

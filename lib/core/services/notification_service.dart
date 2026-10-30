@@ -124,6 +124,10 @@ class NotificationService {
     }
   }
 
+  /// The request made when the app starts (see main). Other permission
+  /// prompts wait for it, so two system requests never run together.
+  static Future<bool>? startupPermissions;
+
   static Future<bool> requestPermissions() async {
     try {
       // FCM Permissions - Wrap in extra try/catch for Android context issues

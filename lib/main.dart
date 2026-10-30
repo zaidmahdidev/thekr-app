@@ -55,7 +55,8 @@ void main() async {
     await NotificationService.initialize();
     
     // طلب الصلاحيات وجدولة الإشعارات لا ينبغي أن توقف التطبيق
-    NotificationService.requestPermissions();
+    NotificationService.startupPermissions =
+        NotificationService.requestPermissions();
     NotificationService.refreshScheduledNotifications();
 
     await QuranLibrary.init();
