@@ -9,5 +9,7 @@ class MainActivity : AudioServiceActivity() {
         super.configureFlutterEngine(flutterEngine)
         // The radio's media notification talks to the radio screen here.
         RadioChannel.attach(applicationContext, flutterEngine.dartExecutor.binaryMessenger)
+        // Magnetic north to true north, for the Qibla compass.
+        DeclinationChannel.attach(flutterEngine.dartExecutor.binaryMessenger)
     }
 }

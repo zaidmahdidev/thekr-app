@@ -3,6 +3,7 @@ import 'dart:math' show pi;
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_compass_v2/flutter_compass_v2.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,6 +14,7 @@ import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/widgets/app_scaffold.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
+import 'package:thekr_app/features/qiblah/services/magnetic_declination.dart';
 
 @RoutePage()
 class QiblahScreen extends StatefulWidget {
@@ -188,9 +190,52 @@ class _QiblahCompassState extends State<QiblahCompass> {
   }
 }
 
-class QiblahCompassWidget extends StatelessWidget {
+class QiblahCompassWidget extends StatefulWidget {
+  const QiblahCompassWidget({super.key});
+
+  @override
+  State<QiblahCompassWidget> createState() => _QiblahCompassWidgetState();
+}
+
+class _QiblahCompassWidgetState extends State<QiblahCompassWidget> {
   /// Tolerance (in degrees) within which the phone is considered facing Qibla.
   static const double _alignedTolerance = 3;
+
+  /// The compass of the phone points to magnetic north, the Qibla bearing is
+  /// measured from true north: this is the difference at the user's place.
+  double _declination = 0;
+
+  /// The compass says it is not sure (it needs the "figure eight" movement).
+  bool _needsCalibration = false;
+  StreamSubscription<CompassEvent>? _accuracySub;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDeclination();
+    _accuracySub = FlutterCompass.events?.listen((event) {
+      final low = (event.accuracy ?? 0) >= 45;
+      if (low != _needsCalibration && mounted) {
+        setState(() => _needsCalibration = low);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _accuracySub?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _loadDeclination() async {
+    final location = await PrayerService.getLocation();
+    if (!location.isKnown) return;
+    final value = await MagneticDeclination.at(
+      location.coordinates.latitude,
+      location.coordinates.longitude,
+    );
+    if (mounted) setState(() => _declination = value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +260,7 @@ class QiblahCompassWidget extends StatelessWidget {
         }
 
         final colors = context.colors;
-        var delta = qiblahDirection.qiblah % 360;
+        var delta = (qiblahDirection.qiblah + _declination) % 360;
         if (delta > 180) delta -= 360;
         final isAligned = delta.abs() <= _alignedTolerance;
         final accent = isAligned ? colors.success : colors.secondary;
@@ -245,11 +290,14 @@ class QiblahCompassWidget extends StatelessWidget {
                       ),
                     ),
                     Transform.rotate(
-                      angle: qiblahDirection.direction * (pi / 180) * -1,
+                      angle:
+                          (qiblahDirection.direction + _declination) *
+                          (pi / 180) *
+                          -1,
                       child: compassSvg,
                     ),
                     Transform.rotate(
-                      angle: qiblahDirection.qiblah * (pi / 180) * -1,
+                      angle: (qiblahDirection.qiblah + _declination) * (pi / 180) * -1,
                       child: needleSvg,
                     ),
                     // Fixed marker showing where the phone is pointing.
@@ -309,6 +357,17 @@ class QiblahCompassWidget extends StatelessWidget {
                 color: colors.textSecondary,
               ),
             ),
+            if (_needsCalibration) ...[
+              SizedBox(height: context.insets.sm),
+              Text(
+                'البوصلة غير دقيقة، حرّك هاتفك على شكل ٨ لمعايرتها',
+                textAlign: TextAlign.center,
+                style: context.textStyles.bodySmall?.copyWith(
+                  color: colors.error,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ],
         );
       },
