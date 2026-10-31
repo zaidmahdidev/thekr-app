@@ -14,6 +14,7 @@ import 'package:thekr_app/core/widgets/hero_pattern.dart';
 
 class HomeAppBar extends StatelessWidget {
   final DateTime currentTime;
+  final String dayName;
   final String todayDate;
   final String hijriDate;
   final String remainingTime;
@@ -22,6 +23,7 @@ class HomeAppBar extends StatelessWidget {
   const HomeAppBar({
     super.key,
     required this.currentTime,
+    required this.dayName,
     required this.todayDate,
     required this.hijriDate,
     required this.remainingTime,
@@ -166,6 +168,14 @@ class HomeAppBar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(height: 10.h),
+                    Text(
+                      dayName,
+                      style: context.textStyles.bodyLarge?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.92),
+                        height: 1.3,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
                     Text(
                       hijriDate,
                       style: context.textStyles.titleLarge?.copyWith(

@@ -173,9 +173,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       currentTime,
     );
     // Arabic day and month names, Western digits (same as the clock and the prayer times).
+    final dayName = intl.DateFormat('EEEE', 'ar').format(currentTime);
     final todayDate =
-        '${intl.DateFormat('EEEE', 'ar').format(currentTime)}، '
-        '${currentTime.day} ${intl.DateFormat('MMMM', 'ar').format(currentTime)}';
+        '${currentTime.day} ${intl.DateFormat('MMMM', 'ar').format(currentTime)} '
+        '${currentTime.year} م';
 
     // Hijri Date Calculation
     final hijriNow = HijriCalendar.fromDate(currentTime);
@@ -208,6 +209,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ),
             HomeAppBar(
               currentTime: currentTime,
+              dayName: dayName,
               todayDate: todayDate,
               hijriDate: hijriDate,
               remainingTime: remainingTime,
