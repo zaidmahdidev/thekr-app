@@ -14,6 +14,8 @@ final prayerMonthProvider =
       // The month follows the user's calculation choices as they change.
       final settings = ref.watch(prayerCalcProvider);
       return ref.watch(prayerLocationProvider).whenData((location) {
+        // Without the user's location there is no timetable to show.
+        if (!location.isKnown) return <PrayerDay>[];
         final days = DateTime(firstOfMonth.year, firstOfMonth.month + 1, 0).day;
         return [
           for (var d = 1; d <= days; d++)

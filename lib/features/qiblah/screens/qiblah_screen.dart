@@ -121,8 +121,6 @@ class _QiblahCompassState extends State<QiblahCompass> {
 
       if (permission == LocationPermission.always ||
           permission == LocationPermission.whileInUse) {
-        // Warms the location up. It goes through the same quiet path as the
-        // prayer times, so Google's "Location Accuracy" dialog does not open.
         await PrayerService.refreshLocation();
       }
 

@@ -1,10 +1,7 @@
 import 'package:adhan/adhan.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
 import 'package:geolocator/geolocator.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:thekr_app/core/services/cache_helper.dart';
-import 'package:thekr_app/core/services/location_attempt_gate.dart';
 import 'package:thekr_app/core/services/location_name_service.dart';
 import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
 import 'package:thekr_app/features/home/models/app_prayer_times.dart';
@@ -14,7 +11,8 @@ import 'package:thekr_app/features/prayer_times/models/prayer_calc_settings.dart
 class PrayerLocation {
   final Coordinates coordinates;
 
-  /// True when no real location is known yet and Mecca is used instead.
+  /// True when the user's location is not known. [coordinates] is then only a
+  /// placeholder: no prayer times are made from it (see [isKnown]).
   final bool isDefault;
 
   /// True when the location permission is denied.
@@ -25,6 +23,9 @@ class PrayerLocation {
     required this.isDefault,
     required this.isPermissionOff,
   });
+
+  /// Whether [coordinates] are the user's own.
+  bool get isKnown => !isDefault;
 }
 
 class PrayerService {
@@ -35,7 +36,9 @@ class PrayerService {
   static const _meccaLng = 39.8262;
 
   /// Where the prayer times are calculated for: the user's last known
-  /// location, or Mecca when none is available yet.
+  /// location. Without one, [PrayerLocation.isKnown] is false and there are no
+  /// prayer times: those of another city would be wrong, and the athan would
+  /// ring at the wrong time.
   static Future<PrayerLocation> getLocation() async {
     final usedDefault = !_hasSavedLocation();
     final coordinates = await _getEffectiveCoordinates();
@@ -177,72 +180,61 @@ class PrayerService {
       }
     } catch (_) {}
 
-    // 3. Fallback to Mecca (Safe)
-    // We don't wait for getCurrentPosition here to keep it instant
-    // The background update will eventually get the real location
-    _updateLocationInBackground();
+    // 3. Not known. The coordinates are only a placeholder (see
+    // [PrayerLocation.isKnown]). Nothing is asked of the phone here:
+    // recalculating the times must never start a location reading, which can
+    // bring up Google's dialog again and again.
     return Coordinates(_meccaLat, _meccaLng);
   }
 
-  /// One attempt at a time, and automatic ones only now and then, so that
-  /// recalculating the times never turns into a stream of location requests.
-  static final LocationAttemptGate _gate = LocationAttemptGate();
+  /// A reading is given this long: the first position after switching the
+  /// location on can take a while, and the user is waiting with a spinner.
+  static const Duration _readingLimit = Duration(seconds: 60);
 
-  /// How the phone is asked for its position. Prayer times need the city, not
-  /// the street, so low accuracy is enough. On Android the system's own
-  /// location manager is used instead of Google Play services: the latter
-  /// opens a "Location Accuracy" dialog of its own when that setting is off,
-  /// and it came back again and again.
-  static LocationSettings get _quietSettings {
-    const limit = Duration(seconds: 20);
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      return AndroidSettings(
-        accuracy: LocationAccuracy.low,
-        forceLocationManager: true,
-        timeLimit: limit,
-      );
-    }
-    return const LocationSettings(accuracy: LocationAccuracy.low, timeLimit: limit);
-  }
+  /// A last known position older than this is not used.
+  static const Duration _lastKnownMaxAge = Duration(days: 3);
 
-  /// Reads the position and saves it. Called when the user asks (pull to
-  /// refresh, the "allow location" buttons). Returns whether it worked.
+  static bool _reading = false;
+
+  /// Finds where the user is now and saves it. Called only on purpose: after the
+  /// user allows the location, presses a button, or pulls the page to refresh.
+  /// Nothing starts it by itself, so Google's "turn on location" dialog, which a
+  /// reading can bring up, appears once per press. Returns whether it worked.
   static Future<bool> refreshLocation() async {
-    if (!_gate.tryStartManual()) return false;
-    try {
-      return await _readAndSave();
-    } finally {
-      _gate.finish();
-    }
-  }
-
-  /// The same, started by the app when no position is saved yet. It is limited
-  /// by the gate, and never shows anything to the user.
-  static Future<void> _updateLocationInBackground() async {
-    if (!_gate.tryStartAutomatic()) return;
-    try {
-      await _readAndSave();
-    } finally {
-      _gate.finish();
-    }
-  }
-
-  static Future<bool> _readAndSave() async {
+    if (_reading) return false; // already looking
+    _reading = true;
     try {
       final permission = await Geolocator.checkPermission();
       if (permission != LocationPermission.always &&
           permission != LocationPermission.whileInUse) {
         return false;
       }
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: _quietSettings,
-      );
-      _saveLocationToCache(position.latitude, position.longitude);
-      return true;
+      try {
+        // The standard reading (Google Play services when the phone has them).
+        // City level is enough for prayer times, and works indoors.
+        final position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.low,
+            timeLimit: _readingLimit,
+          ),
+        );
+        _saveLocationToCache(position.latitude, position.longitude);
+        return true;
+      } catch (_) {
+        // No fix in time, or the user refused to turn the location on: the
+        // phone may still know where it was a little while ago.
+        final known = await Geolocator.getLastKnownPosition();
+        if (known != null &&
+            DateTime.now().difference(known.timestamp).abs() <= _lastKnownMaxAge) {
+          _saveLocationToCache(known.latitude, known.longitude);
+          return true;
+        }
+        return false;
+      }
     } catch (_) {
-      // Location switched off, no signal, or too slow: the saved position (or
-      // Mecca) keeps being used and the user is not disturbed.
       return false;
+    } finally {
+      _reading = false;
     }
   }
 
@@ -270,18 +262,24 @@ class PrayerService {
     );
   }
 
+  /// Today's times, or null when the user's location is not known.
   static Future<AppPrayerTimes?> getCurrentPrayerTimes() async {
     try {
-      return timesFor(DateTime.now(), await getLocation());
+      final location = await getLocation();
+      if (!location.isKnown) return null;
+      return timesFor(DateTime.now(), location);
     } catch (e) {
       return null;
     }
   }
 
+  /// Tomorrow's times, or null when the user's location is not known.
   static Future<AppPrayerTimes?> getNextDayPrayerTimes() async {
     try {
+      final location = await getLocation();
+      if (!location.isKnown) return null;
       final tomorrow = DateTime.now().add(const Duration(days: 1));
-      return timesFor(tomorrow, await getLocation());
+      return timesFor(tomorrow, location);
     } catch (e) {
       return null;
     }

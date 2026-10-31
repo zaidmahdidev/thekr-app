@@ -13,7 +13,7 @@ class PrayerLocationNotice extends StatelessWidget {
     required this.onRequestLocation,
   });
 
-  /// True when Mecca is used because no real location is known.
+  /// True when no location is known, so there are no times to show.
   final bool isDefaultLocation;
   final VoidCallback onRequestLocation;
 
@@ -21,8 +21,7 @@ class PrayerLocationNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final message = isDefaultLocation
-        ? 'الأوقات المعروضة الآن لمكة المكرمة لأن موقعك غير محدد. '
-              'فعّل الموقع لتظهر أوقات مدينتك.'
+        ? 'موقعك غير محدد بعد، فعّل الموقع لتظهر أوقات مدينتك.'
         : 'خدمة الموقع غير مفعّلة، والأوقات حسب آخر موقع محفوظ في جهازك.';
 
     return Container(

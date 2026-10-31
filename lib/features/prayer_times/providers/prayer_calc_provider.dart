@@ -75,10 +75,11 @@ final prayerCalcProvider =
     );
 
 /// Today's times with the choices on screen, shown live while the user picks.
-final prayerCalcPreviewProvider = Provider<AsyncValue<AppPrayerTimes>>((ref) {
+final prayerCalcPreviewProvider = Provider<AsyncValue<AppPrayerTimes?>>((ref) {
   final settings = ref.watch(prayerCalcProvider);
   return ref.watch(prayerLocationProvider).whenData(
-    (location) =>
-        PrayerService.timesFor(DateTime.now(), location, settings: settings),
+    (location) => location.isKnown
+        ? PrayerService.timesFor(DateTime.now(), location, settings: settings)
+        : null,
   );
 });

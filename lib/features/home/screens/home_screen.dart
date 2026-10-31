@@ -11,9 +11,9 @@ import 'package:thekr_app/core/extensions/theme_extension.dart';
 import 'package:thekr_app/core/services/prayer_service.dart';
 import 'package:thekr_app/core/services/location_permission_service.dart';
 import 'package:thekr_app/core/services/notification_service.dart';
-import 'package:thekr_app/core/widgets/custom_dialog.dart';
 import 'package:thekr_app/features/home/providers/prayer_provider.dart';
 import 'package:thekr_app/features/home/providers/time_provider.dart';
+import 'package:thekr_app/features/prayer_times/providers/prayer_times_providers.dart';
 import 'package:thekr_app/features/home/widgets/prayer_times_card.dart';
 import 'package:thekr_app/features/home/widgets/home_app_bar.dart';
 import 'package:thekr_app/features/home/widgets/home_features_grid.dart';
@@ -37,6 +37,37 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with WidgetsBindingObserver {
   DateTime? _lastPressedAt;
+  bool _locating = false;
+
+  /// The button of the card: allow the location if needed, then read it. If the
+  /// phone's location is off, Google's "Turn on" dialog is shown in the app.
+  Future<void> _getLocation() async {
+    if (_locating) return;
+    setState(() => _locating = true);
+    try {
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.deniedForever) {
+        showToast(text: 'يرجى تفعيل صلاحية الموقع من إعدادات الهاتف');
+        return;
+      }
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied ||
+            permission == LocationPermission.deniedForever) {
+          return;
+        }
+      }
+      final ok = await PrayerService.refreshLocation();
+      if (!ok && mounted) {
+        showToast(text: 'تعذّر تحديد موقعك، تأكد من تشغيل الموقع وحاول مجدداً');
+      }
+    } finally {
+      if (mounted) setState(() => _locating = false);
+      ref.invalidate(prayerLocationProvider);
+      ref.invalidate(prayerTimesProvider);
+      ref.invalidate(tomorrowPrayerTimesProvider);
+    }
+  }
 
   @override
   void initState() {
@@ -57,6 +88,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       after: NotificationService.startupPermissions,
     );
     if (!mounted || result != LocationPromptResult.granted) return;
+    ref.invalidate(prayerLocationProvider);
     ref.invalidate(prayerTimesProvider);
     ref.invalidate(tomorrowPrayerTimesProvider);
   }
@@ -71,6 +103,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       // Automatic refresh when returning from permission dialog
+      ref.invalidate(prayerLocationProvider);
       ref.invalidate(prayerTimesProvider);
       ref.invalidate(tomorrowPrayerTimesProvider);
       _askForLocation();
@@ -129,6 +162,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final currentTime = ref.watch(currentTimeProvider).value ?? DateTime.now();
 
     final prayerTimes = prayerTimesAsync.value;
+    // Known only once it has been read: until then the card is just loading.
+    final locationUnknown =
+        ref.watch(prayerLocationProvider).value?.isKnown == false;
     final tomorrowTimes = tomorrowTimesAsync.value;
 
     final remainingTime = _formatRemainingTime(
@@ -165,6 +201,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             BrandedRefreshHeader(
               onRefresh: () async {
                 await PrayerService.refreshLocation();
+                ref.invalidate(prayerLocationProvider);
                 ref.invalidate(prayerTimesProvider);
                 ref.invalidate(tomorrowPrayerTimesProvider);
               },
@@ -183,21 +220,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     key: const ValueKey('prayerTimes'),
                     child: PrayerTimesCard(
                       prayerTimes: prayerTimes,
-                      onRequestLocation: () async {
-                        LocationPermission permission =
-                            await Geolocator.checkPermission();
-
-                        if (permission == LocationPermission.deniedForever) {
-                          showToast(
-                            text: 'يرجى تفعيل صلاحية الموقع من إعدادات الهاتف',
-                          );
-                        } else {
-                          await Geolocator.requestPermission();
-                          await PrayerService.refreshLocation();
-                          ref.invalidate(prayerTimesProvider);
-                          ref.invalidate(tomorrowPrayerTimesProvider);
-                        }
-                      },
+                      onRequestLocation: _getLocation,
+                      isLocating: _locating,
+                      locationButtonLabel: locationUnknown
+                          ? 'تحديد موقعي'
+                          : null,
                     ),
                   );
                 case HomeSection.inspiration:

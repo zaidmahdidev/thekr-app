@@ -14,10 +14,19 @@ class PrayerTimesCard extends StatelessWidget {
     super.key,
     required this.prayerTimes,
     this.onRequestLocation,
+    this.locationButtonLabel,
+    this.isLocating = false,
   });
 
   final AppPrayerTimes? prayerTimes;
   final VoidCallback? onRequestLocation;
+
+  /// Set when the user's location is not known: the card keeps its six cells,
+  /// with dashes in place of the times, and shows this button above them.
+  final String? locationButtonLabel;
+
+  /// The location is being read right now (the button shows a spinner).
+  final bool isLocating;
 
   @override
   Widget build(BuildContext context) {
@@ -71,14 +80,15 @@ class PrayerTimesCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            if (isLocationOff)
+            if (isLocationOff || locationButtonLabel != null)
               Padding(
                 padding: EdgeInsets.only(bottom: 8.h),
                 child: AppButton(
-                  text: 'سماح للموقع',
+                  text: locationButtonLabel ?? 'سماح للموقع',
                   icon: HugeIcons.strokeRoundedLocation01,
                   size: AppButtonSize.small,
                   isFullWidth: false,
+                  isLoading: isLocating,
                   onTap: onRequestLocation,
                 ),
               ),
