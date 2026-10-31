@@ -76,6 +76,10 @@ class SyncController extends StateNotifier<SyncState> {
   /// does not write to the account each time.
   static const Duration autoInterval = Duration(minutes: 3);
 
+  /// Without internet Firestore does not fail, it waits. The sync gives up
+  /// after this long, so the screen never says "saving" for ever.
+  static const Duration networkTimeout = Duration(seconds: 20);
+
   static SyncState _initial() {
     final last = CacheHelper.getData(key: _lastSyncKey);
     final auto = CacheHelper.getData(key: _autoKey);
@@ -112,7 +116,8 @@ class SyncController extends StateNotifier<SyncState> {
 
       final bookmarksBefore = QuranReaderAdapter.bookmarksForSync();
       final local = service.build(bookmarks: bookmarksBefore);
-      final remote = await cloud.download(user.uid);
+      final remote =
+          await cloud.download(user.uid).timeout(networkTimeout);
 
       final merged = remote == null
           ? local
@@ -130,15 +135,17 @@ class SyncController extends StateNotifier<SyncState> {
         QuranReaderAdapter.loadSyncedBookmarks(merged.bookmarks.values);
       }
 
-      await cloud.upload(user.uid, merged);
+      await cloud.upload(user.uid, merged).timeout(networkTimeout);
       // The readable profile is a nice-to-have: failing to write it must not
       // fail the backup that already succeeded.
       try {
-        await cloud.saveProfile(
-          user,
-          location: merged.location,
-          appVersion: AppConstants.appVersion,
-        );
+        await cloud
+            .saveProfile(
+              user,
+              location: merged.location,
+              appVersion: AppConstants.appVersion,
+            )
+            .timeout(networkTimeout);
       } catch (_) {}
 
       final now = DateTime.now();

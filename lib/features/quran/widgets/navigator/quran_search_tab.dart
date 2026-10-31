@@ -132,7 +132,7 @@ class _QuranSearchTabState extends State<QuranSearchTab> {
                       final surah = _surahs[index];
                       return _ResultTile(
                         icon: HugeIcons.strokeRoundedBookOpen01,
-                        title: 'سورة ${surah.name}',
+                        title: surah.name,
                         subtitle: '${QuranText.digits(surah.ayahCount)} آية',
                         palette: palette,
                         onTap: () => _goToSurah(surah),
@@ -144,7 +144,7 @@ class _QuranSearchTabState extends State<QuranSearchTab> {
                       title: ayah.text,
                       maxTitleLines: 2,
                       subtitle:
-                          'سورة ${ayah.surahName} · آية ${QuranText.digits(ayah.ayahNumber)} · صفحة ${QuranText.digits(ayah.page)}',
+                          '${ayah.surahName} · آية ${QuranText.digits(ayah.ayahNumber)} · صفحة ${QuranText.digits(ayah.page)}',
                       palette: palette,
                       onTap: () => _goToAyah(ayah),
                     );

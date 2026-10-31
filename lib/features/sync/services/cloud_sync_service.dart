@@ -24,7 +24,9 @@ class CloudSyncService {
 
   /// The saved backup, or null when the account has none yet.
   Future<SyncSnapshot?> download(String uid) async {
-    final doc = await _doc(uid).get();
+    // From the server only: offline, the saved copy on the phone would look
+    // like a success and the upload after it would wait for the network.
+    final doc = await _doc(uid).get(const GetOptions(source: Source.server));
     final data = doc.data();
     final raw = data?['json'];
     if (raw is! String) return null;
