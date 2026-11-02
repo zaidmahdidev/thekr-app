@@ -70,6 +70,7 @@ class SyncRules {
     'misbaha_total_count',
     'misbaha_bead_type',
     'misbaha_target',
+    'misbaha_custom_azkar',
     // Radio
     'radio_favorites',
     'radio_last_station',

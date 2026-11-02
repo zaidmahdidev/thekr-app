@@ -146,9 +146,6 @@ class _MisbahaScreenState extends ConsumerState<MisbahaScreen>
                       width: 150.w,
                       child: OrnamentalZikrSelector(
                         currentZikr: state.currentZikr,
-                        counts: state.zikrCounts,
-                        onChanged: (zikr) =>
-                            ref.read(misbahaProvider.notifier).setZikr(zikr),
                       ),
                     ),
                     SizedBox(height: context.insets.md),

@@ -1,15 +1,36 @@
 import 'package:flutter/material.dart';
 
-enum MisbahaZikr {
-  subhanAllah('سبحان الله'),
-  alhamdulillah('الحمد لله'),
-  allahuAkbar('الله أكبر'),
-  laIlahaIllaAllah('لا إله إلا الله'),
-  astaghfirullah('أستغفر الله');
-
+/// A dhikr the misbaha can count: one of the built-in ones, or one the user
+/// wrote. [id] keeps the count apart; the built-in ids are the same names the
+/// counts were always saved under.
+class Zikr {
+  final String id;
   final String label;
-  const MisbahaZikr(this.label);
+  final bool isCustom;
+
+  const Zikr(this.id, this.label, {this.isCustom = false});
+
+  @override
+  bool operator ==(Object other) => other is Zikr && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  Map<String, String> toJson() => {'id': id, 'label': label};
 }
+
+const List<Zikr> builtInAzkar = [
+  Zikr('subhanAllah', 'سبحان الله'),
+  Zikr('alhamdulillah', 'الحمد لله'),
+  Zikr('allahuAkbar', 'الله أكبر'),
+  Zikr('laIlahaIllaAllah', 'لا إله إلا الله'),
+  Zikr('astaghfirullah', 'أستغفر الله'),
+];
+
+/// A written dhikr is short (the pill and the beads' screen are small), and
+/// there is a limit on how many, so nothing can fill the phone or the backup.
+const int maxCustomZikrLength = 40;
+const int maxCustomAzkar = 10;
 
 /// How a bead is drawn: grain for wood, glow for gems, bands for metal.
 enum BeadMaterial { wood, gem, metal }
@@ -60,8 +81,11 @@ const List<int> misbahaTargets = [33, 99, 100, 0];
 class MisbahaState {
   final int count;
   final int totalCount;
-  final MisbahaZikr currentZikr;
-  final Map<MisbahaZikr, int> zikrCounts;
+  final Zikr currentZikr;
+  final Map<String, int> zikrCounts;
+
+  /// The dhikr the user wrote.
+  final List<Zikr> customAzkar;
   final BeadType beadType;
 
   /// Count that makes one round (0 = no target).
@@ -70,8 +94,9 @@ class MisbahaState {
   MisbahaState({
     this.count = 0,
     this.totalCount = 0,
-    this.currentZikr = MisbahaZikr.subhanAllah,
+    this.currentZikr = const Zikr('subhanAllah', 'سبحان الله'),
     this.zikrCounts = const {},
+    this.customAzkar = const [],
     this.beadType = BeadType.wood,
     this.target = 33,
   });
@@ -79,8 +104,9 @@ class MisbahaState {
   MisbahaState copyWith({
     int? count,
     int? totalCount,
-    MisbahaZikr? currentZikr,
-    Map<MisbahaZikr, int>? zikrCounts,
+    Zikr? currentZikr,
+    Map<String, int>? zikrCounts,
+    List<Zikr>? customAzkar,
     BeadType? beadType,
     int? target,
   }) {
@@ -89,8 +115,12 @@ class MisbahaState {
       totalCount: totalCount ?? this.totalCount,
       currentZikr: currentZikr ?? this.currentZikr,
       zikrCounts: zikrCounts ?? this.zikrCounts,
+      customAzkar: customAzkar ?? this.customAzkar,
       beadType: beadType ?? this.beadType,
       target: target ?? this.target,
     );
   }
+
+  /// Built-in dhikr first, then the user's.
+  List<Zikr> get azkar => [...builtInAzkar, ...customAzkar];
 }

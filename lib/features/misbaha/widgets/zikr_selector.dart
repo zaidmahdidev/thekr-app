@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thekr_app/core/extensions/theme_extension.dart';
-import '../models/misbaha_models.dart';
+import '../providers/misbaha_provider.dart';
+import 'add_zikr_dialog.dart';
+import 'package:thekr_app/core/extensions/ui_extension.dart';
+import 'package:thekr_app/core/widgets/toast_utils.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:thekr_app/core/widgets/app_icon.dart';
 import 'package:thekr_app/core/utils/app_digits.dart';
@@ -9,29 +13,16 @@ import 'package:thekr_app/core/utils/app_digits.dart';
 /// Pill showing the current dhikr. Tap to choose another one from a sheet that
 /// also shows how many times each dhikr was counted.
 class OrnamentalZikrSelector extends StatelessWidget {
-  final MisbahaZikr currentZikr;
-  final Map<MisbahaZikr, int> counts;
-  final Function(MisbahaZikr) onChanged;
+  final Zikr currentZikr;
 
-  const OrnamentalZikrSelector({
-    super.key,
-    required this.currentZikr,
-    required this.counts,
-    required this.onChanged,
-  });
+  const OrnamentalZikrSelector({super.key, required this.currentZikr});
 
   void _openSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => _ZikrSheet(
-        current: currentZikr,
-        counts: counts,
-        onSelected: (zikr) {
-          Navigator.pop(context);
-          onChanged(zikr);
-        },
-      ),
+      isScrollControlled: true,
+      builder: (_) => const _ZikrSheet(),
     );
   }
 
@@ -83,20 +74,40 @@ class OrnamentalZikrSelector extends StatelessWidget {
   }
 }
 
-class _ZikrSheet extends StatelessWidget {
-  const _ZikrSheet({
-    required this.current,
-    required this.counts,
-    required this.onSelected,
-  });
+class _ZikrSheet extends ConsumerWidget {
+  const _ZikrSheet();
 
-  final MisbahaZikr current;
-  final Map<MisbahaZikr, int> counts;
-  final ValueChanged<MisbahaZikr> onSelected;
+  Future<void> _add(BuildContext context, WidgetRef ref) async {
+    final text = await showAddZikrDialog(context);
+    if (text == null) return;
+    final problem = ref.read(misbahaProvider.notifier).addCustom(text);
+    if (problem != null) {
+      showToast(text: problem);
+    } else if (context.mounted) {
+      Navigator.pop(context);
+    }
+  }
+
+  void _delete(BuildContext context, WidgetRef ref, Zikr zikr) {
+    context.showConfirmDialog(
+      title: 'حذف الذكر',
+      message: 'هل تريد حذف «${zikr.label}» وعدّاده؟',
+      onYes: () {
+        Navigator.of(context).pop();
+        ref.read(misbahaProvider.notifier).deleteCustom(zikr);
+      },
+    );
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(misbahaProvider);
+    final canAdd = state.customAzkar.length < maxCustomAzkar;
+
     return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
+      ),
       decoration: BoxDecoration(
         color: context.colors.surface,
         borderRadius: BorderRadius.vertical(
@@ -126,14 +137,46 @@ class _ZikrSheet extends StatelessWidget {
                 ),
               ),
               SizedBox(height: context.insets.sm),
-              for (final zikr in MisbahaZikr.values)
-                _ZikrTile(
-                  zikr: zikr,
-                  count: counts[zikr] ?? 0,
-                  selected: zikr == current,
-                  onTap: () => onSelected(zikr),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    for (final zikr in state.azkar)
+                      _ZikrTile(
+                        zikr: zikr,
+                        count: state.zikrCounts[zikr.id] ?? 0,
+                        selected: zikr == state.currentZikr,
+                        onTap: () {
+                          Navigator.pop(context);
+                          ref.read(misbahaProvider.notifier).setZikr(zikr);
+                        },
+                        onDelete: zikr.isCustom
+                            ? () => _delete(context, ref, zikr)
+                            : null,
+                      ),
+                  ],
                 ),
+              ),
               SizedBox(height: context.insets.sm),
+              TextButton.icon(
+                onPressed: canAdd ? () => _add(context, ref) : null,
+                icon: AppIcon(
+                  HugeIcons.strokeRoundedAdd01,
+                  size: 20.sp,
+                  color: canAdd
+                      ? context.colors.primary
+                      : context.colors.textSecondary,
+                ),
+                label: Text(
+                  canAdd ? 'إضافة ذكر خاص' : 'وصلت إلى الحد الأعلى',
+                  style: context.textStyles.titleSmall?.copyWith(
+                    color: canAdd
+                        ? context.colors.primary
+                        : context.colors.textSecondary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -148,12 +191,14 @@ class _ZikrTile extends StatelessWidget {
     required this.count,
     required this.selected,
     required this.onTap,
+    this.onDelete,
   });
 
-  final MisbahaZikr zikr;
+  final Zikr zikr;
   final int count;
   final bool selected;
   final VoidCallback onTap;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -187,6 +232,8 @@ class _ZikrTile extends StatelessWidget {
                 Expanded(
                   child: Text(
                     zikr.label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: context.textStyles.titleSmall?.copyWith(
                       color: context.colors.textPrimary,
                       fontWeight: selected ? FontWeight.bold : FontWeight.w500,
@@ -201,6 +248,17 @@ class _ZikrTile extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                if (onDelete != null)
+                  IconButton(
+                    tooltip: 'حذف',
+                    visualDensity: VisualDensity.compact,
+                    onPressed: onDelete,
+                    icon: AppIcon(
+                      HugeIcons.strokeRoundedDelete02,
+                      size: 20.sp,
+                      color: context.colors.error,
+                    ),
+                  ),
               ],
             ),
           ),
