@@ -39,6 +39,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   DateTime? _lastPressedAt;
   bool _locating = false;
 
+  /// Makes the page read the saved location and times again.
+  void _reloadPrayerData() {
+    ref.invalidate(prayerLocationProvider);
+    ref.invalidate(prayerTimesProvider);
+    ref.invalidate(tomorrowPrayerTimesProvider);
+  }
+
   /// The button of the card: allow the location if needed, then read it. If the
   /// phone's location is off, Google's "Turn on" dialog is shown in the app.
   Future<void> _getLocation() async {
@@ -201,10 +208,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           slivers: [
             BrandedRefreshHeader(
               onRefresh: () async {
-                await PrayerService.refreshLocation();
-                ref.invalidate(prayerLocationProvider);
-                ref.invalidate(prayerTimesProvider);
-                ref.invalidate(tomorrowPrayerTimesProvider);
+                // The page refreshes at once with what is saved. Finding the
+                // position can take many seconds, so it must not hold the
+                // spinner: it runs on its own and the page follows if the
+                // user is somewhere else now.
+                _reloadPrayerData();
+                PrayerService.refreshLocation().then((ok) {
+                  if (ok && mounted) _reloadPrayerData();
+                });
               },
             ),
             HomeAppBar(
