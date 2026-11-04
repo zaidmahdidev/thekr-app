@@ -9,7 +9,6 @@ import '../widgets/prophet_details_header.dart';
 import '../widgets/prophet_lesson_item.dart';
 import '../widgets/prophet_neighbors_bar.dart';
 import '../widgets/prophet_section_header.dart';
-import '../widgets/story_detail_expander.dart';
 import '../widgets/story_narrative.dart';
 import '../widgets/story_paragraph.dart';
 import '../widgets/story_source_card.dart';
@@ -110,39 +109,6 @@ class _ProphetDetailsScreenState extends ConsumerState<ProphetDetailsScreen> {
                   const ProphetSectionHeader(title: 'القصة'),
                   if (prophet.narrative.isNotEmpty) ...[
                     StoryNarrative(lines: prophet.narrative, fontSize: fontSize),
-                    if (prophet.storyVerses.isNotEmpty) ...[
-                      SizedBox(height: context.insets.sm),
-                      StoryDetailExpander(
-                        title: 'آيات القصة',
-                        subtitle: 'كل ما ورد فيها من القرآن الكريم مرتبًا بالسور',
-                        child: StoryNarrative(
-                          lines: prophet.storyVerses,
-                          fontSize: fontSize,
-                        ),
-                      ),
-                    ],
-                    if (prophet.isDocumented) ...[
-                      SizedBox(height: context.insets.md),
-                      StoryDetailExpander(
-                        title: 'التفصيل من كتب أهل العلم',
-                        subtitle: 'نص ${prophet.source!.author} كما ورد',
-                        child: Column(
-                          children: prophet.paragraphs
-                              .map(
-                                (text) => Padding(
-                                  padding: EdgeInsets.only(
-                                    bottom: context.insets.md,
-                                  ),
-                                  child: StoryParagraph(
-                                    text: text,
-                                    fontSize: fontSize,
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ),
-                    ],
                   ] else if (prophet.isDocumented)
                     ...prophet.paragraphs.map(
                       (text) => Padding(

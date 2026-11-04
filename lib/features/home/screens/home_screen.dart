@@ -216,6 +216,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 PrayerService.refreshLocation().then((ok) {
                   if (ok && mounted) _reloadPrayerData();
                 });
+                // Held until the times are read again, and for a moment at
+                // least, so the pull is seen to do something.
+                await Future.wait<Object?>([
+                  ref.read(prayerTimesProvider.future).catchError((_) => null),
+                  Future<void>.delayed(const Duration(milliseconds: 700)),
+                ]);
               },
             ),
             HomeAppBar(

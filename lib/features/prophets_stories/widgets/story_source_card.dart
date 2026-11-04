@@ -86,14 +86,6 @@ class StorySourceCard extends StatelessWidget {
                 height: 1.5,
               ),
             ),
-            SizedBox(height: context.insets.sm),
-            Text(
-              source!.note,
-              style: context.textStyles.bodySmall?.copyWith(
-                color: context.colors.textSecondary,
-                height: 1.7,
-              ),
-            ),
           ] else
             Text(
               'نص هذه القصة قيد المراجعة، وسيُستبدل بنص موثّق من كتب أهل العلم '
