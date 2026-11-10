@@ -7,6 +7,7 @@ import 'package:thekr_app/core/utils/constants/app_assets.dart';
 import 'package:thekr_app/core/widgets/widgets.dart';
 import 'package:thekr_app/core/services/share_service.dart';
 import 'package:thekr_app/core/utils/constants/app_icons.dart';
+import 'package:thekr_app/features/settings/widgets/app_qr_code.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class AppShareSheet extends StatelessWidget {
@@ -59,7 +60,7 @@ class AppShareSheet extends StatelessWidget {
 
                   SizedBox(height: context.insets.lg),
 
-                  // Static QR Code Container
+                  // QR Code Container
                   Container(
                     padding: EdgeInsets.all(context.insets.md),
                     decoration: BoxDecoration(
@@ -71,12 +72,7 @@ class AppShareSheet extends StatelessWidget {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(context.corners.md),
-                          child: Image.asset(
-                            AppAssets.qrCode,
-                            width: 160.w,
-                            height: 160.w,
-                            fit: BoxFit.contain,
-                          ),
+                          child: AppQrCode(size: 160.w),
                         ),
                         SizedBox(height: context.insets.sm),
                         Text(

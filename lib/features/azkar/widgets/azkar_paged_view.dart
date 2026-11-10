@@ -14,6 +14,7 @@ class AzkarPagedView extends StatefulWidget {
     required this.items,
     required this.controller,
     required this.onTapItem,
+    this.onPageChanged,
   });
 
   /// The adhkar with their counters (`zekr`, `bless`, `currentCount`, `originalCount`).
@@ -21,12 +22,16 @@ class AzkarPagedView extends StatefulWidget {
   final PageController controller;
   final ValueChanged<int> onTapItem;
 
+  /// Tells the screen which thikr is showing, so it can be kept when the layout
+  /// changes.
+  final ValueChanged<int>? onPageChanged;
+
   @override
   State<AzkarPagedView> createState() => _AzkarPagedViewState();
 }
 
 class _AzkarPagedViewState extends State<AzkarPagedView> {
-  int _page = 0;
+  late int _page = widget.controller.initialPage;
 
   void _goTo(int page) {
     widget.controller.animateToPage(
@@ -46,7 +51,10 @@ class _AzkarPagedViewState extends State<AzkarPagedView> {
           child: PageView.builder(
             controller: widget.controller,
             itemCount: total,
-            onPageChanged: (page) => setState(() => _page = page),
+            onPageChanged: (page) {
+              setState(() => _page = page);
+              widget.onPageChanged?.call(page);
+            },
             itemBuilder: (context, index) {
               final item = widget.items[index];
               return Center(

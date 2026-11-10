@@ -26,7 +26,13 @@ class AzkarListScreen extends ConsumerStatefulWidget {
 class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
   late List<Map<String, dynamic>> azkarWithCounters;
   bool allCompleted = false;
-  final PageController _pageController = PageController();
+  PageController _pageController = PageController();
+
+  /// The thikr the user is on, kept when the layout is switched so the other
+  /// layout opens at the same place instead of at the top.
+  int _currentIndex = 0;
+  final GlobalKey _listKey = GlobalKey();
+  late final List<GlobalKey> _itemKeys;
 
   @override
   void dispose() {
@@ -38,6 +44,7 @@ class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
   void initState() {
     super.initState();
     AnalyticsService.logZekrSelected(widget.type, widget.type);
+    _itemKeys = List.generate(widget.azkarList.length, (_) => GlobalKey());
     azkarWithCounters = widget.azkarList.map((azkar) {
       final repeatStr = azkar['repeat'] ?? '1';
       final count = int.tryParse(repeatStr) ?? 1;
@@ -50,6 +57,47 @@ class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
         'isCompleted': false,
       };
     }).toList();
+  }
+
+  /// The first thikr still showing at the top of the list.
+  void _rememberListPosition() {
+    final list = _listKey.currentContext?.findRenderObject();
+    if (list is! RenderBox || !list.attached) return;
+    final top = list.localToGlobal(Offset.zero).dy;
+    for (var i = 0; i < _itemKeys.length; i++) {
+      final box = _itemKeys[i].currentContext?.findRenderObject();
+      if (box is! RenderBox || !box.attached || !box.hasSize) continue;
+      final bottom = box.localToGlobal(Offset(0, box.size.height)).dy;
+      if (bottom > top + 1) {
+        _currentIndex = i;
+        return;
+      }
+    }
+  }
+
+  /// Switches between the list and the swiped pages, staying on the same thikr.
+  void _switchLayout(bool wasHorizontal) {
+    HapticFeedback.selectionClick();
+    if (wasHorizontal) {
+      // Pages to list: scroll the list to the thikr the pages were on.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final target = _itemKeys[_currentIndex].currentContext;
+        if (target != null) {
+          Scrollable.ensureVisible(target, duration: Duration.zero);
+        }
+      });
+    } else {
+      // List to pages: open the pages at the thikr the list was on.
+      _rememberListPosition();
+      final old = _pageController;
+      _pageController = PageController(initialPage: _currentIndex);
+      WidgetsBinding.instance.addPostFrameCallback((_) => old.dispose());
+    }
+    ref
+        .read(settingsProvider.notifier)
+        .setAzkarLayout(
+          wasHorizontal ? AzkarLayout.vertical : AzkarLayout.horizontal,
+        );
   }
 
   void _decrementCounter(int index) {
@@ -104,19 +152,20 @@ class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
     }
   }
 
+  /// How much of the whole is done, counted in repetitions: every tap moves the
+  /// bar by the same amount. (Counting each thikr as one equal part made the bar
+  /// stand still through a thikr said 33 times, then jump on one said once.)
   double _calculateTotalProgress() {
-    if (azkarWithCounters.isEmpty) return 0.0;
-
-    double totalProgress = 0.0;
-    for (var azkar in azkarWithCounters) {
-      int original = azkar['originalCount'] as int;
-      int current = azkar['currentCount'] as int;
-      if (original > 0) {
-        totalProgress += (original - current) / original;
-      }
+    var total = 0;
+    var done = 0;
+    for (final azkar in azkarWithCounters) {
+      final original = azkar['originalCount'] as int;
+      final current = azkar['currentCount'] as int;
+      if (original <= 0) continue;
+      total += original;
+      done += original - current;
     }
-
-    return totalProgress / azkarWithCounters.length;
+    return total == 0 ? 0.0 : done / total;
   }
 
   @override
@@ -139,21 +188,16 @@ class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
                 key: ValueKey(isHorizontal),
               ),
             ),
-            onPressed: () {
-              HapticFeedback.selectionClick();
-              ref
-                  .read(settingsProvider.notifier)
-                  .setAzkarLayout(
-                    isHorizontal ? AzkarLayout.vertical : AzkarLayout.horizontal,
-                  );
-            },
+            onPressed: () => _switchLayout(isHorizontal),
           ),
           IconButton(
             icon: const AppIcon(HugeIcons.strokeRoundedZoomIn),
             onPressed: () {
               final currentSize = ref.read(settingsProvider).fontSize;
               if (currentSize < SettingsState.maxFontSize) {
-                ref.read(settingsProvider.notifier).updateFontSize(currentSize + SettingsState.fontSizeStep);
+                ref
+                    .read(settingsProvider.notifier)
+                    .updateFontSize(currentSize + SettingsState.fontSizeStep);
               }
             },
           ),
@@ -162,7 +206,9 @@ class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
             onPressed: () {
               final currentSize = ref.read(settingsProvider).fontSize;
               if (currentSize > SettingsState.minFontSize) {
-                ref.read(settingsProvider.notifier).updateFontSize(currentSize - SettingsState.fontSizeStep);
+                ref
+                    .read(settingsProvider.notifier)
+                    .updateFontSize(currentSize - SettingsState.fontSizeStep);
               }
             },
           ),
@@ -197,7 +243,11 @@ class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const AppIcon(HugeIcons.strokeRoundedCheckmarkCircle02, color: Colors.green, size: 80),
+                  const AppIcon(
+                    HugeIcons.strokeRoundedCheckmarkCircle02,
+                    color: Colors.green,
+                    size: 80,
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     'تم إكمال جميع الأذكار',
@@ -219,33 +269,44 @@ class _AzkarListScreenState extends ConsumerState<AzkarListScreen> {
               items: azkarWithCounters,
               controller: _pageController,
               onTapItem: _decrementCounter,
+              onPageChanged: (page) => _currentIndex = page,
             )
-          : ListView.builder(
-              padding: const EdgeInsets.only(top: 10),
-              itemCount: azkarWithCounters.length,
-              itemBuilder: (context, index) {
-                var azkar = azkarWithCounters[index];
-
-                return AnimatedContainer(
-                  key: ValueKey(azkar['zekr']),
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOut,
-                  height: azkar['isCompleted'] ? 0 : null,
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 400),
-                    opacity: azkar['isCompleted'] ? 0.0 : 1.0,
-                    child: azkar['isCompleted']
-                        ? const SizedBox.shrink()
-                        : AzkarItemWidget(
-                            details: azkar['zekr'],
-                            bless: azkar['bless'],
-                            currentCount: azkar['currentCount'],
-                            originalCount: azkar['originalCount'],
-                            onTap: () => _decrementCounter(index),
-                          ),
-                  ),
-                );
+          : NotificationListener<ScrollNotification>(
+              onNotification: (_) {
+                _rememberListPosition();
+                return false;
               },
+              child: ListView.builder(
+                key: _listKey,
+                padding: const EdgeInsets.only(top: 10),
+                // The list is short; building all of it lets the position of any
+                // thikr be found when the layout is switched.
+                cacheExtent: 100000,
+                itemCount: azkarWithCounters.length,
+                itemBuilder: (context, index) {
+                  var azkar = azkarWithCounters[index];
+
+                  return AnimatedContainer(
+                    key: _itemKeys[index],
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                    height: azkar['isCompleted'] ? 0 : null,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 400),
+                      opacity: azkar['isCompleted'] ? 0.0 : 1.0,
+                      child: azkar['isCompleted']
+                          ? const SizedBox.shrink()
+                          : AzkarItemWidget(
+                              details: azkar['zekr'],
+                              bless: azkar['bless'],
+                              currentCount: azkar['currentCount'],
+                              originalCount: azkar['originalCount'],
+                              onTap: () => _decrementCounter(index),
+                            ),
+                    ),
+                  );
+                },
+              ),
             ),
     );
   }
