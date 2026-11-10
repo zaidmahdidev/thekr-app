@@ -69,6 +69,14 @@
             android:foregroundServiceType="mediaPlayback"
             android:stopWithTask="true" />
 
+        <!-- Icon and tint of the Firebase notifications shown while the app is in the background. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_thekr" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/notification_color" />
+
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

@@ -6,6 +6,7 @@ import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:thekr_app/core/services/prayer_service.dart';
+import 'package:thekr_app/core/theme/tokens/design_tokens.dart';
 import 'package:thekr_app/core/utils/enums/prayer_enum.dart';
 
 @pragma('vm:entry-point')
@@ -52,7 +53,7 @@ class NotificationService {
     await _initializeFCM();
 
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@drawable/ic_stat_thekr');
 
     const InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
@@ -95,6 +96,7 @@ class NotificationService {
           body: notification.body,
           notificationDetails: const NotificationDetails(
             android: AndroidNotificationDetails(
+              color: AppColors.primarySwatch,
               'azkar_channel',
               'تذكير الأذكار',
               channelDescription: 'إشعارات تذكير أذكار الصباح والمساء',
@@ -242,6 +244,7 @@ class NotificationService {
       scheduledDate: _nextInstanceOfTime(time),
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
+          color: AppColors.primarySwatch,
           'azkar_channel',
           'تذكير الأذكار',
           channelDescription: 'إشعارات تذكير أذكار الصباح والمساء',
@@ -265,6 +268,7 @@ class NotificationService {
       scheduledDate: _nextInstanceOfTime(time),
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
+          color: AppColors.primarySwatch,
           'azkar_channel',
           'تذكير الأذكار',
           channelDescription: 'إشعارات تذكير أذكار الصباح والمساء',
@@ -288,6 +292,7 @@ class NotificationService {
       scheduledDate: _nextInstanceOfFriday(time),
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
+          color: AppColors.primarySwatch,
           'azkar_channel',
           'تذكير الأذكار',
           channelDescription: 'إشعارات تذكير أذكار الصباح والمساء والكهف',
@@ -311,6 +316,7 @@ class NotificationService {
       scheduledDate: _nextInstanceOfTime(time),
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
+          color: AppColors.primarySwatch,
           'azkar_channel',
           'تذكير الأذكار',
           channelDescription: 'إشعارات تذكير الورد اليومي والأذكار',
@@ -343,6 +349,7 @@ class NotificationService {
       scheduledDate: scheduledDate,
       notificationDetails: NotificationDetails(
         android: const AndroidNotificationDetails(
+          color: AppColors.primarySwatch,
           'athan_channel',
           'أذان الصلوات',
           channelDescription: 'إشعارات الأذان للصلوات الخمس',
@@ -527,6 +534,7 @@ class NotificationService {
       scheduledDate: scheduledDate,
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
+          color: AppColors.primarySwatch,
           'durood_channel',
           'الصلاة على النبي',
           channelDescription: 'تذكير دوري بالصلاة على النبي',
