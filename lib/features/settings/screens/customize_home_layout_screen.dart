@@ -229,6 +229,36 @@ class _SectionPreviewCard extends StatelessWidget {
             ),
           ),
         );
+      case HomeSection.habits:
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(
+            5,
+            (index) => Column(
+              children: [
+                Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: index < 3
+                        ? context.colors.primary
+                        : context.colors.primary.withValues(alpha: 0.08),
+                    shape: BoxShape.circle,
+                  ),
+                  child: index < 3
+                      ? AppIcon(
+                          HugeIcons.strokeRoundedTick02,
+                          size: 14,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        )
+                      : null,
+                ),
+                const SizedBox(height: 4),
+                Container(width: 25, height: 4, color: Colors.grey.shade300),
+              ],
+            ),
+          ),
+        );
       case HomeSection.inspiration:
         return Container(
           width: double.infinity,

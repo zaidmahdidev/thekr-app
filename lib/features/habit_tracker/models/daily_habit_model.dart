@@ -1,6 +1,36 @@
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
+/// Every tick box of a day.
+enum HabitField {
+  fajr('الفجر', isFard: true),
+  dhuhr('الظهر', isFard: true),
+  asr('العصر', isFard: true),
+  maghrib('المغرب', isFard: true),
+  isha('العشاء', isFard: true),
+  rawatib('السنن الرواتب'),
+  qiyam('قيام الليل'),
+  quranWird('الورد القرآني'),
+  morningAzkar('أذكار الصباح'),
+  eveningAzkar('أذكار المساء');
+
+  const HabitField(this.label, {this.isFard = false});
+
+  final String label;
+
+  /// One of the five prayers.
+  final bool isFard;
+
+  static List<HabitField> get fard => [
+    for (final f in values)
+      if (f.isFard) f,
+  ];
+  static List<HabitField> get extras => [
+    for (final f in values)
+      if (!f.isFard) f,
+  ];
+}
+
 class DailyHabit {
   final String dateStr; // e.g., '2026-08-27'
 
@@ -48,6 +78,37 @@ class DailyHabit {
     if (quranWird) count++;
     return count;
   }
+
+  bool isDone(HabitField field) => switch (field) {
+    HabitField.fajr => fajr,
+    HabitField.dhuhr => dhuhr,
+    HabitField.asr => asr,
+    HabitField.maghrib => maghrib,
+    HabitField.isha => isha,
+    HabitField.rawatib => rawatib,
+    HabitField.qiyam => qiyam,
+    HabitField.quranWird => quranWird,
+    HabitField.morningAzkar => morningAzkar,
+    HabitField.eveningAzkar => eveningAzkar,
+  };
+
+  DailyHabit withField(HabitField field, bool value) => switch (field) {
+    HabitField.fajr => copyWith(fajr: value),
+    HabitField.dhuhr => copyWith(dhuhr: value),
+    HabitField.asr => copyWith(asr: value),
+    HabitField.maghrib => copyWith(maghrib: value),
+    HabitField.isha => copyWith(isha: value),
+    HabitField.rawatib => copyWith(rawatib: value),
+    HabitField.qiyam => copyWith(qiyam: value),
+    HabitField.quranWird => copyWith(quranWird: value),
+    HabitField.morningAzkar => copyWith(morningAzkar: value),
+    HabitField.eveningAzkar => copyWith(eveningAzkar: value),
+  };
+
+  /// How many of the five prayers were prayed.
+  int get fardCount => HabitField.fard.where(isDone).length;
+
+  bool get isFardComplete => fardCount == 5;
 
   int get totalHabits => 10;
 

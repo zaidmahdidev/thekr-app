@@ -11,6 +11,7 @@ enum HomeSection {
   prayerTimes,
   inspiration,
   features,
+  habits,
   dynamicSections,
   shareCard;
 
@@ -22,6 +23,8 @@ enum HomeSection {
         return 'إلهامات يومية';
       case HomeSection.features:
         return 'الخدمات الأساسية';
+      case HomeSection.habits:
+        return 'صلواتك اليوم';
       case HomeSection.dynamicSections:
         return 'أقسام متنوعة (الجمعة/الصيام)';
       case HomeSection.shareCard:
@@ -248,7 +251,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       if (saved == null || saved is! List) {
         return HomeSection.values;
       }
-      return saved
+      final sections = saved
           .map(
             (e) => HomeSection.values.firstWhere(
               (element) => element.name == e.toString(),
@@ -257,6 +260,16 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           )
           .whereType<HomeSection>()
           .toList();
+      // A section added in a later version is missing from the order the user
+      // saved: it goes in its usual place instead of staying hidden.
+      for (final section in HomeSection.values) {
+        if (sections.contains(section)) continue;
+        final after = section == HomeSection.habits
+            ? sections.indexOf(HomeSection.features)
+            : -1;
+        sections.insert(after == -1 ? sections.length : after + 1, section);
+      }
+      return sections;
     } catch (_) {
       return HomeSection.values;
     }

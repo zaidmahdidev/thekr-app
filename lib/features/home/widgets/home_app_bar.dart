@@ -132,169 +132,189 @@ class HomeAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = _getTheme(context);
 
-    return SliverAppBar(
-      expandedHeight: 180.h,
-      pinned: true,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      surfaceTintColor: Colors.transparent,
-      // The lattice is sized to the bar as it is right now (not to its full
-      // height), so it zooms in and out while the page scrolls, as on the
-      // radio screen.
-      flexibleSpace: LayoutBuilder(
-        builder: (context, constraints) => FlexibleSpaceBar(
-          background: Stack(
-            fit: StackFit.expand,
-            children: [
-              AnimatedContainer(
-                duration: const Duration(seconds: 1),
-                decoration: BoxDecoration(gradient: theme.gradient),
-              ),
-              // Islamic lattice and a soft glow behind the clock.
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                height: constraints.maxHeight,
-                child: const HeroPattern(),
-              ),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    center: const Alignment(0, 0.1),
-                    radius: 0.75,
-                    colors: [
-                      Colors.white.withValues(alpha: 0.2),
-                      Colors.white.withValues(alpha: 0),
-                    ],
+    // The header is as tall as what is in it. With a larger system font the
+    // lines grow, and a fixed 180 cut the bottom (the "remaining time" pill)
+    // off. Never shorter than the usual height.
+    // The text here is large display text: it follows the system font size up
+    // to 130%, so the header keeps its shape at the biggest sizes.
+    final scaler = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.3);
+    final textScale = scaler.scale(1);
+    final lines = (16.sp * 1.3 + 22.sp * 1.3 + 16.sp * 1.3 + 56.sp) * textScale;
+    final pill = remainingTime.isEmpty
+        ? 0.0
+        : context.insets.sm * 2 + 12.sp * 1.65 * textScale + 2;
+    final gaps = 10.h + 4.h + 4.h + 8.h;
+    final expandedHeight = [
+      180.h,
+      gaps + lines + pill + context.insets.sm,
+    ].reduce((a, b) => a > b ? a : b);
+
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaler: scaler),
+      child: SliverAppBar(
+        expandedHeight: expandedHeight,
+        pinned: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        // The lattice is sized to the bar as it is right now (not to its full
+        // height), so it zooms in and out while the page scrolls, as on the
+        // radio screen.
+        flexibleSpace: LayoutBuilder(
+          builder: (context, constraints) => FlexibleSpaceBar(
+            background: Stack(
+              fit: StackFit.expand,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(seconds: 1),
+                  decoration: BoxDecoration(gradient: theme.gradient),
+                ),
+                // Islamic lattice and a soft glow behind the clock.
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: constraints.maxHeight,
+                  child: const HeroPattern(),
+                ),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      center: const Alignment(0, 0.1),
+                      radius: 0.75,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              // Main Content
-              SafeArea(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 10.h),
-                      Text(
-                        dayName,
-                        style: context.textStyles.titleLarge?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.92),
-                          height: 1.3,
-                        ),
-                      ),
-                      SizedBox(height: 5.h),
-                      Text(
-                        hijriDate,
-                        style: context.textStyles.bodyLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          height: 1.3,
-                        ),
-                      ),
-                      SizedBox(height: 6.h),
-                      Text(
-                        todayDate,
-                         style: context.textStyles.bodyLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          height: 1.3,
-                        ),
-                      ),
-                      SizedBox(height: 7.h),
-                      Text(
-                        intl.DateFormat('h:mm', 'en').format(currentTime),
-                        style: context.textStyles.displayLarge?.copyWith(
-                          fontSize: 60.sp,
-                          // The big clock needs no extra leading (it overflowed with Amiri).
-                          height: 1.0,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black.withValues(alpha: 0.2),
-                              offset: const Offset(0, 4),
-                              blurRadius: 10,
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (remainingTime.isNotEmpty) ...[
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: context.insets.lg,
-                            vertical: context.insets.sm,
+                // Main Content
+                SafeArea(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 10.h),
+                        Text(
+                          dayName,
+                          style: context.textStyles.titleLarge?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.92),
+                            height: 1.3,
                           ),
-                          decoration: BoxDecoration(
-                            color: context.colors.background.withValues(
-                              alpha: 0.5,
-                            ),
-                            borderRadius: BorderRadius.circular(
-                              context.corners.xl,
-                            ),
-                            border: Border.all(
-                              color: context.colors.secondary.withValues(
-                                alpha: 0.2,
-                              ),
-                              width: 1,
-                            ),
+                        ),
+                        SizedBox(height: 5.h),
+                        Text(
+                          hijriDate,
+                          style: context.textStyles.bodyLarge?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            height: 1.3,
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              AppIcon(
-                                theme.icon,
-                                color: context.colors.secondary,
-                                size: 20.sp,
-                              ),
-                              SizedBox(width: 8.w),
-                              Text(
-                                remainingTime,
-                                style: context.textStyles.bodySmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        ),
+                        SizedBox(height: 6.h),
+                        Text(
+                          todayDate,
+                          style: context.textStyles.bodyLarge?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            height: 1.3,
+                          ),
+                        ),
+                        SizedBox(height: 7.h),
+                        Text(
+                          intl.DateFormat('h:mm', 'en').format(currentTime),
+                          style: context.textStyles.displayLarge?.copyWith(
+                            fontSize: 60.sp,
+                            // The big clock needs no extra leading (it overflowed with Amiri).
+                            height: 1.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black.withValues(alpha: 0.2),
+                                offset: const Offset(0, 4),
+                                blurRadius: 10,
                               ),
                             ],
                           ),
                         ),
+                        if (remainingTime.isNotEmpty) ...[
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: context.insets.lg,
+                              vertical: context.insets.sm,
+                            ),
+                            decoration: BoxDecoration(
+                              color: context.colors.background.withValues(
+                                alpha: 0.5,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                context.corners.xl,
+                              ),
+                              border: Border.all(
+                                color: context.colors.secondary.withValues(
+                                  alpha: 0.2,
+                                ),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                AppIcon(
+                                  theme.icon,
+                                  color: context.colors.secondary,
+                                  size: 20.sp,
+                                ),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  remainingTime,
+                                  style: context.textStyles.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-      actions: [
-        Padding(
-          padding: EdgeInsetsDirectional.only(end: context.insets.sm),
-          child: Center(
-            child: Tooltip(
-              message: 'الإعدادات',
-              child: ClipOval(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                  child: Material(
-                    color: Colors.white.withValues(alpha: 0.18),
-                    shape: CircleBorder(
-                      side: BorderSide(
-                        color: Colors.white.withValues(alpha: 0.35),
+        actions: [
+          Padding(
+            padding: EdgeInsetsDirectional.only(end: context.insets.sm),
+            child: Center(
+              child: Tooltip(
+                message: 'الإعدادات',
+                child: ClipOval(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                    child: Material(
+                      color: Colors.white.withValues(alpha: 0.18),
+                      shape: CircleBorder(
+                        side: BorderSide(
+                          color: Colors.white.withValues(alpha: 0.35),
+                        ),
                       ),
-                    ),
-                    child: InkWell(
-                      customBorder: const CircleBorder(),
-                      onTap: () => context.router.push(const SettingsRoute()),
-                      child: SizedBox(
-                        width: 40.w,
-                        height: 40.w,
-                        child: Center(
-                          child: AppIcon(
-                            HugeIcons.strokeRoundedSettings02,
-                            color: Colors.white,
-                            size: 24.sp,
+                      child: InkWell(
+                        customBorder: const CircleBorder(),
+                        onTap: () => context.router.push(const SettingsRoute()),
+                        child: SizedBox(
+                          width: 40.w,
+                          height: 40.w,
+                          child: Center(
+                            child: AppIcon(
+                              HugeIcons.strokeRoundedSettings02,
+                              color: Colors.white,
+                              size: 24.sp,
+                            ),
                           ),
                         ),
                       ),
@@ -304,8 +324,8 @@ class HomeAppBar extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
