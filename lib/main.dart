@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -32,10 +35,20 @@ void main() async {
   try {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+    // Debug runs (and their assertion errors) should not show up as crashes.
+    await FirebaseCrashlytics.instance
+        .setCrashlyticsCollectionEnabled(!kDebugMode);
+
     FlutterError.onError = (errorDetails) {
-      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+      if (kDebugMode) FlutterError.presentError(errorDetails);
+      // No internet is not a bug: a picture that could not be downloaded.
+      if (_isNetworkError(errorDetails.exception)) return;
+      // Errors reported by the framework (layout, images, ...) do not stop the
+      // app, so they are recorded as non-fatal.
+      FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
     };
     PlatformDispatcher.instance.onError = (error, stack) {
+      if (_isNetworkError(error)) return true;
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true;
     };
@@ -85,3 +98,11 @@ void main() async {
     FlutterNativeSplash.remove();
   }
 }
+
+/// True for failures caused by a missing or unstable connection.
+bool _isNetworkError(Object error) =>
+    error is SocketException ||
+    error is HttpException ||
+    error is HandshakeException ||
+    error is TimeoutException ||
+    error is NetworkImageLoadException;

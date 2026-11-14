@@ -3,8 +3,13 @@ import '../theme/app_theme_extension.dart';
 import '../theme/tokens/design_tokens.dart';
 
 extension ThemeContextExtension on BuildContext {
-  AppThemeExtension get _themeExtension =>
-      Theme.of(this).extension<AppThemeExtension>()!;
+  AppThemeExtension get _themeExtension {
+    final theme = Theme.of(this);
+    return theme.extension<AppThemeExtension>() ??
+        (theme.brightness == Brightness.dark
+            ? AppThemeExtension.fallbackDark
+            : AppThemeExtension.fallbackLight);
+  }
 
   AppColors get colors => _themeExtension.colors;
   AppCorners get corners => _themeExtension.corners;

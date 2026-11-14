@@ -14,6 +14,22 @@ class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
     required this.shadows,
   });
 
+  /// Used when a widget sits under a Theme that does not carry the app's
+  /// extension (for example a sheet or dialog built by a package).
+  static final AppThemeExtension fallbackLight = AppThemeExtension(
+    colors: AppColors.light,
+    corners: AppCorners.defaultValues(),
+    insets: AppInsets.defaultValues(),
+    shadows: AppShadows.light(),
+  );
+
+  static final AppThemeExtension fallbackDark = AppThemeExtension(
+    colors: AppColors.dark,
+    corners: AppCorners.defaultValues(),
+    insets: AppInsets.defaultValues(),
+    shadows: AppShadows.dark(),
+  );
+
   @override
   ThemeExtension<AppThemeExtension> copyWith({
     AppColors? colors,

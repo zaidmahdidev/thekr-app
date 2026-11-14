@@ -31,7 +31,7 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
   @override
   void initState() {
     super.initState();
-    WakelockPlus.enable();
+    _keepScreenOn(true);
     _checkInitialConnection();
 
     final initialStream = ref.read(selectedStreamProvider);
@@ -45,6 +45,12 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
         loop: false,
       ),
     );
+  }
+
+  /// Keeping the screen awake is a nicety: some phones refuse it, and that
+  /// must not crash the player.
+  void _keepScreenOn(bool on) {
+    (on ? WakelockPlus.enable() : WakelockPlus.disable()).catchError((_) {});
   }
 
   Future<void> _checkInitialConnection() async {
@@ -82,7 +88,7 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
 
   @override
   void dispose() {
-    WakelockPlus.disable();
+    _keepScreenOn(false);
     _controller.dispose();
     super.dispose();
   }
@@ -98,8 +104,8 @@ class _LiveStreamScreenState extends ConsumerState<LiveStreamScreen> {
     });
 
     return YoutubePlayerBuilder(
-      onEnterFullScreen: () => WakelockPlus.enable(),
-      onExitFullScreen: () => WakelockPlus.enable(),
+      onEnterFullScreen: () => _keepScreenOn(true),
+      onExitFullScreen: () => _keepScreenOn(true),
       player: YoutubePlayer(
         controller: _controller,
         showVideoProgressIndicator: false,

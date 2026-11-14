@@ -11,9 +11,13 @@ class ReviewService {
   /// إظهار صفحة التقييم يدوياً (دائماً تفتح المتجر لضمان الاستجابة)
   static Future<void> requestManualReview() async {
     // نفتح صفحة المتجر مباشرة لأن المستخدم هو من طلب التقييم
-    await _inAppReview.openStoreListing(
-      appStoreId: AppConstants.packageName,
-    );
+    try {
+      await _inAppReview.openStoreListing(
+        appStoreId: AppConstants.packageName,
+      );
+    } catch (_) {
+      // لا يوجد متجر على الجهاز (مثلاً هواتف بدون Google Play)
+    }
   }
 
   /// منطق ذكي لإظهار التقييم تلقائياً (مثلاً بعد 5 مرات فتح للتطبيق)
@@ -25,8 +29,12 @@ class ReviewService {
 
     // نطلب التقييم تلقائياً فقط إذا فتح التطبيق 5 مرات أو 15 مرة أو 30 مرة
     if (openCount == 5 || openCount == 15 || openCount == 30) {
-      if (await _inAppReview.isAvailable()) {
-        await _inAppReview.requestReview();
+      try {
+        if (await _inAppReview.isAvailable()) {
+          await _inAppReview.requestReview();
+        }
+      } catch (_) {
+        // التقييم غير متاح على هذا الجهاز، لا شيء يُعرض
       }
     }
   }

@@ -130,8 +130,15 @@ class _QiblahCompassState extends State<QiblahCompass> {
       _locationStreamController.sink.add(s);
     } catch (e) {
       debugPrint("Error checking location: $e");
-      final s = await FlutterQiblah.checkLocationStatus();
-      _locationStreamController.sink.add(s);
+      try {
+        final s = await FlutterQiblah.checkLocationStatus();
+        _locationStreamController.sink.add(s);
+      } catch (e) {
+        // Show the "enable location" message rather than crashing.
+        _locationStreamController.sink.add(
+          LocationStatus(false, LocationPermission.denied),
+        );
+      }
     }
   }
 

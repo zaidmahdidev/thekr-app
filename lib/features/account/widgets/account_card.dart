@@ -137,6 +137,8 @@ class _AccountCardState extends ConsumerState<AccountCard> {
           radius: 20.r,
           backgroundColor: colors.primary.withValues(alpha: 0.1),
           backgroundImage: photo != null ? NetworkImage(photo) : null,
+          // Offline, the photo cannot load: keep the plain circle quietly.
+          onBackgroundImageError: photo != null ? (_, _) {} : null,
           child: photo == null
               ? AppIcon(
                   HugeIcons.strokeRoundedUserCircle,
