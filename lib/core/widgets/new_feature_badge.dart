@@ -28,9 +28,12 @@ class NewFeatureBadge extends ConsumerWidget {
 
     if (!shouldShow) return child;
 
-    // expand: a loose Stack would shrink the card inside a grid cell.
+    // passthrough: the card gets the constraints as they come. In a grid cell
+    // they are tight, so the card fills the cell; in a list the height is not
+    // bounded, so the card keeps its own height. (StackFit.expand made the
+    // settings tiles disappear in a list, leaving only the badge.)
     return Stack(
-      fit: StackFit.expand,
+      fit: StackFit.passthrough,
       clipBehavior: Clip.none,
       children: [
         child,

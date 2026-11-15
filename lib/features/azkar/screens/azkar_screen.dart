@@ -13,7 +13,7 @@ class AzkarScreen extends StatelessWidget {
     final List<String> categories = azkarList.keys.cast<String>().toList();
 
     return AppScaffold(
-      title: 'أذكار المسلم',
+      title: 'الأذكار',
       body: ListView.builder(
         itemCount: categories.length,
         itemBuilder: (context, index) {

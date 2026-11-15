@@ -75,7 +75,11 @@ class LocationErrorWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          AppIcon(HugeIcons.strokeRoundedLocationOffline01, size: 150, color: context.colors.error),
+          AppIcon(
+            HugeIcons.strokeRoundedLocationOffline01,
+            size: 150,
+            color: context.colors.error,
+          ),
           const SizedBox(height: 32),
           Text(
             error!,
@@ -198,7 +202,10 @@ class _QiblahCompassState extends State<QiblahCompass> {
 }
 
 class QiblahCompassWidget extends StatefulWidget {
-  const QiblahCompassWidget({super.key});
+  const QiblahCompassWidget({super.key, @visibleForTesting this.stream});
+
+  /// For tests: replaces the phone's compass and location.
+  final Stream<QiblahDirection>? stream;
 
   @override
   State<QiblahCompassWidget> createState() => _QiblahCompassWidgetState();
@@ -216,6 +223,22 @@ class _QiblahCompassWidgetState extends State<QiblahCompassWidget> {
   bool _needsCalibration = false;
   StreamSubscription<CompassEvent>? _accuracySub;
 
+  /// Opened once and kept. Building it again on every rebuild made the
+  /// StreamBuilder listen to the same stream a second time, which fails and
+  /// left no data (the red screen "Null check operator used on a null value").
+  late Stream<QiblahDirection> _stream = widget.stream ?? _openStream();
+
+  static Stream<QiblahDirection> _openStream() =>
+      FlutterQiblah.qiblahStream.where(
+        (direction) =>
+            direction.direction.isFinite && direction.qiblah.isFinite,
+      );
+
+  void _retry() {
+    FlutterQiblah().dispose(); // so a new stream is made
+    setState(() => _stream = _openStream());
+  }
+
   @override
   void initState() {
     super.initState();
@@ -225,7 +248,7 @@ class _QiblahCompassWidgetState extends State<QiblahCompassWidget> {
       if (low != _needsCalibration && mounted) {
         setState(() => _needsCalibration = low);
       }
-    });
+    }, onError: (_) {}); // only a hint: a failing sensor must not crash
   }
 
   @override
@@ -250,16 +273,20 @@ class _QiblahCompassWidgetState extends State<QiblahCompassWidget> {
     final needleSvg = SvgPicture.asset(AppAssets.needle, fit: BoxFit.contain);
 
     return StreamBuilder(
-      stream: FlutterQiblah.qiblahStream.where(
-        (direction) =>
-            direction.direction.isFinite && direction.qiblah.isFinite,
-      ),
+      stream: _stream,
       builder: (_, AsyncSnapshot<QiblahDirection> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        final qiblahDirection = snapshot.data;
+        if (snapshot.hasError ||
+            (qiblahDirection == null &&
+                snapshot.connectionState == ConnectionState.done)) {
+          return LocationErrorWidget(
+            error: 'تعذّر تحديد الاتجاه، تأكد من الموقع والبوصلة',
+            callback: _retry,
+          );
+        }
+        if (qiblahDirection == null) {
           return const Center(child: CircularProgressIndicator());
         }
-
-        final qiblahDirection = snapshot.data!;
 
         if (!qiblahDirection.direction.isFinite ||
             !qiblahDirection.qiblah.isFinite) {
@@ -304,7 +331,10 @@ class _QiblahCompassWidgetState extends State<QiblahCompassWidget> {
                       child: compassSvg,
                     ),
                     Transform.rotate(
-                      angle: (qiblahDirection.qiblah + _declination) * (pi / 180) * -1,
+                      angle:
+                          (qiblahDirection.qiblah + _declination) *
+                          (pi / 180) *
+                          -1,
                       child: needleSvg,
                     ),
                     // Fixed marker showing where the phone is pointing.
